@@ -1,0 +1,111 @@
+/*Debut modification sytle TELA BOTANICA*/
+* {margin:0; padding:0; text-indent:0;}
+body {background:#FFF; font:12pt Arial, sans-serif; color:#000; text-align:center;}
+#page {position:relative; width:758px; text-align:left; margin:0 auto;}
+
+hr {margin:2px; width:100%; color: #7F8343;  background-color: #7F8343; height: 1px;}
+a {margin:0; padding:0; color:#751451; text-decoration:none;}
+a:hover {text-decoration:none; color:#2D6C98;}
+img{border:0;}
+img a{display:block;}
+#selecteur_squelette {position:absolute; top:3px; right:3px;}
+#selecteur_style {position:absolute; top:30px; right:3px;}
+
+/*****************Titres********************************************************/
+h1, h2, h3, h4, h5, h6 {font-family:'Lucida Grande', Verdana, Geneva, Lucida, Arial, Helvetica, sans-serif; text-align:left; margin:4px 0;}
+h1 {padding:2px; font-size: 20pt; color:rgb(79, 52, 147);}
+#colonne_droite h1 {padding:4px 0 4px 40px; background:url('../images/puce_titre.png') no-repeat top left;}
+h2 {padding:2px; text-align: left; font-size: 18pt; color: #93117e;}
+h3 {padding:2px; font-weight: bold; font-size:17pt; color: #9cc300;}
+h4 {padding:2px; text-align: center; font-weight: bold; font-size: 14pt; color: #05AEF8;}
+h5 {padding:2px; text-align: center; font-weight: bold; font-size: 12pt; color: #4F3493;}
+
+ul {padding:0;margin: 0 0 0 10px;}
+#colonne_droite li {padding:2px 0 2px 20px; margin:2px 0 0 0; color:#000; background:url('../images/puce_menu.png') no-repeat top left; list-style-type:none;}
+
+/*****************Bandeau du haut********************************************************/
+#zone_bandeau {height:288px; width:758px; background:url(../images/bandeau_haut.png) no-repeat top left;}
+#titre_site {padding:20px 0 0 0; text-align:center;}
+#titre_site a {text-decoration:none; color:#08429C; font-size:18px;}
+
+/*****************Contenu page (colonne gauche + corps)********************************************************/
+#zone_contenu {float:left; margin:0; padding:0 ;width:758px; background:url(../images/barre_conteneur.png) repeat-y top left;}
+p, .page {clear:both;background-color:transparent;text-align: justify;line-height: 22px;}
+
+/*****************Colonne de gauche********************************************************/
+#colonne_gauche {clear:both; float:left; width:176px; padding:0; margin:0; text-align:center;}
+#colonne_gauche h1 {padding:6px 0 0 0; margin:0; text-align:center; font-weight:bold; font-size:13px; color:#751451; }
+#menu_haut {margin:0 0 0 15px; width:151px; height:34px; background:url(../images/bandeau_menu_haut.png) no-repeat top left;}
+#menu_contenu {margin:0 0 0 15px; width:151px; background:url(../images/barre_menu.png) repeat-y top left;}
+#menu_bas {margin:0 0 40px 15px; width:151px; height:12px; background:url(../images/bandeau_menu_bas.png) no-repeat top left;}
+#menu_contenu ul {display:block;margin:0; padding:1px; color:#FFF; list-style:none; list-style-type:none;}
+#menu_contenu li, #menu li li {margin:2px 0; padding:0; color:#000;}
+#menu_contenu li ul {margin:0 0 0 12px; padding:0; border-left:1px solid #08429c;}
+#menu_contenu li a {display:block; padding:2px 0 2px 10px; margin:0; text-decoration:none; color:#08429c; font-size:12px; background:transparent; text-align:left;}
+#menu_contenu li a:hover, #menu_contenu li.menu_actif a {margin-left:3px; padding-left:19px; color:#751451; background:url(../images/puce_menu.png) no-repeat top left;}
+
+#colonne_droite {float:left; width:524px; margin:0 0 0 10px; padding:0 10px 0 10px; text-align:justify;}
+
+/*****************Pied de page********************************************************/
+#zone_pied {float:left; text-align:center; margin:0; padding:0; width:758px; height:259px; background: url(../images/bandeau_bas.png) no-repeat top left;}
+#zone_pied a {font:12pt arial, sans-serif; color:#751451; text-decoration:none;}
+#zone_pied a:hover {text-decoration:underline; color:#efb521;}
+#copyright {padding:220px 0 0 0; float:left; color:#000; width:758px;}
+
+.error { color: #CC3333; font-weight: bold; }
+.indent { margin-left: 40px; }
+.additions { color: #008800; }
+.deletions { color: #880000; }
+.add { font-weight: bold; color: #c00; text-decoration: underline; }
+.del { font-style: italic; color: #c00; text-decoration: line-through; }
+.prev_alert { background-color: red; color: white; font-size: 1.7em; font-weight: bold; margin-bottom: 5px; }
+.edit { width: 100%; height: 400px; }
+.footer { background-color: #DDDDDD; padding: 5px 10px; border: 1px solid #000; display: none; }
+.code { background: #FFFFFF; border: solid #888888 2px; font-family: 'Courier New', Courier; color: black; font-size: 10pt; width: 100%; height: 400px; overflow: scroll; padding: 3px; }
+.revisioninfo { color: #AAAAAA; padding-bottom: 20px; }
+
+.commentsheader {   display:none; background-color: #DDDDDD; padding: 2px 10px; border-left: 1px inset; border-right: 1px inset; border-top: 1px solid #CCCCCC }
+.comment {   display:none; background-color: #EEEEEE; padding: 10px; border-left: 1px inset; border-right: 1px inset; border-top: 1px solid #CCCCCC; border-bottom: 1px solid #EEEEEE; }
+.commentinfo {   display:none; color: #AAAAAA; }
+.commentform {   display:none; background-color: #EEEEEE; padding: 10px; border-left: 1px inset; border-right: 1px inset; border-top: 1px solid #CCCCCC }
+
+.copyright { font-size: 11px; color: #AAAAAA; text-align: right; display: none;}
+.copyright A { color: #AAAAAA; }
+.searchbox { background: #FFFFF8; border: 0px; border-bottom: 1px solid #CCCCAA; padding: 0px; margin: 0px; }
+.debug { font-size: 11px; color: #888888; }
+
+.hr_clear { clear: both; visibility: hidden; }
+.include_right { float: right; width: 17%; } /* bloc flotant � droite */
+.include_left { float: left; width: 17%; } /* bloc flotant � gauche */
+.include_solid_border { border: solid; padding: 2px; } /* encadr� noir */
+.include_gray_background { background-color: #DDDDDD; } /* fond gris */
+.include_small_fonts { font-size: 0.8em; } /* petites polices */
+.include_big_fonts { font-size: 1.2em; } /* grandes polces */
+.include_height10em { height: 10em; overflow: scroll; } /* boite de 10em de hauteur, avec ascenseur */
+.include_height15em { height: 15em; overflow: scroll; }
+.include_height30em { height: 30em; overflow: scroll; }
+.include_height60em { height: 60em; overflow: scroll; }
+
+.trail_table { line-height: 30px;}
+.trail_button { color: #993333; }
+
+/* CONTRIBUTION ACTION ATTACH */
+/* - les images */
+.attach_margin05em { margin: 0.5em;}             /* marge de 0.5 em autour de l'image*/
+.attach_margin1em { margin: 1em;}                /* marge de 1em autour de l'image*/
+.attach_left {float: left;}                      /* bloc flotant � gauche */
+.attach_right {float: right;}                    /* bloc flotant � droite */
+.attach_noborder {border-width: 0px;}            /* pas de bordure */
+.attach_vmiddle {vertical-align: text-bottom;}   /* aligenement vertical au milieu */
+/* - le gestionnaire des uploads */
+.tableFM {border: thin solid Black; width: 100%;  }
+.tableFM THEAD { background-color: Silver; font-weight: bold; text-align: center;   }
+.tableFM TFOOT { background-color: Silver; font-weight: bold; text-align: left;   }
+.tableFM TBODY TR { text-align: center;  }
+.tableFMCol1 { background-color: Aqua; }
+.tableFMCol2 { background-color: Yellow; }
+
+/* CONTRIBUTION ACeditor */
+.image_left {float: left;} /* bloc flotant � gauche */
+.image_right {float: right;} /* bloc flotant � droite */
+.image_center {text-align:center;} /* bloc centr� */
