@@ -46,6 +46,9 @@ if (isset($menu_page) and ($menu_page!=""))
 	$plugin_output_new);
 	
 /**
- * $log:$
+ * $Log: header__.php,v $
+ * Revision 1.3  2008/04/20 17:20:57  ddelon
+ * Suppression banniere
+ *
  */
 ?>
