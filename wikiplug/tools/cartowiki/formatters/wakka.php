@@ -34,7 +34,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 if (!function_exists("wakka2callback"))
 {
-	@include("formatters/tableaux.php");     //EF => tableaux
 	function wakka2callback($things)
 	{
 		
@@ -56,11 +55,6 @@ if (!function_exists("wakka2callback"))
 			return "&lt;";
 		else if ($thing == ">")
 			return "&gt;";
-		//EF=> tableaux 
-		else if (preg_match("/^\[\|(.*)\|\]/s", $thing))
-		{
-              return parsetable($thing);
-        }       //end tableaux
 		// bold
 		else if ($thing == "**")
 		{
@@ -345,7 +339,7 @@ $text = str_replace("\r", "", $text);
 $text = chop($text)."\n";
 $text = preg_replace_callback(
 	"/(\%\%.*?\%\%|".
-	"^\[\|.*?\|\]|".        //EF => tableaux
+	"^\[\|.*?\|\]|".
 	"\"\".*?\"\"|".
 	"~\*~|".
 	"\[\[.*?\]\]|".
