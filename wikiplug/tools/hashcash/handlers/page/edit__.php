@@ -11,7 +11,7 @@ if ($this->HasAccess("write") && $this->HasAccess("read"))
 {
 	
 	// Edition 
-	if ($_POST["submit"] != 'Aperçu' && $_POST["submit"] != 'Sauver') {
+	if ($_POST["submit"] != 'Sauver') {
 		
 		require_once('tools/hashcash/secret/wp-hashcash.lib');
 
@@ -22,10 +22,10 @@ if ($this->HasAccess("write") && $this->HasAccess("read"))
 			// update our secret
 			$fp = fopen(HASHCASH_SECRET_FILE, 'w');
 
-			if(@flock($fp, LOCK_EX)){
+//			if(@flock($fp, LOCK_EX)){
 				fwrite($fp, rand(21474836, 2126008810));
-				@flock($fp, LOCK_UN);
-			}
+//				@flock($fp, LOCK_UN);
+//			}
 
 			fclose($fp);
 	
@@ -44,6 +44,7 @@ if ($this->HasAccess("write") && $this->HasAccess("read"))
 
 		$ChampsHashcash = 
 		 '<script type="text/javascript" src="' . $siteurl . '/tools/hashcash/wp-hashcash-js.php?siteurl='.$siteurl.'"></script>';
+
 	 
 		$plugin_output_new=preg_replace ('/\<input name=\"submit\" type=\"submit\" value=\"Sauver\"/',
 		$ChampsHashcash.'<input name="submit" type="submit" value="Sauver"', $plugin_output_new);
