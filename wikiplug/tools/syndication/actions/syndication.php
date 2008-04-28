@@ -56,7 +56,7 @@ if (!empty($urls)) {
 						$aso_page = array();
 						// Gestion du titre
 						if ( $titre == '' ) {
-							$aso_page['titre_site'] = mb_convert_encoding($feed->channel['title'], 'HTML-ENTITIES', $encodages);
+							$aso_page['titre_site'] = htmlentities($feed->channel['title'], ENT_QUOTES, 'UTF-8');
 						} else {
 							$aso_page['titre_site'] = $titre;
 						}
