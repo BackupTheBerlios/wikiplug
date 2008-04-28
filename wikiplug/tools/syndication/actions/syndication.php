@@ -1,5 +1,6 @@
 <?
 //on inclue Magpie le parser RSS
+define('MAGPIE_OUTPUT_ENCODING', 'UTF-8');
 define('MAGPIE_DIR', 'tools/syndication/libs/');
 require_once(MAGPIE_DIR.'rss_fetch.inc');
 
@@ -40,10 +41,8 @@ $urls = $this->GetParameter("url");
 if (!empty($urls)) {
 	$tab_url = array_map('trim', explode(',', $urls));	
     foreach ($tab_url as $cle => $url) {    		
-			if ($url != '') {				
-				// Liste des encodages acceptes pour les flux
-				$encodages = 'UTF-8, ISO-8859-1, ISO-8859-15';
-				// On parse l'url avec magpie
+			if ($url != '') {								
+				// On parse l'url avec magpierss
 				$feed = fetch_rss( $url );
 				if ($feed) {									
 					// Gestion du nombre de pages syndiquees
@@ -62,15 +61,15 @@ if (!empty($urls)) {
 							$aso_page['titre_site'] = $titre;
 						}
 						// Gestion de l'url du site
-						$aso_page['url_site'] = htmlentities($feed->channel['link']);
+						$aso_page['url_site'] = htmlentities($feed->channel['link'], ENT_QUOTES, 'UTF-8');
 						// Ouverture du lien dans une nouvelle fenetre
 						$aso_page['ext'] = $nouvellefenetre;
 						//url de l'article	
-						$aso_page['url'] = htmlentities($item['link']);
-						//titre de l'article
-						$aso_page['titre'] = mb_convert_encoding($item['title'], 'HTML-ENTITIES', $encodages);
+						$aso_page['url'] = htmlentities($item['link'], ENT_QUOTES, 'UTF-8');
+						//titre de l'article						
+						$aso_page['titre'] = htmlentities($item['title'], ENT_QUOTES, 'UTF-8');
 						//description de l'article
-						$aso_page['description'] = mb_convert_encoding($item['description'], 'HTML-ENTITIES', $encodages);					
+						$aso_page['description'] = htmlentities($item['description'], ENT_QUOTES, 'UTF-8');					
 						//gestion de la date de publication, selon le flux, elle se trouve parsee à des endroits differents 
 						if ($item['pubdate']) $aso_page['datestamp'] = strtotime($item['pubdate']);
        					elseif ($item['dc']['date']) $aso_page['datestamp'] = parse_w3cdtf($item['dc']['date']);
