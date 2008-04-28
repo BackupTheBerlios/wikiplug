@@ -1,15 +1,12 @@
 <!-- SYNDICATION - DEBUT -->
-<?php foreach ($sites as $site) : ?>
-	<h2 class="rss_site_titre"><a href="<?=$site['url'];?>"><?=$site['titre'];?></a></h2>
-	<ul class="liste_rss">
-	<?php foreach ($site['pages'] as $page) : ?>
-		<li class="titre_rss">
-			<span class="rss_date"><?=$page['date'];?></span>
-			<?php if ($page['date']!='') : ?><span class="rss_separateur_date"> - </span><?php endif; ?>
-			<a class="lien_rss" href="<?=$page['url'];?>" <?=($site['ext'])? 'onclick="window.open(this.href); return false;"':'';?>><?=$page['titre'];?></a><br />
-			<?=$page['description'];?>
-		</li>
-	<?php endforeach; ?>
-	</ul>
+<ul class="liste_rss">
+<?php foreach ($syndication['pages'] as $page) : ?>
+	<li class="titre_rss">
+		<span class="rss_date"><?=$page['date'];?></span>
+		<?php if ($page['date']!='') : ?><span class="rss_separateur_date"> - </span><?php endif; ?>
+		<a class="lien_rss" href="<?=$page['url'];?>" <?=($page['ext'])? 'onclick="window.open(this.href); return false;"':'';?>><?=$page['titre'];?></a>
+		<?=$page['description'];?>
+	</li>
 <?php endforeach; ?>
+</ul>
 <!-- SYNDICATION - FIN -->
