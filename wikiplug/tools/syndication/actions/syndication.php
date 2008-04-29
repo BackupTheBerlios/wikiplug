@@ -67,14 +67,29 @@ if (!empty($urls)) {
 						//url de l'article	
 						$aso_page['url'] = htmlentities($item['link'], ENT_QUOTES, 'UTF-8');
 						//titre de l'article						
-						$aso_page['titre'] = htmlentities($item['title'], ENT_QUOTES, 'UTF-8');
+						$aso_page['titre'] = html_entity_decode(htmlentities($item['title'], ENT_QUOTES, 'UTF-8'), ENT_QUOTES);
 						//description de l'article
-						$aso_page['description'] = htmlentities($item['description'], ENT_QUOTES, 'UTF-8');					
+						$aso_page['description'] = html_entity_decode(htmlentities($item['description'], ENT_QUOTES, 'UTF-8'), ENT_QUOTES);					
 						//gestion de la date de publication, selon le flux, elle se trouve parsee à des endroits differents 
-						if ($item['pubdate']) $aso_page['datestamp'] = strtotime($item['pubdate']);
-       					elseif ($item['dc']['date']) $aso_page['datestamp'] = parse_w3cdtf($item['dc']['date']);
-        				elseif ($item['issued']) $aso_page['datestamp'] = parse_w3cdtf($item['issued']);
-        				else $aso_page['datestamp'] = time();						
+						if ($item['pubdate']) {
+							$aso_page['datestamp'] = strtotime($item['pubdate']);
+						} elseif ($item['dc']['date']) {							
+							//en php5 on peut convertir les formats de dates exotiques plus facilement
+							if (PHP_VERSION>=5) {
+								$aso_page['datestamp'] = strtotime($item['dc']['date']);
+							} else {
+								$aso_page['datestamp'] = parse_w3cdtf($item['dc']['date']);
+							}
+						} elseif ($item['issued']) {
+							//en php5 on peut convertir les formats de dates exotiques plus facilement
+							if (PHP_VERSION>=5) {
+								$aso_page['datestamp'] = strtotime($item['issued']);
+							} else {
+								$aso_page['datestamp'] = parse_w3cdtf($item['issued']);
+							}							
+						} else {
+							$aso_page['datestamp'] = time();
+						}							
 						if ($formatdate!='') {
 							switch ($formatdate) {							
 								case 'jm' :
@@ -92,7 +107,7 @@ if (!empty($urls)) {
 								default :
 									$aso_page['date'] = '';
 							}
-						}						
+						}												
 						$syndication['pages'][$aso_page['datestamp']] = $aso_page;
 					}
 				} else {
