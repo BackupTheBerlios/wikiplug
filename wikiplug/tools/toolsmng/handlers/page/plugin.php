@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 $plugins_root = dirname(__FILE__).'/../../../';
 $plugins = new plugins($plugins_root);
-$plugins->getPlugins(false);
+$plugins->getPlugins(true);
 $plugins_list = $plugins->getPluginsList();
 
 
