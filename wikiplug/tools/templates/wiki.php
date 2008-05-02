@@ -6,71 +6,103 @@ if (!defined("WIKINI_VERSION"))
 {
         die ("acc&egrave;s direct interdit");
 }
-define ('CSS_PAR_DEFAUT', 'mandarine.css');
-define ('SQUELETTE_PAR_DEFAUT', 'mandarine');
-define ('THEME_PAR_DEFAUT', 'mandarine');
 
-//=======Changer de theme=================================================================================================
-    //on cherche tous les dossiers du repertoire themes et on les range dans le tableau $wakkaConfig['themes']
+
+//on cherche l'action template dans la page, qui definit le graphisme a utiliser
+$nomwiki = $_REQUEST['wiki'];
+
+// remove leading slash
+$nomwiki = preg_replace("/^\//", "", $nomwiki);
+
+// split into page/method, checking wiki name & method name (XSS proof)
+if (!defined("WN_CHAR")) define("WN_CHAR", "[A-Za-z0-9]"); // \xC0-\xD6\xD8-\xF6\xF8-\xFF]");
+if (!defined("WN_CHAR2")) define("WN_CHAR2", "[A-Za-z0-9_-]"); 
+if (!defined("WN_PAGE_TAG")) define('WN_PAGE_TAG', WN_CHAR . '+');
+if (!defined("WN_TAG_HANDLER_CAPTURE")) define('WN_TAG_HANDLER_CAPTURE', '(' . WN_PAGE_TAG . ')/(' . WN_CHAR2 . '*)');
+if (preg_match('`^' . WN_TAG_HANDLER_CAPTURE . '$`', $nomwiki, $matches))
+{
+	list(, $page, $method) = $matches;
+}
+elseif (preg_match('`^' . WN_PAGE_TAG . '$`', $nomwiki))
+{
+	$page = $nomwiki;
+}
+else
+{
+	echo "<p>Le nom de la page est incorrect.</p>";
+	exit;
+}
+
+$contenu=$wiki->LoadPage($page);
+if ($act=preg_match_all ("/".'(\\{\\{template)'.'(.*?)'.'(\\}\\})'."/is", $contenu["body"], $matches)) {
+     $i = 0; $j = 0;
+     foreach($matches as $valeur) {
+       foreach($valeur as $val) {
+         if ($matches[2][$j]!='') {
+           $action= $matches[2][$j];
+           if (preg_match_all("/([a-zA-Z0-9]*)=\"(.*)\"/U", $action, $params))
+			{
+				for ($a = 0; $a < count($params[1]); $a++)
+				{
+					$vars[$params[1][$a]] = $params[2][$a];
+				}
+			}
+         }
+         $j++;
+       }
+       $i++;
+     }
+   }
+isset($vars["theme"]) ? define ('THEME_PAR_DEFAUT', $vars["theme"]) : define ('THEME_PAR_DEFAUT', 'default');
+isset($vars["style"]) ? define ('CSS_PAR_DEFAUT', $vars["style"]) : define ('CSS_PAR_DEFAUT', 'default.css');
+isset($vars["squelette"]) ? define ('SQUELETTE_PAR_DEFAUT', $vars["squelette"]) : define ('SQUELETTE_PAR_DEFAUT', 'default.tpl.html');
+
+//on cherche tous les dossiers du repertoire themes et des sous dossier styles et squelettes, et on les range dans le tableau $wakkaConfig['templates']
     $repertoire = 'tools/templates/themes';
     $dir = opendir($repertoire);
     while (false !== ($file = readdir($dir))) {
-    	if  ($file!='.' && $file!='..') $wakkaConfig['themes'][$file]=$file;
+    	if  ($file!='.' && $file!='..' && $file!='CVS') {
+	    	$dir2 = opendir($repertoire.'/'.$file.'/styles');
+	    	while (false !== ($file2 = readdir($dir2))) {
+	    		if (substr($file2, -4, 4)=='.css') $wakkaConfig['templates'][$file]["style"][$file2]=$file2;
+	    	}
+	    	closedir($dir2);
+	    	ksort($wakkaConfig['templates'][$file]["style"]);
+	    	$dir3 = opendir($repertoire.'/'.$file.'/squelettes');
+	    	while (false !== ($file3 = readdir($dir3))) {
+	    		if (substr($file3, -9, 9)=='.tpl.html') $wakkaConfig['templates'][$file]["squelette"][$file3]=$file3;	    
+	    	}	    	
+	    	closedir($dir3);
+	    	ksort($wakkaConfig['templates'][$file]["squelette"]);
+    	}
     }
     closedir($dir);
+    ksort($wakkaConfig['templates']);
 
-    if (isset($_POST['theme']) && array_key_exists($_POST['theme'], $wakkaConfig['themes'])) {
+//=======Changer de theme=================================================================================================
+    if (isset($_POST['theme']) && array_key_exists($_POST['theme'], array_keys($wakkaConfig['templates']))) {
             $wakkaConfig['favorite_theme'] = $_POST['theme'];
-    }
-    elseif (isset($_COOKIE['favorite_theme'])) {
-            $wakkaConfig['favorite_theme'] = $_COOKIE['favorite_theme'];
     }
     else {
             $wakkaConfig['favorite_theme'] = THEME_PAR_DEFAUT;
 
     }
-    setcookie('favorite_theme', $wakkaConfig['favorite_theme'], time() + 63115200);
 
 //=======Changer de style=====================================================================================================
-    //on cherche tous les fichiers avec l'extension .css du répertoire des styles et on les range dans le tableau $wakkaConfig['styles']
-    $repertoire = 'tools/templates/themes/'.$wakkaConfig['favorite_theme'].'/styles';
-    $dir = opendir($repertoire);
     $styles['none']='pas de style';
-    while (false !== ($file = readdir($dir))) {
-      if (substr($file, -4, 4)=='.css') $wakkaConfig['styles'][$file]=$file;
-    }
-    closedir($dir);
 
-    if (isset($_POST['style']) && array_key_exists($_POST['style'], $wakkaConfig['styles'])) {
+    if (isset($_POST['style']) && array_key_exists($_POST['style'], $wakkaConfig['templates'][$wakkaConfig['favorite_theme']]['styles'])) {
             $wakkaConfig['favorite_style'] = $_POST['style'];
-    }
-    elseif (isset($_COOKIE['favorite_style'])) {
-            $wakkaConfig['favorite_style'] = $_COOKIE['favorite_style'];
     }
     else {
             $wakkaConfig['favorite_style'] = CSS_PAR_DEFAUT;
     }
-    setcookie('favorite_style', $wakkaConfig['favorite_style'], time() + 63115200);
 
-//=======Changer de squelette=================================================================================================
-    //on cherche tous les fichiers avec l'extension .html du répertoire des squelettes et on les range dans $wakkaConfig['squelettes']
-    $repertoire = 'tools/templates/themes/'.$wakkaConfig['favorite_theme'].'/squelettes';
-    $dir = opendir($repertoire);
-    while (false !== ($file = readdir($dir))) {
-    $nom_extension_squelette=substr($file, -9, 9);
-    $nom_squelette=str_replace($nom_extension_squelette, '', $file);
-      if ($nom_extension_squelette=='.tpl.html') $wakkaConfig['squelettes'][$nom_squelette]=$file;
-    }
-    closedir($dir);
-
-    if(isset($_POST['squelette']) && array_key_exists($_POST['squelette'], $wakkaConfig['squelettes'])) {
+//=======Changer de squelette=================================================================================================    
+    if(isset($_POST['squelette']) && array_key_exists($_POST['squelette'], $wakkaConfig['templates'][$wakkaConfig['favorite_theme']]['squelettes'])) {
             $wakkaConfig['favorite_squelette'] = $_POST['squelette'];
-    }
-    elseif(isset($_COOKIE['favorite_squelette'])) {
-            $wakkaConfig['favorite_squelette'] = $_COOKIE['favorite_squelette'];
     }
     else {
             $wakkaConfig['favorite_squelette'] = SQUELETTE_PAR_DEFAUT;
     }
-    setcookie('favorite_squelette', $wakkaConfig['favorite_squelette'], time() + 63115200);
 ?>

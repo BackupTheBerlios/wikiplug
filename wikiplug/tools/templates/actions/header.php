@@ -3,16 +3,16 @@
     $message = $this->GetMessage();
     $user = $this->GetUser();
 
-//On r�cupere le template et on execute les actions wikini
-$template = file_get_contents('tools/templates/themes/'.$this->config['favorite_theme'].'/squelettes/'.$this->config['favorite_squelette'].'.tpl.html');
-$template_decoupe = explode("{WIKINI_PAGE}", $template);
-   if ($act=preg_match_all ("/".'(\\{\\{)'.'(.*?)'.'(\\}\\})'."/is", $template_decoupe[0], $matches)) {
+//On recupere le template et on execute les actions wikini
+$template_decoupe = explode("{WIKINI_PAGE}", file_get_contents('tools/templates/themes/'.$this->config['favorite_theme'].'/squelettes/'.$this->config['favorite_squelette']));
+$template = $template_decoupe[0];
+   if ($act=preg_match_all ("/".'(\\{\\{)'.'(.*?)'.'(\\}\\})'."/is", $template, $matches)) {
      $i = 0; $j = 0;
      foreach($matches as $valeur) {
        foreach($valeur as $val) {
          if ($matches[2][$j]!='') {
            $action= $matches[2][$j];
-           $template=str_replace('{{'.$action.'}}', $this->Format('{{'.$action.'}}'), $template_decoupe[0]);
+           $template=str_replace('{{'.$action.'}}', $this->Format('{{'.$action.'}}'), $template);
          }
          $j++;
        }
@@ -22,7 +22,7 @@ $template_decoupe = explode("{WIKINI_PAGE}", $template);
 
 
 //on utilise la bibliotheque pear template it pour gerer les variables dans la template
-require_once 'tools/templates/api/IT.php';
+require_once 'tools/templates/libs/IT.php';
 $tpl = new HTML_Template_IT('tools/templates/themes/'.$this->config['favorite_theme'].'/squelettes');
 $tpl->setTemplate($template, true, true);
 
@@ -44,10 +44,15 @@ $tpl->setVariable('WIKINI_MOTS_CLES', $wikini_mots_cles);
 $wikini_description = $this->config['meta_description'];
 $tpl->setVariable('WIKINI_DESCRIPTION', $wikini_description);
 
+//flux rss
+$wikini_flux_rss = '<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="'.$this->config['base_url'].'DerniersChangementsRSS/xml" />'."\n";
+$tpl->setVariable('WIKINI_FLUX_RSS', $wikini_flux_rss);
+
+
 //feuilles de styles
 $wikini_styles_css = '';
 if ($this->config['favorite_style']!='none') $wikini_styles_css .= '<link rel="stylesheet" type="text/css" href="tools/templates/themes/'.$this->config['favorite_theme'].'/styles/'.$this->config['favorite_style'].'" media="screen" title="'.$this->config['favorite_style'].'" />'."\n";
-foreach($this->config['styles'] as $key => $value) {
+foreach($this->config['templates'][$this->config['favorite_theme']]['style'] as $key => $value) {
   if($key !== $this->config['favorite_style'] && $key !== 'none') {
     $wikini_styles_css .= '<link rel="alternate stylesheet" type="text/css" href="tools/templates/themes/'.$this->config['favorite_theme'].'/styles/'.$key.'" media="screen" title="'.$value.'" />'."\n";
   }
@@ -59,7 +64,11 @@ $wikini_javascripts = '';
 $repertoire = 'tools/templates/themes/'.$this->config['favorite_theme'].'/javascripts';
 $dir = opendir($repertoire);
 while (false !== ($file = readdir($dir))) {
-  if (substr($file, -3, 3)=='.js') $wikini_javascripts .= '<script type="text/javascript" src="'.$repertoire.'/'.$file.'"></script>'."\n";
+  if (substr($file, -3, 3)=='.js') $scripts[] = '<script type="text/javascript" src="'.$repertoire.'/'.$file.'"></script>'."\n";
+}
+asort($scripts);
+foreach ($scripts as $key => $val) {
+    $wikini_javascripts .= "$val\n";
 }
 closedir($dir);
 if ($wikini_javascripts!='') $tpl->setVariable('WIKINI_JAVASCRIPTS', $wikini_javascripts);
@@ -78,7 +87,10 @@ $wikini_resetstyle .= $this->href().'/resetstyle';
 $tpl->setVariable('WIKINI_RESETSTYLE', $wikini_resetstyle);
 
 //javascript du double clic
-$wikini_double_clic = "ondblclick=\"document.location='".$this->href("edit")."';\" ";
-$tpl->setVariable('WIKINI_DOUBLE_CLIC', $wikini_double_clic);
+//if ($this->GetMethod() != 'edit') {
+//	$wikini_double_clic = "ondblclick=\"document.location='".$this->href("edit")."';\" ";
+//	$tpl->setVariable('WIKINI_DOUBLE_CLIC', $wikini_double_clic);
+//}
+//else $tpl->setVariable('WIKINI_DOUBLE_CLIC', '');
 
-$plugin_output_new= $tpl->show();
+$plugin_output_new = $tpl->show();

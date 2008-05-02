@@ -27,8 +27,10 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/* Param√®tres :
- -- type : type de selecteur: theme, style, ou squelette
+/* Parametres :
+ -- theme, style, et squelette
+ 
+ Cette action n'est pas vraiment ÈxÈcutÈe, elle est appelee dans wiki.php
 
 *******************************************************************************/
 
@@ -39,33 +41,6 @@ if (!defined("WIKINI_VERSION"))
         die ("acc&egrave;s direct interdit");
 }
 
+return;
 
-$type = $this->GetParameter("type");
-
-// Affichage de la page ou d'un message d'erreur
-if (empty($type)) {
-	echo $this->Format("//Le param√®tre \"type\" est manquant.//");
-} elseif ($type=='squelette' || $type=='style' || $type=='theme' ) {
-	$wikini_selecteur= '<div class="selecteur_'.$type.'">
-      <form action="" method="post">
-        <select name="'.$type.'" onchange="javascript:this.form.submit();">';
-        foreach($this->config[$type.'s'] as $key => $value) {
-                if($key !== $this->config['favorite_'.$type]) {
-                        $wikini_selecteur .= '<option value="'.$key.'">'.$value.'</option>'."\n";
-                }
-                else {
-                		$squelettes=$this->config[$type.'s'];
-                        $wikini_selecteur .= '<option value="'.$this->config['favorite_'.$type].'" selected="selected">'.	$squelettes[$this->config['favorite_'.$type]].'</option>'."\n";
-                }
-        }
-        $wikini_selecteur .= '</select>
-        <input type="submit" value="Changer le '.$type.'" />
-      </form>
-    </div>  <!--fin div selecteur_'.$type.'-->';
-
-    echo $wikini_selecteur;
-}
-else {
-	echo $this->Format("//Le param√®tre \"type\" ne contient pas les valeurs 'squelette', 'style' ou 'theme'.//");
-}
 ?>
