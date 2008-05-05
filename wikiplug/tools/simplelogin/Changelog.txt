@@ -1,2 +1,2 @@
-2008/05/05 : Creation action simple login
+2008/05/05 : Creation action simple login : nom et utilisateur seulement + pas de cookie permanent.
 2008/05/05 : Mise  à jour description
