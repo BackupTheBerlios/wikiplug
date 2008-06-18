@@ -58,17 +58,17 @@ isset($vars["style"]) ? define ('CSS_PAR_DEFAUT', $vars["style"]) : define ('CSS
 isset($vars["squelette"]) ? define ('SQUELETTE_PAR_DEFAUT', $vars["squelette"]) : define ('SQUELETTE_PAR_DEFAUT', 'default.tpl.html');
 
 //on cherche tous les dossiers du repertoire themes et des sous dossier styles et squelettes, et on les range dans le tableau $wakkaConfig['templates']
-    $repertoire = 'tools/templates/themes';
+    $repertoire = 'tools'.DIRECTORY_SEPARATOR.'templates'.DIRECTORY_SEPARATOR.'themes';
     $dir = opendir($repertoire);
-    while (false !== ($file = readdir($dir))) {
-    	if  ($file!='.' && $file!='..' && $file!='CVS') {
-	    	$dir2 = opendir($repertoire.'/'.$file.'/styles');
+    while (false !== ($file = readdir($dir))) {    	
+    	if  ($file!='.' && $file!='..' && $file!='CVS' && is_dir($repertoire.DIRECTORY_SEPARATOR.$file)) {
+	    	$dir2 = opendir($repertoire.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'styles');
 	    	while (false !== ($file2 = readdir($dir2))) {
 	    		if (substr($file2, -4, 4)=='.css') $wakkaConfig['templates'][$file]["style"][$file2]=$file2;
 	    	}
 	    	closedir($dir2);
 	    	ksort($wakkaConfig['templates'][$file]["style"]);
-	    	$dir3 = opendir($repertoire.'/'.$file.'/squelettes');
+	    	$dir3 = opendir($repertoire.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'squelettes');
 	    	while (false !== ($file3 = readdir($dir3))) {
 	    		if (substr($file3, -9, 9)=='.tpl.html') $wakkaConfig['templates'][$file]["squelette"][$file3]=$file3;	    
 	    	}	    	
@@ -77,7 +77,7 @@ isset($vars["squelette"]) ? define ('SQUELETTE_PAR_DEFAUT', $vars["squelette"]) 
     	}
     }
     closedir($dir);
-    ksort($wakkaConfig['templates']);
+    if (is_array($wakkaConfig)) ksort($wakkaConfig['templates']);
 
 //=======Changer de theme=================================================================================================
     if (isset($_POST['theme']) && array_key_exists($_POST['theme'], array_keys($wakkaConfig['templates']))) {

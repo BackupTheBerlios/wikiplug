@@ -22,6 +22,7 @@ if ($this->HasAccess("write") && $this->HasAccess("read")) {
 	    $selecteur .= '</select>'."\n";
 		
 		$selecteur .= 'Squelette: <select name="squelette">'."\n";
+		ksort($this->config['templates'][$this->config['favorite_theme']]['squelette']);
 	    foreach($this->config['templates'][$this->config['favorite_theme']]['squelette'] as $key => $value) {
 	            if($value !== $this->config['favorite_squelette']) {
 	                    $selecteur .= '<option value="'.$key.'">'.$value.'</option>'."\n";
@@ -31,7 +32,8 @@ if ($this->HasAccess("write") && $this->HasAccess("read")) {
 	            }
 	    }
 	    $selecteur .= '</select>'."\n";
-	
+
+		ksort($this->config['templates'][$this->config['favorite_theme']]['style']);	
 		$selecteur .= 'Style: <select name="style">'."\n";
 	    foreach($this->config['templates'][$this->config['favorite_theme']]['style'] as $key => $value) {
 	            if($value !== $this->config['favorite_style']) {

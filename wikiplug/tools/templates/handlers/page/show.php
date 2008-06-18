@@ -1,6 +1,6 @@
 <?php
 /*
-$Id: show.php,v 1.1 2008/05/02 09:24:07 mrflos Exp $
+$Id: show.php,v 1.2 2008/06/18 10:45:25 mrflos Exp $
 Copyright (c) 2002, Hendrik Mans <hendrik@mans.de>
 Copyright 2002, 2003 David DELON
 Copyright 2002, 2003 Charles NEPOTE
@@ -74,7 +74,7 @@ if ($HasAccessRead=$this->HasAccess("read"))
 
 		// display page
 		$this->RegisterInclusion($this->GetPageTag());
-		echo '<div style="width:100%;" ondblclick="document.location=\''.$this->href("edit").'\';">'."\n".$this->Format($this->page["body"], "wakka").'</div>'."\n";
+		echo $this->Format($this->page["body"], "wakka");
 		$this->UnregisterLastInclusion();
 
 		// if this is an old revision, display some buttons
