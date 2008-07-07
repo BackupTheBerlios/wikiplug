@@ -1,0 +1,64 @@
+<?php
+//vim: set expandtab tabstop=4 shiftwidth=4:
+
+// Copyright (C) 1999-2004 Tela Botanica (accueil@tela-botanica.org)
+//
+// Ce logiciel est un programme informatique servant à gérer du contenu et des
+// applications web.
+                                                                                                      
+// Ce logiciel est régi par la licence CeCILL soumise au droit français et
+// respectant les principes de diffusion des logiciels libres. Vous pouvez
+// utiliser, modifier et/ou redistribuer ce programme sous les conditions
+// de la licence CeCILL telle que diffusée par le CEA, le CNRS et l'INRIA 
+// sur le site "http://www.cecill.info".
+
+// En contrepartie de l'accessibilité au code source et des droits de copie,
+// de modification et de redistribution accordés par cette licence, il n'est
+// offert aux utilisateurs qu'une garantie limitée.  Pour les mêmes raisons,
+// seule une responsabilité restreinte pèse sur l'auteur du programme,  le
+// titulaire des droits patrimoniaux et les concédants successifs.
+
+// A cet égard  l'attention de l'utilisateur est attirée sur les risques
+// associés au chargement,  à l'utilisation,  à la modification et/ou au
+// développement et à la reproduction du logiciel par l'utilisateur étant 
+// donné sa spécificité de logiciel libre, qui peut le rendre complexe à 
+// manipuler et qui le réserve donc à des développeurs et des professionnels
+// avertis possédant  des  connaissances  informatiques approfondies.  Les
+// utilisateurs sont donc invités à charger  et  tester  l'adéquation  du
+// logiciel à leurs besoins dans des conditions permettant d'assurer la
+// sécurité de leurs systèmes et ou de leurs données et, plus généralement, 
+// à l'utiliser et l'exploiter dans les mêmes conditions de sécurité. 
+
+// Le fait que vous puissiez accéder à cet en-tête signifie que vous avez 
+// pris connaissance de la licence CeCILL, et que vous en avez accepté les
+// termes.
+// ----
+// CVS : $Id: baz_langue_fr.admin.inc.php,v 1.1 2008/07/07 18:00:47 mrflos Exp $
+
+/**
+* Papyrus : Programme d'administration du bazar
+*
+* Fichier de de langue
+*@package Bazar
+//Auteur original :
+*@author            Alexandre Granier <alexandre@tela-botanica.org>
+*@copyright         Tela-Botanica 2000-2007
+*@version           $Revision: 1.1 $
+// +------------------------------------------------------------------------------------------------------+
+*/
+
+
+/* +--Fin du code ---------------------------------------------------------------------------------------+
+* $Log: baz_langue_fr.admin.inc.php,v $
+* Revision 1.1  2008/07/07 18:00:47  mrflos
+* maj carto plus calendrier
+*
+* Revision 1.1  2008/02/18 09:12:48  mrflos
+* Premiere release de 3 extensions en version alpha (bugs nombreux!) des plugins bazar, e2gallery, et templates
+*
+* Revision 1.1  2007-02-02 14:01:53  alexandre_tb
+* version initiale vide pour le moment
+*
+* +--Fin du code ----------------------------------------------------------------------------------------+
+*/
+?>

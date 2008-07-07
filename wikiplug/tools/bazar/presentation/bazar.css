@@ -1,0 +1,119 @@
+img {border:none;}
+.BAZ_titre_liste {font-size:14px; font-weight:bold; }
+.symbole_obligatoire {color:red;}
+#BAZ_corps {width:100%;}
+.BAZ_liste_rss {padding:0; margin:0; display:inline; list-style:none; list-style-type:none; background:#FFF; background-image:none;}
+#formulaire input, #formulaire textarea, #formulaire select {border:1px solid #000;}
+#formulaire table, #formulaire td {border:0;}
+.BAZ_menu {display:block;margin:0 0 10px 0; padding:0; width:100%; }
+.BAZ_menu li {padding:0; margin:0 10px 0 0; display:block; float:left; list-style:none; list-style-type:none; background:#d71a38;-moz-border-radius:6px; width:140px; text-align:center; background-image:none;}
+.BAZ_menu a {color:#FFF;}
+.BAZ_info {background:#fff url(images/info.png) no-repeat;border:1px solid #3399cc; padding: 7px 7px 6px 36px; margin:10px 0 5px 0; font-size:9px; background-position-x:15px; background-position-y:center;}
+.BAZ_label {font-weight:bold;}
+/*-------------Les fiches Bazar-------------------------------------------------*/
+.BAZ_cadre_fiche {padding:10px; border: 1px solid #33641e; text-align:justify; font-size:14px;}
+.BAZ_cadre_fiche a {font: 14px arial, sans-serif;color:#3082AA;text-decoration:underline;}
+.BAZ_cadre_fiche a:hover {color:#515966;text-decoration:underline;}
+.BAZ_image {float:right;height:150px; width:150px;}
+#BAZ_description {min-height:120px;font: 15px arial, sans-serif;text-align:justify;}
+#BAZ_bas_page {margin: 0;padding:0;}
+.bulle_haut {margin: 0;padding:0;}
+.bulle_corps {margin: 0;padding:10px 5px;border: 1px solid #3082AA;-moz-border-radius:10px;background:#DBE8C8;}
+.bulle_bas {margin: 0;padding:0;}
+.centrer {clear:both;margin:0 auto;}
+.rubrique {width:150px;	text-align:left;font: bold 15px arial, sans-serif; color: #515966;}
+.rubrique_bulle {width:90px;text-align:left;font: bold 15px arial, sans-serif; color: #000;}
+.infos {width:70%;float:left;min-height:120px;font: bold 15px arial, sans-serif; color: #B1BB7E;line-height: 25px;}
+.bazar_checkbox {float:left;width:170px;font:10px arial, sans-serif;border:0;}
+.lien_wikini {margin: 0;padding:10px 5px;border: 2px solid #DBE8C8;-moz-border-radius:10px;background:#3082AA;}
+div.lien_wikini a {padding-left:100px;color:#FFFFFF;}
+.table_bazar th{font-weight:bold;}
+.table_bazar #col1,.table_bazar #col2,.table_bazar #col3,.table_bazar #col4{text-align:center;}
+
+/* CALENDRIER APPLETTE*/
+.calendrier_applette{
+	width:140px;}
+
+/* CALENDRIER */
+#cal_entete{
+	display:block;
+	margin:10px 0;
+	width:100%;
+}
+	
+#cal_navigation{
+	display:block;
+	float:left; 
+	background:transparent;
+}
+.tc_lien {float:right;}
+#cal_precedent_lien, #cal_suivant_lien {
+	display:block;
+	float:left;
+	background:transparent;}
+#cal_suivant_lien img, #cal_precedent_lien img{
+	display:block;
+	float:left;
+	border:0;}
+#cal_mois_courrant{
+	display:block;
+	float:left;
+	width:100px;
+	margin:2px 0;
+	padding:2px 25px;
+	text-align:center;
+	border:1px solid #CCCCCC;
+	text-transform:uppercase;
+	font-weight: bold;
+	font-size: 14px;}
+
+.calendrier{
+	clear:both;
+	margin:5px 0;
+	font-weight:bold;
+	font-size:14px;
+	border-collapse:collapse;
+	border-spacing:0;
+	width:100%;}
+.calendrier th, .calendrier_applette th {
+	color:white;
+	background-color:#3b7322;
+	border: 1px solid #33641e;
+	text-align:center;}
+.calendrier th {
+	height:20px;
+	width:14%;
+	border-width:1px;}
+.calendrier td {
+	height:83px;
+	width:14%;
+	border:1px solid #33641e;
+	vertical-align:top;
+	text-align:left;}
+.cal_samedi, .cal_dimanche{
+	background-color:#fff9e7;}
+.cal_j{
+	display:block;
+	float:right;
+	padding:1px;
+	font-size:8px;}
+.cal_jc{
+	background-color:#c4d9fb;}
+.cal_ma{
+	background-color:#eaeaec;}
+.cal_evenemt_liste {
+	font-size:9px;
+	margin:20px 0 0 0;
+	width:100%;
+	padding:0;}
+.cal_evenemt_liste li{
+	display:block;
+	background:transparent url(images/cal_pastille.png) 0 4px no-repeat;
+	margin:0;padding:0;}
+
+.cal_evenemt_liste a {
+	display:block;
+	width:100%;
+	font-size:9px;
+	margin:0;
+	padding:0 0 0 12px;}

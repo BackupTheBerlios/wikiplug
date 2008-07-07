@@ -1,0 +1,2 @@
+Affichage calendrier :
+CLIENT_BAZAR_CALENDRIER
