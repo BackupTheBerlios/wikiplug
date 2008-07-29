@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: formulaire.fonct.google.php,v 1.1 2008/07/07 18:00:48 mrflos Exp $
+// CVS : $Id: formulaire.fonct.google.php,v 1.2 2008/07/29 17:32:25 mrflos Exp $
 /**
 * Formulaire
 *
@@ -29,7 +29,7 @@
 //Auteur original :
 *@author        Aleandre GRANIER <alexandre@tela-botanica.org>
 *@copyright     Tela-Botanica 2000-2007
-*@version       $Revision: 1.1 $
+*@version       $Revision: 1.2 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -137,8 +137,8 @@ function setLatLonForm(marker) {
 * +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: formulaire.fonct.google.php,v $
-* Revision 1.1  2008/07/07 18:00:48  mrflos
-* maj carto plus calendrier
+* Revision 1.2  2008/07/29 17:32:25  mrflos
+* maj générale
 *
 * Revision 1.3  2007-08-27 12:20:06  alexandre_tb
 * ajout d un  test sur la ville

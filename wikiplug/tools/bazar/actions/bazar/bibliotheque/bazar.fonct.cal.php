@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: bazar.fonct.cal.php,v 1.1 2008/07/07 18:00:39 mrflos Exp $
+// CVS : $Id: bazar.fonct.cal.php,v 1.2 2008/07/29 17:32:25 mrflos Exp $
 /**
 *
 * Fonctions calendrier du module bazar
@@ -29,7 +29,7 @@
 *@author        David Delon <david.delon@clapas.net>
 //Autres auteurs :
 *@copyright     Tela-Botanica 2000-2004
-*@version       $Revision: 1.1 $ $Date: 2008/07/07 18:00:39 $
+*@version       $Revision: 1.2 $ $Date: 2008/07/29 17:32:25 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -130,7 +130,7 @@ function GestionAffichageCalendrier($arguments = array(), $type = 'calendrier') 
 	$url->addQueryString('d', date('j',$curStamp));
 	$cur = $url->getUrl();
 
-	// Gestion de l'affichage des titres des évènements
+	// Gestion de l'affichage des titres des ï¿½vï¿½nements
 	if (isset($_GET['ctt']) && $_GET['ctt'] == '1') {
 		$url->addQueryString('tt', '0');
 		if (isset($_GET['tt']) && $_GET['tt'] == '0') {
@@ -147,9 +147,9 @@ function GestionAffichageCalendrier($arguments = array(), $type = 'calendrier') 
 	}
 	$url->removeQueryString('ctt');
 	$url->removeQueryString('tt');
-	$tc_txt = 'Afficher les titres complets des évènements';
+	$tc_txt = 'Afficher les titres complets des ï¿½vï¿½nements';
 	if (isset($_GET['tt']) && $_GET['tt'] == '0') {
-		$tc_txt = 'Tronquer les titres des évènements';
+		$tc_txt = 'Tronquer les titres des ï¿½vï¿½nements';
 		$url->addQueryString('tt', $_GET['tt']);
 	}
 	
@@ -166,7 +166,7 @@ function GestionAffichageCalendrier($arguments = array(), $type = 'calendrier') 
 	$url->addQueryString('d', date('j',$nextStamp));
 	$next = $url->getUrl();
 	
-	// Suppression du paramêtre de troncage des titres
+	// Suppression du paramï¿½tre de troncage des titres
 	$url->removeQueryString('tt');
 	
 	$fr_month = array(	"1"=>BAZ_JANVIER,"2"=>BAZ_FEVRIER,"3"=>BAZ_MARS,"4"=>BAZ_AVRIL,"5"=>BAZ_MAI,"6"=>BAZ_JUIN,
@@ -178,13 +178,13 @@ function GestionAffichageCalendrier($arguments = array(), $type = 'calendrier') 
 		$retour .= '<div id="cal_entete">'."\n";
 		$retour .= '<h1 id="cal_titre">'.BAZ_CALENDRIER.'</h1>'."\n";
 		$retour .= '<span class="cal_navigation">'."\n";	
-		$retour .= '<a id="cal_precedent_lien" href="'.$prev.'" title="Allez au mois précédent"><img id="cal_precedent_img" src="tools/bazar/actions/bazar/images/cal_precedent.png" alt="&lt;&lt;"/></a>'."\n"; 
+		$retour .= '<a id="cal_precedent_lien" href="'.$prev.'" title="Allez au mois precedent"><img id="cal_precedent_img" src="'.BAZ_CHEMIN.'presentation/images/cal_precedent.png" alt="&lt;&lt;"/></a>'."\n"; 
 		$retour .= '<a id="cal_mois_courrant" href="'.$cur.'">'."\n";
 		$retour .= $fr_month[(date('n',$curStamp))]; 
 		$retour .= '&nbsp;';
 		$retour .= (date('Y',$curStamp));
 		$retour .= '</a>'."\n";
-		$retour .= '<a id="cal_suivant_lien" href="'.$next.'" title="Allez au mois suivant"><img id="cal_suivant_img" src="tools/bazar/actions/bazar/images/cal_suivant.png" alt="&gt;&gt;"/></a>'."\n";
+		$retour .= '<a id="cal_suivant_lien" href="'.$next.'" title="Allez au mois suivant"><img id="cal_suivant_img" src="'.BAZ_CHEMIN.'presentation/images/cal_suivant.png" alt="&gt;&gt;"/></a>'."\n";
 		$retour .= '</span>'."\n";
 		$retour .= '<span class="tc_lien">'.'<a href="'.$tc_lien.'">'.$tc_txt.'</a>'.'</span>'."\n";
 		$retour .= '</div>'."\n";
@@ -200,7 +200,7 @@ function GestionAffichageCalendrier($arguments = array(), $type = 'calendrier') 
 	// Vue Mois calendrier ou vue applette
 		
 	if ((!isset($_GET['id_fiche']) && $type == 'calendrier') || ($type == 'calendrier_applette')){
-		// Recherche evenement de la periode selectionnée 
+		// Recherche evenement de la periode selectionnï¿½e 
 		$ts_jour_fin_mois = $month->nextMonth('timestamp');
 		$ts_jour_debut_mois = $month->thisMonth('timestamp');; 
 	    $requete_evenements = 	"SELECT DISTINCT bf_id_fiche, bf_titre, bf_lieu_evenement, DAY(bf_date_debut_evenement) AS bf_jour_debut_evenement, bf_date_debut_evenement, bf_date_fin_evenement, bf_description ".
@@ -233,9 +233,9 @@ function GestionAffichageCalendrier($arguments = array(), $type = 'calendrier') 
 				//echo "$ts_jour_suivant-";
 				$naviguer = true;
 				while ($naviguer) {
-					// Si le jours suivant est inférieur à la date de fin, on continue...
+					// Si le jours suivant est infï¿½rieur ï¿½ la date de fin, on continue...
 					if ($ts_jour_suivant <= $ts_jour_fin) {
-						// Si le jours suivant est inférieur à la date de fin du mois courrant, on continue...
+						// Si le jours suivant est infï¿½rieur ï¿½ la date de fin du mois courrant, on continue...
 						if ($ts_jour_suivant < $ts_jour_fin_mois) {
 							$cle_j = date('Y-m-d', $ts_jour_suivant);
 							if (!isset($tablo_jours[$cle_j])) {
@@ -407,8 +407,8 @@ function GestionAffichageCalendrier($arguments = array(), $type = 'calendrier') 
 	if ((isset($_GET['id_fiches']))) {
 		// Ajout d'un titre pour la page avec la date
 		$jours = array ('lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche') ;
-		$mois = array ('janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre',
-						'octobre', 'novembre', 'décembre') ;
+		$mois = array ('janvier', 'fï¿½vrier', 'mars', 'avril', 'mai', 'juin', 'juillet', 'aoï¿½t', 'septembre',
+						'octobre', 'novembre', 'dï¿½cembre') ;
 		$timestamp = strtotime ($_GET['y'].'/'.$_GET['m'].'/'.$_GET['d']) ;
 		
 		$retour = '<h1>'.$jours[date('w', $timestamp)].

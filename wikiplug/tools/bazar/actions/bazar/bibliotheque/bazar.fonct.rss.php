@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: bazar.fonct.rss.php,v 1.1 2008/07/07 18:00:39 mrflos Exp $
+// CVS : $Id: bazar.fonct.rss.php,v 1.2 2008/07/29 17:32:25 mrflos Exp $
 /**
 *
 *@package bazar
@@ -28,7 +28,7 @@
 *@author        Florian Schmitt <florian@ecole-et-nature.org>
 //Autres auteurs :
 *@copyright     Tela-Botanica 2000-2006
-*@version       $Revision: 1.1 $
+*@version       $Revision: 1.2 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -189,7 +189,7 @@ function baz_voir_fiche($danslappli, $idfiche='') {
 		$res .= '<div class="BAZ_cadre_fiche BAZ_cadre_fiche_'.$GLOBALS['_BAZAR_']['class'].'">'."\n";
 		//affiche le titre sous forme d'image
 		if (isset ($GLOBALS['_BAZAR_']['image_titre']) && $GLOBALS['_BAZAR_']['image_titre']!='') {
-			$res .= '<img class="BAZ_img_titre" src="tools'.DIRECTORY_SEPARATOR.'bazar'.DIRECTORY_SEPARATOR.'actions'.DIRECTORY_SEPARATOR.'bazar'.DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR.$GLOBALS['_BAZAR_']['image_titre'].'" alt="'.$ligne['bn_label_nature'].'" />'.'<br />'."\n";
+			$res .= '<img class="BAZ_img_titre" src="'.BAZ_CHEMIN.'presentation'.DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR.$GLOBALS['_BAZAR_']['image_titre'].'" alt="'.$ligne['bn_label_nature'].'" />'.'<br />'."\n";
 		}
 		//affiche le texte sinon
 		else {
@@ -1251,8 +1251,8 @@ function baz_liste_pagine_HTML($typeannonce, $nbitem, $emetteur, $valide, $reque
 }
 
 function encoder_en_utf8($txt) {
-	// Nous remplacons l'apostrophe de type RIGHT SINGLE QUOTATION MARK et les & isolÈs qui n'auraient pas ÈtÈ
-	// remplacÈs par une entitÈe HTML.
+	// Nous remplacons l'apostrophe de type RIGHT SINGLE QUOTATION MARK et les & isolÔøΩs qui n'auraient pas ÔøΩtÔøΩ
+	// remplacÔøΩs par une entitÔøΩe HTML.
 	$cp1252_map = array(
 	   "\xc2\x80" => "\xe2\x82\xac", /* EURO SIGN */
 	   "\xc2\x82" => "\xe2\x80\x9a", /* SINGLE LOW-9 QUOTATION MARK */
@@ -1397,6 +1397,9 @@ function afficher_flux_rss() {
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: bazar.fonct.rss.php,v $
+* Revision 1.2  2008/07/29 17:32:25  mrflos
+* maj g√©n√©rale
+*
 * Revision 1.1  2008/07/07 18:00:39  mrflos
 * maj carto plus calendrier
 *

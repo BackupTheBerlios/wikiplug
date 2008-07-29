@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: bazar.fonct.formulaire.php,v 1.1 2008/07/07 18:00:39 mrflos Exp $
+// CVS : $Id: bazar.fonct.formulaire.php,v 1.2 2008/07/29 17:32:25 mrflos Exp $
 /**
 * Formulaire
 *
@@ -31,7 +31,7 @@
 //Autres auteurs :
 *@author        Aleandre GRANIER <alexandre@tela-botanica.org>
 *@copyright     Tela-Botanica 2000-2004
-*@version       $Revision: 1.1 $ $Date: 2008/07/07 18:00:39 $
+*@version       $Revision: 1.2 $ $Date: 2008/07/29 17:32:25 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -39,14 +39,14 @@ require_once 'bazar.fonct.formulaire.controles.php';
 
 //-------------------FONCTIONS DE MISE EN PAGE DES FORMULAIRES
 
-/** liste() - Ajoute un élément de type liste au formulaire
+/** liste() - Ajoute un ï¿½lï¿½ment de type liste au formulaire
 *
 * @param    mixed   L'objet QuickForm du formulaire
 * @param    int     identifiant de la liste sur bazar_liste
-* @param    string  label à afficher dans le formulaire
-* @param    string  première restriction de la taille des champs du formulaire
-* @param    string  deuxième restriction de la taille des champs du formulaire
-* @param    string  valeur par défaut du formulaire
+* @param    string  label ï¿½ afficher dans le formulaire
+* @param    string  premiï¿½re restriction de la taille des champs du formulaire
+* @param    string  deuxiï¿½me restriction de la taille des champs du formulaire
+* @param    string  valeur par dï¿½faut du formulaire
 * @param    string  table source pour les valeurs de la liste
 * @param    string  ce champs est il obligatoire? (required)
 * @param    boolean sommes nous dans le moteur de recherche?
@@ -80,14 +80,14 @@ function liste(&$formtemplate, $id_liste , $label, $limite1, $limite2, $defaut, 
 }
 
 
-/** checkbox() - Ajoute un élément de type checkbox au formulaire
+/** checkbox() - Ajoute un ï¿½lï¿½ment de type checkbox au formulaire
 *
 * @param    mixed   L'objet QuickForm du formulaire
 * @param    int     identifiant de la liste sur bazar_liste
-* @param    string  label à afficher dans le formulaire
-* @param    string  première restriction de la taille des champs du formulaire
-* @param    string  deuxième restriction de la taille des champs du formulaire
-* @param    string  valeur par défaut du formulaire
+* @param    string  label ï¿½ afficher dans le formulaire
+* @param    string  premiï¿½re restriction de la taille des champs du formulaire
+* @param    string  deuxiï¿½me restriction de la taille des champs du formulaire
+* @param    string  valeur par dï¿½faut du formulaire
 * @param    string  table source pour les valeurs de la liste
 * @param    string  ce champs est il obligatoire? (required)
 * @return   void
@@ -123,14 +123,14 @@ function checkbox(&$formtemplate, $id_liste , $label, $limite1, $limite2, $defau
 }
 
 
-/** listedatedeb() - Ajoute un élément de type date sous forme de liste au formulaire pour designer une date de début
+/** listedatedeb() - Ajoute un ï¿½lï¿½ment de type date sous forme de liste au formulaire pour designer une date de dï¿½but
 *
 * @param    mixed   L'objet QuickForm du formulaire
-* @param    string  nom de la table dans la base de donnée
-* @param    string  label à afficher dans le formulaire
-* @param    string  première restriction de la taille des champs du formulaire
-* @param    string  deuxième restriction de la taille des champs du formulaire
-* @param    string  valeur par défaut du formulaire
+* @param    string  nom de la table dans la base de donnï¿½e
+* @param    string  label ï¿½ afficher dans le formulaire
+* @param    string  premiï¿½re restriction de la taille des champs du formulaire
+* @param    string  deuxiï¿½me restriction de la taille des champs du formulaire
+* @param    string  valeur par dï¿½faut du formulaire
 * @param    string  table source pour les valeurs de la date
 * @param    string  ce champs est il obligatoire? (required)
 * @return   void
@@ -143,7 +143,7 @@ function listedatedeb(&$formtemplate, $nom_bdd , $label, $limite1, $limite2, $de
 						'addEmptyOption' => BAZ_DATE_VIDE,
 						);
 	$formtemplate->addElement('date', $nom_bdd, $label, $optiondate) ;
-	//gestion des valeurs par défaut (date du jour)	
+	//gestion des valeurs par dï¿½faut (date du jour)	
 	if (isset($defaut) && $defaut!='') {
 		$tableau_date = explode ('-', $defaut);
 		$formtemplate->setDefaults(array($nom_bdd => array ('d'=> $tableau_date[2], 'm'=> $tableau_date[1], 'Y'=> $tableau_date[0])));
@@ -159,14 +159,14 @@ function listedatedeb(&$formtemplate, $nom_bdd , $label, $limite1, $limite2, $de
 	}
 }
 
-/** listedatefin() - Ajoute un élément de type date sous forme de liste au formulaire pour designer une date de fin
+/** listedatefin() - Ajoute un ï¿½lï¿½ment de type date sous forme de liste au formulaire pour designer une date de fin
 *
 * @param    mixed   L'objet QuickForm du formulaire
-* @param    string  nom de la table dans la base de donnée
-* @param    string  label à afficher dans le formulaire
-* @param    string  première restriction de la taille des champs du formulaire
-* @param    string  deuxième restriction de la taille des champs du formulaire
-* @param    string  valeur par défaut du formulaire
+* @param    string  nom de la table dans la base de donnï¿½e
+* @param    string  label ï¿½ afficher dans le formulaire
+* @param    string  premiï¿½re restriction de la taille des champs du formulaire
+* @param    string  deuxiï¿½me restriction de la taille des champs du formulaire
+* @param    string  valeur par dï¿½faut du formulaire
 * @param    string  table source pour les valeurs de la date
 * @param    string  ce champs est il obligatoire? (required)
 * @return   void
@@ -176,14 +176,14 @@ function listedatefin(&$formtemplate, $nom_bdd , $label, $limite1, $limite2, $de
 }
 
 
-/** texte() - Ajoute un élément de type texte au formulaire
+/** texte() - Ajoute un ï¿½lï¿½ment de type texte au formulaire
 *
 * @param    mixed   L'objet QuickForm du formulaire
-* @param    string  nom de la table dans la base de donnée
-* @param    string  label à afficher dans le formulaire
-* @param    string  première restriction de la taille des champs du formulaire
-* @param    string  deuxième restriction de la taille des champs du formulaire
-* @param    string  valeur par défaut du formulaire
+* @param    string  nom de la table dans la base de donnï¿½e
+* @param    string  label ï¿½ afficher dans le formulaire
+* @param    string  premiï¿½re restriction de la taille des champs du formulaire
+* @param    string  deuxiï¿½me restriction de la taille des champs du formulaire
+* @param    string  valeur par dï¿½faut du formulaire
 * @param    string  table source pour les valeurs du texte (inutile)
 * @param    string  ce champs est il obligatoire? (required)
 * @return   void
@@ -191,7 +191,7 @@ function listedatefin(&$formtemplate, $nom_bdd , $label, $limite1, $limite2, $de
 function texte(&$formtemplate, $nom_bdd , $label, $limite1, $limite2, $defaut, $source, $obligatoire, $dans_moteur_de_recherche=0) {
 	$option=array('size'=>$limite1,'maxlength'=>$limite2, 'id' => $nom_bdd);
 	$formtemplate->addElement('text', $nom_bdd, $label, $option) ;
-	//gestion des valeurs par défaut
+	//gestion des valeurs par dï¿½faut
 	$defauts=array($nom_bdd=>$defaut);
 	$formtemplate->setDefaults($defauts);
 	$formtemplate->applyFilter($nom_bdd, 'addslashes') ;
@@ -202,14 +202,14 @@ function texte(&$formtemplate, $nom_bdd , $label, $limite1, $limite2, $defaut, $
 }
 
 
-/** textelong() - Ajoute un élément de type textearea au formulaire
+/** textelong() - Ajoute un ï¿½lï¿½ment de type textearea au formulaire
 *
 * @param    mixed   L'objet QuickForm du formulaire
-* @param    string  nom de la table dans la base de donnée
-* @param    string  label à afficher dans le formulaire
-* @param    string  taille des colonnes de l'élément
-* @param    string  taille des lignes de l'élément
-* @param    string  valeur par défaut du formulaire
+* @param    string  nom de la table dans la base de donnï¿½e
+* @param    string  label ï¿½ afficher dans le formulaire
+* @param    string  taille des colonnes de l'ï¿½lï¿½ment
+* @param    string  taille des lignes de l'ï¿½lï¿½ment
+* @param    string  valeur par dï¿½faut du formulaire
 * @param    string  table source pour les valeurs du texte (inutile)
 * @param    string  ce champs est il obligatoire? (required)
 * @return   void
@@ -219,7 +219,7 @@ function textelong(&$formtemplate, $nom_bdd , $label, $limite1, $limite2, $defau
 	$formtexte->setCols($limite1);
 	$formtexte->setRows($limite2);
 	$formtemplate->addElement($formtexte) ;
-	//gestion des valeurs par défaut
+	//gestion des valeurs par dï¿½faut
 	$defauts=array($nom_bdd=>$defaut);
 	$formtemplate->setDefaults($defauts);
 	$formtemplate->applyFilter($nom_bdd, 'addslashes') ;
@@ -229,14 +229,14 @@ function textelong(&$formtemplate, $nom_bdd , $label, $limite1, $limite2, $defau
 	}
 }
 
-/** url() - Ajoute un élément de type url internet au formulaire
+/** url() - Ajoute un ï¿½lï¿½ment de type url internet au formulaire
 *
 * @param    mixed   L'objet QuickForm du formulaire
-* @param    string  numero du champs input du formulaire (pour le différencier d'autres champs du meme type dans ce formulaire)
-* @param    string  label à afficher dans le formulaire
-* @param    string  taille des colonnes de l'élément
-* @param    string  taille des lignes de l'élément
-* @param    string  valeur par défaut du formulaire
+* @param    string  numero du champs input du formulaire (pour le diffï¿½rencier d'autres champs du meme type dans ce formulaire)
+* @param    string  label ï¿½ afficher dans le formulaire
+* @param    string  taille des colonnes de l'ï¿½lï¿½ment
+* @param    string  taille des lignes de l'ï¿½lï¿½ment
+* @param    string  valeur par dï¿½faut du formulaire
 * @param    string  table source pour les valeurs du texte (inutile)
 * @param    string  ce champs est il obligatoire? (required)
 * @return   void
@@ -293,14 +293,14 @@ function url(&$formtemplate, $nom_bdd , $label, $limite1, $limite2, $defaut, $so
 	}
 }		
 
-/** fichier() - Ajoute un élément de type fichier au formulaire
+/** fichier() - Ajoute un ï¿½lï¿½ment de type fichier au formulaire
 *
 * @param    mixed   L'objet QuickForm du formulaire
-* @param    string  numero du champs input du formulaire (pour le différencier d'autres champs du meme type dans ce formulaire)
-* @param    string  label à afficher dans le formulaire
-* @param    string  taille des colonnes de l'élément
-* @param    string  taille des lignes de l'élément
-* @param    string  valeur par défaut du formulaire
+* @param    string  numero du champs input du formulaire (pour le diffï¿½rencier d'autres champs du meme type dans ce formulaire)
+* @param    string  label ï¿½ afficher dans le formulaire
+* @param    string  taille des colonnes de l'ï¿½lï¿½ment
+* @param    string  taille des lignes de l'ï¿½lï¿½ment
+* @param    string  valeur par dï¿½faut du formulaire
 * @param    string  table source pour les valeurs du texte (inutile)
 * @param    string  ce champs est il obligatoire? (required)
 * @return   void
@@ -352,14 +352,14 @@ function fichier(&$formtemplate, $nom_bdd , $label, $limite1, $limite2, $defaut,
 	}
 }		
 
-/** image() - Ajoute un élément de type image au formulaire
+/** image() - Ajoute un ï¿½lï¿½ment de type image au formulaire
 *
 * @param    mixed   L'objet QuickForm du formulaire
-* @param    string  numero du champs input du formulaire (pour le différencier d'autres champs du meme type dans ce formulaire)
-* @param    string  label à afficher dans le formulaire
-* @param    string  taille maximum du fichier colonnes de l'élément
-* @param    string  taille des lignes de l'élément
-* @param    string  valeur par défaut du formulaire
+* @param    string  numero du champs input du formulaire (pour le diffï¿½rencier d'autres champs du meme type dans ce formulaire)
+* @param    string  label ï¿½ afficher dans le formulaire
+* @param    string  taille maximum du fichier colonnes de l'ï¿½lï¿½ment
+* @param    string  taille des lignes de l'ï¿½lï¿½ment
+* @param    string  valeur par dï¿½faut du formulaire
 * @param    string  table source pour les valeurs du texte (inutile)
 * @param    string  ce champs est il obligatoire? (required)
 * @return   void
@@ -385,7 +385,7 @@ function image(&$formtemplate, $nom_bdd , $label, $limite1, $limite2, $defaut, $
 				$lien_supprimer->addQueryString('typeannonce', $_REQUEST['typeannonce']);
 				$lien_supprimer->addQueryString('image', 1);
 				$html_image = '<tr>'."\n".
-							  '<td>'."\n".'<img src="client/bazar/upload/'.$image.'" alt="'.BAZ_TEXTE_IMG_ALTERNATIF.'" width="130" height="130" />'."\n".'</td>'."\n".
+							  '<td>'."\n".'<img src="'.BAZ_CHEMIN.'presentation'.DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR.$image.'" alt="'.BAZ_TEXTE_IMG_ALTERNATIF.'" width="130" height="130" />'."\n".'</td>'."\n".
 							  '<td>'."\n".'<a href="'.$lien_supprimer->getURL().'" onclick="javascript:return confirm(\''.BAZ_CONFIRMATION_SUPPRESSION_IMAGE.'\');" >'.BAZ_SUPPRIMER.'</a><br /><br />'."\n".
 							  '<strong>'.BAZ_POUR_CHANGER_IMAGE.'</strong><br />'."\n".'</td>'."\n".'</tr>'."\n";
 			}
@@ -406,11 +406,11 @@ function image(&$formtemplate, $nom_bdd , $label, $limite1, $limite2, $defaut, $
 /** wikini() - Ajoute un wikini au formulaire
 *
 * @param    mixed   L'objet QuickForm du formulaire
-* @param    string  numero du champs input du formulaire (pour le différencier d'autres champs du meme type dans ce formulaire)
-* @param    string  label à afficher dans le formulaire
-* @param    string  taille maximum du fichier colonnes de l'élément
-* @param    string  taille des lignes de l'élément
-* @param    string  valeur par défaut du formulaire
+* @param    string  numero du champs input du formulaire (pour le diffï¿½rencier d'autres champs du meme type dans ce formulaire)
+* @param    string  label ï¿½ afficher dans le formulaire
+* @param    string  taille maximum du fichier colonnes de l'ï¿½lï¿½ment
+* @param    string  taille des lignes de l'ï¿½lï¿½ment
+* @param    string  valeur par dï¿½faut du formulaire
 * @param    string  table source pour les valeurs du texte (inutile)
 * @param    string  ce champs est il obligatoire? (required)
 * @return   void
@@ -419,16 +419,16 @@ function wikini(&$formtemplate, $nom_bdd , $label, $limite1, $limite2, $defaut, 
 	return;
 }
 
-/** labelhtml() - Ajoute un élément de type textearea au formulaire
+/** labelhtml() - Ajoute un ï¿½lï¿½ment de type textearea au formulaire
 *
 * @param    mixed   L'objet QuickForm du formulaire
-* @param    string  nom de la table dans la base de donnée (pas utilisé)
-* @param    string  label à afficher dans le formulaire
-* @param    string  taille des colonnes de l'élément (pas utilisé)
-* @param    string  taille des lignes de l'élément (pas utilisé)
-* @param    string  valeur par défaut du formulaire (pas utilisé)
-* @param    string  table source pour les valeurs du texte (pas utilisé)
-* @param    string  ce champs est il obligatoire? (required) (pas utilisé)
+* @param    string  nom de la table dans la base de donnï¿½e (pas utilisï¿½)
+* @param    string  label ï¿½ afficher dans le formulaire
+* @param    string  taille des colonnes de l'ï¿½lï¿½ment (pas utilisï¿½)
+* @param    string  taille des lignes de l'ï¿½lï¿½ment (pas utilisï¿½)
+* @param    string  valeur par dï¿½faut du formulaire (pas utilisï¿½)
+* @param    string  table source pour les valeurs du texte (pas utilisï¿½)
+* @param    string  ce champs est il obligatoire? (required) (pas utilisï¿½)
 * @return   void
 */
 function labelhtml(&$formtemplate, $nom_bdd , $label, $limite1, $limite2, $defaut, $source, $obligatoire, $dans_moteur_de_recherche=0) {
@@ -437,14 +437,14 @@ function labelhtml(&$formtemplate, $nom_bdd , $label, $limite1, $limite2, $defau
 	$formtemplate->addElement($formhtml) ;
 }
 
-/** carte_google() - Ajoute un élément de carte google au formulaire
+/** carte_google() - Ajoute un ï¿½lï¿½ment de carte google au formulaire
 *
 * @param    mixed   L'objet QuickForm du formulaire
 * @param    string  l url vers la script google
-* @param    string  label à afficher dans le formulaire
-* @param    string  première restriction de la taille des champs du formulaire
-* @param    string  deuxième restriction de la taille des champs du formulaire
-* @param    string  valeur par défaut du formulaire
+* @param    string  label ï¿½ afficher dans le formulaire
+* @param    string  premiï¿½re restriction de la taille des champs du formulaire
+* @param    string  deuxiï¿½me restriction de la taille des champs du formulaire
+* @param    string  valeur par dï¿½faut du formulaire
 * @param    string  table source pour les valeurs de la liste
 * @param    string  ce champs est il obligatoire? (required)
 * @param    boolean sommes nous dans le moteur de recherche?
@@ -458,7 +458,7 @@ function carte_google(&$formtemplate, $url_google_script , $label, $limite1, $li
 	
 	GEN_stockerFichierScript('googleMapScript', $url_google_script);
         	
-	$formtemplate->addElement('button', 'chercher_sur_carte', 'Vérifier mon adresse avec la carte', array("onclick" => "showAddress();"));
+	$formtemplate->addElement('button', 'chercher_sur_carte', 'Vï¿½rifier mon adresse avec la carte', array("onclick" => "showAddress();"));
     $formtemplate->addElement('text', 'latitude', 'Latitude', array('id' => 'latitude', 'size' => 6, 'readonly' => 'readonly'));
     $formtemplate->addElement('text', 'longitude', 'longitude', array('id' => 'longitude', 'size' => 6, 'readonly' => 'readonly'));
     $formtemplate->addElement('html', '<tr><td colspan="2"	><div id="map" style="width: 600px; height: 450px"></div></td></tr>');
@@ -470,6 +470,9 @@ function carte_google(&$formtemplate, $url_google_script , $label, $limite1, $li
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: bazar.fonct.formulaire.php,v $
+* Revision 1.2  2008/07/29 17:32:25  mrflos
+* maj gÃ©nÃ©rale
+*
 * Revision 1.1  2008/07/07 18:00:39  mrflos
 * maj carto plus calendrier
 *
@@ -483,15 +486,15 @@ function carte_google(&$formtemplate, $url_google_script , $label, $limite1, $li
 * remise en Ã©tat du CVS...
 *
 * Revision 1.22.2.3  2007/03/16 14:48:32  alexandre_tb
-* on peut maintenant saisir une date par défaut
+* on peut maintenant saisir une date par dï¿½faut
 * et 0000-00-00 pour des champs vide
 *
 * Revision 1.22.2.2  2007/03/07 17:20:19  jp_milcent
-* Ajout du nettoyage systématique des URLs.
+* Ajout du nettoyage systï¿½matique des URLs.
 *
 * Revision 1.22.2.1  2007/01/17 16:01:37  alexandre_tb
 * les dates ne s'affichent pas si elles sont vides.
-* les champs dates propose 4 années avant l'année actuelle
+* les champs dates propose 4 annï¿½es avant l'annï¿½e actuelle
 *
 * Revision 1.22  2006/06/02 09:29:07  florian
 * debut d'integration de wikini
@@ -513,7 +516,7 @@ function carte_google(&$formtemplate, $url_google_script , $label, $limite1, $li
 * - correction bug d'affichage du mode de saisie
 *
 * Revision 1.16  2006/01/24 14:11:44  alexandre_tb
-* ajout du paramètre emptyOptionValue dans les champs de date
+* ajout du paramï¿½tre emptyOptionValue dans les champs de date
 *
 * Revision 1.15  2006/01/23 16:57:03  alexandre_tb
 * correction d'un notice
@@ -525,7 +528,7 @@ function carte_google(&$formtemplate, $url_google_script , $label, $limite1, $li
 * utilisation des temlates dans la table bazar_nature
 *
 * Revision 1.12  2006/01/05 16:28:24  alexandre_tb
-* prise en chage des checkbox, reste la mise à jour à gérer
+* prise en chage des checkbox, reste la mise ï¿½ jour ï¿½ gï¿½rer
 *
 * Revision 1.11  2006/01/02 13:24:07  alexandre_tb
 * correction de bug d'un mauvais retour en erreur

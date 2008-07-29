@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: bazar.fonct.php,v 1.1 2008/07/07 18:00:39 mrflos Exp $
+// CVS : $Id: bazar.fonct.php,v 1.2 2008/07/29 17:32:25 mrflos Exp $
 /**
 *
 * Fonctions du module bazar
@@ -31,7 +31,7 @@
 *@author        Florian Schmitt <florian@ecole-et-nature.org>
 //Autres auteurs :
 *@copyright     Tela-Botanica 2000-2004
-*@version       $Revision: 1.1 $ $Date: 2008/07/07 18:00:39 $
+*@version       $Revision: 1.2 $ $Date: 2008/07/29 17:32:25 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -458,7 +458,7 @@ function baz_gestion_droits() {
 				$lien_passer_admin->addQueryString('droits', 'admin');
 				$lien_passer_admin->addQueryString('idtypeannonce', $ligne["bn_id_nature"]);
 				if (isset($ligne['bn_image_titre'])) {
-					$titre='&nbsp;<img src="client/bazar/images/'.$ligne['bn_image_titre'].'" alt="'.$ligne['bn_label_nature'].'" />'."\n";
+					$titre='&nbsp;<img src="'.BAZ_CHEMIN.'presentation/images/'.$ligne['bn_image_titre'].'" alt="'.$ligne['bn_label_nature'].'" />'."\n";
 				} else {
 					$titre='<strong>&nbsp;'.$ligne['bn_label_nature'].'</strong>'."\n";
 				}
@@ -604,7 +604,7 @@ function baz_formulaire($mode) {
 					if ( (!BAZ_SANS_AUTH && (($utilisateur->isRedacteur($ligne['bn_id_nature'])) || ($utilisateur->isAdmin($ligne['bn_id_nature']))
 					|| ($utilisateur->isSuperAdmin() || !BAZ_RESTREINDRE_DEPOT) ) ) || BAZ_SANS_AUTH==true ) {
 						if ($ligne['bn_image_titre']!='') {
-							$titre='&nbsp;<img src="client/bazar/images/'.$ligne['bn_image_titre'].'" alt="'.
+							$titre='&nbsp;<img src="'.BAZ_CHEMIN.'presentation'.DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR.$ligne['bn_image_titre'].'" alt="'.
 											$ligne['bn_label_nature'].'" />'."\n";
 						} else {
 							$titre='<span class="BAZ_titre_liste">'.$ligne['bn_label_nature'].' : </span>'."\n";
@@ -959,7 +959,7 @@ function baz_insertion($valeur) {
 			}	
 		}
 				
-		//on nettoie l'url, on retourne à la consultation des fiches
+		//on nettoie l'url, on retourne ï¿½ la consultation des fiches
 		$GLOBALS['_BAZAR_']['url']->addQueryString('message', 'ajout_ok') ;
 		$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_CONSULTER);
 		$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_ACTION, BAZ_VOIR_FICHE);
@@ -1118,7 +1118,7 @@ function baz_suppression() {
 		die ('Echec de la requete<br />'.$resultat->getMessage().'<br />'.$resultat->getDebugInfo().'<br />'."\n") ;
 	}
 	
-	//on nettoie l'url, on retourne à la consultation des fiches
+	//on nettoie l'url, on retourne ï¿½ la consultation des fiches
 	$GLOBALS['_BAZAR_']['url']->addQueryString ('message', 'delete_ok') ;
 	$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_CONSULTER);
 	$GLOBALS['_BAZAR_']['url']->removeQueryString (BAZ_VARIABLE_VOIR) ;
@@ -1249,12 +1249,12 @@ function baz_s_inscrire() {
 		$lien_RSS=$GLOBALS['_BAZAR_']['url'];
 		$lien_RSS->addQueryString(BAZ_VARIABLE_ACTION, BAZ_VOIR_FLUX_RSS);
 		$lien_RSS->addQueryString('annonce', $ligne[bn_id_nature]);
-		$liste .= '<li><a href="'.$lien_RSS->getURL().'"><img src="tools/bazar/actions/bazar/images/BAZ_rss.png" alt="'.BAZ_RSS.'"></a>&nbsp;';
+		$liste .= '<li><a href="'.$lien_RSS->getURL().'"><img src="'.BAZ_CHEMIN.'presentation'.DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR.'BAZ_rss.png" alt="'.BAZ_RSS.'"></a>&nbsp;';
 		$liste .= $ligne['bn_label_nature'];
 		$liste .= '</li>'."\n";
 		$lien_RSS->removeQueryString('annonce');
 	}
-	if ($liste!='') $res .= '<ul class="BAZ_liste_rss">'."\n".'<li><a href="'.$lien_RSS->getURL().'"><img src="tools/bazar/actions/bazar/images/BAZ_rss.png" alt="'.BAZ_RSS.'"></a>&nbsp;<strong>Flux RSS de toutes les fiches</strong></li>'."\n".$liste.'</ul>'."\n";
+	if ($liste!='') $res .= '<ul class="BAZ_liste_rss">'."\n".'<li><a href="'.$lien_RSS->getURL().'"><img src="'.BAZ_CHEMIN.'presentation'.DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR.'BAZ_rss.png" alt="'.BAZ_RSS.'"></a>&nbsp;<strong>Flux RSS de toutes les fiches</strong></li>'."\n".$liste.'</ul>'."\n";
 	// Nettoyage de l'url
 	$GLOBALS['_BAZAR_']['url']->removeQueryString(BAZ_VARIABLE_ACTION);
 	$GLOBALS['_BAZAR_']['url']->removeQueryString('idtypeannonce');
@@ -1314,7 +1314,7 @@ function baz_formulaire_des_formulaires($mode) {
 function baz_gestion_formulaire() {
 	$res= '<h2>'.BAZ_MODIFIER_FORMULAIRES.'</h2>'."\n";
 	
-	// il y a un formulaire à modifier
+	// il y a un formulaire ï¿½ modifier
 	if (isset($_GET['action_formulaire']) && $_GET['action_formulaire']=='modif') {
 		//recuperation des informations du type de formulaire
 		$requete = 'SELECT * FROM bazar_nature WHERE bn_id_nature='.$_GET['idformulaire'];
@@ -1332,7 +1332,7 @@ function baz_gestion_formulaire() {
 		$formulaire=baz_formulaire_des_formulaires('new_v');
 		$res .= $formulaire->toHTML();	
 	
-	//il y a des données pour ajouter un nouveau formulaire
+	//il y a des donnï¿½es pour ajouter un nouveau formulaire
 	} elseif (isset($_GET['action_formulaire']) && $_GET['action_formulaire']=='new_v') {		
 		$requete = 'INSERT INTO bazar_nature (`bn_id_nature` ,`bn_ce_i18n` ,`bn_label_nature` ,`bn_template` ,`bn_description` ,`bn_condition` ,`bn_commentaire` ,`bn_appropriation` ,`bn_label_class` ,`bn_type_fiche`)' .
 				   ' VALUES ('.baz_nextId('bazar_nature', 'bn_id_nature', $GLOBALS['_BAZAR_']['db']).
@@ -1351,7 +1351,7 @@ function baz_gestion_formulaire() {
 		}
 		$res .= '<p class="BAZ_info">'.BAZ_NOUVEAU_FORMULAIRE_ENREGISTRE.'</p>'."\n";
 	
-	//il y a des données pour modifier un formulaire
+	//il y a des donnï¿½es pour modifier un formulaire
 	} elseif (isset($_GET['action_formulaire']) && $_GET['action_formulaire']=='modif_v') {
 		$requete = 'UPDATE bazar_nature SET `bn_label_nature`="'.$_POST["bn_label_nature"].
 				   '" ,`bn_template`="'.$_POST["bn_template"].
@@ -1372,7 +1372,7 @@ function baz_gestion_formulaire() {
 		}
 		$res .= '<p class="BAZ_info">'.BAZ_FORMULAIRE_MODIFIE.'</p>'."\n";	
 		
-	// il y a un id de formulaire à supprimer
+	// il y a un id de formulaire ï¿½ supprimer
 	} elseif (isset($_GET['action_formulaire']) && $_GET['action_formulaire']=='delete') {
 		//suppression de l'entree dans bazar_nature
 		$requete = 'DELETE FROM bazar_nature WHERE bn_id_nature='.$_GET['idformulaire'];
@@ -1391,7 +1391,7 @@ function baz_gestion_formulaire() {
 		$res .= '<p class="BAZ_info">'.BAZ_FORMULAIRE_ET_FICHES_SUPPRIMES.'</p>'."\n";
 	}
 	
-	// affichage de la liste des templates à modifier ou supprimer (on l'affiche dans tous les cas, sauf cas de modif de formulaire)
+	// affichage de la liste des templates ï¿½ modifier ou supprimer (on l'affiche dans tous les cas, sauf cas de modif de formulaire)
 	if (!isset($_GET['action_formulaire']) || ($_GET['action_formulaire']!='modif' && $_GET['action_formulaire']!='new') ) {
 		$res .= '<p class="BAZ_info">'.BAZ_INTRO_MODIFIER_FORMULAIRE.'</p>'."\n";
 		 
@@ -1414,10 +1414,10 @@ function baz_gestion_formulaire() {
 			$lien_formulaire->addQueryString('action_formulaire', 'delete');
 			$lien_formulaire->addQueryString('idformulaire', $ligne[bn_id_nature]);
 			$liste .= '<a href="'.$lien_formulaire->getURL().'"  onclick="javascript:return confirm(\''.BAZ_CONFIRM_SUPPRIMER_FORMULAIRE.' ?\');">'.
-                      '<img src="'.BAZ_CHEMIN_APPLI.'images/delete.gif" alt="'.BAZ_EFFACER.'"></a>'."\n";
+                      '<img src="'.BAZ_CHEMIN.'presentation'.DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR.'delete.gif" alt="'.BAZ_EFFACER.'"></a>'."\n";
 			$lien_formulaire->removeQueryString('action_formulaire');
 			$lien_formulaire->addQueryString('action_formulaire', 'modif');
-			$liste .= '<a href="'.$lien_formulaire->getURL().'"><img src="'.BAZ_CHEMIN_APPLI.'images/modify.gif" alt="'.BAZ_MODIFIER.'">'.
+			$liste .= '<a href="'.$lien_formulaire->getURL().'"><img src="'.BAZ_CHEMIN.'presentation'.DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR.'modify.gif" alt="'.BAZ_MODIFIER.'">'.
 					  '&nbsp;'.$ligne['bn_label_nature'].'</a>'."\n";
 			$lien_formulaire->removeQueryString('action_formulaire');
 			$lien_formulaire->removeQueryString('idformulaire');
@@ -1426,9 +1426,9 @@ function baz_gestion_formulaire() {
 		}
 		if ($liste!='') $res .= $liste.'</ul><br />'."\n";
 		
-		//ajout du lien pour créer un nouveau formulaire
+		//ajout du lien pour crï¿½er un nouveau formulaire
 		$lien_formulaire->addQueryString('action_formulaire', 'new');
-		$res .= '<a href="'.$lien_formulaire->getURL().'"><img src="'.BAZ_CHEMIN_APPLI.'images/new.gif" alt="new">'.
+		$res .= '<a href="'.$lien_formulaire->getURL().'"><img src="'.BAZ_CHEMIN.'presentation'.DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR.'new.gif" alt="new">'.
 					  '&nbsp;'.BAZ_NOUVEAU_FORMULAIRE.'</a>'."\n";;
 	}
 	return $res;
@@ -1518,6 +1518,9 @@ function baz_titre_wiki($nom) {
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: bazar.fonct.php,v $
+* Revision 1.2  2008/07/29 17:32:25  mrflos
+* maj gÃ©nÃ©rale
+*
 * Revision 1.1  2008/07/07 18:00:39  mrflos
 * maj carto plus calendrier
 *

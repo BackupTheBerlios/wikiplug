@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: baz_langue_fr.inc.php,v 1.1 2008/07/07 18:00:47 mrflos Exp $
+// CVS : $Id: baz_langue_fr.inc.php,v 1.2 2008/07/29 17:32:25 mrflos Exp $
 /**
 * Fichier de traduction en franï¿½ais de l'application Bazar
 *
@@ -30,7 +30,7 @@
 //Autres auteurs :
 *@author        Aucun
 *@copyright     Tela-Botanica 2000-2004
-*@version       $Revision: 1.1 $ $Date: 2008/07/07 18:00:47 $
+*@version       $Revision: 1.2 $ $Date: 2008/07/29 17:32:25 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -41,10 +41,11 @@ if (file_exists(BAZ_CHEMIN_APPLI.'langues/baz_langue_fr.local.php')) {
 define ('BAZ_FORMULAIRE', 'Formulaires');
 define ('BAZ_MODIFIER_FORMULAIRES', 'Gestion des formulaires');
 define ('BAZ_INTRO_MODIFIER_FORMULAIRE', 'Pour &eacute;diter un formulaire, cliquez sur son nom ou sur l\'icone avec le crayon.<br />Pour supprimer un formulaire, cliquez sur l\'icone de la corbeille.<br /> Pour cr&eacute;er un nouveau formulaire, cliquez sur le lien en dessous de cette liste.');
-define ('BAZ_CONFIRM_SUPPRIMER_FORMULAIRE', 'Attention! Toutes les données enregistrées seront perdues.. Etes-vous sûrs de vouloir supprimer ce type de formulaire et toutes ses fiches associées');
+define ('BAZ_CONFIRM_SUPPRIMER_FORMULAIRE', 'Attention! Toutes les donnï¿½es enregistrï¿½es seront perdues.. Etes-vous sï¿½rs de vouloir supprimer ce type de formulaire et toutes ses fiches associï¿½es');
 define ('BAZ_NOUVEAU_FORMULAIRE', 'Saisir un nouveau type de questionnaire');
 define ('BAZ_FORMULAIRE_ET_FICHES_SUPPRIMES', 'Le type de formulaire et ses fiches associ&eacute;es ont bien &eacute;t&eacute; supprim&eacute;s.');
 define ('BAZ_NOM_FORMULAIRE','Nom du formulaire'); 	
+define ('BAZ_EFFACER', 'Effacer');
 define ('BAZ_TEMPLATE','Template');
 define ('BAZ_CONDITION','Conditions de saisie');
 define ('BAZ_AUTORISER_COMMENTAIRE','Autoriser les commentaires sur les fiches');
@@ -483,6 +484,9 @@ define ('BAZ_DECEMBRE','D&eacute;cembre');
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: baz_langue_fr.inc.php,v $
+* Revision 1.2  2008/07/29 17:32:25  mrflos
+* maj gÃ©nÃ©rale
+*
 * Revision 1.1  2008/07/07 18:00:47  mrflos
 * maj carto plus calendrier
 *
