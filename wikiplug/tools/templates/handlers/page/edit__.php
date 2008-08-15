@@ -46,7 +46,7 @@ if ($this->HasAccess("write") && $this->HasAccess("read")) {
 	    $selecteur .= '</select>'."\n".'<br />'."\n";
 	    //on enleve l'action template
 		$plugin_output_new=preg_replace ("/".'(\\{\\{template)'.'(.*?)'.'(\\}\\})'."/is", '', $plugin_output_new);
-		//on ajoute la s�lection des styles
+		//on ajoute la selection des styles
 		$plugin_output_new=preg_replace ('/\<input name=\"submit\" type=\"submit\" value=\"Sauver\"/',
 		$selecteur.'<input name="submit" type="submit" value="Sauver"', $plugin_output_new);
 		
@@ -92,8 +92,6 @@ if ($this->HasAccess("write") && $this->HasAccess("read")) {
 							
 			}					
 		}
-			document.ACEditor.squelette.options.selectedIndex = "'.$this->config['favorite_squelette'].'";
-			document.ACEditor.style.options.selectedIndex = "'.$this->config['favorite_style'].'";
 		//--></script>';
 		$plugin_output_new=preg_replace ('/\<input type="button" value="Annulation"/',
 		$javascript.'<input type="button" value="Annulation"',

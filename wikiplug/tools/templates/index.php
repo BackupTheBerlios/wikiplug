@@ -2,7 +2,7 @@
 // Administration
 
 
-// Vérification de sécurité
+// Verification de securite
 if (!defined("TOOLS_MANAGER"))
 {
         die ("acc&egrave;s direct interdit");
@@ -11,7 +11,7 @@ if (!defined("TOOLS_MANAGER"))
 
 buffer::str(
 '
-Le plugin "Templates" vous permet de gérer des template html et css vous votre design web.
+Le plugin "Templates" vous permet de gerer des template html et css pour votre design web.
 '
 
 

@@ -9,30 +9,6 @@ if (!defined("WIKINI_VERSION"))
 
 
 //on cherche l'action template dans la page, qui definit le graphisme a utiliser
-$nomwiki = $_REQUEST['wiki'];
-
-// remove leading slash
-$nomwiki = preg_replace("/^\//", "", $nomwiki);
-
-// split into page/method, checking wiki name & method name (XSS proof)
-if (!defined("WN_CHAR")) define("WN_CHAR", "[A-Za-z0-9]"); // \xC0-\xD6\xD8-\xF6\xF8-\xFF]");
-if (!defined("WN_CHAR2")) define("WN_CHAR2", "[A-Za-z0-9_-]"); 
-if (!defined("WN_PAGE_TAG")) define('WN_PAGE_TAG', WN_CHAR . '+');
-if (!defined("WN_TAG_HANDLER_CAPTURE")) define('WN_TAG_HANDLER_CAPTURE', '(' . WN_PAGE_TAG . ')/(' . WN_CHAR2 . '*)');
-if (preg_match('`^' . WN_TAG_HANDLER_CAPTURE . '$`', $nomwiki, $matches))
-{
-	list(, $page, $method) = $matches;
-}
-elseif (preg_match('`^' . WN_PAGE_TAG . '$`', $nomwiki))
-{
-	$page = $nomwiki;
-}
-else
-{
-	echo "<p>Le nom de la page est incorrect.</p>";
-	exit;
-}
-
 $contenu=$wiki->LoadPage($page);
 if ($act=preg_match_all ("/".'(\\{\\{template)'.'(.*?)'.'(\\}\\})'."/is", $contenu["body"], $matches)) {
      $i = 0; $j = 0;
