@@ -9,7 +9,7 @@ if (!defined("WIKINI_VERSION"))
 
 if ($this->HasAccess("write") && $this->HasAccess("read")) {
 	// Edition
-	if ($_POST["submit"] != 'Aperçu' && $_POST["submit"] != 'Sauver') {
+	if ($_POST["submit"] != 'Aper&ccedil;u' && $_POST["submit"] != 'Sauver') {
 		$selecteur = 'Th&egrave;me: <select name="theme" onchange="changeVal(this.value)">'."\n";
 	    foreach(array_keys($this->config['templates']) as $key => $value) {
 	            if($value !== $this->config['favorite_theme']) {
@@ -46,12 +46,12 @@ if ($this->HasAccess("write") && $this->HasAccess("read")) {
 	    $selecteur .= '</select>'."\n".'<br />'."\n";
 	    //on enleve l'action template
 		$plugin_output_new=preg_replace ("/".'(\\{\\{template)'.'(.*?)'.'(\\}\\})'."/is", '', $plugin_output_new);
-		//on ajoute la sélection des styles
+		//on ajoute la sï¿½lection des styles
 		$plugin_output_new=preg_replace ('/\<input name=\"submit\" type=\"submit\" value=\"Sauver\"/',
 		$selecteur.'<input name="submit" type="submit" value="Sauver"', $plugin_output_new);
 		
 		//AJOUT DU JAVASCRIPT QUI PERMET DE CHANGER DYNAMIQUEMENT DE TEMPLATES			
-		$javascript = '<script>
+		$javascript = '<script type="text/javascript"><!--
 		var tab1 = new Array();
 		var tab2 = new Array();'."\n";
 		foreach(array_keys($this->config['templates']) as $key => $value) {
@@ -92,12 +92,11 @@ if ($this->HasAccess("write") && $this->HasAccess("read")) {
 							
 			}					
 		}
-			document.ACEditor.theme.options.selectedIndex = "'.$this->config['favorite_theme'].'";
 			document.ACEditor.squelette.options.selectedIndex = "'.$this->config['favorite_squelette'].'";
 			document.ACEditor.style.options.selectedIndex = "'.$this->config['favorite_style'].'";
-		</script>';
-		$plugin_output_new=preg_replace ('/\<div class="page">/',
-		$javascript.'<div class="page">',
+		//--></script>';
+		$plugin_output_new=preg_replace ('/\<input type="button" value="Annulation"/',
+		$javascript.'<input type="button" value="Annulation"',
 		$plugin_output_new);
 	}
 }
