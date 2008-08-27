@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: bazar.fonct.rss.php,v 1.3 2008/08/27 13:18:57 mrflos Exp $
+// CVS : $Id: bazar.fonct.rss.php,v 1.4 2008/08/27 17:19:40 mrflos Exp $
 /**
 *
 *@package bazar
@@ -28,7 +28,7 @@
 *@author        Florian Schmitt <florian@ecole-et-nature.org>
 //Autres auteurs :
 *@copyright     Tela-Botanica 2000-2006
-*@version       $Revision: 1.3 $
+*@version       $Revision: 1.4 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -704,9 +704,9 @@ function gen_RSS($typeannonce='', $nbitem='', $emetteur='', $valide=1, $requeteS
 		$requete .= '('.$requeteSQL.')';
 		$req_where=1;
 	}
-	if ($categorie_nature!='') {
+	if ($categorie_nature!='toutes') {
 		if ($req_where==1) {$requete .= ' AND ';}
-		$requete .= 'bn_type_fiche IN ('.$categorie_nature.') and bf_ce_nature=bn_id_nature ';
+		$requete .= 'bn_type_fiche ="'.$categorie_nature.'" AND bf_ce_nature=bn_id_nature ';
 		$req_where=1;
 	}
 
@@ -999,7 +999,8 @@ function baz_liste($typeannonce='toutes') {
 	$case_coche = false ;
 	$nb_jointures=0;
 	$requeteFrom = '' ;
-	$requeteWhere = ' bn_type_fiche IN ('.$GLOBALS['_BAZAR_']['categorie_nature'].') ';
+	$requeteWhere = '' ;
+	if ($GLOBALS['_BAZAR_']['categorie_nature'] != 'toutes') $requeteWhere .= ' bn_type_fiche = "'.$GLOBALS['_BAZAR_']['categorie_nature'].'" ';
 	if ($GLOBALS['_BAZAR_']['id_typeannonce'] != 'toutes') $requeteWhere .= 'AND bn_id_nature='.$GLOBALS['_BAZAR_']['id_typeannonce'] ;
 	$requeteWhere .= ' AND bn_id_nature=bf_ce_nature AND ' ;
 	if (isset($GLOBALS['_BAZAR_']['langue'])) {
@@ -1397,6 +1398,9 @@ function afficher_flux_rss() {
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: bazar.fonct.rss.php,v $
+* Revision 1.4  2008/08/27 17:19:40  mrflos
+* correction bug moteur de recherche, ajout des flux rss
+*
 * Revision 1.3  2008/08/27 13:18:57  mrflos
 * maj générale
 *

@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: baz_langue_fr.inc.php,v 1.3 2008/08/27 13:18:57 mrflos Exp $
+// CVS : $Id: baz_langue_fr.inc.php,v 1.4 2008/08/27 17:19:40 mrflos Exp $
 /**
 * Fichier de traduction en fran�ais de l'application Bazar
 *
@@ -30,7 +30,7 @@
 //Autres auteurs :
 *@author        Aucun
 *@copyright     Tela-Botanica 2000-2004
-*@version       $Revision: 1.3 $ $Date: 2008/08/27 13:18:57 $
+*@version       $Revision: 1.4 $ $Date: 2008/08/27 17:19:40 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -68,6 +68,7 @@ define ('BAZ_TOUS_TYPES_FICHES', 'Tous types de fiches');
 if (!defined ('BAZ_TOUS_LES_EMETTEURS')) define ('BAZ_TOUS_LES_EMETTEURS', 'Tous les emetteurs');
 define ('BAZ_ENTRER_VOS_CRITERES_DE_RECHERCHE','Pr&eacute;cisez vos crit&egrave;res de recherche et appuyez sur le bouton "Rechercher" pour consulter les fiches.');
 define ('BAZ_MODIFIE_RSS','Modifi&eacute;: ' );
+define ('BAZ_FLUX_RSS_GENERAL', 'Flux RSS de toutes les fiches');
 define ('BAZ_NOM', 'Nom') ;
 define ('BAZ_PRENOM', 'Pr&eacute;nom') ;
 define ('BAZ_TOUS', 'Tous');
@@ -486,6 +487,9 @@ define ('BAZ_DECEMBRE','D&eacute;cembre');
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: baz_langue_fr.inc.php,v $
+* Revision 1.4  2008/08/27 17:19:40  mrflos
+* correction bug moteur de recherche, ajout des flux rss
+*
 * Revision 1.3  2008/08/27 13:18:57  mrflos
 * maj générale
 *
