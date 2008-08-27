@@ -44,6 +44,8 @@ if (empty($urllogin)) {
 	$urllogin=$this->href("", "ParametresUtilisateur", "");
 }
 
+$pageacceuil = $this->GetParameter("pageaccueil");
+
 if (!isset($_REQUEST["action"])) $_REQUEST["action"] = '';
 if ($_REQUEST["action"] == "logout")
 {
@@ -54,14 +56,12 @@ if ($_REQUEST["action"] == "logout")
 else if ($user = $this->GetUser())
 {
 	// user is logged in; display config form
-	echo "<form action=\"".$urllogin."\" method=\"post\">\n";
-	?>
-	<input type="hidden" name="action" value="update" />
-	<input type="hidden" name="urldepart" value="<?php echo $this->href(); ?>" />
-	<?php echo $bienvenue.$this->Link($user["name"]) ?>&nbsp;!
-	<input class="bouton_iden" type="button" value="D&eacute;connexion" onclick="document.location='<?php echo $urllogin."&action=logout"; ?>'" />
-	<span class="inscription_iden"><a href="<?php echo $urllogin;  ?>" title="S'inscrire">Modifier mon inscription</a></span>
-	<?php
+	echo "<form action=\"".$urllogin."\" method=\"post\">
+	<input type=\"hidden\" name=\"action\" value=\"update\" />
+	<input type=\"hidden\" name=\"urldepart\" value=\"".$this->href()."\" />";
+	echo $bienvenue.$this->Link($user["name"])."&nbsp;!";
+	echo '<input class="bouton_iden" type="button" value="D&eacute;connexion" onclick="document.location=\''.$urllogin.'&action=logout\'" />
+	<span class="inscription_iden"><a href="'.$urllogin.'" title="S\'inscrire">Modifier mon inscription</a></span>';
 	echo $this->FormClose();
 
 }
@@ -81,7 +81,9 @@ else
 				$this->SetUser($existingUser, 0);
 				SetCookie("name", $existingUser["name"],0, $this->CookiePath);
 				SetCookie("password", $existingUser["password"],0, $this->CookiePath);
-				$this->Redirect($_POST['urldepart']);
+				if (!empty($pageacceuil)&&$pageacceuil=='utilisateur') $this->Redirect($this->href("", $_POST["name"], ""));
+				else $this->Redirect($_POST['urldepart']);
+				
 			}
 			else
 			{
@@ -95,31 +97,23 @@ else
 	}
 
 	echo "<form action=\"".$urllogin."\" method=\"post\">\n";
-	?>
-	<input type="hidden" name="action" value="login" />
-	<input type="hidden" name="urldepart" value="<?php echo $this->href(); ?>" />
-	<?php
-		if (isset($error))
-		{
-			echo "<div class=\"error\">", $this->Format($error), "</div>\n";
-		}
-		
-		echo '
-		<span class="texte_iden">'.IDEN_DEJA_MEMBRE.'</span>
-		<span class="label_iden">'.IDEN_NOM_WIKI.'</span><input name="name" class="input_iden" size="7" value="';
-		if (isset($name)) echo htmlspecialchars($name);
-		echo '" /><br />
-		<span class="label_iden">'.IDEN_MDP.'</span><input type="password" name="password" class="input_iden" size="7" /><br />
-		<input type="hidden" name="remember" value="0" /><input type="checkbox" id="remember" name="remember" value="1" />
-		<label for="remember">'.IDEN_SOUVENIR.'</label>
-		<input type="submit" class="bouton_iden" value="'.IDEN_S_IDENTIFIER.'" />
-		<span class="texte_iden">'.IDEN_PAS_MEMBRE.'</span>
-		<span class="inscription_iden"><a href="';
-		echo $urllogin;
-		echo '" title="'.IDEN_S_ENREGISTRER.'">'.IDEN_S_ENREGISTRER.'</a></span>';
-		?>
-	<?php
-	echo $this->FormClose();
+	echo '<input type="hidden" name="action" value="login" />
+	<input type="hidden" name="urldepart" value="'.$this->href().'" />';
+	if (isset($error))
+	{
+		echo "<div class=\"error\">", $this->Format($error), "</div>\n";
+	}
+	echo '
+	<span class="texte_iden">'.IDEN_DEJA_MEMBRE.'</span>
+	<span class="label_iden">'.IDEN_NOM_WIKI.'</span><input name="name" class="input_iden" size="7" value="';
+	if (isset($name)) echo htmlspecialchars($name);
+	echo '" /><br />
+	<span class="label_iden">'.IDEN_MDP.'</span><input type="password" name="password" class="input_iden" size="7" /><br />
+	<input type="hidden" name="remember" value="0" /><input type="checkbox" id="remember" name="remember" value="1" />
+	<label for="remember">'.IDEN_SOUVENIR.'</label>
+	<input type="submit" class="bouton_iden" value="'.IDEN_S_IDENTIFIER.'" />
+	<span class="texte_iden">'.IDEN_PAS_MEMBRE.'</span>
+	<span class="inscription_iden"><a href="'.$urllogin.'" title="'.IDEN_S_ENREGISTRER.'">'.IDEN_S_ENREGISTRER.'</a></span>';
+	echo $this->FormClose();	
 }
 ?>
-
