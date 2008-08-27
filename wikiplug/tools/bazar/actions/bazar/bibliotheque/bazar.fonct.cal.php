@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: bazar.fonct.cal.php,v 1.2 2008/07/29 17:32:25 mrflos Exp $
+// CVS : $Id: bazar.fonct.cal.php,v 1.3 2008/08/27 13:18:57 mrflos Exp $
 /**
 *
 * Fonctions calendrier du module bazar
@@ -29,7 +29,7 @@
 *@author        David Delon <david.delon@clapas.net>
 //Autres auteurs :
 *@copyright     Tela-Botanica 2000-2004
-*@version       $Revision: 1.2 $ $Date: 2008/07/29 17:32:25 $
+*@version       $Revision: 1.3 $ $Date: 2008/08/27 13:18:57 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -37,9 +37,9 @@
 // |                                            ENTETE du PROGRAMME                                       |
 // +------------------------------------------------------------------------------------------------------+
 
-require_once PAP_CHEMIN_RACINE.'Calendar/Month/Weekdays.php';
-require_once PAP_CHEMIN_RACINE.'Calendar/Day.php';
-require_once PAP_CHEMIN_RACINE.'Calendar/Decorator.php'; 
+require_once BAZ_CHEMIN.'libs/Calendar/Month/Weekdays.php';
+require_once BAZ_CHEMIN.'libs/Calendar/Day.php';
+require_once BAZ_CHEMIN.'libs/Calendar/Decorator.php'; 
 
 // +------------------------------------------------------------------------------------------------------+
 // |                                           LISTE de FONCTIONS                                         |
@@ -147,9 +147,9 @@ function GestionAffichageCalendrier($arguments = array(), $type = 'calendrier') 
 	}
 	$url->removeQueryString('ctt');
 	$url->removeQueryString('tt');
-	$tc_txt = 'Afficher les titres complets des �v�nements';
+	$tc_txt = BAZ_AFFICHE_TITRES_COMPLETS;
 	if (isset($_GET['tt']) && $_GET['tt'] == '0') {
-		$tc_txt = 'Tronquer les titres des �v�nements';
+		$tc_txt = BAZ_TRONQUER_TITRES;
 		$url->addQueryString('tt', $_GET['tt']);
 	}
 	
@@ -207,14 +207,13 @@ function GestionAffichageCalendrier($arguments = array(), $type = 'calendrier') 
 								"FROM bazar_fiche, bazar_nature ".
 								"WHERE bf_date_debut_evenement < '".date('Y-m-d', $ts_jour_fin_mois)."' ".
 								"AND bf_date_fin_evenement >= '".date('Y-m-d', $ts_jour_debut_mois)."' ".
-								"AND bf_ce_nature = bn_id_nature ".
-						//		"AND bn_id_nature IN (".BAZ_NUM_ANNONCE_CALENDRIER.") ".
-								"AND bf_statut_fiche = 1 ".
+								"AND bf_ce_nature = bn_id_nature ";
+		if ($GLOBALS['_BAZAR_']['categorie_nature'] != 'toutes') $requete_evenements .= 'AND bf_categorie_fiche="'.$GLOBALS['_BAZAR_']['categorie_nature'].'" ' ;
+		if ($GLOBALS['_BAZAR_']['id_typeannonce'] != 'toutes') $requete_evenements .= 'AND bf_ce_nature="'.$GLOBALS['_BAZAR_']['id_typeannonce'].'" ' ;
+		$requete_evenements .= 	"AND bf_statut_fiche = 1 ".
 								"ORDER BY bf_jour_debut_evenement";
 		
 	   	$resultat_evenement = $db->query($requete_evenements);
-	   	
-	    (DB::isError($resultat_evenement)) ? trigger_error(BOG_afficherErreurSql(__FILE__, __LINE__, $resultat_evenement->getMessage(), $requete_evenements), E_USER_WARNING) : '';
 
 		$selection = array();
 		$evenements = array();

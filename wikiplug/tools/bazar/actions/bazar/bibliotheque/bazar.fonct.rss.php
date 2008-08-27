@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: bazar.fonct.rss.php,v 1.2 2008/07/29 17:32:25 mrflos Exp $
+// CVS : $Id: bazar.fonct.rss.php,v 1.3 2008/08/27 13:18:57 mrflos Exp $
 /**
 *
 *@package bazar
@@ -28,7 +28,7 @@
 *@author        Florian Schmitt <florian@ecole-et-nature.org>
 //Autres auteurs :
 *@copyright     Tela-Botanica 2000-2006
-*@version       $Revision: 1.2 $
+*@version       $Revision: 1.3 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -1085,10 +1085,10 @@ function baz_liste($typeannonce='toutes') {
 		    		$GLOBALS['_BAZAR_']['url']->removeQueryString(BAZ_VARIABLE_ACTION);		
 					$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_ACTION, BAZ_ACTION_SUPPRESSION);
 					$res .= '<a href="'.$GLOBALS['_BAZAR_']['url']->getURL().'"  onclick="javascript:return confirm(\''.BAZ_CONFIRM_SUPPRIMER_FICHE.' ?\');">';
-                    $res .= '<img src="'.BAZ_CHEMIN.'actions'.DIRECTORY_SEPARATOR.'bazar'.DIRECTORY_SEPARATOR.'images/delete.gif" alt="'.BAZ_EFFACER.'"></a>'."\n";
+                    $res .= '<img src="'.BAZ_CHEMIN.'presentation'.DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR.'delete.gif" alt="'.BAZ_EFFACER.'"></a>'."\n";
 					$GLOBALS['_BAZAR_']['url']->removeQueryString(BAZ_VARIABLE_ACTION);
 					$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_ACTION, BAZ_ACTION_MODIFIER);
-					$res .= '<a href="'.$GLOBALS['_BAZAR_']['url']->getURL().'"><img src="'.BAZ_CHEMIN.'actions'.DIRECTORY_SEPARATOR.'bazar'.DIRECTORY_SEPARATOR.'images/modify.gif" alt="'.BAZ_MODIFIER.'">'."\n";
+					$res .= '<a href="'.$GLOBALS['_BAZAR_']['url']->getURL().'"><img src="'.BAZ_CHEMIN.'presentation'.DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR.'modify.gif" alt="'.BAZ_MODIFIER.'">'."\n";
 					$GLOBALS['_BAZAR_']['url']->removeQueryString(BAZ_VARIABLE_ACTION);
 					$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_ACTION, BAZ_VOIR_FICHE);	    	
 		    		$res .= '<a href="'. $GLOBALS['_BAZAR_']['url']->getURL() .'" alt="lire la fiche">'. $ligne['bf_titre'].'</a></li>'."\n";
@@ -1397,6 +1397,9 @@ function afficher_flux_rss() {
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: bazar.fonct.rss.php,v $
+* Revision 1.3  2008/08/27 13:18:57  mrflos
+* maj générale
+*
 * Revision 1.2  2008/07/29 17:32:25  mrflos
 * maj générale
 *

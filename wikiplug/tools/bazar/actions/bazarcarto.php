@@ -6,7 +6,7 @@
 *@package Bazar
 //Auteur original :
 *@author        Florian SCHMITT <florian.schmitt@laposte.net>
-*@version       $Revision: 1.1 $ $Date: 2008/07/07 18:00:39 $
+*@version       $Revision: 1.2 $ $Date: 2008/08/27 13:18:57 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -15,26 +15,28 @@
 // |                                            ENTETE du PROGRAMME                                       |
 // +------------------------------------------------------------------------------------------------------+
 
-define ('GEN_CHEMIN_API', str_replace('wakka.php', '', $_SERVER["SCRIPT_FILENAME"]).'tools'.DIRECTORY_SEPARATOR.'bazar'.DIRECTORY_SEPARATOR.'libs'.DIRECTORY_SEPARATOR);
-define ('PAP_CHEMIN_API_PEAR', GEN_CHEMIN_API);
-define ('PAP_CHEMIN_RACINE', '');
-define ('GEN_SEP', DIRECTORY_SEPARATOR);
-define ('PAP_CHEMIN_API_PEARDB', PAP_CHEMIN_API_PEAR);
-set_include_path(PAP_CHEMIN_API_PEAR.PATH_SEPARATOR.get_include_path());
-require_once 'DB.php' ;
-include_once 'Net'.DIRECTORY_SEPARATOR.'URL.php' ;
-include_once 'bazar/configuration/baz_config.inc.php'; //fichier de configuration de Bazar
-include_once 'bazar/bibliotheque/bazar.fonct.php'; //fichier des fonctions de Bazar
-include_once 'bazar/bibliotheque/bazar.fonct.cal.php'; //fichier des fonctions de Bazar
-
-//TODO: transformer en parametres wikinis
-$GLOBALS['_BAZAR_']['id_typeannonce']=$GLOBALS['_GEN_commun']['info_application']->id_nature;
-$GLOBALS['_BAZAR_']['categorie_nature']=$GLOBALS['_GEN_commun']['info_application']->categorie_nature;
+//récupération des paramêtres wikini
+$categorie_nature = $this->GetParameter("categorienature");
+if (!empty($categorie_nature)) {
+	$GLOBALS['_BAZAR_']['categorie_nature']=$categorie_nature;
+}
+//si rien n'est donne, on affiche la categorie 0
+else {
+	$GLOBALS['_BAZAR_']['categorie_nature']='toutes';
+}
+$id_typeannonce = $this->GetParameter("idtypeannonce");
+if (!empty($id_typeannonce)) {
+	$GLOBALS['_BAZAR_']['id_typeannonce']=$id_typeannonce;
+}
+//si rien n'est donne, on affiche toutes les annonces
+else {
+	$GLOBALS['_BAZAR_']['id_typeannonce']='toutes';
+}
 
 // requete sur le bazar pour recuperer les evenements
-
 $requete = 'SELECT * FROM bazar_fiche WHERE ';
-if ($GLOBALS['_BAZAR_']['id_typeannonce'] != '') $requete .= 'bf_ce_nature in ('.$GLOBALS['_BAZAR_']['id_typeannonce'].') and ' ;
+if ($GLOBALS['_BAZAR_']['categorie_nature'] != 'toutes') $requete .= 'bf_categorie_fiche="'.$GLOBALS['_BAZAR_']['categorie_nature'].'" and ' ;
+if ($GLOBALS['_BAZAR_']['id_typeannonce'] != 'toutes') $requete .= 'bf_ce_nature="'.$GLOBALS['_BAZAR_']['id_typeannonce'].'" and ' ;
 $requete .= ' ((bf_date_debut_validite_fiche<=now() and bf_date_fin_validite_fiche>=now()) or (bf_date_fin_validite_fiche="0000-00-00"' .
 		' and date_add(bf_date_fin_evenement,interval 15 day)>now()))'.
 			' and bf_statut_fiche=1';
@@ -134,7 +136,7 @@ $script .= '
 	  map.addControl(new GScaleControl());
 	  map.enableContinuousZoom();
 	
-	  // On centre la carte sur le languedoc roussillon
+	  // On centre la carte
 	  center = new GLatLng('.BAZ_GOOGLE_CENTRE_LAT.', '.BAZ_GOOGLE_CENTRE_LON.');
       map.setCenter(center, '.BAZ_GOOGLE_ALTITUDE.');
 	  map.setMapType(G_HYBRID_MAP);' ;
@@ -152,10 +154,7 @@ $script .= '
 	// Creates a marker at the given point with the given number label
 	
 ';
-//GEN_stockerCodeScript($script);
-// On ajoute l attribut load a la balise body
-//GEN_AttributsBody('onload', 'load()');
 
-echo '<div id="map" style="width: '.BAZ_GOOGLE_IMAGE_LARGEUR.
+echo '<script type="text/javascript">'."\n".$script."\n".'</script>'."\n".'<div id="map" style="width: '.BAZ_GOOGLE_IMAGE_LARGEUR.
 							'px; height: '.BAZ_GOOGLE_IMAGE_HAUTEUR.'px"></div>';
 ?>

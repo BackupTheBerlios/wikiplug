@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: baz_langue_fr.inc.php,v 1.2 2008/07/29 17:32:25 mrflos Exp $
+// CVS : $Id: baz_langue_fr.inc.php,v 1.3 2008/08/27 13:18:57 mrflos Exp $
 /**
 * Fichier de traduction en fran�ais de l'application Bazar
 *
@@ -30,7 +30,7 @@
 //Autres auteurs :
 *@author        Aucun
 *@copyright     Tela-Botanica 2000-2004
-*@version       $Revision: 1.2 $ $Date: 2008/07/29 17:32:25 $
+*@version       $Revision: 1.3 $ $Date: 2008/08/27 13:18:57 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -41,7 +41,7 @@ if (file_exists(BAZ_CHEMIN_APPLI.'langues/baz_langue_fr.local.php')) {
 define ('BAZ_FORMULAIRE', 'Formulaires');
 define ('BAZ_MODIFIER_FORMULAIRES', 'Gestion des formulaires');
 define ('BAZ_INTRO_MODIFIER_FORMULAIRE', 'Pour &eacute;diter un formulaire, cliquez sur son nom ou sur l\'icone avec le crayon.<br />Pour supprimer un formulaire, cliquez sur l\'icone de la corbeille.<br /> Pour cr&eacute;er un nouveau formulaire, cliquez sur le lien en dessous de cette liste.');
-define ('BAZ_CONFIRM_SUPPRIMER_FORMULAIRE', 'Attention! Toutes les donn�es enregistr�es seront perdues.. Etes-vous s�rs de vouloir supprimer ce type de formulaire et toutes ses fiches associ�es');
+define ('BAZ_CONFIRM_SUPPRIMER_FORMULAIRE', 'Attention! Toutes les donn&eacute;es enregistr&eacute;es seront perdues.. Etes-vous s&ucirc;rs de vouloir supprimer ce type de formulaire et toutes ses fiches associ&eacute;es');
 define ('BAZ_NOUVEAU_FORMULAIRE', 'Saisir un nouveau type de questionnaire');
 define ('BAZ_FORMULAIRE_ET_FICHES_SUPPRIMES', 'Le type de formulaire et ses fiches associ&eacute;es ont bien &eacute;t&eacute; supprim&eacute;s.');
 define ('BAZ_NOM_FORMULAIRE','Nom du formulaire'); 	
@@ -326,7 +326,7 @@ define ('BAZ_FICHIER_DESCRIPTION', 'Description du fichier' );
 define ('BAZ_FICHIER_TEXTE_REQUIS', 'Le texte du fichier est requis!!') ;
 define ('BAZ_FICHIER_LABEL', 'Label du fichier') ;
 define ('BAZ_FICHIER_LABEL_REQUIS', 'Le label du fichier est requis!!') ;
-define ('BAZ_FICHIER_EXISTANT', 'Il existe d&eacute;j&agrave; un fichier du m�me nom sur le site.<br />Votre fiche a &eacute;t&eacute; associ&eacute;e avec le fichier existant d&eacute;j&agrave;.');
+define ('BAZ_FICHIER_EXISTANT', 'Il existe d&eacute;j&agrave; un fichier du m&ecirc;me nom sur le site.<br />Votre fiche a &eacute;t&eacute; associ&eacute;e avec le fichier existant d&eacute;j&agrave;.');
 define ('BAZ_ACCEPTE_CONDITIONS', 'J\'accepte les conditions de saisie de la fiche');
 define ('BAZ_ACCEPTE_CONDITIONS_REQUIS', 'Vous devez accepter les conditions de saisie de la fiche');
 
@@ -389,7 +389,7 @@ define ('BAZ_INDIFFERENT','Indiff&eacute;rent');
 define ('BAZ_COORDONNEES','Coordonn&eacute;es');
 define ('BAZ_ANNEE_PARUTION','Ann&eacute;e de parution');
 define ('BAZ_LANGUE','Langue');
-define ('BAZ_THEMES','Th�mes');
+define ('BAZ_THEMES','Th&ecirc;mes');
 define ('BAZ_PAS_D_APPROPRIATION','Aucune structure ne s\'est appropri&eacute; cette ressource pour l\'instant.');
 define ('BAZ_STRUCTURE_POSSEDANT', 'structure poss&eacute;dant cette ressource.');
 define ('BAZ_STRUCTURES_POSSEDANT', 'structures poss&eacute;dant cette ressource.');
@@ -425,7 +425,7 @@ define ('BAZ_RADIO_ADMINISTRATEUR', 'administrateur &nbsp;');
 //================Textes pour les sejours==================================
 define ('BAZ_TITRE_SEJOUR','Titre du s&eacute;jour');
 define ('BAZ_TITRE_SEJOUR_REQUIS','Le titre du s&eacute;jour est obligatoire, veuillez le saisir');
-define ('BAZ_MAX_60_CAR', '(maximum 60 caract�res)');
+define ('BAZ_MAX_60_CAR', '(maximum 60 caract&eagrave;res)');
 
 // ================ Texte pour les structures =============================
 define ('BAZ_FICHE_STRUCTURE', 'Fiche structure') ;
@@ -437,7 +437,7 @@ define ('BAZ_OBJET', 'Objet');
 define ('BAZ_OBJET_REQUIS', 'Objet requis');
 define ('BAZ_ACTIONS', 'Actions');
 define ('BAZ_PRODUCTIONS', 'Productions');
-define ('BAZ_RESEAUX', 'R�seaux');
+define ('BAZ_RESEAUX', 'R&eacute;seaux');
 define ('BAZ_ADRESSE', 'Adresse');
 define ('BAZ_ADRESSE_REQUIS', 'Adresse requise');
 define ('BAZ_FAX', 'Fax');
@@ -450,6 +450,8 @@ define ('BAZ_CONFIG', 'Configuration du bazar');
 define ('BAZ_ENREGISTRER_ET_QUITTER', 'Enregistrer et quitter');
 
 //================ Calendrier Bazar =======================================
+define ('BAZ_AFFICHE_TITRES_COMPLETS', 'Afficher les titres complets des &eacute;v&eacute;nements');
+define ('BAZ_TRONQUER_TITRES', 'Tronquer les titres des &eacute;v&eacute;nements');
 define ('BAZ_CALENDRIER','Calendrier');
 define ('BAZ_LUNDI','Lundi');
 define ('BAZ_MARDI','Mardi');
@@ -484,6 +486,9 @@ define ('BAZ_DECEMBRE','D&eacute;cembre');
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: baz_langue_fr.inc.php,v $
+* Revision 1.3  2008/08/27 13:18:57  mrflos
+* maj générale
+*
 * Revision 1.2  2008/07/29 17:32:25  mrflos
 * maj générale
 *

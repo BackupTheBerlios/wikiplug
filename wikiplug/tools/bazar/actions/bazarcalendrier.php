@@ -7,22 +7,30 @@
 //Auteur original :
 *@author        David DELON <david.delon@clapas.net>
 *@author        Florian SCHMITT <florian.schmitt@laposte.net>
-*@version       $Revision: 1.1 $ $Date: 2008/07/07 18:00:39 $
+*@version       $Revision: 1.2 $ $Date: 2008/08/27 13:18:57 $
 // +------------------------------------------------------------------------------------------------------+
 */
-define ('GEN_CHEMIN_API', str_replace('wakka.php', '', $_SERVER["SCRIPT_FILENAME"]).'tools'.DIRECTORY_SEPARATOR.'bazar'.DIRECTORY_SEPARATOR.'libs'.DIRECTORY_SEPARATOR);
-define ('PAP_CHEMIN_API_PEAR', GEN_CHEMIN_API);
-define ('PAP_CHEMIN_RACINE', '');
-define ('GEN_SEP', DIRECTORY_SEPARATOR);
-define ('PAP_CHEMIN_API_PEARDB', PAP_CHEMIN_API_PEAR);
-set_include_path(PAP_CHEMIN_API_PEAR.PATH_SEPARATOR.get_include_path());
-require_once 'DB.php' ;
-include_once 'Net'.DIRECTORY_SEPARATOR.'URL.php' ;
-include_once 'bazar/configuration/baz_config.inc.php'; //fichier de configuration de Bazar
-include_once 'bazar/bibliotheque/bazar.fonct.php'; //fichier des fonctions de Bazar
-include_once 'bazar/bibliotheque/bazar.fonct.cal.php'; //fichier des fonctions de Bazar
+//récupération des paramêtres wikini
+$categorie_nature = $this->GetParameter("categorienature");
+if (!empty($categorie_nature)) {
+	$GLOBALS['_BAZAR_']['categorie_nature']=$categorie_nature;
+}
+//si rien n'est donne, on affiche toutes les categories
+else {
+	$GLOBALS['_BAZAR_']['categorie_nature']='toutes';
+}
+$id_typeannonce = $this->GetParameter("idtypeannonce");
+if (!empty($id_typeannonce)) {
+	$GLOBALS['_BAZAR_']['id_typeannonce']=$id_typeannonce;
+}
+//si rien n'est donne, on affiche toutes les annonces
+else {
+	$GLOBALS['_BAZAR_']['id_typeannonce']='toutes';
+}
 
-	
+//fichier des fonctions calendrier de Bazar
+include_once BAZ_CHEMIN.'actions'.DIRECTORY_SEPARATOR.'bazar'.DIRECTORY_SEPARATOR.'bibliotheque'.DIRECTORY_SEPARATOR.'bazar.fonct.cal.php'; 
+
 echo GestionAffichageCalendrier('calendrier');	
 ?>
 

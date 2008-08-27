@@ -21,7 +21,7 @@
 // | along with Foobar; if not, write to the Free Software                                                |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: bazar.php,v 1.1 2008/07/07 18:00:39 mrflos Exp $
+// CVS : $Id: bazar.php,v 1.2 2008/08/27 13:18:57 mrflos Exp $
 /**
 * wiki.php
 *
@@ -33,7 +33,7 @@
 //Autres auteurs :
 *@author        Aucun
 *@copyright     Kaleidos-coop.org 2008
-*@version       $Revision: 1.1 $ $Date: 2008/07/07 18:00:39 $
+*@version       $Revision: 1.2 $ $Date: 2008/08/27 13:18:57 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -68,9 +68,9 @@ $categorie_nature = $this->GetParameter("categorienature");
 if (!empty($categorie_nature)) {
 	$GLOBALS['_BAZAR_']['categorie_nature']=$categorie_nature;
 }
-//si rien n'est donne, on affiche la categorie 0
+//si rien n'est donne, on affiche toutes les categories
 else {
-	$GLOBALS['_BAZAR_']['categorie_nature']=0;
+	$GLOBALS['_BAZAR_']['categorie_nature']='toutes';
 }
 
 $id_typeannonce = $this->GetParameter("idtypeannonce");
@@ -267,6 +267,9 @@ echo $res ;
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: bazar.php,v $
+* Revision 1.2  2008/08/27 13:18:57  mrflos
+* maj générale
+*
 * Revision 1.1  2008/07/07 18:00:39  mrflos
 * maj carto plus calendrier
 *

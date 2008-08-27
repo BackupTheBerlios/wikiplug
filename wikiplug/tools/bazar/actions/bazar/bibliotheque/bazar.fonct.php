@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: bazar.fonct.php,v 1.2 2008/07/29 17:32:25 mrflos Exp $
+// CVS : $Id: bazar.fonct.php,v 1.3 2008/08/27 13:18:57 mrflos Exp $
 /**
 *
 * Fonctions du module bazar
@@ -31,7 +31,7 @@
 *@author        Florian Schmitt <florian@ecole-et-nature.org>
 //Autres auteurs :
 *@copyright     Tela-Botanica 2000-2004
-*@version       $Revision: 1.2 $ $Date: 2008/07/29 17:32:25 $
+*@version       $Revision: 1.3 $ $Date: 2008/08/27 13:18:57 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -575,7 +575,9 @@ function baz_formulaire($mode) {
 			}
 			
 			//requete pour obtenir le nom et la description des types d'annonce
-			$requete = 'SELECT * FROM bazar_nature WHERE bn_type_fiche IN ('.$GLOBALS['_BAZAR_']['categorie_nature'].') ';
+			$requete = 'SELECT * FROM bazar_nature WHERE ';
+			if ($GLOBALS['_BAZAR_']['categorie_nature']!='toutes') $requete .= 'bn_type_fiche="'.$GLOBALS['_BAZAR_']['categorie_nature'].'" ';
+			else $requete .= '1 ';
 			if (isset($GLOBALS['_BAZAR_']['langue'])) {
 				$requete .= 'AND bn_ce_i18n like "'.$GLOBALS['_BAZAR_']['langue'].'%" ';
 			}
@@ -932,7 +934,7 @@ function baz_insertion($valeur) {
         $GLOBALS['_BAZAR_']['id_fiche'] = baz_nextid('bazar_fiche', 'bf_id_fiche', $GLOBALS['_BAZAR_']['db']) ;
         $requete = 'INSERT INTO bazar_fiche SET bf_id_fiche='.$GLOBALS['_BAZAR_']['id_fiche'].', ';
 		if (!BAZ_SANS_AUTH) $requete .= 'bf_ce_utilisateur='.$GLOBALS['id_user'].', ';
-		$requete .= 'bf_ce_nature='.$GLOBALS['_BAZAR_']['id_typeannonce'].', '.
+		$requete .= 'bf_categorie_fiche='.$GLOBALS['_BAZAR_']['categorie_nature'].', bf_ce_nature='.$GLOBALS['_BAZAR_']['id_typeannonce'].', '.
 		   'bf_date_creation_fiche=NOW(), ';
 		if (!isset($_REQUEST['bf_date_debut_validite_fiche'])) {
 			$requete .= 'bf_date_debut_validite_fiche=now(), bf_date_fin_validite_fiche="0000-00-00", ' ;
@@ -1518,6 +1520,9 @@ function baz_titre_wiki($nom) {
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: bazar.fonct.php,v $
+* Revision 1.3  2008/08/27 13:18:57  mrflos
+* maj générale
+*
 * Revision 1.2  2008/07/29 17:32:25  mrflos
 * maj générale
 *
