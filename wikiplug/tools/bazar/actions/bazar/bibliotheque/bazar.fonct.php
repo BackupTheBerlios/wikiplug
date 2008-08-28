@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: bazar.fonct.php,v 1.4 2008/08/28 12:23:39 mrflos Exp $
+// CVS : $Id: bazar.fonct.php,v 1.5 2008/08/28 14:49:52 mrflos Exp $
 /**
 *
 * Fonctions du module bazar
@@ -31,7 +31,7 @@
 *@author        Florian Schmitt <florian@ecole-et-nature.org>
 //Autres auteurs :
 *@copyright     Tela-Botanica 2000-2004
-*@version       $Revision: 1.4 $ $Date: 2008/08/28 12:23:39 $
+*@version       $Revision: 1.5 $ $Date: 2008/08/28 14:49:52 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -1012,7 +1012,7 @@ function baz_insertion_fichier($fichier_description, $idfiche, $nom_fichier='fic
     }
 	if (!isset ($_SESSION['_BAZAR_']['fichier'])) {
 		if ($resultat->numRows()==0) {
-			$chemin_destination=BAZ_CHEMIN_APPLI.'upload/'.$_FILES[$nom_fichier]['name'];
+			$chemin_destination=BAZ_CHEMIN.'actions/bazar/upload/'.$_FILES[$nom_fichier]['name'];
 			move_uploaded_file($_FILES[$nom_fichier]['tmp_name'], $chemin_destination);
 			chmod ($chemin_destination, 0755);
 		}
@@ -1042,7 +1042,7 @@ function baz_insertion_image($idfiche) {
             die ($resultat->getMessage().$resultat->getDebugInfo()) ;
         }
 	if ($resultat->numRows()==0) {
-		$chemin_destination=BAZ_CHEMIN_APPLI.'upload/'.$_FILES['image']['name'];
+		$chemin_destination=BAZ_CHEMIN.'actions/bazar/upload/'.$_FILES['image']['name'];
 		move_uploaded_file($_FILES['image']['tmp_name'], $chemin_destination);
 		chmod ($chemin_destination, 0755);
 	}
@@ -1163,7 +1163,7 @@ function baz_suppression_fichier($id_fichier) {
 	//si le fichier n'est que utilise dans cette fiche, on le supprime, on le laisse sinon
 	if ($resultat->numRows()==1) {
 		$ligne = $resultat->fetchRow(DB_FETCHMODE_ASSOC);
-		unlink(BAZ_CHEMIN_APPLI.'upload/'.$ligne['bfj_fichier']);
+		unlink(BAZ_CHEMIN.'actions/bazar/upload/'.$ligne['bfj_fichier']);
 	}
 
 	//suppression dans la table bazar_fichier
@@ -1191,7 +1191,7 @@ function baz_suppression_image($id_fiche) {
 	//si le fichier n'est que utilise dans cette fiche, on le supprime, on le laisse sinon
 	if ($resultat->numRows()==1) {
 		$ligne = $resultat->fetchRow(DB_FETCHMODE_ASSOC);
-		unlink(BAZ_CHEMIN_APPLI.'upload/'.$ligne['bf_url_image']);
+		unlink(BAZ_CHEMIN.'actions/bazar/upload/'.$ligne['bf_url_image']);
 	}
 
 	//suppression dans la table bazar_fiche
@@ -1520,6 +1520,11 @@ function baz_titre_wiki($nom) {
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: bazar.fonct.php,v $
+* Revision 1.5  2008/08/28 14:49:52  mrflos
+* amélioration des performances de bazar : google map pas chargée systematiquement
+* correction bug flux rss
+* correction bug calendrier
+*
 * Revision 1.4  2008/08/28 12:23:39  mrflos
 * amérioration de la gestion des categories de fiches
 *

@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: bazar.fonct.rss.php,v 1.5 2008/08/28 12:23:39 mrflos Exp $
+// CVS : $Id: bazar.fonct.rss.php,v 1.6 2008/08/28 14:49:52 mrflos Exp $
 /**
 *
 *@package bazar
@@ -28,7 +28,7 @@
 *@author        Florian Schmitt <florian@ecole-et-nature.org>
 //Autres auteurs :
 *@copyright     Tela-Botanica 2000-2006
-*@version       $Revision: 1.5 $
+*@version       $Revision: 1.6 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -717,6 +717,7 @@ function gen_RSS($typeannonce='', $nbitem='', $emetteur='', $valide=1, $requeteS
 	$requete .= ' ORDER BY   bf_date_creation_fiche DESC, bf_date_fin_validite_fiche DESC, bf_date_maj_fiche DESC';
 	if ($nbitem!='') {$requete .= ' LIMIT 0,'.$nbitem;}
 	$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
+	//echo $requete;
 	if (DB::isError($resultat)) {
 		die ($resultat->getMessage().$resultat->getDebugInfo()) ;
 	}
@@ -1359,7 +1360,7 @@ function afficher_flux_rss() {
 		$categorie_nature=$_GET['categorie_nature'];
 	}
 	else {
-		$categorie_nature='';
+		$categorie_nature=$GLOBALS['_BAZAR_']['id_typeannonce'];
 	}
 
 	if (isset($_GET['nbitem'])) {
@@ -1402,6 +1403,11 @@ function afficher_flux_rss() {
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: bazar.fonct.rss.php,v $
+* Revision 1.6  2008/08/28 14:49:52  mrflos
+* amélioration des performances de bazar : google map pas chargée systematiquement
+* correction bug flux rss
+* correction bug calendrier
+*
 * Revision 1.5  2008/08/28 12:23:39  mrflos
 * amérioration de la gestion des categories de fiches
 *

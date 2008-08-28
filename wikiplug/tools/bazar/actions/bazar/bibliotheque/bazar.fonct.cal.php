@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: bazar.fonct.cal.php,v 1.3 2008/08/27 13:18:57 mrflos Exp $
+// CVS : $Id: bazar.fonct.cal.php,v 1.4 2008/08/28 14:49:52 mrflos Exp $
 /**
 *
 * Fonctions calendrier du module bazar
@@ -29,7 +29,7 @@
 *@author        David Delon <david.delon@clapas.net>
 //Autres auteurs :
 *@copyright     Tela-Botanica 2000-2004
-*@version       $Revision: 1.3 $ $Date: 2008/08/27 13:18:57 $
+*@version       $Revision: 1.4 $ $Date: 2008/08/28 14:49:52 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -100,7 +100,6 @@ function GestionAffichageCalendrier($arguments = array(), $type = 'calendrier') 
 
 	$url = $GLOBALS['_BAZAR_']['url'] ;
 	$db =& $GLOBALS['_BAZAR_']['db'] ;
-//	$auth =& $GLOBALS['_GEN_commun']['pear_auth'] ;
 	
 	// Nettoyage de l'url de la query string
 	$chaine_url = $url->getQueryString();
@@ -130,7 +129,7 @@ function GestionAffichageCalendrier($arguments = array(), $type = 'calendrier') 
 	$url->addQueryString('d', date('j',$curStamp));
 	$cur = $url->getUrl();
 
-	// Gestion de l'affichage des titres des �v�nements
+	// Gestion de l'affichage des titres des evenements
 	if (isset($_GET['ctt']) && $_GET['ctt'] == '1') {
 		$url->addQueryString('tt', '0');
 		if (isset($_GET['tt']) && $_GET['tt'] == '0') {
@@ -406,11 +405,11 @@ function GestionAffichageCalendrier($arguments = array(), $type = 'calendrier') 
 	if ((isset($_GET['id_fiches']))) {
 		// Ajout d'un titre pour la page avec la date
 		$jours = array ('lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche') ;
-		$mois = array ('janvier', 'f�vrier', 'mars', 'avril', 'mai', 'juin', 'juillet', 'ao�t', 'septembre',
-						'octobre', 'novembre', 'd�cembre') ;
+		$mois = array ('janvier', 'f&eacute;vrier', 'mars', 'avril', 'mai', 'juin', 'juillet', 'ao&ucirc;t', 'septembre',
+						'octobre', 'novembre', 'd&eacute;cembre') ;
 		$timestamp = strtotime ($_GET['y'].'/'.$_GET['m'].'/'.$_GET['d']) ;
 		
-		$retour = '<h1>'.$jours[date('w', $timestamp)].
+		$retour = '<h1>'.$jours[date('w', $timestamp)-1].
 						' '.$_GET['d'].' '.$mois[$_GET['m']-1].' '.$_GET['y'].'</h1>' ;
 		$retour .= baz_voir_fiches(0,$_GET['id_fiches'] );
 		

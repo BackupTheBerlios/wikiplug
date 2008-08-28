@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: formulaire.fonct.inc.php,v 1.3 2008/08/28 12:23:39 mrflos Exp $
+// CVS : $Id: formulaire.fonct.inc.php,v 1.4 2008/08/28 14:49:52 mrflos Exp $
 /**
 * Formulaire
 *
@@ -31,7 +31,7 @@
 //Autres auteurs :
 *@author        Aleandre GRANIER <alexandre@tela-botanica.org>
 *@copyright     Tela-Botanica 2000-2004
-*@version       $Revision: 1.3 $ $Date: 2008/08/28 12:23:39 $
+*@version       $Revision: 1.4 $ $Date: 2008/08/28 14:49:52 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -552,7 +552,7 @@ function image(&$formtemplate, $nom_bdd , $label, $limite1, $limite2, $defaut, $
 				$lien_supprimer->addQueryString('typeannonce', $_REQUEST['typeannonce']);
 				$lien_supprimer->addQueryString('image', 1);
 				$html_image = '<tr>'."\n".
-							  '<td>'."\n".'<img src="client/bazar/upload/'.$image.'" alt="'.BAZ_TEXTE_IMG_ALTERNATIF.'" width="130" height="130" />'."\n".'</td>'."\n".
+							  '<td>'."\n".'<img src="'.BAZ_CHEMIN.'actions/bazar/upload/'.$image.'" alt="'.BAZ_TEXTE_IMG_ALTERNATIF.'" width="130" height="130" />'."\n".'</td>'."\n".
 							  '<td>'."\n".'<a href="'.$lien_supprimer->getURL().'" onclick="javascript:return confirm(\''.BAZ_CONFIRMATION_SUPPRESSION_IMAGE.'\');" >'.BAZ_SUPPRIMER.'</a><br /><br />'."\n".
 							  '<strong>'.BAZ_POUR_CHANGER_IMAGE.'</strong><br />'."\n".'</td>'."\n".'</tr>'."\n";
 			}
@@ -658,6 +658,11 @@ function carte_google(&$formtemplate, $url_google_script , $label, $champs_latit
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: formulaire.fonct.inc.php,v $
+* Revision 1.4  2008/08/28 14:49:52  mrflos
+* amélioration des performances de bazar : google map pas chargée systematiquement
+* correction bug flux rss
+* correction bug calendrier
+*
 * Revision 1.3  2008/08/28 12:23:39  mrflos
 * amérioration de la gestion des categories de fiches
 *

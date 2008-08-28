@@ -27,8 +27,15 @@ $liste = '<link rel="alternate" type="application/rss+xml" title="'.BAZ_FLUX_RSS
 
 
 //ajout des styles css pour bazar, le calendrier, la google map
-$style = '<link rel="stylesheet" type="text/css" href="tools/bazar/presentation/bazar.css" media="screen" />
-<script type="text/javascript" src="http://maps.google.com/maps?file=api&amp;v=2&amp;key='.BAZ_GOOGLE_KEY.'" ></script>
+$style = '<link rel="stylesheet" type="text/css" href="tools/bazar/presentation/bazar.css" media="screen" />'."\n";
+
+//on cherche l'action bazar ou l'action bazarcarto dans la page, pour voir s'il faut charger googlemaps
+if ($_POST["submit"] == html_entity_decode('Aper&ccedil;u')) {
+	$contenu["body"] = $_POST["body"];
+} else $contenu=$this->LoadPage($this->tag);
+//si l'on trouve des actions bazar
+if ($act=preg_match_all ("/".'(\\{\\{bazar)'.'(.*?)'.'(\\}\\})'."/is", $contenu["body"], $matches)) {
+	$style .= '<script type="text/javascript" src="http://maps.google.com/maps?file=api&amp;v=2&amp;key='.BAZ_GOOGLE_KEY.'" ></script>
 <script type="text/javascript">
     // Variables globales
     var map = null;
@@ -118,10 +125,11 @@ function setLatLonForm(marker) {
   lon.value = coordMarker.lng();
 }
 
-</script>
-<script type="text/javascript"';
+</script>';
+if ($this->GetMethod() == "show") {$plugin_output_new=preg_replace ('/<body /', '<body onload="load()" ',	$plugin_output_new, 1);}
+}
+$style .= '<script type="text/javascript"';
 
 if ($this->GetMethod() == "show") {
 	$plugin_output_new=preg_replace ('/<script type="text\/javascript"/', $liste.$style,	$plugin_output_new, 1);
-	$plugin_output_new=preg_replace ('/<body /', '<body onload="load()" ',	$plugin_output_new, 1);
 }
