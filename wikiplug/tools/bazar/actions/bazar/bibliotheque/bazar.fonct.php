@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: bazar.fonct.php,v 1.3 2008/08/27 13:18:57 mrflos Exp $
+// CVS : $Id: bazar.fonct.php,v 1.4 2008/08/28 12:23:39 mrflos Exp $
 /**
 *
 * Fonctions du module bazar
@@ -31,7 +31,7 @@
 *@author        Florian Schmitt <florian@ecole-et-nature.org>
 //Autres auteurs :
 *@copyright     Tela-Botanica 2000-2004
-*@version       $Revision: 1.3 $ $Date: 2008/08/27 13:18:57 $
+*@version       $Revision: 1.4 $ $Date: 2008/08/28 12:23:39 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -669,7 +669,7 @@ function baz_formulaire($mode) {
 		//CAS DE L'INSCRIPTION D'UNE ANNONCE
 		//------------------------------------------------------------------------------------------------
 		if ($mode == BAZ_ACTION_NOUVEAU_V) {
-			if ($formtemplate->validate()) {
+			if ($formtemplate->validate()) {				
 				$formtemplate->process('baz_insertion', false) ;
 				// Redirection vers mes_fiches pour eviter la revalidation du formulaire
 				$GLOBALS['_BAZAR_']['url']->addQueryString ('message', 'ajout_ok') ;
@@ -811,7 +811,7 @@ function baz_afficher_formulaire_fiche($mode='insertion',$formtemplate) {
 */
 function requete_bazar_fiche($valeur) {
 	$requete=NULL;
-	//l'annonce est directement publi�e pour les admins
+	//l'annonce est directement publiee pour les admins
 	if (!BAZ_SANS_AUTH) $utilisateur = new Administrateur_bazar($GLOBALS['AUTH']);
 	if (!BAZ_SANS_AUTH && ( $utilisateur->isAdmin( $GLOBALS['_BAZAR_']['id_typeannonce']) ||
 	    $utilisateur->isSuperAdmin() ) ) {
@@ -908,7 +908,7 @@ function requete_bazar_fiche($valeur) {
 			require_once 'bazar.fonct.wikini.php' ;
 			//generation du titre du wiki, sous la forme id-titre du projet
 			$titre=baz_titre_wiki($valeur["bf_titre"]);
-			//cr�ation du wiki
+			//creation du wiki
 			$valeur=array ("action"=> "nouveau_v", "code_alpha_wikini"=>$titre, "page"=>"AccueiL", "bdd_hote"=> "",
 			        "bdd_nom"=> "", "bdd_utilisateur"=> "", "bdd_mdp" => "", "table_prefix"=> "", "chemin" => "wikini/".$titre, "valider"=> "Valider");
 			$val = insertion($valeur, $GLOBALS['_BAZAR_']['db']);
@@ -934,7 +934,7 @@ function baz_insertion($valeur) {
         $GLOBALS['_BAZAR_']['id_fiche'] = baz_nextid('bazar_fiche', 'bf_id_fiche', $GLOBALS['_BAZAR_']['db']) ;
         $requete = 'INSERT INTO bazar_fiche SET bf_id_fiche='.$GLOBALS['_BAZAR_']['id_fiche'].', ';
 		if (!BAZ_SANS_AUTH) $requete .= 'bf_ce_utilisateur='.$GLOBALS['id_user'].', ';
-		$requete .= 'bf_categorie_fiche='.$GLOBALS['_BAZAR_']['categorie_nature'].', bf_ce_nature='.$GLOBALS['_BAZAR_']['id_typeannonce'].', '.
+		$requete .= 'bf_categorie_fiche="'.$GLOBALS['_BAZAR_']['categorie_nature'].'", bf_ce_nature='.$GLOBALS['_BAZAR_']['id_typeannonce'].', '.
 		   'bf_date_creation_fiche=NOW(), ';
 		if (!isset($_REQUEST['bf_date_debut_validite_fiche'])) {
 			$requete .= 'bf_date_debut_validite_fiche=now(), bf_date_fin_validite_fiche="0000-00-00", ' ;
@@ -961,7 +961,7 @@ function baz_insertion($valeur) {
 			}	
 		}
 				
-		//on nettoie l'url, on retourne � la consultation des fiches
+		//on nettoie l'url, on retourne a la consultation des fiches
 		$GLOBALS['_BAZAR_']['url']->addQueryString('message', 'ajout_ok') ;
 		$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_CONSULTER);
 		$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_ACTION, BAZ_VOIR_FICHE);
@@ -1316,7 +1316,7 @@ function baz_formulaire_des_formulaires($mode) {
 function baz_gestion_formulaire() {
 	$res= '<h2>'.BAZ_MODIFIER_FORMULAIRES.'</h2>'."\n";
 	
-	// il y a un formulaire � modifier
+	// il y a un formulaire a modifier
 	if (isset($_GET['action_formulaire']) && $_GET['action_formulaire']=='modif') {
 		//recuperation des informations du type de formulaire
 		$requete = 'SELECT * FROM bazar_nature WHERE bn_id_nature='.$_GET['idformulaire'];
@@ -1334,11 +1334,11 @@ function baz_gestion_formulaire() {
 		$formulaire=baz_formulaire_des_formulaires('new_v');
 		$res .= $formulaire->toHTML();	
 	
-	//il y a des donn�es pour ajouter un nouveau formulaire
+	//il y a des donnees pour ajouter un nouveau formulaire
 	} elseif (isset($_GET['action_formulaire']) && $_GET['action_formulaire']=='new_v') {		
 		$requete = 'INSERT INTO bazar_nature (`bn_id_nature` ,`bn_ce_i18n` ,`bn_label_nature` ,`bn_template` ,`bn_description` ,`bn_condition` ,`bn_commentaire` ,`bn_appropriation` ,`bn_label_class` ,`bn_type_fiche`)' .
 				   ' VALUES ('.baz_nextId('bazar_nature', 'bn_id_nature', $GLOBALS['_BAZAR_']['db']).
-                   ', "fr-FR", "'.$_POST["bn_label_nature"].'", "'.$_POST["bn_template"].
+                   ', "fr-FR", "'.$_POST["bn_label_nature"].'", "'.addslashes($_POST["bn_template"]).
 				   '", "'.$_POST["bn_description"].'", "'.$_POST["bn_condition"].
 				   '", ';
 		if (isset($_POST["bn_commentaire"])) $requete .='1';
@@ -1353,10 +1353,10 @@ function baz_gestion_formulaire() {
 		}
 		$res .= '<p class="BAZ_info">'.BAZ_NOUVEAU_FORMULAIRE_ENREGISTRE.'</p>'."\n";
 	
-	//il y a des donn�es pour modifier un formulaire
+	//il y a des donnees pour modifier un formulaire
 	} elseif (isset($_GET['action_formulaire']) && $_GET['action_formulaire']=='modif_v') {
 		$requete = 'UPDATE bazar_nature SET `bn_label_nature`="'.$_POST["bn_label_nature"].
-				   '" ,`bn_template`="'.$_POST["bn_template"].
+				   '" ,`bn_template`="'.addslashes($_POST["bn_template"]).
 				   '" ,`bn_description`="'.$_POST["bn_description"].
 				   '" ,`bn_condition`="'.$_POST["bn_condition"].
 				   '" ,`bn_commentaire`=';
@@ -1520,6 +1520,9 @@ function baz_titre_wiki($nom) {
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: bazar.fonct.php,v $
+* Revision 1.4  2008/08/28 12:23:39  mrflos
+* amérioration de la gestion des categories de fiches
+*
 * Revision 1.3  2008/08/27 13:18:57  mrflos
 * maj générale
 *

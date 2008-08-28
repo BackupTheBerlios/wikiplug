@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: formulaire.fonct.inc.php,v 1.2 2008/07/29 17:32:25 mrflos Exp $
+// CVS : $Id: formulaire.fonct.inc.php,v 1.3 2008/08/28 12:23:39 mrflos Exp $
 /**
 * Formulaire
 *
@@ -31,7 +31,7 @@
 //Autres auteurs :
 *@author        Aleandre GRANIER <alexandre@tela-botanica.org>
 *@copyright     Tela-Botanica 2000-2004
-*@version       $Revision: 1.2 $ $Date: 2008/07/29 17:32:25 $
+*@version       $Revision: 1.3 $ $Date: 2008/08/28 12:23:39 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -602,6 +602,10 @@ function wikini(&$formtemplate, $nom_bdd , $label, $limite1, $limite2, $defaut, 
 	return;
 }
 
+function formulaire_mail(&$formtemplate, $nom_bdd , $label, $limite1, $limite2, $defaut, $source, $obligatoire, $dans_moteur_de_recherche=0) {
+	return;
+}
+
 /** labelhtml() - Ajoute un �l�ment de type textearea au formulaire
 *
 * @param    mixed   L'objet QuickForm du formulaire
@@ -654,6 +658,9 @@ function carte_google(&$formtemplate, $url_google_script , $label, $champs_latit
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: formulaire.fonct.inc.php,v $
+* Revision 1.3  2008/08/28 12:23:39  mrflos
+* amérioration de la gestion des categories de fiches
+*
 * Revision 1.2  2008/07/29 17:32:25  mrflos
 * maj générale
 *

@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: bazar.fonct.rss.php,v 1.4 2008/08/27 17:19:40 mrflos Exp $
+// CVS : $Id: bazar.fonct.rss.php,v 1.5 2008/08/28 12:23:39 mrflos Exp $
 /**
 *
 *@package bazar
@@ -28,7 +28,7 @@
 *@author        Florian Schmitt <florian@ecole-et-nature.org>
 //Autres auteurs :
 *@copyright     Tela-Botanica 2000-2006
-*@version       $Revision: 1.4 $
+*@version       $Revision: 1.5 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -282,9 +282,13 @@ function baz_voir_fiche($danslappli, $idfiche='') {
 				}
 				elseif ( $tableau[$i]['type']=='wikini' ) {
 					$res .= '<div class="BAZ_lien_wikini BAZ_lien_wikini_'.$GLOBALS['_BAZAR_']['class'].'"><a href="wikini/'.genere_nom_wiki2($ligne["bf_titre"], TRUE).'">'.BAZ_ENTRER_PROJET.'</a></div>'."\n";
-				} elseif ($tableau[$i]['type']=='labelhtml') {
+				}
+				elseif ($tableau[$i]['type']=='labelhtml') {
 					// On ecrit le label uniquement si le champs obligatoire est a 1
 					if ($tableau[$i]['obligatoire'] == 1) $res .= '<div class="BAZ_label BAZ_rubrique_'.$GLOBALS['_BAZAR_']['class'].'">'.$tableau[$i]['label'].'</div>'."\n";
+				}
+				elseif ($tableau[$i]['type']=='formulaire_mail') {
+					$res .= '<iframe src="http://outils-reseaux.org/contact_formation.php?sujet='.$ligne['bf_titre'].'" border="0" style="border:0;overflow:hidden;width:95%;height:400px;">Pas possible d\'utiliser les iframes...</iframe>';
 				}
 			}
 			//afficher les liens pour l'annonce
@@ -1398,6 +1402,9 @@ function afficher_flux_rss() {
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: bazar.fonct.rss.php,v $
+* Revision 1.5  2008/08/28 12:23:39  mrflos
+* amérioration de la gestion des categories de fiches
+*
 * Revision 1.4  2008/08/27 17:19:40  mrflos
 * correction bug moteur de recherche, ajout des flux rss
 *
