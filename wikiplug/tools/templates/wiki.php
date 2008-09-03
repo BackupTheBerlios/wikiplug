@@ -9,7 +9,11 @@ if (!defined("WIKINI_VERSION"))
 
 
 //on cherche l'action template dans la page, qui definit le graphisme a utiliser
-$contenu=$wiki->LoadPage($page);
+if ($_POST["submit"] == html_entity_decode('Aper&ccedil;u')) {
+	$contenu["body"] = $_POST["body"].'{{template theme="'.$_POST["theme"].'" squelette="'.$_POST["squelette"].'" style="'.$_POST["style"].'"}}';
+	$_POST["body"] = $_POST["body"].'{{template theme="'.$_POST["theme"].'" squelette="'.$_POST["squelette"].'" style="'.$_POST["style"].'"}}';
+} else $contenu=$wiki->LoadPage($page);
+
 if ($act=preg_match_all ("/".'(\\{\\{template)'.'(.*?)'.'(\\}\\})'."/is", $contenu["body"], $matches)) {
      $i = 0; $j = 0;
      foreach($matches as $valeur) {

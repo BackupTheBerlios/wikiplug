@@ -9,7 +9,7 @@ if (!defined("WIKINI_VERSION"))
 
 if ($this->HasAccess("write") && $this->HasAccess("read")) {
 	// Edition
-	if ($_POST["submit"] != 'Aper&ccedil;u' && $_POST["submit"] != 'Sauver') {
+	if ($_POST["submit"] != html_entity_decode('Aper&ccedil;u') && $_POST["submit"] != 'Sauver') {
 		$selecteur = 'Th&egrave;me: <select name="theme" onchange="changeVal(this.value)">'."\n";
 	    foreach(array_keys($this->config['templates']) as $key => $value) {
 	            if($value !== $this->config['favorite_theme']) {
