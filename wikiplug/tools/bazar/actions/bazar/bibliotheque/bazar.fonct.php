@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: bazar.fonct.php,v 1.5 2008/08/28 14:49:52 mrflos Exp $
+// CVS : $Id: bazar.fonct.php,v 1.6 2008/09/09 12:46:42 mrflos Exp $
 /**
 *
 * Fonctions du module bazar
@@ -31,7 +31,7 @@
 *@author        Florian Schmitt <florian@ecole-et-nature.org>
 //Autres auteurs :
 *@copyright     Tela-Botanica 2000-2004
-*@version       $Revision: 1.5 $ $Date: 2008/08/28 14:49:52 $
+*@version       $Revision: 1.6 $ $Date: 2008/09/09 12:46:42 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -1354,7 +1354,7 @@ function baz_gestion_formulaire() {
 		$res .= '<p class="BAZ_info">'.BAZ_NOUVEAU_FORMULAIRE_ENREGISTRE.'</p>'."\n";
 	
 	//il y a des donnees pour modifier un formulaire
-	} elseif (isset($_GET['action_formulaire']) && $_GET['action_formulaire']=='modif_v') {
+	} elseif ($GLOBALS['_BAZAR_']['nomwiki']!='' && isset($_GET['action_formulaire']) && $_GET['action_formulaire']=='modif_v') {
 		$requete = 'UPDATE bazar_nature SET `bn_label_nature`="'.$_POST["bn_label_nature"].
 				   '" ,`bn_template`="'.addslashes($_POST["bn_template"]).
 				   '" ,`bn_description`="'.$_POST["bn_description"].
@@ -1375,7 +1375,7 @@ function baz_gestion_formulaire() {
 		$res .= '<p class="BAZ_info">'.BAZ_FORMULAIRE_MODIFIE.'</p>'."\n";	
 		
 	// il y a un id de formulaire � supprimer
-	} elseif (isset($_GET['action_formulaire']) && $_GET['action_formulaire']=='delete') {
+	} elseif ($GLOBALS['_BAZAR_']['nomwiki']!='' && isset($_GET['action_formulaire']) && $_GET['action_formulaire']=='delete') {
 		//suppression de l'entree dans bazar_nature
 		$requete = 'DELETE FROM bazar_nature WHERE bn_id_nature='.$_GET['idformulaire'];
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;		
@@ -1415,12 +1415,18 @@ function baz_gestion_formulaire() {
 			$liste .= '<li>';
 			$lien_formulaire->addQueryString('action_formulaire', 'delete');
 			$lien_formulaire->addQueryString('idformulaire', $ligne[bn_id_nature]);
-			$liste .= '<a href="'.$lien_formulaire->getURL().'"  onclick="javascript:return confirm(\''.BAZ_CONFIRM_SUPPRIMER_FORMULAIRE.' ?\');">'.
+			if ($GLOBALS['_BAZAR_']['nomwiki']!='')  {
+				$liste .= '<a href="'.$lien_formulaire->getURL().'"  onclick="javascript:return confirm(\''.BAZ_CONFIRM_SUPPRIMER_FORMULAIRE.' ?\');">'.
                       '<img src="'.BAZ_CHEMIN.'presentation'.DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR.'delete.gif" alt="'.BAZ_EFFACER.'"></a>'."\n";
+			}
 			$lien_formulaire->removeQueryString('action_formulaire');
 			$lien_formulaire->addQueryString('action_formulaire', 'modif');
-			$liste .= '<a href="'.$lien_formulaire->getURL().'"><img src="'.BAZ_CHEMIN.'presentation'.DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR.'modify.gif" alt="'.BAZ_MODIFIER.'">'.
-					  '&nbsp;'.$ligne['bn_label_nature'].'</a>'."\n";
+			if ($GLOBALS['_BAZAR_']['nomwiki']!='')  {
+				$liste .= '<a href="'.$lien_formulaire->getURL().'"><img src="'.BAZ_CHEMIN.'presentation'.DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR.'modify.gif" alt="'.BAZ_MODIFIER.'">'.
+						  '&nbsp;'.$ligne['bn_label_nature'].'</a>'."\n";
+			} else {
+				$liste .= $ligne['bn_label_nature']."\n";
+			}
 			$lien_formulaire->removeQueryString('action_formulaire');
 			$lien_formulaire->removeQueryString('idformulaire');
 		
@@ -1428,10 +1434,13 @@ function baz_gestion_formulaire() {
 		}
 		if ($liste!='') $res .= $liste.'</ul><br />'."\n";
 		
-		//ajout du lien pour cr�er un nouveau formulaire
-		$lien_formulaire->addQueryString('action_formulaire', 'new');
-		$res .= '<a href="'.$lien_formulaire->getURL().'"><img src="'.BAZ_CHEMIN.'presentation'.DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR.'new.gif" alt="new">'.
-					  '&nbsp;'.BAZ_NOUVEAU_FORMULAIRE.'</a>'."\n";;
+		//ajout du lien pour creer un nouveau formulaire
+		if ($GLOBALS['_BAZAR_']['nomwiki']!='') {
+			$lien_formulaire->addQueryString('action_formulaire', 'new');
+			$res .= '<a href="'.$lien_formulaire->getURL().'"><img src="'.BAZ_CHEMIN.'presentation'.DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR.'new.gif" alt="new">'.
+					  '&nbsp;'.BAZ_NOUVEAU_FORMULAIRE.'</a>'."\n";
+		}
+		
 	}
 	return $res;
 }
@@ -1520,6 +1529,9 @@ function baz_titre_wiki($nom) {
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: bazar.fonct.php,v $
+* Revision 1.6  2008/09/09 12:46:42  mrflos
+* sécurité: seuls les identifies peuvent supprimer une fiche ou un type de fiche
+*
 * Revision 1.5  2008/08/28 14:49:52  mrflos
 * amélioration des performances de bazar : google map pas chargée systematiquement
 * correction bug flux rss

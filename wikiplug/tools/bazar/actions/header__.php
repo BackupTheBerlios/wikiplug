@@ -16,9 +16,9 @@ if (DB::isError($resultat)) {
 // Nettoyage de l url
 $GLOBALS['_BAZAR_']['url']->removeQueryString(BAZ_VARIABLE_VOIR);
 $liste='';
+$lien_RSS=$GLOBALS['_BAZAR_']['url'];
+$lien_RSS->addQueryString(BAZ_VARIABLE_ACTION, BAZ_VOIR_FLUX_RSS);
 while ($ligne = $resultat->fetchRow(DB_FETCHMODE_ASSOC)) {
-	$lien_RSS=$GLOBALS['_BAZAR_']['url'];
-	$lien_RSS->addQueryString(BAZ_VARIABLE_ACTION, BAZ_VOIR_FLUX_RSS);
 	$lien_RSS->addQueryString('annonce', $ligne[bn_id_nature]);
 	$liste .= '<link rel="alternate" type="application/rss+xml" title="'.$ligne['bn_label_nature'].'" href="'.$lien_RSS->getURL().'"  />'."\n";
 	$lien_RSS->removeQueryString('annonce');

@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: bazar.fonct.rss.php,v 1.6 2008/08/28 14:49:52 mrflos Exp $
+// CVS : $Id: bazar.fonct.rss.php,v 1.7 2008/09/09 12:46:42 mrflos Exp $
 /**
 *
 *@package bazar
@@ -28,7 +28,7 @@
 *@author        Florian Schmitt <florian@ecole-et-nature.org>
 //Autres auteurs :
 *@copyright     Tela-Botanica 2000-2006
-*@version       $Revision: 1.6 $
+*@version       $Revision: 1.7 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -369,7 +369,7 @@ function baz_voir_fiche($danslappli, $idfiche='') {
 				}
 				$res .= '</div>'."\n";
 	
-				if ( $est_admin || ((BAZ_SANS_AUTH!=true) && $GLOBALS['_BAZAR_']['annonceur']==$GLOBALS['AUTH']->getAuthData(BAZ_CHAMPS_ID)) ) {
+				if ( $GLOBALS['_BAZAR_']['nomwiki']!='') {
 					$res .= '<div class="BAZ_actions_fiche BAZ_actions_fiche_'.$GLOBALS['_BAZAR_']['class'].'">'."\n";
 					$res .= '<ul>'."\n";
 					if ( $est_admin ) {
@@ -1088,13 +1088,15 @@ function baz_liste($typeannonce='toutes') {
 			while($ligne = $resultat->fetchRow(DB_FETCHMODE_ASSOC)) {		    		
 		    		$GLOBALS['_BAZAR_']['url']->addQueryString('id_fiche', $ligne['bf_id_fiche']);
 		    		$res .= '<li class="BAZ_titre_fiche">'."\n";		    		
-		    		$GLOBALS['_BAZAR_']['url']->removeQueryString(BAZ_VARIABLE_ACTION);		
-					$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_ACTION, BAZ_ACTION_SUPPRESSION);
-					$res .= '<a href="'.$GLOBALS['_BAZAR_']['url']->getURL().'"  onclick="javascript:return confirm(\''.BAZ_CONFIRM_SUPPRIMER_FICHE.' ?\');">';
-                    $res .= '<img src="'.BAZ_CHEMIN.'presentation'.DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR.'delete.gif" alt="'.BAZ_EFFACER.'"></a>'."\n";
-					$GLOBALS['_BAZAR_']['url']->removeQueryString(BAZ_VARIABLE_ACTION);
-					$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_ACTION, BAZ_ACTION_MODIFIER);
-					$res .= '<a href="'.$GLOBALS['_BAZAR_']['url']->getURL().'"><img src="'.BAZ_CHEMIN.'presentation'.DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR.'modify.gif" alt="'.BAZ_MODIFIER.'">'."\n";
+		    		if ($GLOBALS['_BAZAR_']['nomwiki']!='') {
+		    			$GLOBALS['_BAZAR_']['url']->removeQueryString(BAZ_VARIABLE_ACTION);		
+						$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_ACTION, BAZ_ACTION_SUPPRESSION);
+						$res .= '<a href="'.$GLOBALS['_BAZAR_']['url']->getURL().'"  onclick="javascript:return confirm(\''.BAZ_CONFIRM_SUPPRIMER_FICHE.' ?\');">';
+	                    $res .= '<img src="'.BAZ_CHEMIN.'presentation'.DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR.'delete.gif" alt="'.BAZ_EFFACER.'"></a>'."\n";
+						$GLOBALS['_BAZAR_']['url']->removeQueryString(BAZ_VARIABLE_ACTION);
+						$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_ACTION, BAZ_ACTION_MODIFIER);
+						$res .= '<a href="'.$GLOBALS['_BAZAR_']['url']->getURL().'"><img src="'.BAZ_CHEMIN.'presentation'.DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR.'modify.gif" alt="'.BAZ_MODIFIER.'">'."\n";
+		    		}				
 					$GLOBALS['_BAZAR_']['url']->removeQueryString(BAZ_VARIABLE_ACTION);
 					$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_ACTION, BAZ_VOIR_FICHE);	    	
 		    		$res .= '<a href="'. $GLOBALS['_BAZAR_']['url']->getURL() .'" alt="lire la fiche">'. $ligne['bf_titre'].'</a></li>'."\n";
@@ -1229,7 +1231,7 @@ function baz_liste_pagine_HTML($typeannonce, $nbitem, $emetteur, $valide, $reque
     	foreach ($data as $valeur) {
 	        $res .='<li class="BAZ_'.$valeur['bn_label_class'].'">'."\n";
 	        $GLOBALS['_BAZAR_']['url']->addQueryString('id_fiche', $valeur['bf_id_fiche']) ;
-	        if ((!BAZ_SANS_AUTH && ($utilisateur->isSuperAdmin() || $GLOBALS['id_user']==$valeur['bf_ce_utilisateur'])) || BAZ_SANS_AUTH) {		    		   		
+	        if ($GLOBALS['_BAZAR_']['nomwiki']!='') {		    		   		
 		    		$GLOBALS['_BAZAR_']['url']->removeQueryString(BAZ_VARIABLE_ACTION);		
 					$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_ACTION, BAZ_ACTION_SUPPRESSION);
 					$res .= '<a href="'.$GLOBALS['_BAZAR_']['url']->getURL().'"  onclick="javascript:return confirm(\''.BAZ_CONFIRM_SUPPRIMER_FICHE.' ?\');">';
@@ -1403,6 +1405,9 @@ function afficher_flux_rss() {
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: bazar.fonct.rss.php,v $
+* Revision 1.7  2008/09/09 12:46:42  mrflos
+* sécurité: seuls les identifies peuvent supprimer une fiche ou un type de fiche
+*
 * Revision 1.6  2008/08/28 14:49:52  mrflos
 * amélioration des performances de bazar : google map pas chargée systematiquement
 * correction bug flux rss

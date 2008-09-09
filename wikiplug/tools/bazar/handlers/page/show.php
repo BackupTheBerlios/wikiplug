@@ -1,12 +1,12 @@
 <?php
 /*
-$Id: show.php,v 1.1 2008/07/07 18:00:48 mrflos Exp $
+$Id: show.php,v 1.2 2008/09/09 12:46:42 mrflos Exp $
 Copyright (c) 2002, Hendrik Mans <hendrik@mans.de>
 Copyright 2002, 2003 David DELON
 Copyright 2002, 2003 Charles NEPOTE
 Copyright 2003  Eric DELORD
 Copyright 2003  Eric FELDSTEIN
-Copyright 2004  Jean Christophe ANDR�
+Copyright 2004  Jean Christophe ANDRE
 Copyright 2005  Didier Loiseau
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,7 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-// V�rification de s�curit�
+// Verification de securite
 if (!defined("WIKINI_VERSION"))
 {
 	die ("acc&egrave;s direct interdit");

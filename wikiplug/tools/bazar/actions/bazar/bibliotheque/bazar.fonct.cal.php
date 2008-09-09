@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: bazar.fonct.cal.php,v 1.4 2008/08/28 14:49:52 mrflos Exp $
+// CVS : $Id: bazar.fonct.cal.php,v 1.5 2008/09/09 12:46:42 mrflos Exp $
 /**
 *
 * Fonctions calendrier du module bazar
@@ -29,7 +29,7 @@
 *@author        David Delon <david.delon@clapas.net>
 //Autres auteurs :
 *@copyright     Tela-Botanica 2000-2004
-*@version       $Revision: 1.4 $ $Date: 2008/08/28 14:49:52 $
+*@version       $Revision: 1.5 $ $Date: 2008/09/09 12:46:42 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -65,7 +65,7 @@ class DiaryEvent extends Calendar_Decorator {
 
 
 // $type : calendrier
-// $type : calendrier_appplette
+// $type : calendrier_applette
 function GestionAffichageCalendrier($arguments = array(), $type = 'calendrier') {
 	$script = '';
 	// recuperation des arguments de l applette
@@ -165,7 +165,7 @@ function GestionAffichageCalendrier($arguments = array(), $type = 'calendrier') 
 	$url->addQueryString('d', date('j',$nextStamp));
 	$next = $url->getUrl();
 	
-	// Suppression du param�tre de troncage des titres
+	// Suppression du parametre de troncage des titres
 	$url->removeQueryString('tt');
 	
 	$fr_month = array(	"1"=>BAZ_JANVIER,"2"=>BAZ_FEVRIER,"3"=>BAZ_MARS,"4"=>BAZ_AVRIL,"5"=>BAZ_MAI,"6"=>BAZ_JUIN,
@@ -231,9 +231,9 @@ function GestionAffichageCalendrier($arguments = array(), $type = 'calendrier') 
 				//echo "$ts_jour_suivant-";
 				$naviguer = true;
 				while ($naviguer) {
-					// Si le jours suivant est inf�rieur � la date de fin, on continue...
+					// Si le jours suivant est inferieur a la date de fin, on continue...
 					if ($ts_jour_suivant <= $ts_jour_fin) {
-						// Si le jours suivant est inf�rieur � la date de fin du mois courrant, on continue...
+						// Si le jours suivant est inferieur a la date de fin du mois courrant, on continue...
 						if ($ts_jour_suivant < $ts_jour_fin_mois) {
 							$cle_j = date('Y-m-d', $ts_jour_suivant);
 							if (!isset($tablo_jours[$cle_j])) {
@@ -362,7 +362,7 @@ function GestionAffichageCalendrier($arguments = array(), $type = 'calendrier') 
 						
 						if (!isset($_GET['tt']) || (isset($_GET['tt']) && $_GET['tt'] == '1')) {
 							$titre_taille = strlen($ligne_evenement->bf_titre);
-							$titre = ($titre_taille > 20)?substr($ligne_evenement->bf_titre, 0, 20).'...':$ligne_evenement->bf_titre;
+							$titre = ($titre_taille > 40)?substr($ligne_evenement->bf_titre, 0, 40).'...':$ligne_evenement->bf_titre;
 						} else {
 							$titre = $ligne_evenement->bf_titre;
 						}

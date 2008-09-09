@@ -21,7 +21,7 @@
 // | along with Foobar; if not, write to the Free Software                                                |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: bazar.php,v 1.2 2008/08/27 13:18:57 mrflos Exp $
+// CVS : $Id: bazar.php,v 1.3 2008/09/09 12:46:42 mrflos Exp $
 /**
 * wiki.php
 *
@@ -33,7 +33,7 @@
 //Autres auteurs :
 *@author        Aucun
 *@copyright     Kaleidos-coop.org 2008
-*@version       $Revision: 1.2 $ $Date: 2008/08/27 13:18:57 $
+*@version       $Revision: 1.3 $ $Date: 2008/09/09 12:46:42 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -115,6 +115,9 @@ if ($GLOBALS['_BAZAR_']['id_typeannonce']!='toutes') {
 	$GLOBALS['_BAZAR_']['commentaire']=$ligne['bn_commentaire'];
 	$GLOBALS['_BAZAR_']['appropriation']=$ligne['bn_appropriation'];
 }
+
+$GLOBALS['_BAZAR_']['nomwiki']=$this->getUser();
+
 //variable d'affichage du bazar
 $res = '';
 // +------------------------------------------------------------------------------------------------------+
@@ -267,6 +270,9 @@ echo $res ;
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: bazar.php,v $
+* Revision 1.3  2008/09/09 12:46:42  mrflos
+* sécurité: seuls les identifies peuvent supprimer une fiche ou un type de fiche
+*
 * Revision 1.2  2008/08/27 13:18:57  mrflos
 * maj générale
 *
