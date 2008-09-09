@@ -28,6 +28,7 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
 if (!isset($_REQUEST["action"])) $_REQUEST["action"] = '';
 if ($_REQUEST["action"] == "logout")
 {
@@ -196,7 +197,27 @@ else
 
 				// log in
 				$this->SetUser($this->LoadUser($name));
+				
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------MODIFICATION DU COMPORTEMENT----------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+				//creation des pages utilisateurs modeles à partir des pages commencant par ModeleUtilisateur			
+				$sql = "SELECT tag,body FROM ".$this->config["table_prefix"]."pages ". 
+					   "WHERE tag LIKE 'ModeleUtilisateur%' AND latest = 'Y'";
+				$page = $this->LoadAll($sql);				
+				foreach ($page as $pageutilisateur) {
+					$pageuser = str_replace('<UTILISATEUR>', $name, $pageutilisateur["body"]);
+					$tagpageuser = str_replace('ModeleUtilisateur', mysql_escape_string($name), $pageutilisateur["tag"]);
+					$this->SavePage($tagpageuser,$pageuser);
+					//gestion des droits de cette nouvelle page creee : pas defaut seuls les admins du groupe admin et l'utilisateur lui meme peuvent changer les droits
+					$this->SaveAcl($tagpageuser, "write", $tagpageuser);
+					$this->SaveAcl($tagpageuser, "read", $tagpageuser);
+					$this->SaveAcl($tagpageuser, "comment", $tagpageuser);
+				}
 
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------				
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------						
+		
 				// forward
 				$this->Redirect($this->href());
 			}
@@ -210,7 +231,7 @@ else
 	echo $this->FormOpen();
 	?>
 	<input type="hidden" name="action" value="login" />
-	<h1>S'inscrire</h1>
+	<h1>S'enregistrer sur ce site</h1>
 	<table>
 		<?php
 		if (isset($error))
@@ -218,6 +239,7 @@ else
 			echo "<tr><td></td><td><div class=\"error\">", $this->Format($error), "</div></td></tr>\n";
 		}
 		?>
+		<tr><td colspan="2"><?php echo $this->Format("Les champs suivants sont &agrave; remplir si vous vous identifiez pour la premi&egrave;re fois (vous cr&eacute;erez ainsi un compte)."); ?></td></tr>
 		<tr>
 			<td align="right">Votre NomWiki&nbsp;:</td>
 			<td><input name="name" size="40" value="<?php if (isset($name)) echo htmlspecialchars($name) ?>" /></td>
@@ -233,7 +255,7 @@ else
 			<td><input type="password" name="confpassword" size="40" /></td>
 		</tr>
 		<tr>
-			<td align="right">Adresse de messagerie &eacute;lectronique.&nbsp;:</td>
+			<td align="right">Adresse de messagerie &eacute;lectronique&nbsp;:</td>
 			<td><input name="email" size="40" value="<?php if (isset($email)) echo htmlspecialchars($email) ?>" /></td>
 		</tr>
 		<tr>

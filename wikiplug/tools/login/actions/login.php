@@ -46,22 +46,24 @@ if (empty($urllogin)) {
 
 $pageacceuil = $this->GetParameter("pageaccueil");
 
+
 if (!isset($_REQUEST["action"])) $_REQUEST["action"] = '';
 if ($_REQUEST["action"] == "logout")
 {
 	$this->LogoutUser();
 	$this->SetMessage("Vous &ecirc;tes maintenant d&eacute;connect&eacute; !");
-	$this->Redirect($_POST['urldepart']);
 }
-else if ($user = $this->GetUser())
+
+if ($user = $this->GetUser())
 {
 	// user is logged in; display config form
 	echo "<form action=\"".$urllogin."\" method=\"post\">
 	<input type=\"hidden\" name=\"action\" value=\"update\" />
 	<input type=\"hidden\" name=\"urldepart\" value=\"".$this->href()."\" />";
-	echo $bienvenue.$this->Link($user["name"])."&nbsp;!";
+	echo $bienvenue.$this->Link($user["name"])."&nbsp;!\n";
 	echo '<input class="bouton_iden" type="button" value="D&eacute;connexion" onclick="document.location=\''.$urllogin.'&action=logout\'" />
-	<span class="inscription_iden"><a href="'.$urllogin.'" title="S\'inscrire">Modifier mon inscription</a></span>';
+	<span class="modif_inscription_iden"><a href="'.$urllogin.'" title="Modifier mon inscription">Modifier mon inscription</a></span>';
+	if ($this->LoadPage($user["name"]."Menu")!=null) { echo $this->Format("{{include page=\"".$user["name"]."Menu\"}}"); }
 	echo $this->FormClose();
 
 }
