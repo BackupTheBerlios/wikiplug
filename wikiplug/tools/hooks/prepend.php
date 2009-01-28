@@ -91,6 +91,49 @@ Class WikiTools extends Wiki {
 		else return false;
 	}
 	
+	/**
+	* Retrieves the list of existing actions
+	* 	@return array An unordered array of all the available actions.
+	*/
+
+	function GetActionsList() {
+        $action_path = $this->GetConfigValue('action_path');
+        $dirs = explode(":", $action_path);
+        $list = array();
+        foreach($dirs as $dir) {
+                if ($dh = opendir($dir)) {
+                        while (($file = readdir($dh)) !== false) {
+                                if (preg_match('/^([a-zA-Z-0-9]+)(.class)?.php$/', $file, $matches)) {
+                                        $list[] = $matches[1];
+                                }
+                        }
+                }
+        }
+
+        return array_unique($list);
+	}
+
+	/**
+	* Retrieves the list of existing handlers
+	* @return array An unordered array of all the available handlers.
+	*/
+	function GetHandlersList() {
+        $handler_path = $this->GetConfigValue('handler_path');
+        $dirs = explode(":", $handler_path);
+        $list = array();
+        foreach($dirs as $dir) {
+                $dir.='/page';
+                if ($dh = opendir($dir)) {
+                        while (($file = readdir($dh)) !== false) {
+                                if (preg_match('/^([a-zA-Z-0-9]+)(.class)?.php$/', $file, $matches)) {
+                                        $list[] = $matches[1];
+                                }
+                        }
+                }
+     }
+     return array_unique($list);
+	}
+	
 }
 
 $plugins_root = 'tools/';

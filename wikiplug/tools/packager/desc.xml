@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<plugin name="Theme Manager" version="0.5" active="1">
+<plugin name="Theme Manager" version="0.5" active="0">
   <author>Geoffrey Bachelet</author>
   
   <label>Themes and plugins packing</label>

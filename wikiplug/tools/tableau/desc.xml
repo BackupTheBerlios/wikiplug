@@ -2,5 +2,5 @@
 <plugin name="wkattach" version="$Name:  $" active="1">
   <author>GardFieldFr</author>
   <label>Tableau</label>
-  <desc>Permet de créer des tableaux dans Wikini</desc>
+  <desc>Permet de creer des tableaux dans Wikini</desc>
 </plugin>
