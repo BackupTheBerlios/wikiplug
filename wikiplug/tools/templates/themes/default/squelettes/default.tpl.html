@@ -2,29 +2,28 @@
 <html xmlns="http://www.w3.org/1999/xhtml" >
 
 <head>
-<title>{WIKINI_TITRE}</title>
-{WIKINI_META_ROBOTS}
+<title>{{titrepage}}</title>
+{{metarobots}}
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
 <meta name="keywords" content="{WIKINI_MOTS_CLES}" />
 <meta name="description" content="{WIKINI_DESCRIPTION}" />
-{WIKINI_STYLES_CSS}
-{WIKINI_JAVASCRIPTS}
+{{liensstyle}}
+{{liensjavascripts}}
 </head>
 
-<body {WIKINI_BODY}>
-<div style="display: none;"><a href="{WIKINI_RESETSTYLE}" accesskey="7"></a></div>
-<div id="conteneur" {WIKINI_DOUBLE_CLIC}>
+<body {{parambody}}>
+<div id="conteneur">
 	<div id="bandeau_haut">
-		<h1 id="titre_site">{WIKINI_TITRE_SITE}</h1>
+		<h1 id="titre_site"></h1>
 	</div>
 	<div id="menu_column">
-		{{include page="PageMenu"}}
+		{{include page="PageMenu"  doubleclic="1"}}
 	</div>
-	<div id="body_column">
+	<div id="body_column" {{doubleclic}}>
 		{WIKINI_PAGE}
 	</div>
 	<div id="bandeau_bas">
-		{WIKINI_BARRE_BAS}
+		{barredactions}
 		Site utilisant <a href="http://wikini.net">Wikini {WIKINI_VERSION}</a>&nbsp;
 		<a href="http://jigsaw.w3.org/css-validator/check/referer" rel="external"><img src="tools/templates/themes/default/images/logo-css.png"></a>&nbsp;<a href="http://validator.w3.org/check?uri=referer" rel="external"><img src="tools/templates/themes/default/images/logo-xhtml11.png"></a>
 		<a href="{WIKINI_BASE_URL}DerniersChangementsRSS/xml"><img src="tools/templates/themes/default/images/rss.png"></a> 
