@@ -8,7 +8,7 @@ if (!defined("WIKINI_VERSION"))
 if ($this->HasAccess("write") && $this->HasAccess("read"))
 {
 	// preview?
-	if ($_POST["submit"] == "Aperï¿½u")
+	if ($_POST["submit"] == "Aperçu")
 	{
 		// Rien
 	}
