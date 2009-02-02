@@ -33,6 +33,7 @@ if ($act=preg_match_all ("/".'(\\{\\{template)'.'(.*?)'.'(\\}\\})'."/is", $conte
        $i++;
      }
    }
+   
 isset($vars["theme"]) ? define ('THEME_PAR_DEFAUT', $vars["theme"]) : define ('THEME_PAR_DEFAUT', 'revi-conseil');
 isset($vars["style"]) ? define ('CSS_PAR_DEFAUT', $vars["style"]) : define ('CSS_PAR_DEFAUT', 'reviconseil.css');
 isset($vars["squelette"]) ? define ('SQUELETTE_PAR_DEFAUT', $vars["squelette"]) : define ('SQUELETTE_PAR_DEFAUT', 'accueil.tpl.html');
