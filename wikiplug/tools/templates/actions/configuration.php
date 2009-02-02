@@ -4,8 +4,22 @@ if (!defined("WIKINI_VERSION"))
         die ("acc&egrave;s direct interdit");
 }
 $param = $this->GetParameter('param');
-//TODO: verifier que param ne veut pas prendre le mot de passe mysql
 if (!empty($param)) {
-	echo $this->config[$param];
-}
+	switch($param) {		
+	  	case 'wakka_version':
+	  	case 'wikini_version':
+	  	case 'root_page':
+	  	case 'wakka_name':
+	  	case 'base_url':
+	  	case 'meta_keywords':
+	  	case 'meta_description':
+	  		echo $this->config[$param];
+			break;
+	  	default:
+	  		break;	
+	}		
+			
+} 
+	
+	
 ?>
