@@ -9,6 +9,7 @@ if (!defined("WIKINI_VERSION"))
 
 if ($this->HasAccess("write") && $this->HasAccess("read")) {
 	// Edition
+	if ($this->config['show_action_template']) { // TODO : utiliser ACL
 	if ($_POST["submit"] != html_entity_decode('Aper&ccedil;u') && $_POST["submit"] != 'Sauver') {
 		$selecteur = 'Th&egrave;me: <select name="theme" onchange="changeVal(this.value)">'."\n";
 	    foreach(array_keys($this->config['templates']) as $key => $value) {
@@ -96,6 +97,7 @@ if ($this->HasAccess("write") && $this->HasAccess("read")) {
 		$plugin_output_new=preg_replace ('/\<input type="button" value="Annulation"/',
 		$javascript.'<input type="button" value="Annulation"',
 		$plugin_output_new);
+	}
 	}
 }
 

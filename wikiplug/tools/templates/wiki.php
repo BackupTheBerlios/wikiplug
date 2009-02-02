@@ -8,11 +8,33 @@ if (!defined("WIKINI_VERSION"))
 }
 
 
+
+// Surcharge  fonction  LoadRecentlyChanged : suppression remplissage cache car affecte le rendu du template.
+$wikiClasses [] = 'Template';
+$wikiClassesContent [] = ' 
+
+	function LoadRecentlyChanged($limit=50)
+        {
+                $limit= (int) $limit;
+                if ($pages = $this->LoadAll("select id, tag, time, user, owner from ".$this->config["table_prefix"]."pages where latest = \'Y\' and comment_on =  \'\' order by time desc limit $limit"))
+                {
+                        return $pages;
+                }
+        }
+
+
+	
+';	
+
+
 //on cherche l'action template dans la page, qui definit le graphisme a utiliser
 if ($_POST["submit"] == html_entity_decode('Aper&ccedil;u')) {
 	$contenu["body"] = $_POST["body"].'{{template theme="'.$_POST["theme"].'" squelette="'.$_POST["squelette"].'" style="'.$_POST["style"].'"}}';
 	$_POST["body"] = $_POST["body"].'{{template theme="'.$_POST["theme"].'" squelette="'.$_POST["squelette"].'" style="'.$_POST["style"].'"}}';
 } else $contenu=$wiki->LoadPage($page);
+
+
+
 
 if ($act=preg_match_all ("/".'(\\{\\{template)'.'(.*?)'.'(\\}\\})'."/is", $contenu["body"], $matches)) {
      $i = 0; $j = 0;
@@ -34,9 +56,57 @@ if ($act=preg_match_all ("/".'(\\{\\{template)'.'(.*?)'.'(\\}\\})'."/is", $conte
      }
    }
    
-isset($vars["theme"]) ? define ('THEME_PAR_DEFAUT', $vars["theme"]) : define ('THEME_PAR_DEFAUT', 'default');
-isset($vars["style"]) ? define ('CSS_PAR_DEFAUT', $vars["style"]) : define ('CSS_PAR_DEFAUT', 'default.css');
-isset($vars["squelette"]) ? define ('SQUELETTE_PAR_DEFAUT', $vars["squelette"]) : define ('SQUELETTE_PAR_DEFAUT', 'default.tpl.html');
+// Dans Wakka.config.php preciser :
+// favorite_theme
+// favorite_style
+// favorite_squelette
+
+// Sinon ;
+// Theme par defaut : default
+// Css par defaut : default.css
+// squelette par defaut : default.tpl.html
+   
+
+
+
+if (isset($vars["theme"])) {
+	 define ('THEME_PAR_DEFAUT', $vars["theme"]); 
+}
+else {
+	if (isset($wakkaConfig['favorite_theme'])) {
+		define ('THEME_PAR_DEFAUT',$wakkaConfig['favorite_theme']);
+	}
+	else {
+		define ('THEME_PAR_DEFAUT', 'default');
+	}
+}
+
+if (isset($vars["style"])) {
+ 	define ('CSS_PAR_DEFAUT', $vars["style"]);
+}
+else {
+	if (isset($wakkaConfig['favorite_style'])) {
+		define ('CSS_PAR_DEFAUT',$wakkaConfig['favorite_style']);
+	}
+	else {
+		define ('CSS_PAR_DEFAUT', 'default.css');
+	}
+}
+
+
+if  (isset($vars["squelette"])) {
+	define ('SQUELETTE_PAR_DEFAUT', $vars["squelette"]);
+}
+else {	
+	if (isset($wakkaConfig['favorite_squelette'])) {
+		define ('SQUELETTE_PAR_DEFAUT',$wakkaConfig['favorite_squelette']);
+	} 
+	else {
+		define ('SQUELETTE_PAR_DEFAUT', 'default.tpl.html');
+ 		
+	}
+}
+
 
 //on cherche tous les dossiers du repertoire themes et des sous dossier styles et squelettes, et on les range dans le tableau $wakkaConfig['templates']
     $repertoire = 'tools'.DIRECTORY_SEPARATOR.'templates'.DIRECTORY_SEPARATOR.'themes';

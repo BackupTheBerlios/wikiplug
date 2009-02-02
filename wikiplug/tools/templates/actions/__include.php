@@ -6,5 +6,6 @@ if (!defined("WIKINI_VERSION"))
 }
 
 $dblclic = $this->GetParameter('doubleclic');
+$parent = $this->GetParameter('parent');
 
 ?>
