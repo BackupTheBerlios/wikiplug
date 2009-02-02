@@ -34,9 +34,9 @@ if ($act=preg_match_all ("/".'(\\{\\{template)'.'(.*?)'.'(\\}\\})'."/is", $conte
      }
    }
    
-isset($vars["theme"]) ? define ('THEME_PAR_DEFAUT', $vars["theme"]) : define ('THEME_PAR_DEFAUT', 'revi-conseil');
-isset($vars["style"]) ? define ('CSS_PAR_DEFAUT', $vars["style"]) : define ('CSS_PAR_DEFAUT', 'reviconseil.css');
-isset($vars["squelette"]) ? define ('SQUELETTE_PAR_DEFAUT', $vars["squelette"]) : define ('SQUELETTE_PAR_DEFAUT', 'accueil.tpl.html');
+isset($vars["theme"]) ? define ('THEME_PAR_DEFAUT', $vars["theme"]) : define ('THEME_PAR_DEFAUT', 'default');
+isset($vars["style"]) ? define ('CSS_PAR_DEFAUT', $vars["style"]) : define ('CSS_PAR_DEFAUT', 'default.css');
+isset($vars["squelette"]) ? define ('SQUELETTE_PAR_DEFAUT', $vars["squelette"]) : define ('SQUELETTE_PAR_DEFAUT', 'default.tpl.html');
 
 //on cherche tous les dossiers du repertoire themes et des sous dossier styles et squelettes, et on les range dans le tableau $wakkaConfig['templates']
     $repertoire = 'tools'.DIRECTORY_SEPARATOR.'templates'.DIRECTORY_SEPARATOR.'themes';
