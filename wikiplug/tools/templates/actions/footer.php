@@ -3,7 +3,7 @@ if (!defined("WIKINI_VERSION"))
 {
         die ("acc&egrave;s direct interdit");
 }
-//On recupere la partie haut du template et on execute les actions wikini
+//On recupere la partie bas  du template et on execute les actions wikini
 $template_decoupe = explode("{WIKINI_PAGE}", file_get_contents('tools/templates/themes/'.$this->config['favorite_theme'].'/squelettes/'.$this->config['favorite_squelette']));
 $template_footer = $template_decoupe[1];
 if ($act=preg_match_all ("/".'(\\{\\{)'.'(.*?)'.'(\\}\\})'."/is", $template_footer, $matches)) {

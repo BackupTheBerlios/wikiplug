@@ -29,10 +29,15 @@ $wikiClassesContent [] = '
 
 //on cherche l'action template dans la page, qui definit le graphisme a utiliser
 if ($_POST["submit"] == html_entity_decode('Aper&ccedil;u')) {
+	//$contenu["body"] = $_POST["body"].'{{template theme="'.$_POST["theme"].'" squelette="'.$_POST["squelette"].'" style="'.$_POST["style"].'"}}';
 	$contenu["body"] = $_POST["body"].'{{template theme="'.$_POST["theme"].'" squelette="'.$_POST["squelette"].'" style="'.$_POST["style"].'"}}';
+	
 	$_POST["body"] = $_POST["body"].'{{template theme="'.$_POST["theme"].'" squelette="'.$_POST["squelette"].'" style="'.$_POST["style"].'"}}';
-} else $contenu=$wiki->LoadPage($page);
+} 
 
+else {
+ $contenu=$wiki->LoadPage($page);
+}
 
 
 
@@ -67,9 +72,12 @@ if ($act=preg_match_all ("/".'(\\{\\{template)'.'(.*?)'.'(\\}\\})'."/is", $conte
 // squelette par defaut : default.tpl.html
    
 
+ 
+  
 
-
-if (isset($vars["theme"])) {
+if (isset($vars["theme"]) && $vars["theme"]!="") {
+	print "mm";
+	print $vars["theme"];
 	 define ('THEME_PAR_DEFAUT', $vars["theme"]); 
 }
 else {
@@ -81,7 +89,7 @@ else {
 	}
 }
 
-if (isset($vars["style"])) {
+if (isset($vars["style"]) && $vars["style"]!="") {
  	define ('CSS_PAR_DEFAUT', $vars["style"]);
 }
 else {
@@ -94,7 +102,7 @@ else {
 }
 
 
-if  (isset($vars["squelette"])) {
+if  (isset($vars["squelette"]) && $vars["squelette"]!="") {
 	define ('SQUELETTE_PAR_DEFAUT', $vars["squelette"]);
 }
 else {	
@@ -107,6 +115,8 @@ else {
 	}
 }
 
+    
+    
 
 //on cherche tous les dossiers du repertoire themes et des sous dossier styles et squelettes, et on les range dans le tableau $wakkaConfig['templates']
     $repertoire = 'tools'.DIRECTORY_SEPARATOR.'templates'.DIRECTORY_SEPARATOR.'themes';
@@ -130,14 +140,18 @@ else {
     closedir($dir);
     if (is_array($wakkaConfig)) ksort($wakkaConfig['templates']);
 
+       
 //=======Changer de theme=================================================================================================
-    if (isset($_POST['theme']) && array_key_exists($_POST['theme'], array_keys($wakkaConfig['templates']))) {
+    if (isset($_POST['theme'])  && array_key_exists($_POST['theme'], array_keys($wakkaConfig['templates']))) {
             $wakkaConfig['favorite_theme'] = $_POST['theme'];
     }
     else {
             $wakkaConfig['favorite_theme'] = THEME_PAR_DEFAUT;
 
     }
+
+         
+    
 
 //=======Changer de style=====================================================================================================
     $styles['none']='pas de style';
@@ -156,4 +170,5 @@ else {
     else {
             $wakkaConfig['favorite_squelette'] = SQUELETTE_PAR_DEFAUT;
     }
+
 ?>
