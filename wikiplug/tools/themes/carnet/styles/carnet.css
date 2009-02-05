@@ -70,11 +70,21 @@ code { background:#fffcf8; display:block; border:1px solid #df7000; margin:14px;
 #main { font:12px verdana; line-height:15px; }
 
 
-#left { width:150px; float:left; }
+#left {
+	 width:150px; float:left; min-height:800px;
+	 background-image:url(../images/spiral.gif); background-repeat:repeat-y; background-position:110px 0px;
+}
 
-#left ul {margin-left:25px; padding-left:0px; }
+#left ul {margin-left:25px; padding-left:0px;
 
-#body { width:730px; float:right; margin-bottom:20px; margin-left:0px; min-height:800px;}
+
+}
+
+
+#body {
+	 width:730px; float:right; margin-bottom:20px; margin-left:0px; min-height:800px;	
+}
+
 
 
 #footer { clear:both; margin:5px; vertical-align:middle; text-align:center; font-size:12px; display:block; }
