@@ -76,8 +76,6 @@ if ($act=preg_match_all ("/".'(\\{\\{template)'.'(.*?)'.'(\\}\\})'."/is", $conte
   
 
 if (isset($vars["theme"]) && $vars["theme"]!="") {
-	print "mm";
-	print $vars["theme"];
 	 define ('THEME_PAR_DEFAUT', $vars["theme"]); 
 }
 else {
