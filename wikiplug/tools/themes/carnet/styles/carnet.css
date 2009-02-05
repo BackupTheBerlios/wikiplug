@@ -74,6 +74,13 @@ code { background:#fffcf8; display:block; border:1px solid #df7000; margin:14px;
 	 width:150px; float:left; min-height:800px;
 	 background-image:url(../images/spiral.gif); background-repeat:repeat-y; background-position:110px 0px;
 }
+/* for Internet Explorer */
+/*\*/
+* #left {
+	height: 800px;
+}
+/**/
+
 
 #left ul {margin-left:25px; padding-left:0px;
 
