@@ -6,6 +6,6 @@ if (!defined("WIKINI_VERSION"))
 }
 
 $dblclic = $this->GetParameter('doubleclic');
-
+$pageincluded = $this->GetParameter('page');
 
 ?>

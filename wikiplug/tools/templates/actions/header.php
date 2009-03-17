@@ -9,8 +9,6 @@ if (!defined("WIKINI_VERSION"))
 
 //On recupere la partie haut du template et on execute les actions wikini
 
-
-    
 $template_decoupe = explode("{WIKINI_PAGE}", file_get_contents('tools/templates/themes/'.$this->config['favorite_theme'].'/squelettes/'.$this->config['favorite_squelette']));
 $template_header = $template_decoupe[0];
 if ($act=preg_match_all ("/".'(\\{\\{)'.'(.*?)'.'(\\}\\})'."/is", $template_header, $matches)) {

@@ -65,6 +65,8 @@ if ($act=preg_match_all ("/".'(\\{\\{template)'.'(.*?)'.'(\\}\\})'."/is", $conte
 // favorite_theme
 // favorite_style
 // favorite_squelette
+// hide_action_template
+
 
 // Sinon ;
 // Theme par defaut : default
@@ -138,18 +140,14 @@ else {
     closedir($dir);
     if (is_array($wakkaConfig)) ksort($wakkaConfig['templates']);
 
-       
 //=======Changer de theme=================================================================================================
-    if (isset($_POST['theme'])  && array_key_exists($_POST['theme'], array_keys($wakkaConfig['templates']))) {
-            $wakkaConfig['favorite_theme'] = $_POST['theme'];
+    if (isset($_POST['theme'])  && array_key_exists($_POST['theme'], $wakkaConfig['templates'])) {
+           $wakkaConfig['favorite_theme'] = $_POST['theme'];
     }
     else {
-            $wakkaConfig['favorite_theme'] = THEME_PAR_DEFAUT;
+           $wakkaConfig['favorite_theme'] = THEME_PAR_DEFAUT;
 
     }
-
-         
-    
 
 //=======Changer de style=====================================================================================================
     $styles['none']='pas de style';
@@ -168,5 +166,19 @@ else {
     else {
             $wakkaConfig['favorite_squelette'] = SQUELETTE_PAR_DEFAUT;
     }
+
+//=======Test existence du template, on utilise le template par defaut sinon=======================================================
+if (!file_exists('tools/templates/themes/'.$wakkaConfig['favorite_theme'].'/squelettes/'.$wakkaConfig['favorite_squelette'])
+	|| !file_exists('tools/templates/themes/'.$wakkaConfig['favorite_theme'].'/styles/'.$wakkaConfig['favorite_style'])) {
+	if (file_exists('tools/templates/themes/default/squelettes/default.tpl.html')
+		&& file_exists('tools/templates/themes/default/styles/default.css')) {
+		$wakkaConfig['favorite_theme']='default';
+		$wakkaConfig['favorite_style']='default.css';
+		$wakkaConfig['favorite_squelette']='default.tpl.html';
+		echo 'Certains (ou tous les) fichiers du template '.$wakkaConfig['favorite_theme'].' ont disparus (tools/templates/themes/'.$wakkaConfig['favorite_theme'].'/squelettes/'.$wakkaConfig['favorite_squelette'].' et/ou tools/templates/themes/'.$wakkaConfig['favorite_theme'].'/styles/'.$wakkaConfig['favorite_style'].').<br />Le template par d&eacute;faut est donc utilis&eacute;.';
+	} else {
+		exit('Les fichiers du template par d&eacute;faut ont disparus, l\'utilisation des templates est impossible.<br />Veuillez r&eacute;installer le tools template ou contacter l\'administrateur du site.');
+	}
+}
 
 ?>
