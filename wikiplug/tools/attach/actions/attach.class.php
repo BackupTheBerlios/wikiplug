@@ -325,9 +325,6 @@ class attach {
 		$output =  '<object type="application/x-shockwave-flash" data="tools/attach/players/dewplayer.swf?son='.$fullFilename.'&amp;bgcolor=EEEEEE&amp;showtime=1" width="200" height="20"><param name="wmode" value="transparent" />
 						<param name="movie" value="tools/attach/players/dewplayer.swf?son='.$fullFilename.'&amp;bgcolor=EEEEEE&amp;showtime=1" />
 					</object>';
-		//$output = "<object type=\"application/x-shockwave-flash\" data=\"tools/player/dewplayer.swf?son=$fullFilename&amp;bgcolor=FFFFFF\" width=\"200\"
- //height=\"20\"><param name=\"movie\" value=\"tools/attach/players/dewplayer.swf?son=$fullFilename&amp;bgcolor=FFFFFF\"/></object>";
-		//$output .= "<br />";
 		$output .="[<a href=\"$fullFilename\" title=\"T&eacute;l&eacute;charger le fichier mp3\">mp3</a>]";
 		echo $output;
 		$this->showUpdateLink();
