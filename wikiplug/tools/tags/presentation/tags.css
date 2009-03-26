@@ -1,0 +1,44 @@
+/* edition des tags */
+span.tagMatches{display:block;margin:10px 0;}
+span.tagMatches span,span.tagname{margin-right:4px;background-color:#0000AB;color:#fff;cursor:pointer;padding:2px;}
+#formtags{margin:10px 0;}
+#formtags input{border:1px solid #999;padding:5px;}
+#formtags label{display:inline;}
+input.wide{width:400px;}
+.linkdel{display:block;margin:8px 0 0;padding:0;}
+.taglistitem{list-style-type:none;margin:25px 0 0;padding:0;}
+.taglist{margin:10px 0;padding:0;}
+
+/* tooltips pour nuage de mots */
+.hovertip{position:absolute;display:none;font-size:12px;z-index:100;margin-left:5px;margin-top:10px;background:#FFF;border:3px solid #444;-moz-border-radius:10px;}
+.hovertip_target{font-style:italic;}
+.hovertip_target:hover{text-decoration:none;cursor:help;}
+.nuage,.nuage *{margin:0;padding:0;}
+.nuage {line-height:1.0;padding:0;}
+.nuage li{float:left;list-style-type:none;position:relative;color:#000;}
+.nuage a{color:#000;text-decoration:none;display:block;}
+.nuage li ul{left:0;top:-999em;padding-top:20px;position:absolute;list-style:none;z-index:100;}
+
+ul.hovertip{display:block;padding:10px;}
+ul.hovertip li{list-style:none;color:#000;text-align:left;}
+ul.hovertip li.texte_pages_assoc{text-align:center;padding:3px;}
+ul.hovertip li a{text-decoration:none;font-size:13px;color:#804D40;padding:10px;}
+ul.hovertip li a:hover{color:#B9251A;}
+
+a.size6{font-size:40px;color:#E13728;padding:0 4px;}
+a.size5{font-size:35px;color:#C4876A;padding:5px;}
+a.size4{font-size:30px;color:#804D40;padding:10px;}
+a.size3{font-size:25px;color:#E13728;padding:5px;}
+a.size2{font-size:20px;color:#B9251A;padding:7px;}
+a.size1{font-size:15px;color:#B46A47;padding:5px;}
+
+a.size5:hover,a.size6:hover{color:#B46A47;}
+a.size1:hover,a.size2:hover,a.size3:hover,a.size4:hover{color:#E13728;}
+
+label.formulaire{text-align:right; float:left; clear:both; margin:10px 3px 0 0; display:block; width:70px;}
+textarea.formulaire{border:1px solid #999; background:#FFF; color:#000; width:420px; float:right; clear:right;}
+input.formulaire{border:1px solid #999; background:#FFF; color:#000; width:420px; margin:10px 0 0 0; float:right; clear:right;}
+.groupe_boutons {clear:both;}
+input.bouton{border:1px solid #333; color:#000; margin:10px 0 0 10px; float:right;}
+.include_microblog{-moz-border-radius:15px; border:1px solid #DDD; background:#FFF; color:#000; margin:10px 0; padding:10px;}
+.alaligne {clear:both;}
