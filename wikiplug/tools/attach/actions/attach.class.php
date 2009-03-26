@@ -48,7 +48,7 @@ class attach {
    var $desc = '';					//description du fichier
    var $link = '';					//url de lien (image sensible)
    var $isPicture = 0;				//indique si c'est une image
-   var $isAudio = 0;				//indique si c'est un fichier audio 
+   var $isAudio = 0;				//indique si c'est un fichier audio
    var $isFreeMindMindMap = 0;				//indique si c'est un fichier miindmpa freemind
    var $classes = '';				//classe pour afficher une image
    var $attachErr = '';				//message d'erreur
@@ -63,10 +63,11 @@ class attach {
 		if (empty($this->attachConfig["ext_images"])) $this->attachConfig["ext_images"] = "gif|jpeg|png|jpg";
 		if (empty($this->attachConfig["ext_audio"])) $this->attachConfig["ext_audio"] = "mp3";
 		if (empty($this->attachConfig["ext_freemind"])) $this->attachConfig["ext_freemind"] = "mm";
+		if (empty($this->attachConfig["ext_flashvideo"])) $this->attachConfig["ext_flashvideo"] = "flv";
 		if (empty($this->attachConfig["ext_script"])) $this->attachConfig["ext_script"] = "php|php3|asp|asx|vb|vbs|js";
 		if (empty($this->attachConfig['upload_path'])) $this->attachConfig['upload_path'] = 'files';
 		if (empty($this->attachConfig['update_symbole'])) $this->attachConfig['update_symbole'] = '*';
-		if (empty($this->attachConfig['max_file_size'])) $this->attachConfig['max_file_size'] = 1024*2000;	//2000ko max
+		if (empty($this->attachConfig['max_file_size'])) $this->attachConfig['max_file_size'] = 1024*8000;	//8000ko max
 		if (empty($this->attachConfig['fmDelete_symbole'])) $this->attachConfig['fmDelete_symbole'] = 'Supr';
 		if (empty($this->attachConfig['fmRestore_symbole'])) $this->attachConfig['fmRestore_symbole'] = 'Rest';
 		if (empty($this->attachConfig['fmTrash_symbole'])) $this->attachConfig['fmTrash_symbole'] = 'Poubelle';
@@ -180,12 +181,18 @@ class attach {
 		return preg_match("/.(".$this->attachConfig["ext_audio"].")$/i",$this->file)==1;
 	}
 	/**
-	* Test si le fichier est un fichier freemind mind map 
+	* Test si le fichier est un fichier freemind mind map
 	*/
 	function isFreeMindMindMap(){
 		return preg_match("/.(".$this->attachConfig["ext_freemind"].")$/i",$this->file)==1;
 	}
-	
+	/**
+	* Test si le fichier est un fichier flv Flash video
+	*/
+	function isFlashvideo(){
+		return preg_match("/.(".$this->attachConfig["ext_flashvideo"].")$/i",$this->file)==1;
+	}
+
 	/**
 	* Renvoie la date courante au format utilise par les fichiers
 	*/
@@ -315,14 +322,17 @@ class attach {
 	}
 	// Affiche le fichier liee comme un fichier audio
 	function showAsAudio($fullFilename){
-		$output = "<object type=\"application/x-shockwave-flash\" data=\"tools/player/dewplayer.swf?son=$fullFilename&amp;bgcolor=FFFFFF\" width=\"200\"
- height=\"20\"><param name=\"movie\" value=\"tools/player/dewplayer.swf?son=$fullFilename&amp;bgcolor=FFFFFF\"/></object>";
-		$output .= "<br></br>";
-		$output .="[<a href=\"$fullFilename\">mp3</a>]";
+		$output =  '<object type="application/x-shockwave-flash" data="tools/attach/players/dewplayer.swf?son='.$fullFilename.'&amp;bgcolor=EEEEEE&amp;showtime=1" width="200" height="20"><param name="wmode" value="transparent" />
+						<param name="movie" value="tools/attach/players/dewplayer.swf?son='.$fullFilename.'&amp;bgcolor=EEEEEE&amp;showtime=1" />
+					</object>';
+		//$output = "<object type=\"application/x-shockwave-flash\" data=\"tools/player/dewplayer.swf?son=$fullFilename&amp;bgcolor=FFFFFF\" width=\"200\"
+ //height=\"20\"><param name=\"movie\" value=\"tools/attach/players/dewplayer.swf?son=$fullFilename&amp;bgcolor=FFFFFF\"/></object>";
+		//$output .= "<br />";
+		$output .="[<a href=\"$fullFilename\" title=\"T&eacute;l&eacute;charger le fichier mp3\">mp3</a>]";
 		echo $output;
 		$this->showUpdateLink();
 	}
-	
+
 		// Affiche le fichier liee comme un fichier mind map  freemind
 	function showAsFreeMindMindMap($fullFilename){
         $haut=$this->haut;
@@ -330,19 +340,61 @@ class attach {
         if (!$haut) $haut = "650";
         if (!$large) $large = "100%";
         $mindmap_url = $this->wiki->href("download",$this->wiki->GetPageTag(),"file=$this->file");
-     	$output = "<object type=\"application/x-shockwave-flash\" data=\"tools/freemind/visorFreemind.swf?initLoadFile=../../$fullFilename\" width=\"100%\"
-        height=\"650\"><param name=\"mindmap\" value=\"tools/freemind/visorFreemind.swf?initLoadFile=../../$fullFilename\"/></object>";
-		$output .= "<br></br>";
-		$output .="[<a href=\"$fullFilename\">mm</a>]";
+     	$output = '<embed id="visorFreeMind" height="'.$haut.'" align="middle" width="'.$large.'" flashvars="openUrl=_blank&initLoadFile='.$fullFilename.'&startCollapsedToLevel=5" quality="high" bgcolor="#ffffff" src="tools/attach/players/visorFreemind.swf" type="application/x-shockwave-flash"/>';
+		$output .="[<a href=\"$fullFilename\" title=\"T&eacute;l&eacute;charger le fichier Freemind\">mm</a>]";
 		echo $output;
 		$this->showUpdateLink();
       }
-		
-		
+      
+		// Affiche le fichier liee comme une video flash
+	function showAsFlashvideo($fullFilename){
+        $haut=$this->haut;
+        $large=$this->large;
+        if (!$haut) $haut = "300px";
+        if (!$large) $large = "400px";
+        $video_url = $this->wiki->href("download",$this->wiki->GetPageTag(),"file=$this->file");
+     	$output = '<a  
+						 href="'.$fullFilename.'"  
+						 style="display:block;width:'.$large.';height:'.$haut.'"  
+						 class="flvplayer"> 
+					</a>'."\n";         
+		$output .='<script type="text/javascript" src="tools/attach/players/flowplayer-3.0.6.min.js"></script> 
+<script>
+	flowplayer("a.flvplayer", "tools/attach/players/flowplayer-3.0.7.swf", { 
+	    clip:  { 
+		autoPlay: false, 
+		autoBuffering: true 
+	    },
+	    plugins:  { 
+	        controls: {             
+			url: \'tools/attach/players/flowplayer.controls-3.0.4.swf\', 
+			autoHide: \'always\', 
+			 
+			// which buttons are visible and which are not? 
+			play:true,      
+			volume:true, 
+			mute:true,  
+			time:true,  
+			stop:true, 
+			playlist:false,  
+			fullscreen:true, 
+			 
+			// scrubber is a well-known nickname for the timeline/playhead combination 
+			scrubber: true         
+			 
+			// you can also use the "all" flag to disable/enable all controls 
+		}
+	    } 
+	});
+</script>';
+		echo $output;
+		$this->showUpdateLink();
+      }
+
 	// End Paste
-		
-		
-	
+
+
+
 	/**
 	* Affiche le lien de mise à jour
 	*/
@@ -375,19 +427,15 @@ class attach {
       //le fichier existe : affichage en fonction du type
       if($this->isPicture()){
       	$this->showAsImage($fullFilename);
-      }else{
-	      if($this->isAudio()){
-	      		$this->showAsAudio($fullFilename);
-	      	}
-	      	else {
-	      		  if($this->isFreeMindMindMap()){
-			      	$this->showAsFreeMindMindMap($fullFilename);
-	      		  }
-	      		  else {
-			      	$this->showAsLink($fullFilename);
-	      		  }
-	      	}
-      }
+      }elseif ($this->isAudio()){
+      		$this->showAsAudio($fullFilename);
+      }elseif ($this->isFreeMindMindMap()){
+      	   	$this->showAsFreeMindMindMap($fullFilename);
+	  }elseif ($this->isFlashvideo()){
+      	   	$this->showAsFlashvideo($fullFilename);
+	  }else {
+		   	$this->showAsLink($fullFilename);
+	  }
 	}
 /******************************************************************************
 *	FONTIONS D'UPLOAD DE FICHIERS
