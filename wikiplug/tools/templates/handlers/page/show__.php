@@ -19,7 +19,7 @@ function str_replace_once($from, $to, $str) {
 //fonction recursive pour detecter un nomwiki deja present 
 function nomwikidouble($nomwiki, $nomswiki) 
 {
-	if (in_array($nomwiki, $nomswiki)) 
+	if (is_array($nomswiki) && in_array($nomwiki, $nomswiki)) 
 	{
 		return nomwikidouble($nomwiki.'bis', $nomswiki);
 	} else
