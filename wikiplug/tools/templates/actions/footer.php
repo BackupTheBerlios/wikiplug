@@ -10,7 +10,7 @@ if ($act=preg_match_all ("/".'(\\{\\{)'.'(.*?)'.'(\\}\\})'."/is", $template_foot
 	$i = 0; $j = 0;
 	foreach($matches as $valeur) {
 		foreach($valeur as $val) {
-			if ($matches[2][$j]!='') {
+			if (isset($matches[2][$j]) && $matches[2][$j]!='') {
 				$action= $matches[2][$j];
 				$template_footer=str_replace('{{'.$action.'}}', $this->Format('{{'.$action.'}}'), $template_footer);
 			}

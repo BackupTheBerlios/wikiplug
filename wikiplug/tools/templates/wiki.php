@@ -28,7 +28,7 @@ $wikiClassesContent [] = '
 
 
 //on cherche l'action template dans la page, qui definit le graphisme a utiliser
-if ($_POST["submit"] == html_entity_decode('Aper&ccedil;u')) {
+if (isset($_POST["submit"]) && $_POST["submit"] == html_entity_decode('Aper&ccedil;u')) {
 	//$contenu["body"] = $_POST["body"].'{{template theme="'.$_POST["theme"].'" squelette="'.$_POST["squelette"].'" style="'.$_POST["style"].'"}}';
 	$contenu["body"] = $_POST["body"].'{{template theme="'.$_POST["theme"].'" squelette="'.$_POST["squelette"].'" style="'.$_POST["style"].'"}}';
 	
@@ -45,7 +45,8 @@ if ($act=preg_match_all ("/".'(\\{\\{template)'.'(.*?)'.'(\\}\\})'."/is", $conte
      $i = 0; $j = 0;
      foreach($matches as $valeur) {
        foreach($valeur as $val) {
-         if ($matches[2][$j]!='') {
+       	
+         if (isset($matches[2][$j]) && $matches[2][$j]!='') {
            $action= $matches[2][$j];
            if (preg_match_all("/([a-zA-Z0-9]*)=\"(.*)\"/U", $action, $params))
 			{

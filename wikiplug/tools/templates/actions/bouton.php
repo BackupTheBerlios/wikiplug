@@ -11,31 +11,31 @@ if (!class_exists('Bouton')) {
 	var $largeur;
 	var $nom;
 	
-	function Bouton($alt, $police, $taille_police, $hex_bgc, $x, $y, $degre, $cache){
-		$rep = 'tools'.DIRECTORY_SEPARATOR.'templates'.DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.'reseaulogement'.DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR; //repertoire ou se trouve les boutons
+	function Bouton($alt, $police, $taille_police, $hex_bgc, $x, $y, $degre, $cache, $theme){
+		$rep = 'tools'.DIRECTORY_SEPARATOR.'templates'.DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$theme.DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR; //repertoire ou se trouve les boutons
 	
 		$this->alt = $alt;
 		$this->nom = $rep.'btn_'.
 		$this->formater($this->alt).'.png';
 	
-		if(is_file($this->nom) && !empty($cache))	// Si le bouton existe déja et qu'on utilise pas de cache, on renvoie les dimensions
+		if(is_file($this->nom) && !empty($cache))	// Si le bouton existe dÃ©ja et qu'on utilise pas de cache, on renvoie les dimensions
 			{
 			$taille=getimagesize($this->nom);
 			$this->largeur = $taille[0];
 			$this->hauteur = $taille[1];
 			}
-		else // Sinon on va le créer
+		else // Sinon on va le crÃ©er
 			{
 			// Utilisation des ressources graphiques
 			$fond=$rep.'bouton.png';
 			$taille_fond=getimagesize($fond);
 			$img_fond = ImageCreateFromPng ($fond);
 	
-			// Paramêtres du bouton
+			// ParamÃªtres du bouton
 			$this->hauteur = $taille_fond[1];
 			$this->largeur = $taille_fond[0];
 			
-			// Création de l'image vierge
+			// CrÃ©ation de l'image vierge
 			$img = imageCreate($this->largeur,$this->hauteur);
 			//	Does it start with a hash? If so then strip it
 			$hex_bgc = str_replace('#', '', $hex_bgc);
@@ -65,20 +65,20 @@ if (!class_exists('Bouton')) {
 			}
 			$couleur = ImageColorAllocate ($img, $red, $green, $blue);  
 	
-			// Elémente graphiques du bouton
+			// ElÃ©mente graphiques du bouton
 			@imageCopyMerge($img, $img_fond, 0, 0, 0, 0, $this->largeur, $this->hauteur, 100);
 	
 			// Texte
 			imagettftext($img,$taille_police,$degre,$x,$y,$couleur,$rep.$police,' '.stripslashes(trim($this->alt)));
 	
-			//Création du bouton de type btn_[motif]_[alt].png
+			//CrÃ©ation du bouton de type btn_[motif]_[alt].png
 			imagepng ($img,$this->nom);
 			}
 		}
 
 	function formater($txt)
 		{
-	    $a = "àáâãäåòóôõöøèéêëçìíîïùúûüÿñ@!?.:/ ";
+	    $a = "Ã Ã¡Ã¢Ã£Ã¤Ã¥Ã²Ã³Ã´ÃµÃ¶Ã¸Ã¨Ã©ÃªÃ«Ã§Ã¬Ã­Ã®Ã¯Ã¹ÃºÃ»Ã¼Ã¿Ã±@!?.:/ ";
 		$b = "aaaaaaooooooeeeeciiiiuuuuyn_______";
 		return (strtolower(strtr($txt, $a, $b)));
 		}
@@ -127,7 +127,7 @@ if (empty($hex_bgc))
 
 
 //creation de l'objet
-$bouton = new Bouton($texte, $police, $taille_police, $hex_bgc, $x, $y, $degre, $cache);
+$bouton = new Bouton($texte, $police, $taille_police, $hex_bgc, $x, $y, $degre, $cache, $this->config['favorite_theme'] );
 $res = '<img class="img_bouton" src="'.$bouton->nom.'" height="'.$bouton->hauteur.'" width="'.$bouton->largeur.'" alt="'.$bouton->alt.'" />';
 
 if (!empty($url))
