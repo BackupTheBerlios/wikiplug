@@ -36,7 +36,7 @@ if (empty($titre)) {
 }
 $bienvenue = $this->GetParameter("bienvenue");
 if (empty($bienvenue)) {
-	$bienvenue='Bonjour, ';
+	$bienvenue='Bonjour ';
 }
 
 $urllogin = $this->GetParameter("url");
@@ -57,15 +57,13 @@ if ($_REQUEST["action"] == "logout")
 if ($user = $this->GetUser())
 {
 	// user is logged in; display config form
-	echo "<form action=\"".$urllogin."\" method=\"post\">
-	<input type=\"hidden\" name=\"action\" value=\"update\" />
-	<input type=\"hidden\" name=\"urldepart\" value=\"".$this->href()."\" />";
-	echo $bienvenue.$this->Link($user["name"])."&nbsp;!\n";
-	echo '<input class="bouton_iden" type="button" value="D&eacute;connexion" onclick="document.location=\''.$urllogin.'&action=logout\'" />
-	<span class="modif_inscription_iden"><a href="'.$urllogin.'" title="Modifier mon inscription">Modifier mon inscription</a></span>';
-	if ($this->LoadPage($user["name"]."Menu")!=null) { echo $this->Format("{{include page=\"".$user["name"]."Menu\"}}"); }
-	echo $this->FormClose();
-
+	include_once('tools/login/libs/squelettephp.class.php');
+	$template_formulaire = $this->GetParameter("templateiden");
+	if (empty($template_formulaire) || !file_exists('tools/login/presentation/'.$template_formulaire) ) $template_formulaire="iden_default.tpl.html";
+	$squel = new SquelettePhp('tools/login/presentation/'.$template_formulaire);
+	if ($this->LoadPage("PageMenuUser")!=null) { $PageMenuUser=$this->Format("{{include page=\"PageMenuUser\"}}");} else $PageMenuUser = '';
+	$squel->set(array("bienvenue"=>$bienvenue.$this->Link($user["name"]), "urldepart"=>$this->href(), "urllogin"=>$urllogin,  "PageMenuUser"=>$PageMenuUser));
+	echo $squel->analyser();
 }
 else
 {
@@ -98,24 +96,11 @@ else
 		$error = 'Vous devez accepter les cookies pour pouvoir vous connecter.';
 	}
 
-	echo "<form action=\"".$urllogin."\" method=\"post\">\n";
-	echo '<input type="hidden" name="action" value="login" />
-	<input type="hidden" name="urldepart" value="'.$this->href().'" />';
-	if (isset($error))
-	{
-		echo "<div class=\"error\">", $this->Format($error), "</div>\n";
-	}
-	echo '
-	<span class="texte_iden">'.IDEN_DEJA_MEMBRE.'</span>
-	<span class="label_iden">'.IDEN_NOM_WIKI.'</span><input name="name" class="input_iden" size="7" value="';
-	if (isset($name)) echo htmlspecialchars($name);
-	echo '" /><br />
-	<span class="label_iden">'.IDEN_MDP.'</span><input type="password" name="password" class="input_iden" size="7" /><br />
-	<input type="hidden" name="remember" value="0" /><input type="checkbox" id="remember" name="remember" value="1" />
-	<label for="remember">'.IDEN_SOUVENIR.'</label>
-	<input type="submit" class="bouton_iden" value="'.IDEN_S_IDENTIFIER.'" />
-	<span class="texte_iden">'.IDEN_PAS_MEMBRE.'</span>
-	<span class="inscription_iden"><a href="'.$urllogin.'" title="'.IDEN_S_ENREGISTRER.'">'.IDEN_S_ENREGISTRER.'</a></span>';
-	echo $this->FormClose();	
+	include_once('tools/login/libs/squelettephp.class.php');
+	$template_formulaire = $this->GetParameter("templateform");
+	if (empty($template_formulaire) || !file_exists('tools/login/presentation/'.$template_formulaire) ) $template_formulaire="form_default.tpl.html";
+	$squel = new SquelettePhp('tools/login/presentation/'.$template_formulaire);
+	$squel->set(array("error"=>isset($error)?$error:'', "urllogin"=>$urllogin, "urldepart"=>$this->href(), "name"=>isset($_POST["name"])?$_POST["name"]:''));
+	echo $squel->analyser();
 }
 ?>
