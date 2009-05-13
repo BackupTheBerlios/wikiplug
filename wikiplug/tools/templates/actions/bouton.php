@@ -15,9 +15,7 @@ if (!class_exists('Bouton')) {
 		$rep = 'tools'.DIRECTORY_SEPARATOR.'templates'.DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$theme.DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR; //repertoire ou se trouve les boutons
 	
 		$this->alt = $alt;
-		$this->nom = $rep.'btn_'.
-		$this->formater($this->alt).'.png';
-	
+		$this->nom = $rep.'bouton_'.$this->formater($alt).'.png';
 		if(is_file($this->nom) && !empty($cache))	// Si le bouton existe dÃ©ja et qu'on utilise pas de cache, on renvoie les dimensions
 			{
 			$taille=getimagesize($this->nom);
@@ -78,8 +76,8 @@ if (!class_exists('Bouton')) {
 
 	function formater($txt)
 		{
-	    $a = "Ã Ã¡Ã¢Ã£Ã¤Ã¥Ã²Ã³Ã´ÃµÃ¶Ã¸Ã¨Ã©ÃªÃ«Ã§Ã¬Ã­Ã®Ã¯Ã¹ÃºÃ»Ã¼Ã¿Ã±@!?.:/ ";
-		$b = "aaaaaaooooooeeeeciiiiuuuuyn_______";
+	    $a = "àáâãäåòóôõöøèéêëçìíîïùúûüÿñ'@!?;:/ ";
+		$b = "aaaaaaooooooeeeeciiiiuuuuyn________";
 		return (strtolower(strtr($txt, $a, $b)));
 		}
 	} //fin classe bouton
@@ -97,7 +95,7 @@ $cache = $this->GetParameter('cache');
 $x = $this->GetParameter('x');
 if (empty($x))
 {
-        $x=20;
+        $x=0;
 }
 $y = $this->GetParameter('y');
 if (empty($y))
@@ -107,7 +105,7 @@ if (empty($y))
 $taille_police = $this->GetParameter('taille');
 if (empty($taille_police))
 {
-        $taille_police=12;
+        $taille_police=11;
 }
 $degre = $this->GetParameter('degre');
 if (empty($degre))

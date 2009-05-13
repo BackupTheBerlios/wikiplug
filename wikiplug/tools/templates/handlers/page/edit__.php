@@ -8,12 +8,12 @@ if (!defined("WIKINI_VERSION"))
 
 
 
-if (!$this->config['hide_action_template']) { // TODO : utiliser ACL
+if (!isset($this->config['hide_action_template']) or (isset($this->config['hide_action_template']) && !$this->config['hide_action_template'])) { // TODO : utiliser ACL
 
 	if ($this->HasAccess("write") && $this->HasAccess("read")) {
 		// Edition
 	
-		if ($_POST["submit"] != html_entity_decode('Aper&ccedil;u') && $_POST["submit"] != 'Sauver') {
+		if (!isset($_POST["submit"]) or (isset($_POST["submit"]) && $_POST["submit"] != html_entity_decode('Aper&ccedil;u') && $_POST["submit"] != 'Sauver')) {
 			$selecteur = 'Th&egrave;me: <select name="theme" onchange="changeVal(this.value)">'."\n";
 		    foreach(array_keys($this->config['templates']) as $key => $value) {
 		            if($value !== $this->config['favorite_theme']) {
