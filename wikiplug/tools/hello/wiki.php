@@ -1,5 +1,5 @@
 <?php
-// Partie publique 
+// Partie publique test 123
 
 if (!defined("WIKINI_VERSION"))
 {
