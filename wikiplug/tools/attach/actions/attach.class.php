@@ -49,7 +49,8 @@ class attach {
    var $link = '';					//url de lien (image sensible)
    var $isPicture = 0;				//indique si c'est une image
    var $isAudio = 0;				//indique si c'est un fichier audio
-   var $isFreeMindMindMap = 0;				//indique si c'est un fichier miindmpa freemind
+   var $isFreeMindMindMap = 0;		//indique si c'est un fichier mindmap freemind
+   var $isWma = 0;					//indique si c'est un fichier wma
    var $classes = '';				//classe pour afficher une image
    var $attachErr = '';				//message d'erreur
    var $pageId = 0;					//identifiant de la page
@@ -62,6 +63,7 @@ class attach {
 		$this->attachConfig = $this->wiki->GetConfigValue("attach_config");
 		if (empty($this->attachConfig["ext_images"])) $this->attachConfig["ext_images"] = "gif|jpeg|png|jpg";
 		if (empty($this->attachConfig["ext_audio"])) $this->attachConfig["ext_audio"] = "mp3";
+		if (empty($this->attachConfig["ext_wma"])) $this->attachConfig["ext_wma"] = "wma";
 		if (empty($this->attachConfig["ext_freemind"])) $this->attachConfig["ext_freemind"] = "mm";
 		if (empty($this->attachConfig["ext_flashvideo"])) $this->attachConfig["ext_flashvideo"] = "flv";
 		if (empty($this->attachConfig["ext_script"])) $this->attachConfig["ext_script"] = "php|php3|asp|asx|vb|vbs|js";
@@ -127,7 +129,7 @@ class attach {
 		//decompose le nom du fichier en nom+extension
 		if (preg_match('`^(.*)\.(.*)$`', str_replace(' ','_',$this->file), $match)){
 			list(,$file['name'],$file['ext'])=$match;
-			if(!$this->isPicture() && !$this->isAudio() && !$this->isFreeMindMindMap()) $file['ext'] .= '_';
+			if(!$this->isPicture() && !$this->isAudio() && !$this->isFreeMindMindMap() && !$this->isWma()) $file['ext'] .= '_';
 		}else{
 			return false;
 		}
@@ -191,6 +193,12 @@ class attach {
 	*/
 	function isFlashvideo(){
 		return preg_match("/.(".$this->attachConfig["ext_flashvideo"].")$/i",$this->file)==1;
+	}
+	/**
+	* Test si le fichier est un fichier wma
+	*/
+	function isWma(){
+		return preg_match("/.(".$this->attachConfig["ext_wma"].")$/i",$this->file)==1;
 	}
 
 	/**
@@ -343,6 +351,19 @@ class attach {
 		$this->showUpdateLink();
       }
       
+// Affiche le fichier liee comme un fichier mind map  freemind
+	function showAsWma($fullFilename){
+        $haut=$this->haut;
+        $large=$this->large;
+        if (!$haut) $haut = "30";
+        if (!$large) $large = "100";
+        $wma_url = $this->wiki->href("download",$this->wiki->GetPageTag(),"file=$this->file");
+        $output = '<embed src="'.$fullFilename.'" autostart="false" loop="false" console="true" height="'.$haut.'" width="'.$large.'" />';
+		$output .="[<a href=\"$fullFilename\" title=\"T&eacute;l&eacute;charger le fichier wma\">wma</a>]";
+		echo $output;
+		$this->showUpdateLink();
+      }
+      
 		// Affiche le fichier liee comme une video flash
 	function showAsFlashvideo($fullFilename){
         $haut=$this->haut;
@@ -430,6 +451,8 @@ class attach {
       	   	$this->showAsFreeMindMindMap($fullFilename);
 	  }elseif ($this->isFlashvideo()){
       	   	$this->showAsFlashvideo($fullFilename);
+	  }elseif ($this->isWma()){
+      	   	$this->showAsWma($fullFilename);
 	  }else {
 		   	$this->showAsLink($fullFilename);
 	  }
