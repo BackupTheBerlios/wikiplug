@@ -6,7 +6,7 @@ if ($user = $this->GetUser()) {
     $my_pages_count = 0;
     $useremail = $user['email'];
 
-    if ($pages = $this->LoadAll("SELECT * FROM wikini_triples WHERE property='subscriptions' AND value='$useremail'")) {
+    if ($pages = $this->LoadAll("SELECT * FROM ".$this->config["table_prefix"]."triplestriples WHERE property='subscriptions' AND value='$useremail'")) {
 
         foreach ($pages as $page) {
             echo $this->Format($page["resource"]),"<br />\n" ;
