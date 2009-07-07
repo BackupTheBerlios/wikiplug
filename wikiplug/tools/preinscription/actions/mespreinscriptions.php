@@ -13,9 +13,33 @@ if ($user = $this->GetUser()) {
     $useremail = $user['email'];
 	$req = "SELECT resource FROM ".$this->config["table_prefix"]."triples WHERE property='http://outils-reseaux.org/_vocabulary/preinscription' AND value LIKE '$useremail%'";
     if ($pages = $this->LoadAll($req)) {
+    	echo '<ul>'."\n";
         foreach ($pages as $page) {
-            echo $this->Format($page["resource"]),"<br />\n" ;
+        	echo '<li>'."\n".$this->Format($page["resource"]);
+	       		$sql = 'SELECT value FROM '.$this->config['table_prefix'].'triples WHERE property="http://outils-reseaux.org/_vocabulary/preinscription" AND resource="'.$page["resource"].'"';
+				$result = $this->LoadAll($sql);
+				$total = 0;
+				if (is_array($result))
+				{
+					$tableau = array();	
+					foreach ($result as $tab)
+					{
+						$resultat = explode('|',trim($tab["value"]));
+						$total = $total + $resultat[3];	
+					}					
+					if ($total > 0)
+					{						
+						$pourcentage= round($total/$max*100) ;						
+						if ($pourcentage>100) $pourcentage = 100;						
+						echo '&nbsp;-&nbsp;<span class="jauge" style="font:10px verdana;">Remplissage :
+					<img src="tools/preinscription/presentation/compteur.php?pc='.$pourcentage.'" />
+					</span>';
+					}				
+				}
+				echo '&nbsp;-&nbsp;<a href="'.$this->href('', $page["resource"]).'/depreinscription&amp;email='.$useremail.'">Se d&eacute;sinscrire</a>';
+				echo '</li>'."\n";           
         }
+        echo '</ul>'."\n";
     } else {
     	echo "<i>Vous n'&ecirc;tes inscrit a aucune formation.</i>";
     }
@@ -57,7 +81,7 @@ else {
 					</span>';
 					}				
 				}
-				echo '&nbsp;-&nbsp;<a href="'.$this->href('', $page["resource"]).'&amp;email='.$_POST['email'].'/depreinscription">Se d&eacute;sinscrire</a>';
+				echo '&nbsp;-&nbsp;<a href="'.$this->href('', $page["resource"]).'/depreinscription&amp;email='.$_POST['email'].'">Se d&eacute;sinscrire</a>';
 				echo '</li>'."\n";
 	        }
 	        echo '</ul>'."\n";	       

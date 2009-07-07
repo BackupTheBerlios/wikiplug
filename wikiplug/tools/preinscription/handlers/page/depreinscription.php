@@ -13,6 +13,6 @@ if (isset($_GET['email'])) {
     $this->Query($req);
     $msg = "Vous avez &eacute;t&eacute; d&eacute;sinscrit de la formation.";
    	$this->SetMessage($msg);
-	//$this->Redirect($this->href());
+	$this->Redirect($this->href());
 }
 ?>
