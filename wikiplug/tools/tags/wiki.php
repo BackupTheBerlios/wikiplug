@@ -13,7 +13,7 @@ $wikiClassesContent [] = '
 	function SaveTags($page, $liste_tags)
     {
 		$tags = explode(" ", mysql_escape_string($liste_tags));
-		//on rÃ©cupÃ¨re les anciens tags de la page courante
+		//on récupére les anciens tags de la page courante
 		$tabtagsexistants = $this->GetAllTriplesValues($page, \'http://outils-reseaux.org/_vocabulary/tag\', \'\', \'\');
 		if (is_array($tabtagsexistants))
 		{
@@ -54,8 +54,8 @@ $wikiClassesContent [] = '
 	{
 		if ($page==\'\')
 		{
-			$sql = \'SELECT DISTINCT value FROM \'.$this->config[\'table_prefix\'].\'triples WHERE property="http://outils-reseaux.org/_vocabulary/tag"\';
-			return $this->LoadAll($sql);
+				$sql = \'SELECT DISTINCT value FROM \'.$this->config[\'table_prefix\'].\'triples WHERE property="http://outils-reseaux.org/_vocabulary/tag"\';
+				return $this->LoadAll($sql);
 		}
 		else
 		{

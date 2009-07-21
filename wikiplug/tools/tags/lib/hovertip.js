@@ -9,9 +9,9 @@
  *  Requires jQuery.js.  <http://jquery.com>, 
  *  which may be distributed under a different licence.
  *  
- *  $Date: 2009/03/26 08:08:39 $
+ *  $Date: 2009/07/21 12:32:04 $
  *  $Rev: $
- *  $Id: hovertip.js,v 1.1 2009/03/26 08:08:39 mrflos Exp $
+ *  $Id: hovertip.js,v 1.2 2009/07/21 12:32:04 mrflos Exp $
  
 //// mouse events ////
 /**

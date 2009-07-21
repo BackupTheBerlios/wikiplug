@@ -29,6 +29,7 @@ $notags = $this->GetParameter('without');
 $lienedit = $this->GetParameter('edit');
 $class = $this->GetParameter('class');
 $tri = $this->GetParameter('tri');
+$nb = $this->GetParameter('nb');
 
 //on fait les tableaux pour les tags, puis on met des virgules et des guillemets
 $tags = implode(",", array_filter(explode(" ", $tags), "trim"));

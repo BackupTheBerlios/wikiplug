@@ -1,0 +1,20 @@
+<script type="text/javascript">
+/* Limit textarea char */
+function limite(textarea, max) {
+  if(textarea.value.length >= max) {
+    textarea.value = textarea.value.substring(0,max);
+  }
+  var reste = max - textarea.value.length;
+  var print =  reste;
+  document.getElementById('info_nb_car').innerHTML = print;
+}
+</script>
+
+<label class="formulaire" for="microblog_billet">Texte (<span id="info_nb_car"><?=$nb;?></span> caract&egrave;res restants)</label>
+<textarea  onkeyup="limite(this,<?=$nb;?>);" class="formulaire" rows="3" cols="20" name="microblog_billet"></textarea>
+<label class="formulaire" for="tags">Mot cl&eacute;s</label>
+<input class="formulaire" type="text"  size="48" name="microblog_tags" id="microblog_toustags" />
+<div class="groupe_boutons">
+<input type="button" value="Annuler" class="bouton"  />
+<input type="submit" value="Enregistrer" class="bouton"  />
+</div>
