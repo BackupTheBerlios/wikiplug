@@ -13,6 +13,9 @@ if (!empty($param)) {
 	  	case 'base_url':
 	  	case 'meta_keywords':
 	  	case 'meta_description':
+	  	case 'favorite_theme':
+	  	case 'favorite_style':
+	  	case 'favorite_squelette':
 	  		echo $this->config[$param];
 			break;
 	  	default:

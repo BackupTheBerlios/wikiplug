@@ -10,6 +10,8 @@
 		{{liensjavascripts}}
 		<script type="text/javascript">
 		jQuery(function(){
+			$("ul.diaporama").jqGalScroll({height:640,width:640,ease:'easeInOutCubic',speed:1000});
+
 			$("#identification").bind("mouseenter", function()
 			{				
 				$(this).find(".formulaire_identification").slideDown('fast');
@@ -57,9 +59,9 @@
 				{{include page="PageMenu" doubleclic="1"}}
 			</div><!-- fin div menu_haut -->
 			</div><!-- fin div top -->
-			<div id="content" {{doubleclic}}>
+			<div id="content">
 				<div id="fondpage" class="arrondi">
-					<div id="contenu">
+					<div id="contenu" {{doubleclic}}>
 						{WIKINI_PAGE}
 					</div>
 				</div>
