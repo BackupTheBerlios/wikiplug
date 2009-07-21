@@ -6,7 +6,8 @@ if (!defined("WIKINI_VERSION"))
             die ("acc&egrave;s direct interdit");
 }
 
-
+//on enleve l'action template
+$plugin_output_new=preg_replace ("/".'(\\{\\{template)'.'(.*?)'.'(\\}\\})'."/is", '', $plugin_output_new);
 
 if (!isset($this->config['hide_action_template']) or (isset($this->config['hide_action_template']) && !$this->config['hide_action_template'])) { // TODO : utiliser ACL
 
@@ -48,8 +49,6 @@ if (!isset($this->config['hide_action_template']) or (isset($this->config['hide_
 		            }
 		    }
 		    $selecteur .= '</select>'."\n".'<br />'."\n";
-		    //on enleve l'action template
-			$plugin_output_new=preg_replace ("/".'(\\{\\{template)'.'(.*?)'.'(\\}\\})'."/is", '', $plugin_output_new);
 			//on ajoute la selection des styles
 			$plugin_output_new=preg_replace ('/\<input name=\"submit\" type=\"submit\" value=\"Sauver\"/',
 			$selecteur.'<input name="submit" type="submit" value="Sauver"', $plugin_output_new);

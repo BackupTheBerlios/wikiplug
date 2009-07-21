@@ -4,6 +4,7 @@ if (!defined("WIKINI_VERSION"))
         die ("acc&egrave;s direct interdit");
 }
 //attributs du body
-$wikini_body = isset($message) ? "onLoad=\"alert('".$message."');\" " : "";
-echo $wikini_body;
+$body_attr = ($message = $this->GetMessage()) ? "onLoad=\"alert('".addslashes($message)."');\" " : "";
+//$wikini_body = isset($_SESSION["message"])&&$_SESSION["message"]!='' ? "onLoad=\"alert('".$_SESSION["message"]."');\" " : "";
+echo $body_attr;
 ?>
