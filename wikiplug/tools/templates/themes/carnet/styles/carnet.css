@@ -1,0 +1,121 @@
+/*
+
+Structure :
+ page
+ 	header
+ 	topnav
+ 	main
+ 		left
+ 		body
+ 	footer
+
+*/
+
+body {font : normal 12px/1.6em Arial, Helvetica, sans-serif;color : #2a3845;margin : 0;padding : 0;background:#f7f7f7}
+p { padding:0; margin-left:10px; margin-right:5px; margin-top:0px; margin-bottom:8px; }
+
+a { color:#DF7000; }
+a:hover { color:#666666 }
+
+blockquote { border-left:5px solid #df7000; margin-left:10px; padding:6px; padding-left:10px; background:#fef6ee; }
+code { background:#fffcf8; display:block; border:1px solid #df7000; margin:14px; padding:7px; }
+
+
+ 
+#page { width:900px; margin:auto; text-align:left; display:block; }
+#page { border:1px solid #333333; color:#333333; background:#fff; }
+
+
+#header
+{
+ display:block; height:100px;
+ padding:0px;
+ clear:both;
+ margin:5px 5px 0 5px;
+}
+
+#header{ border-top:3px solid #666666; border-bottom:0px solid #666666; }
+
+#header h1 { margin:0; padding:0; font:30px Georgia, serif; margin-top:20px; margin-left:40px; }
+#header h2 { margin:0; padding:0; font:14px Georgia, serif;  margin-left:40px; }
+
+#topnav
+{
+ color:#FFFFFF;
+ margin:0px 5px 5px 5px;
+ font:13px verdana;
+ padding:5px;
+ background:url(../images/topnav_bg.gif) #333333;
+}
+
+#topnav ul { list-style-type:none; margin:0; padding:0px; }
+#topnav ul li { display:inline; margin-right:6px; margin-left:6px; }
+#topnav a { color:#FF9933; text-decoration:none; font-weight:500;  }
+#topnav a:hover {  text-decoration:underline; }
+
+
+
+
+
+#main
+{
+ margin:5px;
+ border:0px solid #CCCCCC;
+ clear:both;
+ display:block;
+ margin-bottom:40px;
+}
+
+#main h2 { color:#7D3F00;margin:20px 0 6px;padding-bottom:10px;font:normal 17px Georgia, serif;border-bottom : 1px solid #e2dfdb; }
+#main { font:12px verdana; line-height:15px; }
+
+
+#left {
+	 width:150px; float:left; min-height:800px;
+	 background-image:url(../images/spiral.gif); background-repeat:repeat-y; background-position:110px 0px;
+}
+/* for Internet Explorer */
+/*\*/
+* #left {
+	height: 800px;
+}
+/**/
+
+
+#left ul {margin-left:25px; padding-left:0px;
+
+
+}
+
+
+#body {
+	 width:730px; float:right; margin-bottom:20px; margin-left:0px; min-height:800px;	
+}
+
+
+
+#footer { clear:both; margin:5px; vertical-align:middle; text-align:center; font-size:12px; display:block; }
+#footer { background:#333333; color:#FFFFFF; padding:5px 0px 10px 0px; }
+#footer a{ color:#FF9933; text-decoration:none; font-weight:500;  }
+#footer a:hover {  text-decoration:underline; }
+
+
+/****Specifique Wikini ***/
+
+textarea {
+	width:100%;
+	margin:0;
+	border:1;
+}
+
+.commentsheader {display:none;}
+.hr_clear {display:none;}
+
+.error { color: #CC3333; font-weight: bold; }
+.additions { color: #008800; }
+.deletions { color: #880000; }
+.add { font-weight: bold; color: #c00; text-decoration: underline; }
+.del { font-style: italic; color: #c00; text-decoration: line-through; }
+.prev_alert { background-color: #7D3F00; color: white; font-size: 1.7em; font-weight: bold; margin-bottom: 5px; }
+
+
