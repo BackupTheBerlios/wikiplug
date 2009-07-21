@@ -13,6 +13,16 @@
 	 <body> tag to the form you're using!... */
 	
 	function mozWrap(txtarea, lft, rgt) {
+		
+	     // mémorisation de la position du scroll
+          oldPos = txtarea.scrollTop;
+          oldHght = txtarea.scrollHeight;
+
+          // calcul de la nouvelle position du curseur
+          pos = txtarea.selectionEnd + lft.length + rgt.length;
+
+          // calculs de la position de l'insertion
+		
 		var selLength = txtarea.textLength;
 		var selStart = txtarea.selectionStart;
 		var selEnd = txtarea.selectionEnd;
@@ -21,6 +31,15 @@
 		var s2 = (txtarea.value).substring(selStart, selEnd)
 		var s3 = (txtarea.value).substring(selEnd, selLength);
 		txtarea.value = s1 + lft + s2 + rgt + s3;
+		
+		   // Placement du curseur après le tag fermant
+          txtarea.selectionEnd = pos;
+
+          // calcul et application de la nouvelle bonne postion du scroll
+          newHght = txtarea.scrollHeight - oldHght;
+          txtarea.scrollTop = oldPos + newHght;
+          txtarea.focus();
+		
 	}
 	
 	function IEWrap(lft, rgt) {
