@@ -87,8 +87,12 @@ if (!function_exists("wakka2callbacktableaux"))
 			$align="center";
 		}
 		if ($align) $cellattr .= " align=\"$align\"";
+//		echo $cell;
+
 //		echo "\$this->classname = ".get_class($wiki)."<br>";
-		return "      <td $cellattr>".$wiki->Format($cell)."</td>\n";
+//      Suppression :  formatage deja fait return "      <td $cellattr>".$wiki->Format($cell)."</td>\n";
+		return "      <td $cellattr>".$cell."</td>\n";
+		
 	}
 
 
@@ -111,3 +115,5 @@ if (!function_exists("wakka2callbacktableaux"))
 }
 
 $plugin_output_new = preg_replace_callback("/(^\[\|.*?\|\])/ms", "wakka2callbacktableaux", $plugin_output_new);
+
+
