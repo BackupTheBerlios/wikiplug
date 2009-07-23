@@ -4,7 +4,6 @@ if (!defined("WIKINI_VERSION"))
         die ("acc&egrave;s direct interdit");
 }
 //=======Restes de wikini=================================================================================
-    $message = $this->GetMessage();
     $user = $this->GetUser();
 
 //On recupere la partie haut du template et on execute les actions wikini
