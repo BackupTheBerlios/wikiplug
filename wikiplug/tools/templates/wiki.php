@@ -8,9 +8,19 @@ if (!defined("WIKINI_VERSION"))
 }
 
 
+// Desactivation de l'extension template si l'extension navigation est presente et active.
+ 
+if (isset($plugins_list['navigation'])) {
+  unset($k);	
+  return;
+}
+
+
 
 // Surcharge  fonction  LoadRecentlyChanged : suppression remplissage cache car affecte le rendu du template.
 $wikiClasses [] = 'Template';
+
+
 $wikiClassesContent [] = ' 
 
 	function LoadRecentlyChanged($limit=50)
@@ -29,9 +39,7 @@ $wikiClassesContent [] = '
 
 //on cherche l'action template dans la page, qui definit le graphisme a utiliser
 if (isset($_POST["submit"]) && $_POST["submit"] == html_entity_decode('Aper&ccedil;u')) {
-	//$contenu["body"] = $_POST["body"].'{{template theme="'.$_POST["theme"].'" squelette="'.$_POST["squelette"].'" style="'.$_POST["style"].'"}}';
-	$contenu["body"] = $_POST["body"].'{{template theme="'.$_POST["theme"].'" squelette="'.$_POST["squelette"].'" style="'.$_POST["style"].'"}}';
-	
+	$contenu["body"] = $_POST["body"].'{{template theme="'.$_POST["theme"].'" squelette="'.$_POST["squelette"].'" style="'.$_POST["style"].'"}}';	
 	$_POST["body"] = $_POST["body"].'{{template theme="'.$_POST["theme"].'" squelette="'.$_POST["squelette"].'" style="'.$_POST["style"].'"}}';
 } 
 
@@ -66,7 +74,7 @@ if ($act=preg_match_all ("/".'(\\{\\{template)'.'(.*?)'.'(\\}\\})'."/is", $conte
 // favorite_theme
 // favorite_style
 // favorite_squelette
-// hide_action_template
+// hide_action_template a true
 
 
 // Sinon ;
@@ -74,8 +82,6 @@ if ($act=preg_match_all ("/".'(\\{\\{template)'.'(.*?)'.'(\\}\\})'."/is", $conte
 // Css par defaut : default.css
 // squelette par defaut : default.tpl.html
    
-
- 
   
 
 if (isset($vars["theme"]) && $vars["theme"]!="") {
