@@ -42,7 +42,7 @@ define('PEAR_MAIL_SMTP_ERROR_DATA', 10006);
  * SMTP implementation of the PEAR Mail interface. Requires the Net_SMTP class.
  * @access public
  * @package Mail
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 class Mail_smtp extends Mail {
 

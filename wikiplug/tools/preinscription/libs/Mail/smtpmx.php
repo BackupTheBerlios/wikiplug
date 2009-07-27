@@ -19,7 +19,7 @@
  * @author     gERD Schaufelberger <gerd@php-tools.net>
  * @copyright  1997-2005 The PHP Group
  * @license    http://www.php.net/license/3_0.txt  PHP License 3.0
- * @version    CVS: $Id: smtpmx.php,v 1.1 2009/07/07 07:45:08 mrflos Exp $
+ * @version    CVS: $Id: smtpmx.php,v 1.2 2009/07/27 15:34:12 mrflos Exp $
  * @see        Mail
  */
 
@@ -32,7 +32,7 @@ require_once 'Net/SMTP.php';
  * @access public
  * @author  gERD Schaufelberger <gerd@php-tools.net>
  * @package Mail
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 class Mail_smtpmx extends Mail {
 

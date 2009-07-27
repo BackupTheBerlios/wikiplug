@@ -16,12 +16,12 @@
 // | Author: Chuck Hagenbuch <chuck@horde.org>                            |
 // +----------------------------------------------------------------------+
 //
-// $Id: mail.php,v 1.1 2009/07/07 07:45:08 mrflos Exp $
+// $Id: mail.php,v 1.2 2009/07/27 15:34:12 mrflos Exp $
 
 /**
  * internal PHP-mail() implementation of the PEAR Mail:: interface.
  * @package Mail
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 class Mail_mail extends Mail {
 

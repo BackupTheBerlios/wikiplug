@@ -9,7 +9,7 @@ $max = $this->GetParameter('max');
 if (empty($max)) die("Action preinscription param&egrave;te max obligatoire.");
 
 if ($user = $this->GetUser()) {
-    echo "<b>Liste des formations o&ugrave; vous &ecirc;tes pr&eacute;-inscrits:</b><br /><br />\n" ;
+    echo "<b>Liste des formations o&ugrave; vous &ecirc;tes pr&eacute;-inscrit:</b><br /><br />\n" ;
     $useremail = $user['email'];
 	$req = "SELECT resource FROM ".$this->config["table_prefix"]."triples WHERE property='http://outils-reseaux.org/_vocabulary/preinscription' AND value LIKE '$useremail%'";
     if ($pages = $this->LoadAll($req)) {
@@ -45,18 +45,18 @@ if ($user = $this->GetUser()) {
     }
 }
 else {	
-	if (!isset($_POST['email'])) {
+	if (!isset($_REQUEST['email'])) {
 		echo '<b>Entrez votre adresse de messagerie pour voir les formations auxquelles vous êtes inscrit.</b><br /><br />';
 		echo $this->formOpen('','');
 		echo '<label>Adresse mail&nbsp;:&nbsp;</label><input maxlength="100" name="email" type="text" ';
-		if (isset($_POST['email'])) {
-			echo 'value="'.$_POST['email'].'" ';
+		if (isset($_REQUEST['email'])) {
+			echo 'value="'.$_REQUEST['email'].'" ';
 		}
 		echo '/><input name="Envoyer" value="Envoyer" type="submit">';
 		echo $this->formClose();
 	} else {
-		echo '<b>Liste des formations auxquelles vous êtes incrit avec le mail '.$_POST['email'].'</b><br /><br />';
-		$req = "SELECT resource FROM ".$this->config["table_prefix"]."triples WHERE property='http://outils-reseaux.org/_vocabulary/preinscription' AND value LIKE '".$_POST['email']."%'";
+		echo '<b>Liste des formations auxquelles vous êtes incrit avec le mail '.$_REQUEST['email'].'</b><br /><br />';
+		$req = "SELECT resource FROM ".$this->config["table_prefix"]."triples WHERE property='http://outils-reseaux.org/_vocabulary/preinscription' AND value LIKE '".$_REQUEST['email']."%'";
 	    if ($pages = $this->LoadAll($req)) {
 	    	echo '<ul>'."\n";			
 	        foreach ($pages as $page) {
@@ -81,7 +81,7 @@ else {
 					</span>';
 					}				
 				}
-				echo '&nbsp;-&nbsp;<a href="'.$this->href('', $page["resource"]).'/depreinscription&amp;email='.$_POST['email'].'">Se d&eacute;sinscrire</a>';
+				echo '&nbsp;-&nbsp;<a href="'.$this->href('', $page["resource"]).'/depreinscription&amp;email='.$_REQUEST['email'].'">Se d&eacute;sinscrire</a>';
 				echo '</li>'."\n";
 	        }
 	        echo '</ul>'."\n";	       
