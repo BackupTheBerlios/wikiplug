@@ -66,6 +66,10 @@ if (!$this->config['hide_action_template'])
 	
 }
 
-$plugin_output_new = '<div class="div_include"'.$actiondblclic.'>'."\n".$plugin_output_new."\n".'<div style="clear:both;display:block;"></div>'."\n".'</div>'."\n";
+if (!empty($clear) && $clear=='non') $texteclear='';
+else $texteclear = '<div style="clear:both;display:block;"></div>'."\n";
+
+$plugin_output_new = '<div class="div_include"'.$actiondblclic.'>'."\n".$plugin_output_new."\n".$texteclear
+.'</div>'."\n";
 
 ?>
