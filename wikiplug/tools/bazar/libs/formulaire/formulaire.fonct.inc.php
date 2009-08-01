@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: formulaire.fonct.inc.php,v 1.4 2008/08/28 14:49:52 mrflos Exp $
+// CVS : $Id: formulaire.fonct.inc.php,v 1.5 2009/08/01 17:01:58 mrflos Exp $
 /**
 * Formulaire
 *
@@ -31,7 +31,7 @@
 //Autres auteurs :
 *@author        Aleandre GRANIER <alexandre@tela-botanica.org>
 *@copyright     Tela-Botanica 2000-2004
-*@version       $Revision: 1.4 $ $Date: 2008/08/28 14:49:52 $
+*@version       $Revision: 1.5 $ $Date: 2009/08/01 17:01:58 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -149,8 +149,13 @@ function liste(&$formtemplate, $id_liste , $label, $limite1, $limite2, $defaut, 
 	$select= new HTML_QuickForm_select($nom_liste, $label, $select, $option);
 	if ($limite2 != '') $select->setSize($limite2); 
 	$select->setMultiple(0);
-	$select->setSelected($defaut);
+	//$select->setSelected($defaut);
+	
+	//echo '<br>defaut : '.$defaut.' / nom liste '.$nom_liste;
 	$formtemplate->addElement($select) ;
+	
+	$formtemplate->setDefaults(array($nom_liste, $defaut));
+	
 	if (($dans_moteur_de_recherche==0) && isset($obligatoire) && ($obligatoire==1)) {
 		$formtemplate->addRule('liste'.$id_liste, BAZ_CHOISIR_OBLIGATOIRE.' '.$label , 'nonzero', '', 'client') ;
 		$formtemplate->addRule('liste'.$id_liste, $label.' obligatoire', 'required', '', 'client') ;}
@@ -182,12 +187,17 @@ function checkbox(&$formtemplate, $id_liste , $label, $limite1, $limite2, $defau
 		require_once 'HTML/QuickForm/checkbox.php' ;
 		$i=0;
 		if (isset($defaut)) $tab=split(', ', $defaut);
+		//var_dump($tab);
 		while ($ligne = $resultat->fetchRow()) {
 			if ($i==0) $labelchkbox=$label ; else $labelchkbox='&nbsp;';
 			$checkbox[$i]= & HTML_Quickform::createElement('checkbox', $ligne[1], $labelchkbox, $ligne[2], 
 							array ('style'=>'display:inline;margin:2px;')) ;		
 			foreach ($tab as $val) {
-	            if ($ligne[1]==$val) $checkbox[$i]->setChecked(1);			        
+				//echo '<br>val : '.$val.'  / ligne :'.$ligne[1];
+	            if ($ligne[1]==$val) {
+	            	$checkbox[$i]->setChecked(true);
+					$listechk[$ligne[1]]=true;
+				}			        
 	        }			
 			$i++;
 		}
@@ -196,11 +206,13 @@ function checkbox(&$formtemplate, $id_liste , $label, $limite1, $limite2, $defau
 	                                             '<!-- BEGIN required --><span class="symbole_obligatoire">&nbsp;*</span><!-- END required -->'."\n".
 												 '</legend>'."\n".'{element}'."\n".'</fieldset> '."\n".'</td></tr>'."\n", 'checkbox'.$id_liste);
 	  	$squelette_checkbox->setGroupElementTemplate( "\n".'<div class="bazar_checkbox">'."\n".'{element}'."\n".'</div>'."\n", 'checkbox'.$id_liste);
-		
 		$formtemplate->addGroup($checkbox, 'checkbox'.$id_liste, $label, "\n");
 		if (($dans_moteur_de_recherche==0) && isset($obligatoire) && ($obligatoire==1)) {
 			$formtemplate->addGroupRule('checkbox'.$id_liste, $label.' obligatoire', 'required', null, 1, 'client');
-		}		
+		}	
+		//var_dump($listechk);
+		$defaultValues['checkbox'.$id_liste] = $listechk;
+		$formtemplate->setDefaults($defaultValues);	
 	} else {
 		$checkbox = & HTML_Quickform::createElement('checkbox', $id_liste, $label);
 		if ($defaut == 1) $checkbox->setChecked(true);
@@ -330,18 +342,16 @@ function champs_cache(&$formtemplate, $nom_bdd , $label, $limite1, $limite2, $de
 function champs_mail(&$formtemplate, $nom_bdd , $label, $limite1, $limite2, $defaut, $source, $obligatoire, $dans_moteur_de_recherche=0) {
 	$option=array('size'=>$limite1,'maxlength'=>$limite2, 'id' => $nom_bdd);
 	$formtemplate->addElement('text', $nom_bdd, $label, $option) ;
-	//gestion des valeurs par d�faut
+	//gestion des valeurs par defaut
 	$defauts=array($nom_bdd=>$defaut);
 	$formtemplate->setDefaults($defauts);
 	$formtemplate->applyFilter($nom_bdd, 'addslashes') ;
 	$formtemplate->addRule($nom_bdd,  $label.' obligatoire', 'required', '', 'client') ;
-	$formtemplate->addRule($nom_bdd, INS_MAIL_INCORRECT, 'email', '', 'client') ; 
+	$formtemplate->addRule($nom_bdd, 'Format de l\'adresse mail incorrect', 'email', '', 'client') ; 
 	//gestion du champs obligatoire
 	if (($dans_moteur_de_recherche==0) && isset($obligatoire) && ($obligatoire==1)) {
 		$formtemplate->addRule($nom_bdd,  $label.' obligatoire', 'required', '', 'client') ;
-	}
-	$formtemplate->registerRule('doublonmail', 'callback', 'inscription_verif_doublonMail');
-	$formtemplate->addRule($nom_bdd, INS_MAIL_DOUBLE, 'doublonmail');
+	}	
 }
 
 function mot_de_passe (&$formtemplate, $nom_bdd , $label1, $limite1, $limite2, $erreur1, $label2, $obligatoire) {
@@ -642,22 +652,40 @@ function carte_google(&$formtemplate, $url_google_script , $label, $champs_latit
 	if (is_array ($defaut)) {
     	$formtemplate->setDefaults(array('latitude' => $defaut['latitude'], 'longitude' => $defaut['longitude']));
     }
+
+    if (($dans_moteur_de_recherche==0) && isset($obligatoire) && ($obligatoire==1)) {
 	
     $html_bouton = '<tr>
 <td style="text-align:left;padding:5px;" colspan="2"> 
 <input onclick="showAddress();" name="chercher_sur_carte" value="'.VERIFIER_MON_ADRESSE.'" type="button" /><span class="symbole_obligatoire">&nbsp;*</span></td>
 </tr>';
+
+    }
+    else {  
+    $html_bouton = '<tr>
+<td style="text-align:left;padding:5px;" colspan="2"> 
+<input onclick="showAddress();" name="chercher_sur_carte" value="'.VERIFIER_MON_ADRESSE.'" type="button" /></td>
+</tr>';
+    }
+
 	$formtemplate->addElement('html', $html_bouton);   
     $formtemplate->addElement('html', '<tr><td colspan="2"><div id="map" style="width: '.BAZ_GOOGLE_IMAGE_LARGEUR.'px; height: '.BAZ_GOOGLE_IMAGE_HAUTEUR.'px;"></div></td></tr>');
     $formtemplate->addElement('text', 'latitude', LATITUDE, array('id' => 'latitude', 'size' => 6, 'readonly' => 'readonly'));
     $formtemplate->addElement('text', 'longitude', LONGITUDE, array('id' => 'longitude', 'size' => 6, 'readonly' => 'readonly'));
-    $formtemplate->addRule ('latitude', LATITUDE . ' obligatoire', 'required', '', 'client');
-    $formtemplate->addRule ('longitude', LONGITUDE . ' obligatoire', 'required', '', 'client');
+    
+    if (($dans_moteur_de_recherche==0) && isset($obligatoire) && ($obligatoire==1)) {
+    	$formtemplate->addRule ('latitude', LATITUDE . ' obligatoire', 'required', '', 'client');
+    	$formtemplate->addRule ('longitude', LONGITUDE . ' obligatoire', 'required', '', 'client');
+    }
+    
 }
 
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: formulaire.fonct.inc.php,v $
+* Revision 1.5  2009/08/01 17:01:58  mrflos
+* nouvelle action bazarcalendrier, correction bug typeannonce, validité html améliorée
+*
 * Revision 1.4  2008/08/28 14:49:52  mrflos
 * amélioration des performances de bazar : google map pas chargée systematiquement
 * correction bug flux rss

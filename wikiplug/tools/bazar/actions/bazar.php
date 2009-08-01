@@ -21,7 +21,7 @@
 // | along with Foobar; if not, write to the Free Software                                                |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: bazar.php,v 1.3 2008/09/09 12:46:42 mrflos Exp $
+// CVS : $Id: bazar.php,v 1.4 2009/08/01 17:01:59 mrflos Exp $
 /**
 * wiki.php
 *
@@ -33,7 +33,7 @@
 //Autres auteurs :
 *@author        Aucun
 *@copyright     Kaleidos-coop.org 2008
-*@version       $Revision: 1.3 $ $Date: 2008/09/09 12:46:42 $
+*@version       $Revision: 1.4 $ $Date: 2009/08/01 17:01:59 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -117,6 +117,12 @@ if ($GLOBALS['_BAZAR_']['id_typeannonce']!='toutes') {
 }
 
 $GLOBALS['_BAZAR_']['nomwiki']=$this->getUser();
+if ($this->UserIsInGroup('admins')) {
+	$GLOBALS['_BAZAR_']['isAdmin']=true;
+} 
+else {
+	$GLOBALS['_BAZAR_']['isAdmin']=false;
+}
 
 //variable d'affichage du bazar
 $res = '';
@@ -134,41 +140,41 @@ if ($GLOBALS['_BAZAR_']['affiche_menu']!='0') {
 	//partie consultation d'annonces
 	if (strstr(BAZ_VOIR_AFFICHER, strval(BAZ_VOIR_CONSULTER))) {
 		$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_CONSULTER);
-		$res .= '<li id="consulter"';
+		$res .= '<li id="menu_consulter"';
 		if ((isset($_GET[BAZ_VARIABLE_VOIR]) && $_GET[BAZ_VARIABLE_VOIR] == BAZ_VOIR_CONSULTER)) $res .=' class="onglet_actif" ';
-		$res .='><a href="'.$GLOBALS['_BAZAR_']['url']->getURL().'">'.BAZ_CONSULTER.'</a>'."\n".'</li>'."\n";
+		$res .='><a href="'.str_replace('&','&amp;',$GLOBALS['_BAZAR_']['url']->getURL()).'">'.BAZ_CONSULTER.'</a>'."\n".'</li>'."\n";
 	}
 
 	// Mes fiches
 	if (strstr(BAZ_VOIR_AFFICHER, strval(BAZ_VOIR_MES_FICHES))) {
 		$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_MES_FICHES);
-		$res .= '<li id="mes_fiches"';
+		$res .= '<li id="menu_mes_fiches"';
 		if (isset($_GET[BAZ_VARIABLE_VOIR]) && $_GET[BAZ_VARIABLE_VOIR] == BAZ_VOIR_MES_FICHES) $res .=' class="onglet_actif" ';
-		$res .= '><a href="'.$GLOBALS['_BAZAR_']['url']->getURL().'">'.BAZ_VOIR_VOS_ANNONCES.'</a>'."\n".'</li>'."\n";
+		$res .= '><a href="'.str_replace('&','&amp;',$GLOBALS['_BAZAR_']['url']->getURL()).'">'.BAZ_VOIR_VOS_ANNONCES.'</a>'."\n".'</li>'."\n";
 	}
 
 	//partie abonnement aux annonces
 	if (strstr(BAZ_VOIR_AFFICHER, strval(BAZ_VOIR_S_ABONNER))) {
 		$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_S_ABONNER);
-		$res .= '<li id="inscrire"';
+		$res .= '<li id="menu_inscrire"';
 		if (isset($_GET[BAZ_VARIABLE_VOIR]) && $_GET[BAZ_VARIABLE_VOIR]==BAZ_VOIR_S_ABONNER) $res .=' class="onglet_actif" ';
-		$res .= '><a href="'.$GLOBALS['_BAZAR_']['url']->getURL().'">'.BAZ_S_ABONNER.'</a></li>'."\n" ;
+		$res .= '><a href="'.str_replace('&','&amp;',$GLOBALS['_BAZAR_']['url']->getURL()).'">'.BAZ_S_ABONNER.'</a></li>'."\n" ;
 	}
 
 	//partie saisie d'annonces
 	if (strstr(BAZ_VOIR_AFFICHER, strval(BAZ_VOIR_SAISIR))) {
 		$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_SAISIR);
-		$res .= '<li id="deposer"';
+		$res .= '<li id="menu_deposer"';
 		if (isset($_GET[BAZ_VARIABLE_VOIR]) && ($_GET[BAZ_VARIABLE_VOIR]==BAZ_VOIR_SAISIR )) $res .=' class="onglet_actif" ';
-		$res .='><a href="'.$GLOBALS['_BAZAR_']['url']->getURL().'">'.BAZ_SAISIR.'</a>'."\n".'</li>'."\n";
+		$res .='><a href="'.str_replace('&','&amp;',$GLOBALS['_BAZAR_']['url']->getURL()).'">'.BAZ_SAISIR.'</a>'."\n".'</li>'."\n";
 	}
 
 	//partie affichage formulaire
 	if (strstr(BAZ_VOIR_AFFICHER, strval(BAZ_VOIR_FORMULAIRE))) {
 		$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_FORMULAIRE);
-		$res .= '<li id="formulaire"';
+		$res .= '<li id="menu_formulaire"';
 		if (isset($_GET[BAZ_VARIABLE_VOIR]) && $_GET[BAZ_VARIABLE_VOIR]==BAZ_VOIR_FORMULAIRE) $res .=' class="onglet_actif" ';
-		$res .= '><a href="'.$GLOBALS['_BAZAR_']['url']->getURL().'">'.BAZ_FORMULAIRE.'</a></li>'."\n" ;
+		$res .= '><a href="'.str_replace('&','&amp;',$GLOBALS['_BAZAR_']['url']->getURL()).'">'.BAZ_FORMULAIRE.'</a></li>'."\n" ;
 	}
 
 	//choix des administrateurs
@@ -191,7 +197,7 @@ if ($GLOBALS['_BAZAR_']['affiche_menu']!='0') {
 				$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_ADMIN);
 				$res .= '<li id="administrer"';
 				if (isset($_GET[BAZ_VARIABLE_VOIR]) && $_GET[BAZ_VARIABLE_VOIR]==BAZ_VOIR_ADMIN) $res .=' class="onglet_actif" ';
-				$res .='><a href="'.$GLOBALS['_BAZAR_']['url']->getURL().'">'.BAZ_ADMINISTRER.'</a></li>'."\n";
+				$res .='><a href="'.str_replace('&','&amp;',$GLOBALS['_BAZAR_']['url']->getURL()).'">'.BAZ_ADMINISTRER.'</a></li>'."\n";
 			}
 
 			if ($utilisateur->isSuperAdmin()) {
@@ -199,7 +205,7 @@ if ($GLOBALS['_BAZAR_']['affiche_menu']!='0') {
 					$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_GESTION_DROITS);
 					$res .= '<li id="gerer"';
 					if (isset($_GET[BAZ_VARIABLE_VOIR]) && $_GET[BAZ_VARIABLE_VOIR]==BAZ_VOIR_GESTION_DROITS) $res .=' class="onglet_actif" ';
-					$res .='><a href="'.$GLOBALS['_BAZAR_']['url']->getURL().'">'.BAZ_GESTION_DES_DROITS.'</a></li>'."\n" ;
+					$res .='><a href="'.str_replace('&','&amp;',$GLOBALS['_BAZAR_']['url']->getURL()).'">'.BAZ_GESTION_DES_DROITS.'</a></li>'."\n" ;
 				}
 			}
 		}
@@ -241,7 +247,7 @@ if (isset ($_GET[BAZ_VARIABLE_VOIR])) {
 			if (isset ($_GET[BAZ_VARIABLE_ACTION]) && $_GET[BAZ_VARIABLE_ACTION] != BAZ_VOIR_TOUTES_ANNONCES) {
 				$res .= baz_formulaire($_GET[BAZ_VARIABLE_ACTION]) ;
 				if ($_GET[BAZ_VARIABLE_ACTION] == BAZ_ACTION_MODIFIER_V) $res .= baz_voir_fiche(1);
-			} else $res .= baz_liste($GLOBALS['_BAZAR_']['id_typeannonce']);
+			} else $res .= baz_liste($GLOBALS['_BAZAR_']['id_typeannonce'],$GLOBALS['_BAZAR_']['categorie_nature']);
 			break;
 			case BAZ_VOIR_MES_FICHES :
 			if (isset ($_GET[BAZ_VARIABLE_ACTION])) $res .= baz_formulaire($_GET[BAZ_VARIABLE_ACTION]) ; else $res .= mes_fiches();
@@ -262,7 +268,6 @@ if (isset ($_GET[BAZ_VARIABLE_VOIR])) {
 			$res .= baz_liste($GLOBALS['_BAZAR_']['id_typeannonce']);
 		}
 }
-
 //affichage de la page
 echo $res ;
 
@@ -270,6 +275,9 @@ echo $res ;
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: bazar.php,v $
+* Revision 1.4  2009/08/01 17:01:59  mrflos
+* nouvelle action bazarcalendrier, correction bug typeannonce, validité html améliorée
+*
 * Revision 1.3  2008/09/09 12:46:42  mrflos
 * sécurité: seuls les identifies peuvent supprimer une fiche ou un type de fiche
 *

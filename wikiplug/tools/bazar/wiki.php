@@ -21,7 +21,7 @@
 // | along with Foobar; if not, write to the Free Software                                                |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: wiki.php,v 1.2 2008/07/29 17:32:25 mrflos Exp $
+// CVS : $Id: wiki.php,v 1.3 2009/08/01 17:01:59 mrflos Exp $
 /**
 * wiki.php
 *
@@ -32,7 +32,7 @@
 *@author        Florian SCHMITT <florian.schmitt@laposte.net>
 //Autres auteurs :
 *@copyright     outils-reseaux-coop.org 2008
-*@version       $Revision: 1.2 $ $Date: 2008/07/29 17:32:25 $
+*@version       $Revision: 1.3 $ $Date: 2009/08/01 17:01:59 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -57,6 +57,8 @@ require_once BAZ_CHEMIN.'actions'.DIRECTORY_SEPARATOR.'bazar'.DIRECTORY_SEPARATO
 // +------------------------------------------------------------------------------------------------------+
 // |                                            CORPS du PROGRAMME                                        |
 // +------------------------------------------------------------------------------------------------------+
+
+$GLOBALS['_BAZAR_']['wiki']=new Wiki($wakkaConfig);
 
 // Variable d'url
 $GLOBALS['_BAZAR_']['url'] = new Net_URL($wakkaConfig['base_url'].$_GET['wiki']);
@@ -114,13 +116,13 @@ define ('BAZ_SANS_AUTH', true);
 //==================================== LES FLUX RSS==================================
 // Constantes liees aux flux RSS
 //==================================================================================
-define('BAZ_RSS_NOMSITE','Reseau Logement Jeunes');    //Nom du site indique dans les flux rss
-define('BAZ_RSS_ADRESSESITE','http://kaleidos-coop.org/~reseaulo');   //Adresse Internet du site indique dans les flux rss
-define('BAZ_RSS_DESCRIPTIONSITE','Reseau Logement Jeunes');    //Description du site indiquee dans les flux rss
-define('BAZ_RSS_LOGOSITE','http://www.umij.org/images/illustrations/services/rlj_passeport.jpg');     //Logo du site indique dans les flux rss
-define('BAZ_RSS_MANAGINGEDITOR', 'labriet.pierre@nerim.net (Pierre Labriet)') ;     //Managing editor du site
-define('BAZ_RSS_WEBMASTER', 'labriet.pierre@nerim.net (Pierre Labriet)') ;     //Mail Webmaster du site
-define('BAZ_RSS_CATEGORIE', 'Immobilier'); //categorie du flux RSS
+define('BAZ_RSS_NOMSITE','Mois de l\'ESS en Languedoc Roussillon');    //Nom du site indique dans les flux rss
+define('BAZ_RSS_ADRESSESITE','http://www.creslr.org/mois-ess');   //Adresse Internet du site indique dans les flux rss
+define('BAZ_RSS_DESCRIPTIONSITE','Mois de l\'economie sociale et solidaire 2009 en Languedoc Roussillon');    //Description du site indiquee dans les flux rss
+define('BAZ_RSS_LOGOSITE','http://www.creslr.org/mois-ess/logo_creslr.jpg');     //Logo du site indique dans les flux rss
+define('BAZ_RSS_MANAGINGEDITOR', 'accueil@outils-reseaux.org (association Outils-Reseaux)') ;     //Managing editor du site
+define('BAZ_RSS_WEBMASTER', 'accueil@outils-reseaux.org (association Outils-Reseaux)') ;     //Mail Webmaster du site
+define('BAZ_RSS_CATEGORIE', 'Economie Sociale et Solidaire'); //categorie du flux RSS
 
 
 //==================================== PARAMETRAGE =================================
@@ -196,18 +198,18 @@ define ('BAZ_SQUELETTE_DEFAUT', 'baz_cal.tpl.html');
 //==================================================================================
 
 // Indiquer ici la cle de la google map api
-define ('BAZ_GOOGLE_KEY', 'ABQIAAAAaNByewMifv3sp7csMhxt3xQ5Hpti9uskfJvbbDjOZ3hbd-4AbRRyujIHm2xkIXT1czSNsPmxKNVQEQ');
+define ('BAZ_GOOGLE_KEY', 'ABQIAAAAblJgoDKFwzO1E2u1P5XQoxSCRxejTIL_pPQ-dxuPXspeXcBPNxTy9t--jL45z7Es7hdpkIf5LqzDZA');
 
 // coordonnees du centre de la carte
-define ('BAZ_GOOGLE_CENTRE_LAT', '45.18');
-define ('BAZ_GOOGLE_CENTRE_LON', '5.77');
+define ('BAZ_GOOGLE_CENTRE_LAT', '43.60426186809618');
+define ('BAZ_GOOGLE_CENTRE_LON', '3.438720703125');
 
 // niveau de zoom
-define ('BAZ_GOOGLE_ALTITUDE', '11'); // de 1 (plus eloigne) a 15 (plus proche)
+define ('BAZ_GOOGLE_ALTITUDE', '8'); // de 1 (plus eloigne) a 15 (plus proche)
 
 // taille de la carte a l'ecran
-define ('BAZ_GOOGLE_IMAGE_LARGEUR', 400);  // en pixel
-define ('BAZ_GOOGLE_IMAGE_HAUTEUR', 400);  // en pixel
+define ('BAZ_GOOGLE_IMAGE_LARGEUR', 600);  // en pixel
+define ('BAZ_GOOGLE_IMAGE_HAUTEUR', 600);  // en pixel
 
 // mettre la carte a la plus grande taille possible automatiquement
 define ('BAZ_GOOGLE_MAXIMISE_TAILLE', false); // Si a true, la carte essaie de s etendre sur toute la largeur disponible
@@ -218,6 +220,9 @@ define ('BAZ_GOOGLE_FOND_KML', '');
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: wiki.php,v $
+* Revision 1.3  2009/08/01 17:01:59  mrflos
+* nouvelle action bazarcalendrier, correction bug typeannonce, validité html améliorée
+*
 * Revision 1.2  2008/07/29 17:32:25  mrflos
 * maj générale
 *

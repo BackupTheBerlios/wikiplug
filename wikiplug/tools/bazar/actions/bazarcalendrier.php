@@ -7,10 +7,10 @@
 //Auteur original :
 *@author        David DELON <david.delon@clapas.net>
 *@author        Florian SCHMITT <florian.schmitt@laposte.net>
-*@version       $Revision: 1.2 $ $Date: 2008/08/27 13:18:57 $
+*@version       $Revision: 1.3 $ $Date: 2009/08/01 17:01:59 $
 // +------------------------------------------------------------------------------------------------------+
 */
-//rÃ©cupÃ©ration des paramÃªtres wikini
+//récupération des paramètres wikini
 $categorie_nature = $this->GetParameter("categorienature");
 if (!empty($categorie_nature)) {
 	$GLOBALS['_BAZAR_']['categorie_nature']=$categorie_nature;
@@ -28,9 +28,12 @@ else {
 	$GLOBALS['_BAZAR_']['id_typeannonce']='toutes';
 }
 
+$type_cal = $this->GetParameter("typecal");
+if (empty($type_cal)) $type_cal = 'calendrier';
+ 
 //fichier des fonctions calendrier de Bazar
 include_once BAZ_CHEMIN.'actions'.DIRECTORY_SEPARATOR.'bazar'.DIRECTORY_SEPARATOR.'bibliotheque'.DIRECTORY_SEPARATOR.'bazar.fonct.cal.php'; 
 
-echo GestionAffichageCalendrier('calendrier');	
+echo GestionAffichageCalendrier($type_cal);	
 ?>
 

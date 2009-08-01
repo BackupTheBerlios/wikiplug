@@ -6,7 +6,7 @@
 *@package Bazar
 //Auteur original :
 *@author        Florian SCHMITT <florian.schmitt@laposte.net>
-*@version       $Revision: 1.2 $ $Date: 2008/08/27 13:18:57 $
+*@version       $Revision: 1.3 $ $Date: 2009/08/01 17:01:59 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -37,9 +37,9 @@ else {
 $requete = 'SELECT * FROM bazar_fiche WHERE ';
 if ($GLOBALS['_BAZAR_']['categorie_nature'] != 'toutes') $requete .= 'bf_categorie_fiche="'.$GLOBALS['_BAZAR_']['categorie_nature'].'" and ' ;
 if ($GLOBALS['_BAZAR_']['id_typeannonce'] != 'toutes') $requete .= 'bf_ce_nature="'.$GLOBALS['_BAZAR_']['id_typeannonce'].'" and ' ;
-$requete .= ' ((bf_date_debut_validite_fiche<=now() and bf_date_fin_validite_fiche>=now()) or (bf_date_fin_validite_fiche="0000-00-00"' .
-		' and date_add(bf_date_fin_evenement,interval 15 day)>now()))'.
+$requete .= ' ((bf_date_debut_validite_fiche<=now() and bf_date_fin_validite_fiche>=now()) or (bf_date_fin_validite_fiche="0000-00-00"))'.
 			' and bf_statut_fiche=1';
+	//echo $requete;		
 $resultat = $GLOBALS['_BAZAR_']['db']->query ($requete);
 
 // Le code complique avec ces 2 tableaux sert
@@ -50,29 +50,30 @@ $donnees = array();
 
 if ($resultat->numRows() != 0) {
 	$script_marker = '';
-	while ($ligne = $resultat->fetchRow(DB_FETCHMODE_ASSOC)) {
-		if ($ligne['bf_latitude'] == 0 && $ligne['bf_longitude'] == 0) continue;
-		$cle = $ligne['bf_latitude'].'-'.$ligne['bf_longitude'];
-		$donnees[$cle][] = $ligne; 
-	}
-	foreach ($donnees as $valeur) {
+	while ($chaine = $resultat->fetchRow(DB_FETCHMODE_ASSOC)) {
+		//var_dump($chaine);
+		if ($chaine['bf_latitude'] == 0 && $chaine['bf_longitude'] == 0) continue;
+	//	$cle = $ligne['bf_latitude'].'-'.$ligne['bf_longitude'];
+	//	$donnees[$cle][] = $ligne; 
+	//}
+	//foreach ($donnees as $valeur) {
 		// cas un : une seule entree pour le point de coordonnees
-		if (count ($valeur) == 1) {
-			$chaine = $valeur[0];
+		//if (count ($valeur) == 1) {
+			//$chaine = $valeur[0];
 			$script_marker .= "\t".'point = new GLatLng('.$chaine['bf_latitude'].','.$chaine['bf_longitude'].');'."\n"
 				."\t".'map.addOverlay(createMarker(point, \''.'<div class="BAZ_cadre_map">'.
 				preg_replace ('/\n/', '', str_replace ("\r\n", '', 
 					str_replace ("'", "\'", baz_voir_fiche(0, $chaine['bf_id_fiche'])))).'</div>\'));'."\n";
-		} else { // Cas 2 plusieurs entrees
-			$tableau_id = array();
-			foreach ($valeur as $val) {
-				array_push ($tableau_id, $val['bf_id_fiche']);
-			}
-			$script_marker .= "\t".'point = new GLatLng('.$val['bf_latitude'].','.$val['bf_longitude'].');'."\n"
-				."\t".'map.addOverlay(createMarker(point, \''.'<div class="BAZ_cadre_map">'.
-				preg_replace ('/\n/', '', str_replace ("\r\n", '', 
-					str_replace ("'", "\'", baz_voir_fiches(0, $tableau_id)))).'</div>\'));'."\n";
-		}	
+		//} else { // Cas 2 plusieurs entrees
+		//	$tableau_id = array();
+		//	foreach ($valeur as $val) {
+		//		array_push ($tableau_id, $val['bf_id_fiche']);
+		//	}
+		//	$script_marker .= "\t".'point = new GLatLng('.$val['bf_latitude'].','.$val['bf_longitude'].');'."\n"
+		//		."\t".'map.addOverlay(createMarker(point, \''.'<div class="BAZ_cadre_map">'.
+		//		preg_replace ('/\n/', '', str_replace ("\r\n", '', 
+		//			str_replace ("'", "\'", baz_voir_fiches(0, $tableau_id)))).'</div>\'));'."\n";
+		//}	
 	}
 } else {
 	$script_marker = '';

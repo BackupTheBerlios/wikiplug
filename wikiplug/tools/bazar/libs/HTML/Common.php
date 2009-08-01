@@ -17,7 +17,7 @@
  * @author      Adam Daniel <adaniel1@eesus.jnj.com>
  * @copyright   2001-2007 The PHP Group
  * @license     http://www.php.net/license/3_01.txt PHP License 3.01
- * @version     CVS: $Id: Common.php,v 1.1 2008/07/07 18:00:38 mrflos Exp $
+ * @version     CVS: $Id: Common.php,v 1.2 2009/08/01 17:01:59 mrflos Exp $
  * @link        http://pear.php.net/package/HTML_Common/
  */ 
 
@@ -306,8 +306,8 @@ class HTML_Common
      * @access   public
      */
     function updateAttributes($attributes)
-    {
-        $this->_updateAttrArray($this->_attributes, $this->_parseAttributes($attributes));
+    { 
+		$this->_updateAttrArray($this->_attributes, $this->_parseAttributes($attributes));
     } // end func updateAttributes
 
     /**

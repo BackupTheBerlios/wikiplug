@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: baz_langue_fr.inc.php,v 1.4 2008/08/27 17:19:40 mrflos Exp $
+// CVS : $Id: baz_langue_fr.inc.php,v 1.5 2009/08/01 17:01:58 mrflos Exp $
 /**
 * Fichier de traduction en fran�ais de l'application Bazar
 *
@@ -30,7 +30,7 @@
 //Autres auteurs :
 *@author        Aucun
 *@copyright     Tela-Botanica 2000-2004
-*@version       $Revision: 1.4 $ $Date: 2008/08/27 17:19:40 $
+*@version       $Revision: 1.5 $ $Date: 2009/08/01 17:01:58 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -168,6 +168,10 @@ define ('BAZ_LES_STRUCTURES_POSSEDANT_UNE_RESSOURCE', 'Les structures poss�dan
 define ('BAZ_FICHES_PAS_VALIDEES','Seulement les fiches pas valid&eacute;es');
 define ('BAZ_FICHES_VALIDEES','Seulement les fiches valid&eacute;es');
 define ('BAZ_LES_DEUX','Fiches valid&eacute;es et non valid&eacute;es');
+define ('BAZ_FICHES_PERIMEES','Seulement les fiches p&eacute;rim&eacute;es');
+define ('BAZ_FICHES_PAS_PERIMEES','Seulement les fiches non p&eacute;rim&eacute;es');
+define ('BAZ_TOUTES_LES_DATES','Les fiches p&eacute;rim&eacute;es et non p&eacute;rim&eacute;es');
+define ('BAZ_DATE','Dates des fiches');
 define ('BAZ_VOIR_VOS_ANNONCES', 'Vos fiches');
 define ('BAZ_RECHERCHER','Rechercher');
 define ('BAZ_SAISIR_UNE_NOUVELLE_FICHE','Saisir une nouvelle fiche');
@@ -487,6 +491,9 @@ define ('BAZ_DECEMBRE','D&eacute;cembre');
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: baz_langue_fr.inc.php,v $
+* Revision 1.5  2009/08/01 17:01:58  mrflos
+* nouvelle action bazarcalendrier, correction bug typeannonce, validité html améliorée
+*
 * Revision 1.4  2008/08/27 17:19:40  mrflos
 * correction bug moteur de recherche, ajout des flux rss
 *

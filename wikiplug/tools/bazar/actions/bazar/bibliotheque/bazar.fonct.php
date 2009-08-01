@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: bazar.fonct.php,v 1.6 2008/09/09 12:46:42 mrflos Exp $
+// CVS : $Id: bazar.fonct.php,v 1.7 2009/08/01 17:01:58 mrflos Exp $
 /**
 *
 * Fonctions du module bazar
@@ -31,7 +31,7 @@
 *@author        Florian Schmitt <florian@ecole-et-nature.org>
 //Autres auteurs :
 *@copyright     Tela-Botanica 2000-2004
-*@version       $Revision: 1.6 $ $Date: 2008/09/09 12:46:42 $
+*@version       $Revision: 1.7 $ $Date: 2009/08/01 17:01:58 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -750,7 +750,6 @@ function baz_afficher_formulaire_fiche($mode='insertion',$formtemplate) {
 		if ($mode=='modification') {
 			//Ajout des valeurs par defaut
 			$valeurs_par_defaut = baz_valeurs_fiche($GLOBALS['_BAZAR_']['id_fiche']) ;
-
 			for ($i=0; $i<count($tableau); $i++) {
 				if ( $tableau[$i]['type']=='liste' || $tableau[$i]['type']=='checkbox') {
 					$def=$tableau[$i]['type'].$tableau[$i]['nom_bdd'];
@@ -765,6 +764,9 @@ function baz_afficher_formulaire_fiche($mode='insertion',$formtemplate) {
 				}
 				// certain type n ont pas de valeur par defaut (labelhtml par exemple)
 				// on teste l existence de $valeur_par_defaut[$def] avant de le passer en parametre
+				
+				//if (isset($valeurs_par_defaut[$def])) echo '<br />DEF '.$def.' : '.$valeurs_par_defaut[$def];			                    
+				
 				$tableau[$i]['type']($formtemplate, $tableau[$i]['nom_bdd'], $tableau[$i]['label'], $tableau[$i]['limite1'],
 			                         $tableau[$i]['limite2'],
 			                         isset ($valeurs_par_defaut[$def]) ? $valeurs_par_defaut[$def] : '',
@@ -772,6 +774,8 @@ function baz_afficher_formulaire_fiche($mode='insertion',$formtemplate) {
 				if ($tableau[$i]['type']=='carte_google') {
 					require_once 'formulaire/formulaire.fonct.google.php';    				
 				}
+				//var_dump($valeurs_par_defaut);break;
+				$formtemplate->setDefaults($valeurs_par_defaut);
 			}
 		}
 		else {
@@ -897,7 +901,7 @@ function requete_bazar_fiche($valeur) {
 			$requete .= $tableau[$i]['nom_bdd'].'="'.$val.'", ' ;
 		}
 		//cas des champs texte
-		elseif ( $tableau[$i]['type']=='texte' || $tableau[$i]['type']=='textelong' || $tableau[$i]['type']=='champs_cache' ) {
+		elseif ( $tableau[$i]['type']=='texte' || $tableau[$i]['type']=='textelong' || $tableau[$i]['type']=='champs_cache' || $tableau[$i]['type']=='champs_mail' ) {
 			//on mets les slashes pour les saisies dans les champs texte et textearea
 			$val=addslashes($valeur[$tableau[$i]['nom_bdd']]) ;
 			$requete .= $tableau[$i]['nom_bdd'].'="'.$val.'", ' ;
@@ -1354,7 +1358,7 @@ function baz_gestion_formulaire() {
 		$res .= '<p class="BAZ_info">'.BAZ_NOUVEAU_FORMULAIRE_ENREGISTRE.'</p>'."\n";
 	
 	//il y a des donnees pour modifier un formulaire
-	} elseif ($GLOBALS['_BAZAR_']['nomwiki']!='' && isset($_GET['action_formulaire']) && $_GET['action_formulaire']=='modif_v') {
+	} elseif ($GLOBALS['_BAZAR_']['nomwiki']!='' && $GLOBALS['_BAZAR_']['isAdmin']  && isset($_GET['action_formulaire']) && $_GET['action_formulaire']=='modif_v') {
 		$requete = 'UPDATE bazar_nature SET `bn_label_nature`="'.$_POST["bn_label_nature"].
 				   '" ,`bn_template`="'.addslashes($_POST["bn_template"]).
 				   '" ,`bn_description`="'.$_POST["bn_description"].
@@ -1375,7 +1379,7 @@ function baz_gestion_formulaire() {
 		$res .= '<p class="BAZ_info">'.BAZ_FORMULAIRE_MODIFIE.'</p>'."\n";	
 		
 	// il y a un id de formulaire � supprimer
-	} elseif ($GLOBALS['_BAZAR_']['nomwiki']!='' && isset($_GET['action_formulaire']) && $_GET['action_formulaire']=='delete') {
+	} elseif ($GLOBALS['_BAZAR_']['nomwiki']!='' && $GLOBALS['_BAZAR_']['isAdmin'] && isset($_GET['action_formulaire']) && $_GET['action_formulaire']=='delete') {
 		//suppression de l'entree dans bazar_nature
 		$requete = 'DELETE FROM bazar_nature WHERE bn_id_nature='.$_GET['idformulaire'];
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;		
@@ -1415,13 +1419,13 @@ function baz_gestion_formulaire() {
 			$liste .= '<li>';
 			$lien_formulaire->addQueryString('action_formulaire', 'delete');
 			$lien_formulaire->addQueryString('idformulaire', $ligne[bn_id_nature]);
-			if ($GLOBALS['_BAZAR_']['nomwiki']!='')  {
+			if ($GLOBALS['_BAZAR_']['nomwiki']!=''  && $GLOBALS['_BAZAR_']['isAdmin'])  {
 				$liste .= '<a href="'.$lien_formulaire->getURL().'"  onclick="javascript:return confirm(\''.BAZ_CONFIRM_SUPPRIMER_FORMULAIRE.' ?\');">'.
                       '<img src="'.BAZ_CHEMIN.'presentation'.DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR.'delete.gif" alt="'.BAZ_EFFACER.'"></a>'."\n";
 			}
 			$lien_formulaire->removeQueryString('action_formulaire');
 			$lien_formulaire->addQueryString('action_formulaire', 'modif');
-			if ($GLOBALS['_BAZAR_']['nomwiki']!='')  {
+			if ($GLOBALS['_BAZAR_']['nomwiki']!='' && $GLOBALS['_BAZAR_']['isAdmin'])  {
 				$liste .= '<a href="'.$lien_formulaire->getURL().'"><img src="'.BAZ_CHEMIN.'presentation'.DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR.'modify.gif" alt="'.BAZ_MODIFIER.'">'.
 						  '&nbsp;'.$ligne['bn_label_nature'].'</a>'."\n";
 			} else {
@@ -1435,7 +1439,7 @@ function baz_gestion_formulaire() {
 		if ($liste!='') $res .= $liste.'</ul><br />'."\n";
 		
 		//ajout du lien pour creer un nouveau formulaire
-		if ($GLOBALS['_BAZAR_']['nomwiki']!='') {
+		if ($GLOBALS['_BAZAR_']['nomwiki']!='' && $GLOBALS['_BAZAR_']['isAdmin']) {
 			$lien_formulaire->addQueryString('action_formulaire', 'new');
 			$res .= '<a href="'.$lien_formulaire->getURL().'"><img src="'.BAZ_CHEMIN.'presentation'.DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR.'new.gif" alt="new">'.
 					  '&nbsp;'.BAZ_NOUVEAU_FORMULAIRE.'</a>'."\n";
@@ -1473,11 +1477,11 @@ function baz_valeurs_fiche($idfiche) {
             while ($result = $resultat->fetchRow()) {
             	if ($nb>0) $val .= ', ';
             	$val .= $result[0];
-            	$nb++;
+				$nb++;
             }
      		$valeurs_fiche[$tableau[$i]['type'].$tableau[$i]['nom_bdd']] = $val;
      	}
-     	elseif ($tableau[$i]['type']=='champs_cache' || $tableau[$i]['type']=='texte' || $tableau[$i]['type']=='textelong' || $tableau[$i]['type']=='listedatedeb' || $tableau[$i]['type']=='listedatefin') {
+     	elseif ($tableau[$i]['type']=='champs_cache' || $tableau[$i]['type']=='champs_mail' || $tableau[$i]['type']=='texte' || $tableau[$i]['type']=='textelong' || $tableau[$i]['type']=='listedatedeb' || $tableau[$i]['type']=='listedatefin') {
      		$valeurs_fiche[$tableau[$i]['nom_bdd']] = stripslashes($ligne[$tableau[$i]['nom_bdd']]);
      	} elseif ($tableau[$i]['type']=='carte_google') {
      		$valeurs_fiche['bf_latitude'] = $ligne['bf_latitude'];
@@ -1529,6 +1533,9 @@ function baz_titre_wiki($nom) {
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: bazar.fonct.php,v $
+* Revision 1.7  2009/08/01 17:01:58  mrflos
+* nouvelle action bazarcalendrier, correction bug typeannonce, validité html améliorée
+*
 * Revision 1.6  2008/09/09 12:46:42  mrflos
 * sécurité: seuls les identifies peuvent supprimer une fiche ou un type de fiche
 *
