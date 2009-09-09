@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: bazar.fonct.rss.php,v 1.8 2009/08/01 17:01:58 mrflos Exp $
+// CVS : $Id: bazar.fonct.rss.php,v 1.9 2009/09/09 15:36:37 mrflos Exp $
 /**
 *
 *@package bazar
@@ -28,7 +28,7 @@
 *@author        Florian Schmitt <florian@ecole-et-nature.org>
 //Autres auteurs :
 *@copyright     Tela-Botanica 2000-2006
-*@version       $Revision: 1.8 $
+*@version       $Revision: 1.9 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -225,8 +225,8 @@ function baz_voir_fiche($danslappli, $idfiche='') {
 					$val=$tableau[$i]['nom_bdd'];
 					if (!in_array($val, array ('bf_titre', 'bf_description'))) {
 						if ($ligne[$val] != '' and $ligne[$val] != BAZ_CHOISIR and $ligne[$val] != BAZ_NON_PRECISE) {
-							$res .= '<div class="BAZ_rubrique  BAZ_rubrique_'.$GLOBALS['_BAZAR_']['class'].'">'."\n".'<span class="BAZ_label" id="'.$tableau[$i]['nom_bdd'].'_rubrique">'.$tableau[$i]['label'].':</span>'."\n";
-							$res .= '<span class="BAZ_texte BAZ_texte_'.$GLOBALS['_BAZAR_']['class'].'" id="'.$tableau[$i]['nom_bdd'].'_description"> ';
+							$res .= '<div class="BAZ_rubrique  BAZ_rubrique_'.$GLOBALS['_BAZAR_']['class'].'">'."\n".'<span class="BAZ_label '.$tableau[$i]['nom_bdd'].'_rubrique">'.$tableau[$i]['label'].':</span>'."\n";
+							$res .= '<span class="BAZ_texte BAZ_texte_'.$GLOBALS['_BAZAR_']['class'].' '.$tableau[$i]['nom_bdd'].'_description"> ';
 							$texte = eregi_replace("(http|mailto|news|ftp|https)://(([-éa-z0-9\/\.\?_=#@:;+~,])*)", "<a href=\"\\1://\\2\" target=\"_blank\" rel=\"nofollow\">\\1://\\2</a>", $ligne[$val]);
 							$res .= nl2br($texte).'</span>'."\n".'</div>'."\n";
 						}
@@ -235,8 +235,8 @@ function baz_voir_fiche($danslappli, $idfiche='') {
 				elseif ( $tableau[$i]['type']=='champs_mail' ) {
 					$val=$tableau[$i]['nom_bdd'];
 					if ($ligne[$val] != '' and $ligne[$val] != BAZ_CHOISIR and $ligne[$val] != BAZ_NON_PRECISE) {
-							$res .= '<div class="BAZ_rubrique  BAZ_rubrique_'.$GLOBALS['_BAZAR_']['class'].'">'."\n".'<span class="BAZ_label" id="'.$tableau[$i]['nom_bdd'].'_rubrique">'.$tableau[$i]['label'].':</span>'."\n";
-							$res .= '<span class="BAZ_texte BAZ_texte_'.$GLOBALS['_BAZAR_']['class'].'" id="'.$tableau[$i]['nom_bdd'].'_description"><a href="mailto:'.$ligne[$val].'">'.$ligne[$val].'</a></span>'."\n".'</div>'."\n";
+							$res .= '<div class="BAZ_rubrique  BAZ_rubrique_'.$GLOBALS['_BAZAR_']['class'].'">'."\n".'<span class="BAZ_label '.$tableau[$i]['nom_bdd'].'_rubrique">'.$tableau[$i]['label'].':</span>'."\n";
+							$res .= '<span class="BAZ_texte BAZ_texte_'.$GLOBALS['_BAZAR_']['class'].' '.$tableau[$i]['nom_bdd'].'_description"><a href="mailto:'.$ligne[$val].'">'.$ligne[$val].'</a></span>'."\n".'</div>'."\n";
 						}
 				}
 				elseif ( $tableau[$i]['type']=='liste' || $tableau[$i]['type']=='checkbox' ) {
@@ -254,8 +254,8 @@ function baz_voir_fiche($danslappli, $idfiche='') {
 						$nb++;
 					}
 					if ($val != '' and $val != BAZ_CHOISIR and $val != BAZ_NON_PRECISE) {
-						$res .= '<div class="BAZ_rubrique BAZ_rubrique_'.$GLOBALS['_BAZAR_']['class'].'">'."\n".'<span class="BAZ_label" id="rubrique_'.$tableau[$i]['nom_bdd'].'">'.$tableau[$i]['label'].':</span>'."\n";
-						$res .= '<span class="BAZ_texte BAZ_texte_'.$GLOBALS['_BAZAR_']['class'].'" id="description_'.$tableau[$i]['nom_bdd'].'"> '.$val.'</span>'."\n".'</div>'."\n";
+						$res .= '<div class="BAZ_rubrique BAZ_rubrique_'.$GLOBALS['_BAZAR_']['class'].'">'."\n".'<span class="BAZ_label rubrique_'.$tableau[$i]['nom_bdd'].'">'.$tableau[$i]['label'].':</span>'."\n";
+						$res .= '<span class="BAZ_texte BAZ_texte_'.$GLOBALS['_BAZAR_']['class'].' description_'.$tableau[$i]['nom_bdd'].'"> '.$val.'</span>'."\n".'</div>'."\n";
 					}
 				}
 				elseif ( $tableau[$i]['type']=='listedatedeb' || $tableau[$i]['type']=='listedatefin' ) {
@@ -274,18 +274,18 @@ function baz_voir_fiche($danslappli, $idfiche='') {
 									if ($val == 'bf_date_debut_evenement') {
 										$res .= '<div class="BAZ_rubrique BAZ_rubrique_'.$GLOBALS['_BAZAR_']['class'].'">'."\n".'<span class="BAZ_label" id="'.$tableau[$i]['nom_bdd'].'_rubrique">';
 										$res .= BAZ_DU;
-										$res .= '</span>'."\n".'<span class="BAZ_texte BAZ_texte_'.$GLOBALS['_BAZAR_']['class'].'" id="'.$tableau[$i]['nom_bdd'].'_description"> '.strftime('%d.%m.%Y',strtotime($ligne[$val])).'</span>'."\n";
+										$res .= '</span>'."\n".'<span class="BAZ_texte BAZ_texte_'.$GLOBALS['_BAZAR_']['class'].' '.$tableau[$i]['nom_bdd'].'_description"> '.strftime('%d.%m.%Y',strtotime($ligne[$val])).'</span>'."\n";
 									} else {
 										$res .= '<span class="BAZ_label" id="'.$tableau[$i]['nom_bdd'].'_rubrique">'.BAZ_AU;
-										$res .= '</span>'."\n".'<span class="BAZ_texte BAZ_texte_'.$GLOBALS['_BAZAR_']['class'].'" id="'.$tableau[$i]['nom_bdd'].'_description"> '.strftime('%d.%m.%Y',strtotime($ligne[$val])).'</span>'."\n".'</div>'."\n";
+										$res .= '</span>'."\n".'<span class="BAZ_texte BAZ_texte_'.$GLOBALS['_BAZAR_']['class'].' '.$tableau[$i]['nom_bdd'].'_description"> '.strftime('%d.%m.%Y',strtotime($ligne[$val])).'</span>'."\n".'</div>'."\n";
 									}
 	
 									continue;
 								}
 							}
 	
-							$res .= '<div class="BAZ_rubrique BAZ_rubrique_'.$GLOBALS['_BAZAR_']['class'].'">'."\n".'<span class="BAZ_label" id="'.$tableau[$i]['nom_bdd'].'_rubrique">'.$tableau[$i]['label'].':</span>'."\n";
-							$res .= '<span class="BAZ_texte BAZ_texte_'.$GLOBALS['_BAZAR_']['class'].'" id="'.$tableau[$i]['nom_bdd'].'_description"> '.strftime('%d.%m.%Y',strtotime($ligne[$val])).'</span>'."\n".'</div>'."\n";
+							$res .= '<div class="BAZ_rubrique BAZ_rubrique_'.$GLOBALS['_BAZAR_']['class'].'">'."\n".'<span class="BAZ_label '.$tableau[$i]['nom_bdd'].'_rubrique">'.$tableau[$i]['label'].':</span>'."\n";
+							$res .= '<span class="BAZ_texte BAZ_texte_'.$GLOBALS['_BAZAR_']['class'].' '.$tableau[$i]['nom_bdd'].'_description"> '.strftime('%d.%m.%Y',strtotime($ligne[$val])).'</span>'."\n".'</div>'."\n";
 						}
 					}
 				}
@@ -356,7 +356,7 @@ function baz_voir_fiche($danslappli, $idfiche='') {
 			//dans le cas d'un redacteur saisi avec la fiche
 			} else {
 				$res .= '<a href="mailto:'.$redacteur[BAZ_CHAMPS_EMAIL].'">'.$redacteur[BAZ_CHAMPS_PRENOM].' '.$redacteur[BAZ_CHAMPS_NOM].'</a>';
-				$res .= '<br /></span>'."\n";
+				$res .= '<br />'."\n";
 			}
 	
 			//informations complementaires (id fiche, etat publication,... )
@@ -373,8 +373,8 @@ function baz_voir_fiche($danslappli, $idfiche='') {
 				}
 				//affichage des infos et du lien pour la mise a jour de la fiche
 				if ( $est_admin || ((BAZ_SANS_AUTH!=true) && $GLOBALS['_BAZAR_']['annonceur']==$GLOBALS['AUTH']->getAuthData(BAZ_CHAMPS_ID)) ) {
-					$res .= '<span class="BAZ_rubrique BAZ_rubrique_'.$GLOBALS['_BAZAR_']['class'].'" id="date_creation">'.BAZ_DATE_CREATION.'</span> '.strftime('%d.%m.%Y %H:%M',strtotime($ligne['bf_date_creation_fiche']))."\n";
-					$res .= '<span class="BAZ_rubrique BAZ_rubrique_'.$GLOBALS['_BAZAR_']['class'].'" id="date_mise_a_jour">'.BAZ_DATE_MAJ.'</span> '.strftime('%d.%m.%Y %H:%M',strtotime($ligne['bf_date_maj_fiche']))."\n";
+					$res .= '<span class="BAZ_rubrique BAZ_rubrique_'.$GLOBALS['_BAZAR_']['class'].' date_creation">'.BAZ_DATE_CREATION.'</span> '.strftime('%d.%m.%Y %H:%M',strtotime($ligne['bf_date_creation_fiche']))."\n";
+					$res .= '<span class="BAZ_rubrique BAZ_rubrique_'.$GLOBALS['_BAZAR_']['class'].' date_mise_a_jour">'.BAZ_DATE_MAJ.'</span> '.strftime('%d.%m.%Y %H:%M',strtotime($ligne['bf_date_maj_fiche']))."\n";
 				}
 				$res .= '</div>'."\n";
 	
@@ -1104,7 +1104,7 @@ function baz_liste($typeannonce='toutes',$categorienature='toutes') {
 			} else {
             	$requete .= 'AND (bf_date_debut_validite_fiche<=NOW() or bf_date_debut_validite_fiche="0000-00-00") AND (bf_date_fin_validite_fiche>=NOW() or bf_date_fin_validite_fiche="0000-00-00") ';
 			}
-			$requete .= ' ORDER BY bf_date_creation_fiche DESC, bf_date_fin_validite_fiche DESC, bf_date_maj_fiche DESC';
+			$requete .= ' ORDER BY bf_date_creation_fiche DESC, bf_date_fin_validite_fiche DESC, bf_date_maj_fiche DESC LIMIT 10';
 			$resultat = $GLOBALS['_BAZAR_']['db']->query($requete);
 			if (DB::isError($resultat)) {
 				return ($resultat->getMessage().$resultat->getDebugInfo()) ;
@@ -1211,7 +1211,9 @@ function baz_liste_pagine_HTML($typeannonce, $nbitem, $emetteur, $valide, $reque
 		$requete .= '('.$requeteSQL.')';
 		$req_where=1;
 	}
-	$requete .= ' ORDER BY  bf_date_debut_validite_fiche DESC, bf_date_fin_validite_fiche DESC, bf_date_maj_fiche DESC';
+	if ($GLOBALS['_BAZAR_']['tri']=='alphabetique') $requete .= ' ORDER BY bf_titre ASC';
+	else $requete .= ' ORDER BY  bf_date_debut_validite_fiche DESC, bf_date_fin_validite_fiche DESC, bf_date_maj_fiche DESC';
+	
 	if ($nbitem!='') {$requete .= ' LIMIT 0,'.$nbitem;}
 	$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 	if (DB::isError($resultat)) {
@@ -1438,6 +1440,12 @@ function afficher_flux_rss() {
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: bazar.fonct.rss.php,v $
+* Revision 1.9  2009/09/09 15:36:37  mrflos
+* maj css
+* ajout de la google api v3
+* possibilité d'insérer des utilisateurs wikini par bazar
+* installation automatique du fichier sql avec type d'annonces par défaut
+*
 * Revision 1.8  2009/08/01 17:01:58  mrflos
 * nouvelle action bazarcalendrier, correction bug typeannonce, validité html améliorée
 *

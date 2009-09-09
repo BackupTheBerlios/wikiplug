@@ -4,15 +4,24 @@ img {border:none;}
 #BAZ_corps {width:100%;}
 .BAZ_liste_rss {padding:0; margin:0; display:inline; list-style:none; list-style-type:none; background:#FFF; background-image:none;}
 #formulaire table, #formulaire td {border:0;}
-.BAZ_menu {display:block;margin:0 0 10px 0; padding:0; width:100%; }
-.BAZ_menu li {padding:0; margin:0 10px 0 0; display:block; float:left; list-style:none; list-style-type:none; background:#d71a38; width:100px; text-align:left; background-image:none;}
-.BAZ_menu a {color:#000;}
+.BAZ_menu {display:block; float:left; margin:0 auto 10px auto; padding:0; width:100%;}
+.BAZ_menu ul {margin:0; padding:0; display:block; float:left; width:100%; }
+.BAZ_menu li {
+	color:#FFF; padding:0; margin:0 10px 0 0; 
+	display:block; float:left;
+	list-style:none; list-style-type:none;
+	background:#007CBA; background-image:none;
+	border:1px solid #000;-moz-border-radius:5px;-webkit-border-radius:5px;
+}
+.BAZ_menu a {color:#FFF; padding:4px; width:112px; text-align:center; display:block; font-size:14px; text-decoration:none;}
+.BAZ_menu a:hover {text-decoration:none; color:#FFF; background:#931157;}
+.onglet_actif a {color:#FFF; background:#931157;}
 .BAZ_info {background:#fff url(images/info.png) no-repeat 3px 2px; border:1px solid #3399cc; padding: 7px 7px 6px 36px; margin:10px 0 5px 0; font-size:0.9em;}
 .BAZ_label {font-weight:bold;}
 /*-------------Les fiches Bazar-------------------------------------------------*/
 .BAZ_cadre_fiche {padding:0; text-align:justify; font-size:1em;}
 .BAZ_image {float:right;height:150px; width:150px;}
-#BAZ_description {font-size:1.1em; text-align:justify;}
+.BAZ_description {font-size:1.1em; text-align:justify;}
 #BAZ_bas_page {margin: 0;padding:0;}
 .bulle_haut {margin: 0;padding:0;}
 .bulle_corps {margin: 0;padding:10px 5px;border: 1px solid #3082AA;-moz-border-radius:10px;background:#DBE8C8;}
@@ -137,6 +146,7 @@ width:147px;
 .calendrier td {
 	width:14%;
 	border:1px solid #D2BBCB;
+	background:#FFF;
 	text-align:left;
 	vertical-align:top;	
 }
@@ -144,12 +154,14 @@ width:147px;
 	height:80px;
 	width:80px;
 	border:1px solid #D2BBCB;
+	background:#FFF;
 	text-align:center;
 	vertical-align:middle;
 }
 
 .calendrierjquerymini td {
 	border:1px solid #D2BBCB;
+	background:#FFF;
 	text-align:center;
 	vertical-align:middle;
 }

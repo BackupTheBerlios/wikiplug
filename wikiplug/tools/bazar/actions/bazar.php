@@ -21,7 +21,7 @@
 // | along with Foobar; if not, write to the Free Software                                                |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: bazar.php,v 1.4 2009/08/01 17:01:59 mrflos Exp $
+// CVS : $Id: bazar.php,v 1.5 2009/09/09 15:36:37 mrflos Exp $
 /**
 * wiki.php
 *
@@ -33,7 +33,7 @@
 //Autres auteurs :
 *@author        Aucun
 *@copyright     Kaleidos-coop.org 2008
-*@version       $Revision: 1.4 $ $Date: 2009/08/01 17:01:59 $
+*@version       $Revision: 1.5 $ $Date: 2009/09/09 15:36:37 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -60,6 +60,12 @@ if (!empty($vue) && !isset($_GET[BAZ_VARIABLE_VOIR])) {
 //si rien n'est donne, on met la vue de consultation
 elseif (!isset($_GET[BAZ_VARIABLE_VOIR])) {
 	$_GET[BAZ_VARIABLE_VOIR]=BAZ_VOIR_CONSULTER;
+}
+
+//ordre d'affichage des fiches : chronologique ou alphab�tique 
+$GLOBALS['_BAZAR_']['tri'] = $this->GetParameter('tri');
+if (empty($GLOBALS['_BAZAR_']['tri'])) {
+	$GLOBALS['_BAZAR_']['tri']='chronologique';
 }
 
 $GLOBALS['_BAZAR_']['affiche_menu'] = $this->GetParameter("voirmenu");
@@ -152,21 +158,21 @@ if ($GLOBALS['_BAZAR_']['affiche_menu']!='0') {
 		if (isset($_GET[BAZ_VARIABLE_VOIR]) && $_GET[BAZ_VARIABLE_VOIR] == BAZ_VOIR_MES_FICHES) $res .=' class="onglet_actif" ';
 		$res .= '><a href="'.str_replace('&','&amp;',$GLOBALS['_BAZAR_']['url']->getURL()).'">'.BAZ_VOIR_VOS_ANNONCES.'</a>'."\n".'</li>'."\n";
 	}
-
-	//partie abonnement aux annonces
-	if (strstr(BAZ_VOIR_AFFICHER, strval(BAZ_VOIR_S_ABONNER))) {
-		$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_S_ABONNER);
-		$res .= '<li id="menu_inscrire"';
-		if (isset($_GET[BAZ_VARIABLE_VOIR]) && $_GET[BAZ_VARIABLE_VOIR]==BAZ_VOIR_S_ABONNER) $res .=' class="onglet_actif" ';
-		$res .= '><a href="'.str_replace('&','&amp;',$GLOBALS['_BAZAR_']['url']->getURL()).'">'.BAZ_S_ABONNER.'</a></li>'."\n" ;
-	}
-
+	
 	//partie saisie d'annonces
 	if (strstr(BAZ_VOIR_AFFICHER, strval(BAZ_VOIR_SAISIR))) {
 		$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_SAISIR);
 		$res .= '<li id="menu_deposer"';
 		if (isset($_GET[BAZ_VARIABLE_VOIR]) && ($_GET[BAZ_VARIABLE_VOIR]==BAZ_VOIR_SAISIR )) $res .=' class="onglet_actif" ';
 		$res .='><a href="'.str_replace('&','&amp;',$GLOBALS['_BAZAR_']['url']->getURL()).'">'.BAZ_SAISIR.'</a>'."\n".'</li>'."\n";
+	}
+	
+	//partie abonnement aux annonces
+	if (strstr(BAZ_VOIR_AFFICHER, strval(BAZ_VOIR_S_ABONNER))) {
+		$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_S_ABONNER);
+		$res .= '<li id="menu_inscrire"';
+		if (isset($_GET[BAZ_VARIABLE_VOIR]) && $_GET[BAZ_VARIABLE_VOIR]==BAZ_VOIR_S_ABONNER) $res .=' class="onglet_actif" ';
+		$res .= '><a href="'.str_replace('&','&amp;',$GLOBALS['_BAZAR_']['url']->getURL()).'">'.BAZ_S_ABONNER.'</a></li>'."\n" ;
 	}
 
 	//partie affichage formulaire
@@ -212,7 +218,7 @@ if ($GLOBALS['_BAZAR_']['affiche_menu']!='0') {
 	}
 	// Au final, on place dans l url, l action courante
 	if (isset($_GET[BAZ_VARIABLE_VOIR])) $GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_VOIR, $_GET[BAZ_VARIABLE_VOIR]);
-	$res.= '</ul>'."\n".'</div>'."\n".'<div style="clear:both;">&nbsp;</div>'."\n";
+	$res.= '</ul>'."\n".'</div>'."\n";
 }
 
 if (isset($_GET['message'])) {
@@ -232,12 +238,11 @@ if (isset($_GET[BAZ_VARIABLE_ACTION])) {
 		case BAZ_ADMINISTRER_ANNONCES : $res .= baz_administrer_annonces(); break;
 		case BAZ_SUPPRIMER_FICHE : $res .= baz_suppression(); break;
 		case BAZ_VOIR_FICHE : $res .= baz_voir_fiche(1); break;
-//		case BAZ_ACTION_NOUVEAU_V : $res .= baz_formulaire(BAZ_ACTION_NOUVEAU_V); break;
 		case BAZ_ACTION_SUPPRESSION : $res .= baz_suppression(); break;
 		case BAZ_ACTION_PUBLIER : $res .= publier_fiche(1).baz_voir_fiche(1); break;
 		case BAZ_ACTION_PAS_PUBLIER : $res .= publier_fiche(0).baz_voir_fiche(1); break;
 		case BAZ_S_INSCRIRE : $res .= baz_s_inscrire(); break;
-		case BAZ_VOIR_FLUX_RSS : header('Content-type: text/xml; charset=UTF-8');afficher_flux_rss();exit(0);break;
+		case BAZ_VOIR_FLUX_RSS : exit(afficher_flux_rss());break;
 	}
 }
 
@@ -255,7 +260,10 @@ if (isset ($_GET[BAZ_VARIABLE_VOIR])) {
 			case BAZ_VOIR_S_ABONNER : $res .= baz_s_inscrire();
 			break;
 			case BAZ_VOIR_SAISIR :
-			if (isset ($_GET[BAZ_VARIABLE_ACTION])) $res .= baz_formulaire($_GET[BAZ_VARIABLE_ACTION]) ; else $res .= baz_formulaire(BAZ_DEPOSER_ANNONCE);
+			if (isset ($_GET[BAZ_VARIABLE_ACTION])) $res .= baz_formulaire($_GET[BAZ_VARIABLE_ACTION]) ; else {
+				$_GET[BAZ_VARIABLE_ACTION]=BAZ_ACTION_NOUVEAU;
+				$res .= baz_formulaire(BAZ_DEPOSER_ANNONCE);
+			}
 			break;
 			case BAZ_VOIR_FORMULAIRE : $res .= baz_gestion_formulaire();
 			break;
@@ -275,6 +283,12 @@ echo $res ;
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: bazar.php,v $
+* Revision 1.5  2009/09/09 15:36:37  mrflos
+* maj css
+* ajout de la google api v3
+* possibilité d'insérer des utilisateurs wikini par bazar
+* installation automatique du fichier sql avec type d'annonces par défaut
+*
 * Revision 1.4  2009/08/01 17:01:59  mrflos
 * nouvelle action bazarcalendrier, correction bug typeannonce, validité html améliorée
 *

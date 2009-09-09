@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: bazar.fonct.php,v 1.7 2009/08/01 17:01:58 mrflos Exp $
+// CVS : $Id: bazar.fonct.php,v 1.8 2009/09/09 15:36:37 mrflos Exp $
 /**
 *
 * Fonctions du module bazar
@@ -31,7 +31,7 @@
 *@author        Florian Schmitt <florian@ecole-et-nature.org>
 //Autres auteurs :
 *@copyright     Tela-Botanica 2000-2004
-*@version       $Revision: 1.7 $ $Date: 2009/08/01 17:01:58 $
+*@version       $Revision: 1.8 $ $Date: 2009/09/09 15:36:37 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -555,7 +555,6 @@ function baz_formulaire($mode) {
  	  	$squelette->setElementTemplate( '<tr>'."\n".'<td colspan="2" class="liste_a_cocher"><strong>{label}&nbsp;{element}</strong>'."\n".
                                     '<!-- BEGIN required --><span class="symbole_obligatoire">&nbsp;*</span><!-- END required -->'."\n".'</td>'."\n".'</tr>'."\n", 'accept_condition');
   	  	$squelette->setElementTemplate( '<tr><td colspan="2" class="bouton">{label}{element}</td></tr>'."\n", 'valider');
-
  	   	$squelette->setRequiredNoteTemplate("\n".'<tr>'."\n".'<td colspan="2" class="symbole_obligatoire">* {requiredNote}</td></tr>'."\n");
 		//Traduction de champs requis
 		$formtemplate->setRequiredNote(BAZ_CHAMPS_REQUIS) ;
@@ -761,7 +760,11 @@ function baz_afficher_formulaire_fiche($mode='insertion',$formtemplate) {
 				} elseif ($tableau[$i]['type']=='carte_google') {
 					$def = 'carte_google';
 					$valeurs_par_defaut[$def] = array ('latitude' => $valeurs_par_defaut['bf_latitude'], 'longitude' => $valeurs_par_defaut['bf_longitude']);
-				}
+				} elseif ($tableau[$i]['type']=='utilisateur_wikini') {
+					$def = 'bf_nom_wikini';
+					$valeurs_par_defaut[$def] = $valeurs_par_defaut['bf_nom_wikini'];
+				}				
+				
 				// certain type n ont pas de valeur par defaut (labelhtml par exemple)
 				// on teste l existence de $valeur_par_defaut[$def] avant de le passer en parametre
 				
@@ -916,6 +919,32 @@ function requete_bazar_fiche($valeur) {
 			$valeur=array ("action"=> "nouveau_v", "code_alpha_wikini"=>$titre, "page"=>"AccueiL", "bdd_hote"=> "",
 			        "bdd_nom"=> "", "bdd_utilisateur"=> "", "bdd_mdp" => "", "table_prefix"=> "", "chemin" => "wikini/".$titre, "valider"=> "Valider");
 			$val = insertion($valeur, $GLOBALS['_BAZAR_']['db']);
+		}
+		// Cas des inscription d'utilisateur wikini
+		elseif ($tableau[$i]['type'] == 'utilisateur_wikini') {
+			//si bf_nom_wikini n'existe pas, on ins�re un nouvel utilisateur wikini		
+			$resultat = $GLOBALS['_BAZAR_']['db']->query('SELECT name FROM '.$GLOBALS['_BAZAR_']['wiki']->config["table_prefix"].'users WHERE name="'.$valeur['nomwiki'].'"');
+			if ($resultat->numRows()==0) 
+			{
+				$requeteinsertionuserwikini = 'INSERT INTO '.$GLOBALS['_BAZAR_']['wiki']->config["table_prefix"]."users SET ".
+						"signuptime = now(), ".
+						"name = '".mysql_escape_string($valeur['nomwiki'])."', ".
+						"email = '".mysql_escape_string($valeur['bf_mail'])."', ".
+						"password = md5('".mysql_escape_string($valeur['mot_de_passe_wikini'])."')";
+				$resultat = $GLOBALS['_BAZAR_']['db']->query($requeteinsertionuserwikini) ;
+				if (DB::isError($resultat)) {
+					die ($resultat->getMessage().$resultat->getDebugInfo()) ;
+				}
+				$requete .= 'bf_nom_wikini="'.mysql_escape_string($valeur['nomwiki']).'", ' ;
+			} else {
+				$requetemodificationuserwikini = 'UPDATE '.$GLOBALS['_BAZAR_']['wiki']->config["table_prefix"]."users SET ".
+						"email = '".mysql_escape_string($valeur['bf_mail'])."', ".
+						"password = md5('".mysql_escape_string($valeur['mot_de_passe_wikini'])."') WHERE name=\"".$valeur['bf_nom_wikini']."\"";
+				$resultat = $GLOBALS['_BAZAR_']['db']->query($requetemodificationuserwikini) ;
+				if (DB::isError($resultat)) {
+					die ($resultat->getMessage().$resultat->getDebugInfo()) ;
+				}				
+			}						
 		}
 		// Cas de la carte google
 		elseif ($tableau[$i]['type'] == 'carte_google') {
@@ -1250,17 +1279,18 @@ function baz_s_inscrire() {
 
 	// Nettoyage de l url
 	$GLOBALS['_BAZAR_']['url']->removeQueryString(BAZ_VARIABLE_VOIR);
+	$lien_RSS=$GLOBALS['_BAZAR_']['url'];
+	$lien_RSS->addQueryString('wiki', $GLOBALS['_BAZAR_']['wiki']->minihref('xmlutf8',$_GET['wiki']));
+	$lien_RSS->addQueryString(BAZ_VARIABLE_ACTION, BAZ_VOIR_FLUX_RSS);
 	$liste='';
-	while ($ligne = $resultat->fetchRow(DB_FETCHMODE_ASSOC)) {
-		$lien_RSS=$GLOBALS['_BAZAR_']['url'];
-		$lien_RSS->addQueryString(BAZ_VARIABLE_ACTION, BAZ_VOIR_FLUX_RSS);
+	while ($ligne = $resultat->fetchRow(DB_FETCHMODE_ASSOC)) {		
 		$lien_RSS->addQueryString('annonce', $ligne[bn_id_nature]);
-		$liste .= '<li><a href="'.$lien_RSS->getURL().'"><img src="'.BAZ_CHEMIN.'presentation'.DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR.'BAZ_rss.png" alt="'.BAZ_RSS.'"></a>&nbsp;';
+		$liste .= '<li><a href="'.str_replace('&', '&amp;', $lien_RSS->getURL()).'"><img src="'.BAZ_CHEMIN.'presentation'.DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR.'BAZ_rss.png" alt="'.BAZ_RSS.'" /></a>&nbsp;';
 		$liste .= $ligne['bn_label_nature'];
 		$liste .= '</li>'."\n";
 		$lien_RSS->removeQueryString('annonce');
 	}
-	if ($liste!='') $res .= '<ul class="BAZ_liste_rss">'."\n".'<li><a href="'.$lien_RSS->getURL().'"><img src="'.BAZ_CHEMIN.'presentation'.DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR.'BAZ_rss.png" alt="'.BAZ_RSS.'"></a>&nbsp;<strong>Flux RSS de toutes les fiches</strong></li>'."\n".$liste.'</ul>'."\n";
+	if ($liste!='') $res .= '<ul class="BAZ_liste_rss">'."\n".'<li><a href="'.str_replace('&', '&amp;', $lien_RSS->getURL()).'"><img src="'.BAZ_CHEMIN.'presentation'.DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR.'BAZ_rss.png" alt="'.BAZ_RSS.'" /></a>&nbsp;<strong>Flux RSS de toutes les fiches</strong></li>'."\n".$liste.'</ul>'."\n";
 	// Nettoyage de l'url
 	$GLOBALS['_BAZAR_']['url']->removeQueryString(BAZ_VARIABLE_ACTION);
 	$GLOBALS['_BAZAR_']['url']->removeQueryString('idtypeannonce');
@@ -1486,7 +1516,9 @@ function baz_valeurs_fiche($idfiche) {
      	} elseif ($tableau[$i]['type']=='carte_google') {
      		$valeurs_fiche['bf_latitude'] = $ligne['bf_latitude'];
      		$valeurs_fiche['bf_longitude'] = $ligne['bf_longitude'];
-     	}
+     	} elseif ($tableau[$i]['type']=='utilisateur_wikini') {
+     		$valeurs_fiche['bf_nom_wikini'] = $ligne['bf_nom_wikini'];
+     	}     	
 	}
 	return $valeurs_fiche;
 }
@@ -1533,6 +1565,12 @@ function baz_titre_wiki($nom) {
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: bazar.fonct.php,v $
+* Revision 1.8  2009/09/09 15:36:37  mrflos
+* maj css
+* ajout de la google api v3
+* possibilité d'insérer des utilisateurs wikini par bazar
+* installation automatique du fichier sql avec type d'annonces par défaut
+*
 * Revision 1.7  2009/08/01 17:01:58  mrflos
 * nouvelle action bazarcalendrier, correction bug typeannonce, validité html améliorée
 *

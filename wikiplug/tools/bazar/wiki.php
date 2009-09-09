@@ -21,7 +21,7 @@
 // | along with Foobar; if not, write to the Free Software                                                |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: wiki.php,v 1.3 2009/08/01 17:01:59 mrflos Exp $
+// CVS : $Id: wiki.php,v 1.4 2009/09/09 15:36:37 mrflos Exp $
 /**
 * wiki.php
 *
@@ -32,7 +32,7 @@
 *@author        Florian SCHMITT <florian.schmitt@laposte.net>
 //Autres auteurs :
 *@copyright     outils-reseaux-coop.org 2008
-*@version       $Revision: 1.3 $ $Date: 2009/08/01 17:01:59 $
+*@version       $Revision: 1.4 $ $Date: 2009/09/09 15:36:37 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -69,6 +69,59 @@ $GLOBALS['_BAZAR_']['db'] =& DB::connect($dsn) ;
 if (DB::isError($GLOBALS['_BAZAR_']['db'])) {
 	echo $GLOBALS['_BAZAR_']['db']->getMessage();
 }
+//test de l'existance des tables de bazar
+$req = "SHOW TABLES FROM ".$wakkaConfig['mysql_database']." LIKE 'bazar_%'";
+$resultat = $GLOBALS['_BAZAR_']['db']->query ($req);
+if ($resultat->numRows() == 0) {
+	$fichier_sql = 'tools/bazar/install/bazar.sql';
+	if (file_exists($fichier_sql)) {
+            // Des champs textes sont multilignes, d'ou la boucle sur INSERT, marqueur de fin de la requete precedente.
+            if ($lines = file($fichier_sql))  {
+                $i=0;
+                $ligne_courante=$lines[$i];
+                if (($i+1)>=count($lines)) {
+                    $ligne_suivante='FIN';
+                } else {
+                    $ligne_suivante=$lines[$i+1];
+                }            
+                while ($i<count($lines)) {
+                    $line_in=$ligne_courante;
+                    while (($i < count($lines)) && ((substr($ligne_suivante, 0, 6) != 'INSERT') && (substr($ligne_suivante, 0, 6) != 'CREATE') ) && ($ligne_suivante != 'FIN')) {
+                        $line_in.=$ligne_suivante;
+                        $i++;
+                        $ligne_courante=$lines[$i];
+                        if (($i+1)>=count($lines))  {
+                            $ligne_suivante='FIN';
+                        } else {
+                        $ligne_suivante=$lines[$i+1];
+                        }
+                    }
+                        
+                    $requete = $line_in;
+                    
+                    //requete sql
+                    $result = $GLOBALS['_BAZAR_']['db']->query ($requete);
+                    
+                    $i++;
+                    $ligne_courante=$lines[$i];
+                    if (($i+1)>=count($lines))  {
+                        $ligne_suivante='FIN';
+                    } else {
+                        $ligne_suivante=$lines[$i+1];
+                    }
+                    
+                    //if ($i == (int)$this->test) {
+                    //    break;
+                    //}
+                }
+            }
+            exit('La base de donn&eacute;es bazar vient d\'&eacirc;tre ajout&eacute;e, veuillez r&eacute;-actualiser la page pour continuer');
+        } else {
+            echo 'Fichier sql introuvable'."\n";
+        }
+        
+}
+
 
 // +------------------------------------------------------------------------------------------------------+
 // |                             LES CONSTANTES DES ACTIONS DE BAZAR                                      |
@@ -116,10 +169,10 @@ define ('BAZ_SANS_AUTH', true);
 //==================================== LES FLUX RSS==================================
 // Constantes liees aux flux RSS
 //==================================================================================
-define('BAZ_RSS_NOMSITE','Mois de l\'ESS en Languedoc Roussillon');    //Nom du site indique dans les flux rss
-define('BAZ_RSS_ADRESSESITE','http://www.creslr.org/mois-ess');   //Adresse Internet du site indique dans les flux rss
-define('BAZ_RSS_DESCRIPTIONSITE','Mois de l\'economie sociale et solidaire 2009 en Languedoc Roussillon');    //Description du site indiquee dans les flux rss
-define('BAZ_RSS_LOGOSITE','http://www.creslr.org/mois-ess/logo_creslr.jpg');     //Logo du site indique dans les flux rss
+define('BAZ_RSS_NOMSITE', $wakkaConfig['wakka_name']);    //Nom du site indique dans les flux rss
+define('BAZ_RSS_ADRESSESITE', $wakkaConfig['base_url']);   //Adresse Internet du site indique dans les flux rss
+define('BAZ_RSS_DESCRIPTIONSITE', $wakkaConfig['meta_description']);    //Description du site indiquee dans les flux rss
+define('BAZ_RSS_LOGOSITE','http://outils-reseaux.org/tools/templates/themes/outils-reseaux/images/Puce-titre.gif');     //Logo du site indique dans les flux rss
 define('BAZ_RSS_MANAGINGEDITOR', 'accueil@outils-reseaux.org (association Outils-Reseaux)') ;     //Managing editor du site
 define('BAZ_RSS_WEBMASTER', 'accueil@outils-reseaux.org (association Outils-Reseaux)') ;     //Mail Webmaster du site
 define('BAZ_RSS_CATEGORIE', 'Economie Sociale et Solidaire'); //categorie du flux RSS
@@ -197,9 +250,6 @@ define ('BAZ_SQUELETTE_DEFAUT', 'baz_cal.tpl.html');
 // parametres pour la carto google 
 //==================================================================================
 
-// Indiquer ici la cle de la google map api
-define ('BAZ_GOOGLE_KEY', 'ABQIAAAAblJgoDKFwzO1E2u1P5XQoxSCRxejTIL_pPQ-dxuPXspeXcBPNxTy9t--jL45z7Es7hdpkIf5LqzDZA');
-
 // coordonnees du centre de la carte
 define ('BAZ_GOOGLE_CENTRE_LAT', '43.60426186809618');
 define ('BAZ_GOOGLE_CENTRE_LON', '3.438720703125');
@@ -207,35 +257,33 @@ define ('BAZ_GOOGLE_CENTRE_LON', '3.438720703125');
 // niveau de zoom
 define ('BAZ_GOOGLE_ALTITUDE', '8'); // de 1 (plus eloigne) a 15 (plus proche)
 
-// taille de la carte a l'ecran
-define ('BAZ_GOOGLE_IMAGE_LARGEUR', 600);  // en pixel
-define ('BAZ_GOOGLE_IMAGE_HAUTEUR', 600);  // en pixel
+// type de carto google
+define ('BAZ_TYPE_CARTO', 'TERRAIN'); //ROADMAP ou SATELLITE ou HYBRID ou TERRAIN 
 
-// mettre la carte a la plus grande taille possible automatiquement
-define ('BAZ_GOOGLE_MAXIMISE_TAILLE', false); // Si a true, la carte essaie de s etendre sur toute la largeur disponible
+// taille de la carte a l'ecran
+define ('BAZ_GOOGLE_IMAGE_LARGEUR', '100%');  // valeur de l'attribut css width de la carte
+define ('BAZ_GOOGLE_IMAGE_HAUTEUR', '600px');  // valeur de l'attribut css height de la carte
+
+// image marqueur
+define ('BAZ_IMAGE_MARQUEUR','tools/bazar/presentation/images/marker.png');
+define ('BAZ_DIMENSIONS_IMAGE_MARQUEUR','12, 20');
+define ('BAZ_COORD_ORIGINE_IMAGE_MARQUEUR','0,0');
+define ('BAZ_COORD_ARRIVEE_IMAGE_MARQUEUR','0,20');
+
+// image ombre marqueur
+define ('BAZ_IMAGE_OMBRE_MARQUEUR','tools/bazar/presentation/images/marker_shadow.png');
+define ('BAZ_DIMENSIONS_IMAGE_OMBRE_MARQUEUR','22, 20');
+define ('BAZ_COORD_ORIGINE_IMAGE_OMBRE_MARQUEUR','0,0');
+define ('BAZ_COORD_ARRIVEE_IMAGE_OMBRE_MARQUEUR','0,20');
+
+// Controles carte
+define ('BAZ_AFFICHER_NAVIGATION','true'); // true ou false
+define ('BAZ_AFFICHER_CHOIX_CARTE','true'); // true ou false
+define ('BAZ_AFFICHER_ECHELLE','false'); // true ou false
+define ('BAZ_STYLE_NAVIGATION','ZOOM_PAN'); // SMALL ou ZOOM_PAN ou ANDROID ou DEFAULT
+define ('BAZ_STYLE_CHOIX_CARTE','DROPDOWN_MENU'); // HORIZONTAL_BAR ou DROPDOWN_MENU ou DEFAULT
 
 // inclure l'url d'un fichier kml (carte google creee precedemment) a afficher sur la carte
-define ('BAZ_GOOGLE_FOND_KML', '');
+//define ('BAZ_GOOGLE_FOND_KML', 'tools/bazar/presentation/26.kml');
 
-/* +--Fin du code ----------------------------------------------------------------------------------------+
-*
-* $Log: wiki.php,v $
-* Revision 1.3  2009/08/01 17:01:59  mrflos
-* nouvelle action bazarcalendrier, correction bug typeannonce, validité html améliorée
-*
-* Revision 1.2  2008/07/29 17:32:25  mrflos
-* maj générale
-*
-* Revision 1.1  2008/07/07 18:00:48  mrflos
-* maj carto plus calendrier
-*
-* Revision 1.1  2008/02/18 09:12:47  mrflos
-* Premiere release de 3 extensions en version alpha (bugs nombreux!) des plugins bazar, e2gallery, et templates
-*
-* Revision 1.1  2006/12/13 17:06:36  florian
-* Ajout de l'applette bazar.
-*
-*
-* +-- Fin du code ----------------------------------------------------------------------------------------+
-*/
 ?>

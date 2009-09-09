@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: formulaire.langue.fr.inc.php,v 1.2 2008/07/29 17:32:26 mrflos Exp $
+// CVS : $Id: formulaire.langue.fr.inc.php,v 1.3 2009/09/09 15:36:37 mrflos Exp $
 /**
 * Formulaire
 *
@@ -31,7 +31,7 @@
 //Autres auteurs :
 *@author        Aleandre GRANIER <alexandre@tela-botanica.org>
 *@copyright     Tela-Botanica 2000-2004
-*@version       $Revision: 1.2 $ $Date: 2008/07/29 17:32:26 $
+*@version       $Revision: 1.3 $ $Date: 2009/09/09 15:36:37 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -47,7 +47,10 @@
  define ('INDIFFERENT', 'Indiff&eacute;rent...');
  define ('IMAGE', 'Image');
  define ('IMAGE_VALIDE_REQUIS', 'Image valide requise');
- define ('VERIFIER_MON_ADRESSE', 'V&eacute;rifier mon adresse avec la carte');
+ define ('METTRE_POINT','<h4>Mettre le point automatiquement sur la carte :</h4>'); 
+ define ('VERIFIER_MON_ADRESSE', 'en fonction de l\'adresse saisie dans ce formulaire');
+ define ('VERIFIER_MON_ADRESSE_CLIENT','en fonction de votre accès Internet (imprécis)');
+ define ('TEXTE_POINT_DEPLACABLE', "Si ce point ne correspond pas &agrave; votre adresse, vous pouvez le d&eacute;placer en cliquant gauche dessus et en laissant appuy&eacute;, afin de le faire correspondre parfaitement &agrave; votre adresse.");
  define ('LATITUDE', 'Latitude');
  define ('LONGITUDE', 'Longitude');
 
