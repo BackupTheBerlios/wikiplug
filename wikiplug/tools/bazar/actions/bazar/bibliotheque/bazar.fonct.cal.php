@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: bazar.fonct.cal.php,v 1.6 2009/08/01 17:01:58 mrflos Exp $
+// CVS : $Id: bazar.fonct.cal.php,v 1.7 2009/09/16 16:14:45 mrflos Exp $
 /**
 *
 * Fonctions calendrier du module bazar
@@ -29,7 +29,7 @@
 *@author        David Delon <david.delon@clapas.net>
 //Autres auteurs :
 *@copyright     Tela-Botanica 2000-2004
-*@version       $Revision: 1.6 $ $Date: 2009/08/01 17:01:58 $
+*@version       $Revision: 1.7 $ $Date: 2009/09/16 16:14:45 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -188,12 +188,8 @@ function GestionAffichageCalendrier($type = 'calendrier') {
 			$ts_jour_suivant = $Calendrier->thisDay('timestamp');
 			$ts_jour_fin = mktime(0,0,0,$mois_fin, $jour_fin, $annee_fin);
 			
-	    	if ($ts_jour_suivant < $ts_jour_fin) {
-				//echo "$ts_jour_suivant-";
-				$naviguer = true;
-				while ($naviguer) {
-					// Si le jours suivant est inferieur a la date de fin, on continue...
-					if ($ts_jour_suivant <= $ts_jour_fin) {
+			$naviguer = true;
+	    	while ($naviguer && ($ts_jour_suivant <= $ts_jour_fin)) {								
 						// Si le jours suivant est inferieur a la date de fin du mois courrant, on continue...
 						if ($ts_jour_suivant < $ts_jour_fin_mois) {
 							$cle_j = date('Y-m-d', $ts_jour_suivant);
@@ -209,19 +205,7 @@ function GestionAffichageCalendrier($type = 'calendrier') {
 							//echo "la".$Calendrier->thisDay('timestamp')."-";
 						} else {
 							$naviguer = false;
-						}
-					} else {
-						$naviguer = false;
-					}
-				}
-	    	} else { 
-				$curday_ymd = $annee.$mois.$ligne_evenements->bf_jour_debut_evenement;
-				$cle_j = $annee.'-'.$mois.'-'.$ligne_evenements->bf_jour_debut_evenement;
-				if (!isset($tablo_jours[$cle_j])) {
-					$tablo_jours[$cle_j]['Calendar_Day'] = new Calendar_Day($annee, $mois, $ligne_evenements->bf_jour_debut_evenement);
-					$tablo_jours[$cle_j]['Diary_Event'] = new DiaryEvent($tablo_jours[$cle_j]['Calendar_Day']);
-				}
-				$tablo_jours[$cle_j]['Diary_Event']->setEntry($ligne_evenements);
+						}				
 	    	}
 		}
 		// Add the decorator to the selection
