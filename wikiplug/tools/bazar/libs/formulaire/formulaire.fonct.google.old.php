@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: formulaire.fonct.google.php,v 1.2 2008/07/29 17:32:25 mrflos Exp $
+// CVS : $Id: formulaire.fonct.google.old.php,v 1.1 2009/09/30 15:57:03 ddelon Exp $
 /**
 * Formulaire
 *
@@ -29,7 +29,7 @@
 //Auteur original :
 *@author        Aleandre GRANIER <alexandre@tela-botanica.org>
 *@copyright     Tela-Botanica 2000-2007
-*@version       $Revision: 1.2 $
+*@version       $Revision: 1.1 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -136,7 +136,10 @@ function setLatLonForm(marker) {
 /*
 * +--Fin du code ----------------------------------------------------------------------------------------+
 *
-* $Log: formulaire.fonct.google.php,v $
+* $Log: formulaire.fonct.google.old.php,v $
+* Revision 1.1  2009/09/30 15:57:03  ddelon
+* Test sur les champs localisation pour google
+*
 * Revision 1.2  2008/07/29 17:32:25  mrflos
 * maj générale
 *

@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: formulaire.fonct.inc.php,v 1.6 2009/09/09 15:36:37 mrflos Exp $
+// CVS : $Id: formulaire.fonct.inc.php,v 1.7 2009/09/30 15:57:03 ddelon Exp $
 /**
 * Formulaire
 *
@@ -31,7 +31,7 @@
 //Autres auteurs :
 *@author        Aleandre GRANIER <alexandre@tela-botanica.org>
 *@copyright     Tela-Botanica 2000-2004
-*@version       $Revision: 1.6 $ $Date: 2009/09/09 15:36:37 $
+*@version       $Revision: 1.7 $ $Date: 2009/09/30 15:57:03 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -786,13 +786,22 @@ function showClientAddress(){
 function showAddress() {
   var adress_1 = document.getElementById("bf_adresse1").value ;
   if (document.getElementById("bf_adresse2")) 	var adress_2 = document.getElementById("bf_adresse2").value ; else var adress_2 = "";
+  if (document.getElementById("bf_ville")) 	var bf_ville = document.getElementById("bf_ville").value ; else var bf_ville = "";
+  if (document.getElementById("bf_code_postal")) var bf_code_postal = document.getElementById("bf_code_postal").value ; else var bf_code_postal = "";
+  
   var ville = document.getElementById("bf_ville").value ;
   var cp = document.getElementById("bf_code_postal").value ;
-  if (document.getElementById("bf_ce_pays").type == "select-one") {
-  	var selectIndex = document.getElementById("bf_ce_pays").selectedIndex;
-  	var pays = document.getElementById("bf_ce_pays").options[selectIndex].text ;
-  } else {
-  	var pays = document.getElementById("bf_ce_pays").value;
+  
+  if (document.getElementById("bf_ce_pays")) {
+	  if (document.getElementById("bf_ce_pays").type == "select-one") {
+	  	var selectIndex = document.getElementById("bf_ce_pays").selectedIndex;
+	  	var pays = document.getElementById("bf_ce_pays").options[selectIndex].text ;
+	  } else {
+	  	var pays = document.getElementById("bf_ce_pays").value;
+	  }
+  }
+  else {
+  	  var bf_ce_pays = "";
   }
   
   var address = adress_1 + \' \' + adress_2 + \' \'  + cp + \' \' + ville + \' \' +pays ;
@@ -878,6 +887,9 @@ function setLatLonForm(marker) {
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: formulaire.fonct.inc.php,v $
+* Revision 1.7  2009/09/30 15:57:03  ddelon
+* Test sur les champs localisation pour google
+*
 * Revision 1.6  2009/09/09 15:36:37  mrflos
 * maj css
 * ajout de la google api v3
