@@ -21,7 +21,7 @@ if ($this->HasAccess("write")) {
 	if ($this->page)
 	{
 		// if owner is current user
-		if ($this->UserIsOwner())
+		if (($this->UserIsOwner()) || ($this->UserIsAdmin()))
 		{
 			$wikini_barre_bas .=
 			"Propri&eacute;taire&nbsp;: vous :: \n".
