@@ -1,6 +1,6 @@
 <?php
 /*
-$Id: ajaxdeletepage.php,v 1.1 2009/07/21 12:32:04 mrflos Exp $
+$Id: ajaxdeletepage.php,v 1.2 2009/10/12 16:10:32 mrflos Exp $
 Copyright 2002  David DELON
 Copyright 2003  Eric FELDSTEIN
 Copyright 2004  Jean Christophe ANDRÃ‰
@@ -21,17 +21,28 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-// VÃ©rification de sÃ©curitÃ©
+// Vérification de sécurité
 if (!defined("WIKINI_VERSION"))
 {
 	die ("acc&egrave;s direct interdit");
 }
 
-if ($this->UserIsOwner() || $this->UserIsAdmin())
-{	
-	$tag = $this->GetPageTag();
-	$this->DeleteOrphanedPage($tag);
-	$this->LogAdministrativeAction($this->GetUserName(), "Suppression de la page ->\"\"" . $tag . "\"\"");
-
+//on ne fait quelque chose uniquement dans le cas d'une requete jsonp
+if (isset($_GET['jsonp_callback'])) 
+{
+	// on initialise la sortie:
+	header('Content-type:application/json');
+	if ($this->UserIsOwner() || $this->UserIsAdmin())
+	{	
+		$tag = $this->GetPageTag();
+		$this->DeleteOrphanedPage($tag);
+		//on supprime les mots clés associés à la page
+		$this->DeleteAllTags($tag);
+		$this->LogAdministrativeAction($this->GetUserName(), "Suppression de la page ->\"\"" . $tag . "\"\"");
+		echo $_GET['jsonp_callback']."(".json_encode(array("reponse"=>utf8_encode("succes"))).")";
+	} else 
+	{
+		echo $_GET['jsonp_callback']."(".json_encode(array("reponse"=>utf8_encode("interdit"))).")";
+	}
 }
 ?>

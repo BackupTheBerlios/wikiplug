@@ -1,6 +1,6 @@
 <?php
 /*
-listetag.php
+listepages.php
 
 Copyright 2009  Florian SCHMITT
 This program is free software; you can redistribute it and/or modify
@@ -18,54 +18,65 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-// recuperation de tous les tags
+// recuperation de tous les parametres
+$type = $this->GetParameter('type');
 $tags = $this->GetParameter('tags');
-if (empty($tags))
-{
-	die ('<span class="error">Action listepages : param&egrave;tre tags obligatoire.</span>');
-}
-
 $notags = $this->GetParameter('notags');
 $lienedit = $this->GetParameter('edit');
 $class = $this->GetParameter('class');
 if (empty($class)) $class = 'liste';
 $tri = $this->GetParameter('tri');
 $nb = $this->GetParameter('nb');
-$accordeon = $this->GetParameter('accordeon');
+$template = $this->GetParameter('vue');
+if (empty($template)) $template = 'liste_microblog.tpl.html';
+$req = '';
+$req_from = '';
+$req_having = '';
 
 //on fait les tableaux pour les tags, puis on met des virgules et des guillemets
-$tags=trim($tags);
-$tab_tags = explode(" ", $tags);
-$nbdetags = count($tab_tags);
-$tags = implode(",", array_filter($tab_tags, "trim"));
-$tags = '"'.str_replace(',','","',$tags).'"';
+if (!empty($tags))
+{
+	$req_from .= ", ".$this->config["table_prefix"]."triples tags ";
+	$tags=trim($tags);
+	$tab_tags = explode(" ", $tags);
+	$nbdetags = count($tab_tags);
+	$tags = implode(",", array_filter($tab_tags, "trim"));
+	$tags = '"'.str_replace(',','","',$tags).'"';
+	$req .= ' AND tags.value IN ('.$tags.') ';
+	$req .= ' AND tags.property="http://outils-reseaux.org/_vocabulary/tag" AND tags.resource=tag ';
+	$req_having .= ' HAVING COUNT(tag)='.$nbdetags.' ';
+}
 
 if (!empty($notags))
 {
 	$notags=trim($notags);
 	$tab_notags = explode(" ", $notags);
-	$nbdenotags = count($tab_notags);
-	$notags = implode(",", array_filter(explode(" ", $tab_notags), "trim"));
+	$notags = implode(",", array_filter($tab_notags, "trim"));
 	$notags = '"'.str_replace(',','","',$notags).'"';
+	$req .= ' AND NOT EXISTS (SELECT NULL FROM '.$this->config["table_prefix"].'triples notags WHERE notags.resource = tags.resource and notags.value IN ('.$notags.') AND notags.property="http://outils-reseaux.org/_vocabulary/tag" AND notags.resource=tag ) ';
 }
 
-$req =' AND value IN ('.$tags.')';
-if (!empty($notags))
+
+//traitement du type de page
+if (!empty($type))
 {
-	$req .= ' AND value NOT IN ('.$notags.')';
+	$req_from .= ", ".$this->config["table_prefix"]."triples type ";
+	$req .= ' AND type.resource=tag AND type.property="http://outils-reseaux.org/_vocabulary/type" AND type.value="microblog" ';
 }
-$req .= ' AND property="http://outils-reseaux.org/_vocabulary/tag" AND resource=tag GROUP BY tag HAVING COUNT(tag)='.$nbdetags.' ';
+
+$req .= ' GROUP BY tag ';
+if ($req_having!='') $req .= $req_having;
 
 //gestion du tri de l'affichage
 if (!empty($tri))
 {
 	if ($tri == "alpha")
 	{
-		$req .= ' ORDER BY tag ASC';
+		$req .= ' ORDER BY tag ASC ';
 	}
 	elseif ($tri == "date")
 	{
-		$req .= ' ORDER BY time DESC';
+		$req .= ' ORDER BY time DESC ';
 	}
 }
 //par defaut on tri par date
@@ -74,7 +85,8 @@ else
 		$req .= ' ORDER BY time DESC';
 }
 
-$requete = "SELECT DISTINCT tag, time, user, owner, body FROM ".$this->config["table_prefix"]."pages, ".$this->config["table_prefix"]."triples WHERE latest = 'Y' and comment_on = '' ".$req;
+$requete = "SELECT DISTINCT tag, time, user, owner, body FROM ".$this->config["table_prefix"]."pages".$req_from." WHERE latest = 'Y' and comment_on = '' ".$req;
+
 require_once 'tools/tags/lib/MDB2.php';
 $dsn = array(
     'phptype'  => 'mysql',
@@ -102,103 +114,87 @@ if (!empty($nb))
 	$paged_data['data'] = $db->queryAll($requete, null, MDB2_FETCHMODE_ASSOC);
 }
 
-foreach ($paged_data['data'] as $microblogpost) {
-    if ( $this->tag!=$microblogpost['tag'] )
-		{
-			$text = '';
-			if (!empty($accordeon)) $text .= '""<a class="lien_accordeon" href="#">'.$microblogpost['tag'].'</a>""'."\n";
-			$text .= '{{include page="'.$microblogpost['tag'].'"';
-			if (!empty($lienedit))
-			{
-				$text .= ' edit="'.$lienedit.'"';
-			}
-			$text .= ' class="'.$class.'"}}';
-			$textformatted = $this->Format($text);
-			
-			// affichage des commentaires
-					
-			// load comments for this page
-	        $comments = $this->LoadComments($microblogpost['tag']);
-			$commentaire = "<div class=\"".$class."info\">\n le ".$microblogpost["time"]." par ".$this->Format($microblogpost["user"])."
-							<div class=\"lienpage\">(page <a href=\"".$this->href('',$microblogpost['tag'])."\">".$microblogpost['tag']."</a>)</div>\n</div>\n" ;
-			$commentaire .= "<div class=\"commentaires\">\n";
-			
-			// display comments themselves
-			if ($comments)
-			{
-				foreach ($comments as $comment)
-				{					
-					$commentaire .= "<a name=\"".$comment["tag"]."\"></a>\n" ;
-					$commentaire .= "<div class=\"comment\">\n" ;
-					if ($this->HasAccess('write', $comment['tag'])
-					 || $this->UserIsOwner($comment['tag'])
-					 || $this->UserIsAdmin($comment['tag']))
-					{
-						$commentaire .= '<div class="commenteditlink">';
-						if ($this->HasAccess('write', $comment['tag']))
-						{
-							$commentaire .= '<a class="lien_edit_comment" href="'.$this->href('edit',$comment['tag']).'">&Eacute;diter</a>';
-						}
-						if ($this->UserIsOwner($comment['tag'])
-						 || $this->UserIsAdmin())
-						{
-							$commentaire .= '<br />'.'<a class="lien_suppr_comment" href="'.$this->href('ajaxdeletepage',$comment['tag']).'">Supprimer</a>';
-						}
-						$commentaire .= "</div>\n";
-					}
-
-					$commentaire .= "<div class=\"commenthtml\">\n".$this->Format($comment["body"])."\n"."</div>"."\n" ;
-					$commentaire .= "<div class=\"commentinfo\">\nle ".$comment["time"]." par ".$this->Format($comment["user"])." \n</div>\n" ;
-					$commentaire .=  "</div>\n" ;					
-				}
-			}
-			
-			$commentaire .= "</div>\n";
-
-			
-			// display comments header
-			$commentaire .= '<a href="javascript:void(0);" class="lien_commenter">Commenter</a>'."\n";
-			
-			// display comment form
-			$commentaire .= "<div class=\"microblogcommentform\">\n" ;
-			if ($this->HasAccess("comment"))
-			{
-				$commentaire .= $this->FormOpen("addcomment", $microblogpost['tag']).'
-					<textarea name="body" class="commentaire_microblog"></textarea><br />
-					<input type="button" class="bouton_microblog" value="Ajouter Commentaire" accesskey="s" />'.$this->FormClose();
-			}
-			$commentaire .= "</div>\n</div>\n" ;
-			echo substr_replace($textformatted, $commentaire, -7, -1);
+$text = '';
+foreach ($paged_data['data'] as $microblogpost)
+{
+    if (!file_exists('tools/tags/presentation/'.$template)) 
+	{
+		exit('Le fichier template du formulaire de microblog "tools/tags/presentation/'.$template.'" n\'existe pas. Il doit exister...');
+	}
+	elseif ( $this->tag!=$microblogpost['tag'] )
+	{
+		include_once('tools/tags/lib/squelettephp.class.php');
+		$valtemplate=array();
+		$squel = new SquelettePhp('tools/tags/presentation/'.$template);
+		$valtemplate['class'] = $class;
+		$valtemplate['lien'] = $this->href('',$microblogpost['tag']);
+		$valtemplate['nompage'] = $microblogpost['tag'];
+		if ($template=='liste_microblog.tpl.html')
+		{		
+			$squel->set($valtemplate);
+			$text .= '<ul>'.$squel->analyser().'</ul>';
 		}
+		else 
+		{
+			$valtemplate['user'] = $this->Format($microblogpost["user"]);					
+			$valtemplate['date'] = date("\l\e d.m.Y &\a\g\\r\av\e; H:i:s", strtotime($microblogpost["time"]));
+			$valtemplate['billet'] = $this->Format($microblogpost["body"]);
+			// load comments for this page
+	        include_once('tools/tags/lib/tags.functions.php');
+	        $valtemplate['commentaire'] = '<strong class="lien_commenter">Commentaires</strong>'."\n";
+    		$valtemplate['commentaire'] .= "<div class=\"commentaires_billet_microblog\">\n";
+			$valtemplate['commentaire'] .= afficher_commentaires_recursif($microblogpost['tag'], $this);
+			$valtemplate['commentaire'] .= "</div>\n";
+			
+			//liens d'actions sur le billet			
+			$valtemplate['edition'] = '<a href="'.$this->href('', $microblogpost['tag']).'" class="voir_billet">Afficher</a> ';
+			if ($this->HasAccess('write', $microblogpost['tag']))
+			{
+				$valtemplate['edition'] .= '<a href="'.$this->href('edit', $microblogpost['tag']).'" class="editer_billet">Editer</a> ';
+			}			
+			if ($this->UserIsOwner($microblogpost['tag']) || $this->UserIsAdmin())
+			{
+				$valtemplate['edition'] .= '<a href="'.$this->href('deletepage', $microblogpost['tag']).'" class="supprimer_billet">Supprimer</a>'."\n" ;
+			}				
+			$squel->set($valtemplate);
+			$text .= $squel->analyser();			
+		}					
+	} 
 }
 
-//javascript accordeon
-if (!empty($accordeon)) echo '
-<script type="text/javascript">
-    <!--
-    $(document).ready( function () {
-        // On cache les pages inclues
-        $("div.include").hide();          
-        // On modifie l\'evenement "click" sur les liens vers la page
-        $("a.lien_accordeon").click( function () {
-            // Si le div etait deja ouvert, on le referme :
-            $("div.include:visible").slideUp("fast");
-            
-            // Si le div est cache, on ferme les autres et on l\'affiche :            
-            $(this).next().next("div.include").slideDown("fast");
-            
-            // On empêche le navigateur de suivre le lien :
-            return false;
-        });
-    
-    } ) ;
-    // -->
-    </script>
+if ($vue=='accordeon')
+{
+	//javascript accordeon
+	echo $text.'
+	<script type="text/javascript">
+	    <!--
+	    $(document).ready( function () {
+	        // On cache les pages inclues
+	        $("div.include").hide();          
+	        // On modifie l\'evenement "click" sur les liens vers la page
+	        $("a.lien_accordeon").click( function () {
+	            // Si le div etait deja ouvert, on le referme :
+	            $("div.include:visible").slideUp("fast");
+	            
+	            // Si le div est cache, on ferme les autres et on l\'affiche :            
+	            $(this).next().next("div.include").slideDown("fast");
+	            
+	            // On empeche le navigateur de suivre le lien :
+	            return false;
+	        });
+	    
+	    } ) ;
+	    // -->
+	    </script>
+	
+	';
+}
+elseif ($vue=='liste' && $text!='') echo '<ul>'.$text.'</ul>'."\n"; 
+else echo $text;
 
-';
 
 //show the links
-if (!empty($nb)) echo "\n".'<div class="liste_pager">'."\n".$paged_data['links']."\n".'</div>'."\n";
+if (!empty($nb) && $paged_data['links']!='') echo "\n".'<div class="liste_pager">'."\n".$paged_data['links']."\n".'</div>'."\n";
 
 
 ?>

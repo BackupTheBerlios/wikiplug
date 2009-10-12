@@ -30,9 +30,7 @@ $sql = 'SELECT value, resource FROM '.$this->config['table_prefix'].'triples WHE
 $tab_tous_les_tags = $this->LoadAll($sql);
 
 if (is_array($tab_tous_les_tags))
-{
-
-	echo '<ul class="nuage">'."\n";
+{	
 	$i=1;$nb_pages=0;
 	$liste_page = '';
 	$tag_precedent = '';
@@ -65,19 +63,23 @@ if (is_array($tab_tous_les_tags))
 		$tag_precedent = $tab_les_tags['value'];
 	}
 
-	//on regarde s'il faut trier alphabetiquement
-	$tri = $this->GetParameter('tri');
-	if (!empty($tri) && $tri=="alpha")
+	if (is_array($tab_tag))
 	{
+		echo '<ul class="nuage">'."\n";
+		//on regarde s'il faut trier alphabetiquement
+		$tri = $this->GetParameter('tri');
+		if (!empty($tri) && $tri=="alpha")
+		{
+		}
+		else
+		{
+			shuffle($tab_tag);
+		}
+		foreach ($tab_tag as $tag) {
+			echo $tag;
+		}
+		echo '</ul><div style="clear:both">&nbsp;</div>'."\n";
 	}
-	else
-	{
-		shuffle($tab_tag);
-	}
-	foreach ($tab_tag as $tag) {
-		echo $tag;
-	}
-	echo '</ul><div style="clear:both">&nbsp;</div>'."\n";
 }
 
 ?>

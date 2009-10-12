@@ -1,6 +1,6 @@
 <?php
 /*
-$Id: ajaxaddcomment.php,v 1.1 2009/07/21 12:32:04 mrflos Exp $
+$Id: ajaxaddcomment.php,v 1.2 2009/10/12 16:10:32 mrflos Exp $
 Copyright (c) 2002, Hendrik Mans <hendrik@mans.de>
 Copyright 2002, 2003 David DELON
 Copyright 2003  Eric FELDSTEIN
@@ -36,62 +36,56 @@ if (!defined("WIKINI_VERSION"))
 	die ("acc&egrave;s direct interdit");
 }
 
-// on initialise la sortie:
-header('Content-type:application/json');
-
-if ($this->HasAccess("comment") && $this->page && !$this->page['comment_on'])
+//on ne fait quelque chose uniquement dans le cas d'une requete jsonp
+if (isset($_GET['jsonp_callback'])) 
 {
-	// find number
-	$sql = 'SELECT MAX(SUBSTRING(tag, 8) + 0) AS comment_id'
-		. ' FROM ' . $this->GetConfigValue('table_prefix') . 'pages'
-		. ' WHERE comment_on != ""';
-	if ($lastComment = $this->LoadSingle($sql))
+	// on initialise la sortie:
+	header('Content-type:application/json');
+	
+	if ($this->HasAccess("comment") && $this->page && isset($_POST['antispam']) && $_POST['antispam']==1)
 	{
-		$num = $lastComment['comment_id'] + 1;
-	}
-	else
-	{
-		$num = "1";
-	}
-
-	$body = trim(utf8_decode($_POST["body"]));
-	if (!$body)
-	{
-		$this->SetMessage("Commentaire vide  -- pas de sauvegarde !");
-	}
-	else
-	{
-		// store new comment
-		$wakkaname = "Comment".$num;
-		$this->SavePage($wakkaname, $body, $this->tag);
-		
-		$commentpage = $this->LoadPage($wakkaname);
-		$commentaire = "<a name=\"".$wakkaname."\"></a>\n" ;
-		$commentaire .= "<div class=\"comment\">\n" ;
-		if ($this->HasAccess('write', $wakkaname)
-		 || $this->UserIsOwner($wakkaname)
-		 || $this->UserIsAdmin($wakkaname))
+		// find number
+		$sql = 'SELECT MAX(SUBSTRING(tag, 8) + 0) AS comment_id'
+			. ' FROM ' . $this->GetConfigValue('table_prefix') . 'pages'
+			. ' WHERE comment_on != ""';
+		if ($lastComment = $this->LoadSingle($sql))
 		{
-			$commentaire .= '<div class="commenteditlink">';
-			if ($this->HasAccess('write', $wakkaname))
-			{
-				$commentaire .= '<a class="lien_edit_comment" href="'.$this->href('edit',$wakkaname).'">&Eacute;diter</a>';
-			}
-			if ($this->UserIsOwner($wakkaname)
-			 || $this->UserIsAdmin())
-			{
-				$commentaire .= '<br />'.'<a class="lien_suppr_comment" href="'.$this->href('ajaxdeletepage',$wakkaname).'">Supprimer</a>';
-			}
-			$commentaire .= "</div>\n";
+			$num = $lastComment['comment_id'] + 1;
+		}
+		else
+		{
+			$num = "1";
 		}
 	
-		$commentaire .= "<div class=\"commenthtml\">\n".$this->Format($body)."\n"."</div>"."\n" ;
-		$commentaire .= "<div class=\"commentinfo\">\nle ".$commentpage["time"]." par ".$this->Format($commentpage["user"])." \n</div>\n" ;
-		$commentaire .=  "</div>\n" ;		
-		$response = json_encode(array("html"=>$commentaire));
-		if (isset($_GET['jsonp_callback']))  $response = $_GET['jsonp_callback']."(".$response.")";
-		echo $response;
+		$body = utf8_decode(trim($_POST["body"]));
+		if ($body)	
+		{
+			// store new comment
+			$wakkaname = "Comment".$num;
+			$this->SavePage($wakkaname, $body, $this->tag);
+			
+			$comment = $this->LoadPage($wakkaname);
+			
+			$valcomment['commentaires'][0]['tag'] = $comment["tag"];
+			$valcomment['commentaires'][0]['body'] = $this->Format($comment["body"]);
+			$valcomment['commentaires'][0]['infos'] = "de ".$this->Format($comment["user"]).", ".date("\l\e d.m.Y &\a\g\\r\av\e; H:i:s", strtotime($comment["time"]));
+			$valcomment['commentaires'][0]['actions'] = '<a href="'.$this->href('', $comment['tag']).'" class="repondre_commentaire">R&eacute;pondre</a> ';
+			if ($this->HasAccess('write', $comment['tag']) || $this->UserIsOwner($comment['tag']) || $this->UserIsAdmin($comment['tag']))
+			{
+				$valcomment['commentaires'][0]['actions'] .= '<a href="'.$this->href('edit', $comment['tag']).'" class="editer_commentaire">Editer</a> ';
+			}			
+			if ($this->UserIsOwner($comment['tag']) || $this->UserIsAdmin())
+			{
+				$valcomment['commentaires'][0]['actions'] .= '<a href="'.$this->href('deletepage', $comment['tag']).'" class="supprimer_commentaire">Supprimer</a>'."\n" ;
+			}									
+			include_once('tools/tags/lib/squelettephp.class.php');
+			$squelcomment = new SquelettePhp('tools/tags/presentation/commentaire_microblog.tpl.html');
+			$squelcomment->set($valcomment);
+			$commentaire = $squelcomment->analyser();
+			
+			$response = json_encode(array("html"=>utf8_encode($commentaire)));
+			echo $_GET['jsonp_callback']."(".$response.")";
+		}
 	}
 }
-
 ?>

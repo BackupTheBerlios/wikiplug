@@ -9,6 +9,20 @@ if (!defined("WIKINI_VERSION"))
 $wiki  = new WikiTools($wakkaConfig);
 $wikiClasses [] = 'Tags';
 $wikiClassesContent [] = '
+	function DeleteAllTags($page)
+    {
+		$tags = explode(" ", mysql_escape_string($liste_tags));
+		//on récupére les anciens tags de la page courante
+		$tabtagsexistants = $this->GetAllTriplesValues($page, \'http://outils-reseaux.org/_vocabulary/tag\', \'\', \'\');
+		if (is_array($tabtagsexistants))
+		{
+			foreach ($tabtagsexistants as $tab)
+			{
+				$this->DeleteTriple($page, \'http://outils-reseaux.org/_vocabulary/tag\', $tab["value"], \'\', \'\');
+			}
+		}
+		return;
+	}
 
 	function SaveTags($page, $liste_tags)
     {

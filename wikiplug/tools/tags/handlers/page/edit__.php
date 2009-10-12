@@ -25,7 +25,7 @@ if ($this->HasAccess("write") && $this->HasAccess("read"))
 	}
 	$formtag = '<div id="formtags">
 			<label for="tags">Mots cl&eacute;s : </label>
-            <input class="wide" type="text" name="tags" value="'.$tagsexistants.'" id="tags" />
+            <input class="wide" type="text" name="tags" autocomplete="off" value="'.$tagsexistants.'" id="tags" />
             </div>
 	';
 	$plugin_output_new=preg_replace ('/\<input name=\"submit\" type=\"submit\" value=\"Sauver\"/',

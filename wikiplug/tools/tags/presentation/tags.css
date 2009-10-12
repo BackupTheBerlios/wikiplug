@@ -35,28 +35,68 @@ a.size1{font-size:15px;color:#B46A47;padding:5px;}
 a.size5:hover,a.size6:hover{color:#B46A47;}
 a.size1:hover,a.size2:hover,a.size3:hover,a.size4:hover{color:#E13728;}
 
-label.formulaire{text-align:right; float:left; clear:left; display:block; width:14%; margin:0;}
-textarea.formulaire{border:1px solid #999; background:#FFF; color:#000; width:84%; display:block; margin:10px 0 0 15%;}
-input.formulaire{border:1px solid #999; background:#FFF; color:#000; width:84%; display:block; margin:3px 0 0 15%;}
-.groupe_boutons {display:block; clear:left; margin:0;}
-input.bouton{border:1px solid #333; color:#000; margin:0 0 0 10px; float:right;}
-.include_microblog{-moz-border-radius:15px; border:1px solid #DDD; background:#FFF; color:#000; margin:10px 0; padding:10px;}
+label.formulaire{text-align:right; float:left; clear:right; display:block; width:14%; margin:0;}
+textarea.microblog_billet {border:1px solid #999; background:#FFF; color:#000; width:84%; float:right; display:block; margin:0 0 5px 0;}
+input.microblog_toustags{border:1px solid #999; background:#FFF; color:#000; width:84%; float:right; display:block; margin:0 0 5px 0;}
+.groupe_boutons {display:block; clear:both; margin:0 0 10px 0; text-align:right;}
+input.bouton{border:1px solid #333; color:#000; margin:0 0 0 10px;}
+.bulle_microblog {
+-moz-border-radius:15px;
+-webkit-border-radius:15px;
+-khtml-border-radius:15px;
+border:1px solid #DDD;
+background:#FFF;
+color:#000;
+margin:10px 0;
+padding:0;
+}
+.lien_titre, .lien_titre_accordeon {float:left; font-size:1.2em; margin:5px 5px 0 10px;}
+.date_microblog {float:right; font-size:0.9em; margin:5px 10px 0 5px;}
+.auteur_microblog {clear:both; float:left; margin:0 5px 5px 10px; font-size:0.9em; font-weight:bold;}
+.billet_microblog {clear:both; float:left; margin:10px; font-size:1em;}
+.commentaires_microblog {clear:both; margin:0 10px 10px 10px;}
+.edition_billet_microblog {clear:both; font-size:0.9em; background:#EEE; width:100%; padding:4px 0; margin:10px 0 0 0;
+-moz-border-radius-bottomleft:15px;
+-moz-border-radius-bottomright:15px;
+-webkit-border-bottom-left-radius:15px;
+-webkit-border-bottom-right-radius:15px;
+-khtml-border-bottom-left-radius:15px;
+-khtml-border-bottom-right-radius:15px;
+ text-align:right;
+}
+.accordeon_cache {clear:both; float:left; width:100%; display:none;}
+a.voir_billet, a.voir_commentaire {margin: 0 10px 0 0; padding:0 0 0 15px; background:url(voir.png) no-repeat top left;}
+a.editer_billet, a.editer_commentaire {margin: 0 10px 0 0; padding:0 0 0 15px; background:url(edit.png) no-repeat top left;}
+a.supprimer_billet, a.supprimer_commentaire {margin: 0 10px 0 0; padding:0 0 0 15px; background:url(trash.gif) no-repeat top left;}
+a.repondre_billet, a.repondre_commentaire {margin: 0 10px 0 0; padding:0 0 0 15px; background:url(comment.png) no-repeat top left;}
+strong.lien_commenter {margin:30px 0 0 0; padding:0 0 0 15px; background:url(comment.png) no-repeat top left;}
+
 .include_liste {padding:0 0 20px 0; margin:15px 0 15px 0; border-bottom:3px solid #EEE;}
 .alaligne {clear:left;}
 .lienpage {display:inline;}
 
 .liste_pager {text-align:center; margin:10px auto 30px auto; font-size:0.8em; padding:4px 0; border-top:1px solid #EEE; border-bottom:1px solid #EEE; width:290px;}
 
-.comment_a_editer, .comment {font-size:0.9em; background:#EEE; margin:4px auto; padding:6px; width:98%;}
-.commentinfo {font-size:0.9em; color:#AAA;}
-.commenteditlink, .pageeditlink {font-size:0.9em; float:right; text-align:right; display:none;}
+.comment { margin:4px auto; padding:0; font-size:1em;  background:#F5F5F5; border:1px solid #EEE; }
+.comment a {text-decoration:none; font-weight:bold; color:#555;}
+.comment a:hover {text-decoration:underline; font-weight:bold; color:#555;}
+.comment_a_editer {background:#F5F5F5; margin:4px auto; padding:5px; font-size:1em; text-align:right;}
+.commenthtml {margin:10px; padding:0;font-size:1em; }
+.commentinfo {float:right; font-size:0.8em; color:#AAA; margin:5px; }
+.commentactions {clear:both; font-size:0.8em; margin:0; padding:2px; border-top:1px solid #EEE; text-align:right;}
+.commentreponses {padding:0 0 0 30px; background:transparent;}
+.reponsecommentform {font-size:1.1em; margin:0; padding:5px; background:#F5F5F5; text-align:right;}
 .listeinfo, .microbloginfo {font-size:0.8em; color:#AAA; margin:4px 0 15px 0;}
-.lien_commenter {font-size:0.9em; display:block;}
-.microblogcommentform {margin:10px 0 0 0;}
-.commentaire_microblog {width:100%; height:50px; border:1px solid #AAA;}
-.bouton_microblog {border:1px solid #AAA;}
+.lien_commenter {font-size:0.9em; display:block; margin:0;}
+.microblogcommentform {margin:10px 0 0 0;text-align:right;}
+.commentaire_microblog {width:99%; height:50px; border:1px solid #BBB; text-align:left;}
+.bouton_submit, .bouton_annul, .bouton_microblog {border:1px solid #BBB; font-size:0.8em;}
+textarea:focus, input:focus {
+border : 1px solid #999;
+background : #ffffcc;
+}
 
-.liens_rss {text-align:right; width:100%; display:block;}
+.liens_rss {text-align:right; width:100%; display:block; margin:3px 0 5px 0;}
 .liens_rss a {color:#e77630;}
 .liens_rss a:hover {color:#fbba77; text-decoration:none;}
 .liens_rss a img {border:0;}

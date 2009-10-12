@@ -1,6 +1,6 @@
 <?php
 /*
-$Id: show.php.bug,v 1.1 2009/07/21 12:32:04 mrflos Exp $
+$Id: show.php,v 1.1 2009/10/12 16:10:32 mrflos Exp $
 Copyright (c) 2002, Hendrik Mans <hendrik@mans.de>
 Copyright 2002, 2003 David DELON
 Copyright 2002, 2003 Charles NEPOTE
@@ -41,9 +41,9 @@ if (!defined("WIKINI_VERSION"))
 // Generate page before displaying the header, so that it might interract with the header
 ob_start();
 
-echo '<div id="page'.$this->tag.'" class="page';
-echo (($user = $this->GetUser()) && ($user['doubleclickedit'] == 'N') || !$this->HasAccess('write')) ? '' : ' editable';
-echo'">'."\n";
+echo '<div class="page"';
+echo (($user = $this->GetUser()) && ($user['doubleclickedit'] == 'N') || !$this->HasAccess('write')) ? '' : ' ondblclick="doubleClickEdit(event);"';
+echo '>'."\n";
 if (!empty($_SESSION['redirects']))
 {
 	$trace = $_SESSION['redirects'];
@@ -97,6 +97,9 @@ else
 	echo "<i>Vous n'&ecirc;tes pas autoris&eacute; &agrave; lire cette page</i>" ;
 }
 ?>
+<hr class="hr_clear" />
+</div>
+
 
 <?php
 if ($HasAccessRead && (!$this->page || !$this->page["comment_on"]))
@@ -120,81 +123,13 @@ if ($HasAccessRead && (!$this->page || !$this->page["comment_on"]))
 	}
 	}
 	// display comments!
-	if ($this->page && $_SESSION["show_comments"][$tag])
-	{
-		// display comments header
-		?>
-		<div class="commentsheader">
-			Commentaires [<a href="<?php echo  $this->href("", "", "show_comments=0") ?>">Cacher commentaires/formulaire</a>]
-		</div>
-		<?php
-		
-		// display comments themselves
-		if ($comments)
-		{
-			foreach ($comments as $comment)
-			{
-				echo "<a name=\"",$comment["tag"],"\"></a>\n" ;
-				echo "<div class=\"comment\">\n" ;
-				if ($this->HasAccess('write', $comment['tag'])
-				 || $this->UserIsOwner($comment['tag'])
-				 || $this->UserIsAdmin($comment['tag']))
-				{
-					echo '<div class="commenteditlink">';
-					if ($this->HasAccess('write', $comment['tag']))
-					{
-						echo '<a href="',$this->href('edit',$comment['tag']),'">&Eacute;diter ce commentaire</a>';
-					}
-					if ($this->UserIsOwner($comment['tag'])
-					 || $this->UserIsAdmin())
-					{
-						echo '<br />','<a href="',$this->href('deletepage',$comment['tag']),'">Supprimer ce commentaire</a>';
-					}
-					echo "</div>\n";
-				}
-				echo $this->Format($comment["body"]),"\n" ;
-				echo "<div class=\"commentinfo\">\n-- ",$this->Format($comment["user"])," (".$comment["time"],")\n</div>\n" ;
-				echo "</div>\n" ;
-			}
-		}
-		
-		// display comment form
-		echo "<div class=\"commentform\">\n" ;
-		if ($this->HasAccess("comment"))
-		{
-			?>
-				Ajouter un commentaire &agrave; cette page:<br />
-				<?php echo  $this->FormOpen("addcomment"); ?>
-					<textarea name="body" rows="6" cols="65" style="width: 100%"></textarea><br />
-					<input type="submit" value="Ajouter Commentaire" accesskey="s" />
-				<?php echo  $this->FormClose(); ?>
-			<?php
-		}
-		echo "</div>\n" ;
-	}
-	else
-	{
-		?>
-		<div class="commentsheader">
-		<?php
-			switch (count($comments))
-			{
-			case 0:
-				echo "Il n'y a pas de commentaire sur cette page." ;
-				break;
-			case 1:
-				echo "Il y a un commentaire sur cette page." ;
-				break;
-			default:
-				echo "Il y a ",count($comments)," commentaires sur cette page." ;
-			}
-		?>
-		
-		[<a href="<?php echo  $this->href("", "", "show_comments=1") ?>">Afficher commentaires/formulaire</a>]
+	include_once('tools/tags/lib/tags.functions.php');
+	$gestioncommentaire = '<strong class="lien_commenter">Commentaires sur cette page</strong>'."\n";
+	$gestioncommentaire .= "<div class=\"commentaires_billet_microblog\">\n";
+	$gestioncommentaire .= afficher_commentaires_recursif($this->getPageTag(), $this);
+	$gestioncommentaire .= "</div>\n";
+	echo $gestioncommentaire;
 
-		</div>
-		<?php
-	}
 }
 
 $content = ob_get_clean();
@@ -203,6 +138,3 @@ echo $content;
 echo $this->Footer();
 
 ?>
-
-<hr class="hr_clear" />
-</div>
