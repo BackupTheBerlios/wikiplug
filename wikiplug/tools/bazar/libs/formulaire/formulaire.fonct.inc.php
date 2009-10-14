@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: formulaire.fonct.inc.php,v 1.8 2009/09/30 16:14:18 ddelon Exp $
+// CVS : $Id: formulaire.fonct.inc.php,v 1.9 2009/10/14 10:22:32 ddelon Exp $
 /**
 * Formulaire
 *
@@ -31,7 +31,7 @@
 //Autres auteurs :
 *@author        Aleandre GRANIER <alexandre@tela-botanica.org>
 *@copyright     Tela-Botanica 2000-2004
-*@version       $Revision: 1.8 $ $Date: 2009/09/30 16:14:18 $
+*@version       $Revision: 1.9 $ $Date: 2009/10/14 10:22:32 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -790,18 +790,15 @@ function showAddress() {
   if (document.getElementById("bf_ville")) 	var ville = document.getElementById("bf_ville").value ; else var ville = "";
   if (document.getElementById("bf_code_postal")) var cp = document.getElementById("bf_code_postal").value ; else var cp = "";
   
-  if (document.getElementById("bf_ce_pays")) {
-	  if (document.getElementById("bf_ce_pays").type == "select-one") {
-	  	var selectIndex = document.getElementById("bf_ce_pays").selectedIndex;
-	  	var pays = document.getElementById("bf_ce_pays").options[selectIndex].text ;
-	  } else {
-	  	var pays = document.getElementById("bf_ce_pays").value;
-	  }
-  }
-  else {
-  		var pays = "";
-  }
   
+     if (document.getElementById("liste3").selectedIndex)  {           
+        var selectIndex=document.getElementById("liste3").selectedIndex;
+        var pays = document.getElementById("liste3").options[selectIndex].text ;
+     }
+     else {
+      var pays = "";
+     }
+    
   var address = adress_1 + \' \' + adress_2 + \' \'  + cp + \' \' + ville + \' \' +pays ;
   if (geocoder) {
       geocoder.geocode( { \'address\': address}, function(results, status) {
@@ -885,6 +882,9 @@ function setLatLonForm(marker) {
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: formulaire.fonct.inc.php,v $
+* Revision 1.9  2009/10/14 10:22:32  ddelon
+* assistant pays
+*
 * Revision 1.8  2009/09/30 16:14:18  ddelon
 * Test sur les champs localisation pour google
 *
