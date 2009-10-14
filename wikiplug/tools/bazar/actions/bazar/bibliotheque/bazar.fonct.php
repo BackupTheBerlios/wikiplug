@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: bazar.fonct.php,v 1.8 2009/09/09 15:36:37 mrflos Exp $
+// CVS : $Id: bazar.fonct.php,v 1.9 2009/10/14 10:14:02 ddelon Exp $
 /**
 *
 * Fonctions du module bazar
@@ -31,7 +31,7 @@
 *@author        Florian Schmitt <florian@ecole-et-nature.org>
 //Autres auteurs :
 *@copyright     Tela-Botanica 2000-2004
-*@version       $Revision: 1.8 $ $Date: 2009/09/09 15:36:37 $
+*@version       $Revision: 1.9 $ $Date: 2009/10/14 10:14:02 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -775,7 +775,7 @@ function baz_afficher_formulaire_fiche($mode='insertion',$formtemplate) {
 			                         isset ($valeurs_par_defaut[$def]) ? $valeurs_par_defaut[$def] : '',
 			                         $tableau[$i]['table_source'], $tableau[$i]['obligatoire']) ;
 				if ($tableau[$i]['type']=='carte_google') {
-					require_once 'formulaire/formulaire.fonct.google.php';    				
+					//require_once 'formulaire/formulaire.fonct.google.php';    				
 				}
 				//var_dump($valeurs_par_defaut);break;
 				$formtemplate->setDefaults($valeurs_par_defaut);
@@ -786,7 +786,7 @@ function baz_afficher_formulaire_fiche($mode='insertion',$formtemplate) {
 				$tableau[$i]['type']($formtemplate, $tableau[$i]['nom_bdd'], $tableau[$i]['label'], $tableau[$i]['limite1'],
 			                         $tableau[$i]['limite2'], $tableau[$i]['defaut'], $tableau[$i]['table_source'], $tableau[$i]['obligatoire']) ;
 			    if ($tableau[$i]['type'] == 'carte_google') {
-			    	require_once 'formulaire/formulaire.fonct.google.php';
+			    //	require_once 'formulaire/formulaire.fonct.google.php';
 			    }
 			 }
 		}
@@ -1565,6 +1565,9 @@ function baz_titre_wiki($nom) {
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: bazar.fonct.php,v $
+* Revision 1.9  2009/10/14 10:14:02  ddelon
+* menage chemin
+*
 * Revision 1.8  2009/09/09 15:36:37  mrflos
 * maj css
 * ajout de la google api v3
