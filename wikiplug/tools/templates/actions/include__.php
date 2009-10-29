@@ -5,7 +5,7 @@ if (!defined("WIKINI_VERSION"))
             die ("acc&egrave;s direct interdit");
 }
 
-if (!empty($dblclic)&&$dblclic=="1") {
+if (!empty($dblclic) && $dblclic=="1" && $this->HasAccess("write", $incPageName)) {
 	$actiondblclic = ' ondblclick="document.location=\''.$this->Href("edit", $incPageName).'\';"';
 }
 else $actiondblclic = '';

@@ -4,17 +4,74 @@
 
 if (!defined("WIKINI_VERSION"))
 {
-        die ("acc&egrave;s direct interdit");
+	die ("acc&egrave;s direct interdit");
+}
+
+// Desactivation de l'extension template si l'extension navigation est presente et active. 
+if (isset($plugins_list['navigation'])) 
+{
+	unset($k);	
+	return;
+}
+
+// Dans Wakka.config.php, on peut preciser : favorite_theme, favorite_style, favorite_squelette,  hide_action_template 
+// Sinon, on prend les parametres ci dessous :
+
+// Configuration du fonctionnement des templates : faut il laisser le choix autre que par défaut 
+define('FORCER_TEMPLATE_PAR_DEFAUT', false);
+
+//Theme par défaut
+define ('THEME_PAR_DEFAUT', 'sobre');
+
+//Style par défaut
+define ('CSS_PAR_DEFAUT', 'bleu.css');
+
+//squelette par défaut
+define ('SQUELETTE_PAR_DEFAUT', 'default.tpl.html');
+
+
+//si POST
+//=======Changer de theme=================================================================================================
+if (isset($_POST['theme'])  && array_key_exists($_POST['theme'], $wakkaConfig['templates'])) {
+	$wakkaConfig['favorite_theme'] = $_POST['theme'];
+}
+else {
+	$wakkaConfig['favorite_theme'] = THEME_PAR_DEFAUT;
+}
+
+//=======Changer de style=====================================================================================================
+$styles['none']='pas de style';
+if (isset($_POST['style']) && array_key_exists($_POST['style'], $wakkaConfig['templates'][$wakkaConfig['favorite_theme']]['style'])) {
+	$wakkaConfig['favorite_style'] = $_POST['style'];
+}
+else {
+	$wakkaConfig['favorite_style'] = CSS_PAR_DEFAUT;
+}
+
+//=======Changer de squelette=================================================================================================    
+if(isset($_POST['squelette']) && array_key_exists($_POST['squelette'], $wakkaConfig['templates'][$wakkaConfig['favorite_theme']]['squelette'])) {
+	$wakkaConfig['favorite_squelette'] = $_POST['squelette'];
+}
+else {
+	$wakkaConfig['favorite_squelette'] = SQUELETTE_PAR_DEFAUT;
 }
 
 
-// Desactivation de l'extension template si l'extension navigation est presente et active.
- 
-if (isset($plugins_list['navigation'])) {
-  unset($k);	
-  return;
+if (!isset($wakkaConfig['hide_action_template'])) {
+	$wakkaConfig['hide_action_template'] = FORCER_TEMPLATE_PAR_DEFAUT;
+} 
+
+if (!isset($wakkaConfig['favorite_theme'])) {
+	$wakkaConfig['favorite_theme'] = THEME_PAR_DEFAUT;
 }
 
+if (!isset($wakkaConfig['favorite_style'])) {
+	$wakkaConfig['favorite_style'] = CSS_PAR_DEFAUT;
+}
+
+if (!isset($wakkaConfig['favorite_squelette'])) {
+	$wakkaConfig['favorite_squelette'] = SQUELETTE_PAR_DEFAUT;
+} 
 
 
 // Surcharge  fonction  LoadRecentlyChanged : suppression remplissage cache car affecte le rendu du template.
@@ -22,7 +79,6 @@ $wikiClasses [] = 'Template';
 
 
 $wikiClassesContent [] = ' 
-
 	function LoadRecentlyChanged($limit=50)
         {
                 $limit= (int) $limit;
@@ -30,26 +86,25 @@ $wikiClassesContent [] = '
                 {
                         return $pages;
                 }
-        }
-
-
-	
+        }	
 ';	
 
 
 //on cherche l'action template dans la page, qui definit le graphisme a utiliser
-if (isset($_POST["submit"]) && $_POST["submit"] == html_entity_decode('Aper&ccedil;u')) {
+if (isset($_POST["submit"]) && $_POST["submit"] == html_entity_decode('Aper&ccedil;u')) 
+{
 	$contenu["body"] = $_POST["body"].'{{template theme="'.$_POST["theme"].'" squelette="'.$_POST["squelette"].'" style="'.$_POST["style"].'"}}';	
 	$_POST["body"] = $_POST["body"].'{{template theme="'.$_POST["theme"].'" squelette="'.$_POST["squelette"].'" style="'.$_POST["style"].'"}}';
 } 
 
-else {
- $contenu=$wiki->LoadPage($page);
+else 
+{
+	$contenu=$wiki->LoadPage($page);
 }
 
 
-
-if ($act=preg_match_all ("/".'(\\{\\{template)'.'(.*?)'.'(\\}\\})'."/is", $contenu["body"], $matches)) {
+//on récupère les valeurs du template associées à la page
+if (!$wakkaConfig['hide_action_template'] && $act=preg_match_all ("/".'(\\{\\{template)'.'(.*?)'.'(\\}\\})'."/is", $contenu["body"], $matches)) {
      $i = 0; $j = 0;
      foreach($matches as $valeur) {
        foreach($valeur as $val) {
@@ -69,110 +124,38 @@ if ($act=preg_match_all ("/".'(\\{\\{template)'.'(.*?)'.'(\\}\\})'."/is", $conte
        $i++;
      }
    }
-   
-// Dans Wakka.config.php preciser :
-// favorite_theme
-// favorite_style
-// favorite_squelette
-// hide_action_template a true
-
-
-// Sinon ;
-// Theme par defaut : default
-// Css par defaut : default.css
-// squelette par defaut : default.tpl.html
-   
-  
-
 if (isset($vars["theme"]) && $vars["theme"]!="") {
-	 define ('THEME_PAR_DEFAUT', $vars["theme"]); 
+	 $wakkaConfig['favorite_theme'] = $vars["theme"]; 
 }
-else {
-	if (isset($wakkaConfig['favorite_theme'])) {
-		define ('THEME_PAR_DEFAUT',$wakkaConfig['favorite_theme']);
-	}
-	else {
-		define ('THEME_PAR_DEFAUT', 'default');
-	}
-}
-
 if (isset($vars["style"]) && $vars["style"]!="") {
- 	define ('CSS_PAR_DEFAUT', $vars["style"]);
+ 	$wakkaConfig['favorite_style'] = $vars["style"];
 }
-else {
-	if (isset($wakkaConfig['favorite_style'])) {
-		define ('CSS_PAR_DEFAUT',$wakkaConfig['favorite_style']);
-	}
-	else {
-		define ('CSS_PAR_DEFAUT', 'default.css');
-	}
-}
-
-
 if  (isset($vars["squelette"]) && $vars["squelette"]!="") {
-	define ('SQUELETTE_PAR_DEFAUT', $vars["squelette"]);
+	$wakkaConfig['favorite_squelette'] = $vars["squelette"];
 }
-else {	
-	if (isset($wakkaConfig['favorite_squelette'])) {
-		define ('SQUELETTE_PAR_DEFAUT',$wakkaConfig['favorite_squelette']);
-	} 
-	else {
-		define ('SQUELETTE_PAR_DEFAUT', 'default.tpl.html');
- 		
-	}
-}
-
-    
     
 
 //on cherche tous les dossiers du repertoire themes et des sous dossier styles et squelettes, et on les range dans le tableau $wakkaConfig['templates']
-    $repertoire = 'tools'.DIRECTORY_SEPARATOR.'templates'.DIRECTORY_SEPARATOR.'themes';
-    $dir = opendir($repertoire);
-    while (false !== ($file = readdir($dir))) {    	
-    	if  ($file!='.' && $file!='..' && $file!='CVS' && is_dir($repertoire.DIRECTORY_SEPARATOR.$file)) {
-	    	$dir2 = opendir($repertoire.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'styles');
-	    	while (false !== ($file2 = readdir($dir2))) {
-	    		if (substr($file2, -4, 4)=='.css') $wakkaConfig['templates'][$file]["style"][$file2]=$file2;
-	    	}
-	    	closedir($dir2);
-	    	ksort($wakkaConfig['templates'][$file]["style"]);
-	    	$dir3 = opendir($repertoire.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'squelettes');
-	    	while (false !== ($file3 = readdir($dir3))) {
-	    		if (substr($file3, -9, 9)=='.tpl.html') $wakkaConfig['templates'][$file]["squelette"][$file3]=$file3;	    
-	    	}	    	
-	    	closedir($dir3);
-	    	ksort($wakkaConfig['templates'][$file]["squelette"]);
-    	}
+$repertoire = 'tools'.DIRECTORY_SEPARATOR.'templates'.DIRECTORY_SEPARATOR.'themes';
+$dir = opendir($repertoire);
+while (false !== ($file = readdir($dir))) {    	
+	if  ($file!='.' && $file!='..' && $file!='CVS' && is_dir($repertoire.DIRECTORY_SEPARATOR.$file)) {
+		$dir2 = opendir($repertoire.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'styles');
+	    while (false !== ($file2 = readdir($dir2))) {
+	    	if (substr($file2, -4, 4)=='.css') $wakkaConfig['templates'][$file]["style"][$file2]=$file2;
+	    }
+	    closedir($dir2);
+	    ksort($wakkaConfig['templates'][$file]["style"]);
+	    $dir3 = opendir($repertoire.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'squelettes');
+	    while (false !== ($file3 = readdir($dir3))) {
+	    	if (substr($file3, -9, 9)=='.tpl.html') $wakkaConfig['templates'][$file]["squelette"][$file3]=$file3;	    
+	    }	    	
+	    closedir($dir3);
+	    ksort($wakkaConfig['templates'][$file]["squelette"]);
     }
-    closedir($dir);
-    if (is_array($wakkaConfig)) ksort($wakkaConfig['templates']);
-
-//=======Changer de theme=================================================================================================
-    if (isset($_POST['theme'])  && array_key_exists($_POST['theme'], $wakkaConfig['templates'])) {
-           $wakkaConfig['favorite_theme'] = $_POST['theme'];
-    }
-    else {
-           $wakkaConfig['favorite_theme'] = THEME_PAR_DEFAUT;
-
-    }
-
-//=======Changer de style=====================================================================================================
-    $styles['none']='pas de style';
-
-    if (isset($_POST['style']) && array_key_exists($_POST['style'], $wakkaConfig['templates'][$wakkaConfig['favorite_theme']]['style'])) {
-            $wakkaConfig['favorite_style'] = $_POST['style'];
-    }
-    else {
-            $wakkaConfig['favorite_style'] = CSS_PAR_DEFAUT;
-    }
-
-//=======Changer de squelette=================================================================================================    
-    if(isset($_POST['squelette']) && array_key_exists($_POST['squelette'], $wakkaConfig['templates'][$wakkaConfig['favorite_theme']]['squelette'])) {
-            $wakkaConfig['favorite_squelette'] = $_POST['squelette'];
-    }
-    else {
-            $wakkaConfig['favorite_squelette'] = SQUELETTE_PAR_DEFAUT;
-    }
+}
+closedir($dir);
+if (is_array($wakkaConfig)) ksort($wakkaConfig['templates']);
 
 //=======Test existence du template, on utilise le template par defaut sinon=======================================================
 if (!file_exists('tools/templates/themes/'.$wakkaConfig['favorite_theme'].'/squelettes/'.$wakkaConfig['favorite_squelette'])
@@ -183,7 +166,7 @@ if (!file_exists('tools/templates/themes/'.$wakkaConfig['favorite_theme'].'/sque
 		$wakkaConfig['favorite_style']='default.css';
 		$wakkaConfig['favorite_squelette']='default.tpl.html';
 		echo 'Certains (ou tous les) fichiers du template '.$wakkaConfig['favorite_theme'].' ont disparus (tools/templates/themes/'.$wakkaConfig['favorite_theme'].'/squelettes/'.$wakkaConfig['favorite_squelette'].' et/ou tools/templates/themes/'.$wakkaConfig['favorite_theme'].'/styles/'.$wakkaConfig['favorite_style'].').<br />Le template par d&eacute;faut est donc utilis&eacute;.';
-	} else {
+} else {
 		exit('Les fichiers du template par d&eacute;faut ont disparus, l\'utilisation des templates est impossible.<br />Veuillez r&eacute;installer le tools template ou contacter l\'administrateur du site.');
 	}
 }

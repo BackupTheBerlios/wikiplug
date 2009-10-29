@@ -8,6 +8,12 @@
 		<link rel="alternate" type="application/rss+xml" title="Flux RSS des derniers changements" href="{{configuration param="base_url"}}DerniersChangementsRSS/xml" />
 		{{liensstyle}}
 		{{liensjavascripts}}
+		<script type="text/javascript">
+		jQuery(function(){
+			//menu déroulant du haut
+			$('#container-navigation ul').addClass('sf-menu').superfish();	
+		});		
+		</script>
 	</head>
 
    <body>
@@ -25,15 +31,13 @@
             	{{include page="PageBandeau" doubleclic="1"}}
 	    </div>
 
-            <div id="container-content">
-
-		<div id="content" {{doubleclic}}>    
-			{WIKINI_PAGE}
-		</div> <!-- CONTENT END -->
-
-		<div id="border">
-			{{include page="PageMenu" doubleclic="1"}}
-		</div>
+        <div id="container-content">
+				<div id="border">
+					{{include page="PageMenu" doubleclic="1"}}
+				</div>
+				<div id="content" {{doubleclic}}>    
+					{WIKINI_PAGE}
+				</div> <!-- CONTENT END -->		
 
 	    </div>
 
