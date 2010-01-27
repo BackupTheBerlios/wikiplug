@@ -1,9 +1,9 @@
 <div class="formulaire_microblog">
 	<?=$rss;?>
-	<label class="formulaire">Texte (<span class="info_nb_car"><?=$nb;?></span> caract&egrave;res restants)</label>
-	<textarea maxlength="<?=$nb;?>" rows="4" cols="20" class="formulaire microblog_billet" name="microblog_billet"></textarea>
-	<label class="formulaire">Mot cl&eacute;s</label>
-	<input class="formulaire microblog_toustags" type="text" autocomplete="off" size="48" name="microblog_tags" />
+	<label class="formulaire">Texte (<span class="info_nb_car_max"><?=$nb;?></span><span class="info_nb_car"><?=$nb;?></span> caract&egrave;res restants)</label>
+	<textarea rows="4" cols="20" class="formulaire microblog_billet" name="microblog_billet"></textarea>
+	<label class="formulaire">Mots cl&eacute;s</label>
+	<div class="form_tags"><input type="text" name="microblog_tags" value="" class="formulaire microblog_toustags" /></div>
 	<div class="groupe_boutons">
 		<input type="submit" value="Enregistrer" class="bouton btn_enregistrer" />
 		<input type="button" value="Annuler" class="bouton btn_annuler" />

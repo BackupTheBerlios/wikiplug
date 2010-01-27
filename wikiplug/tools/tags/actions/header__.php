@@ -6,6 +6,7 @@ if (!defined("WIKINI_VERSION"))
 }
 
 
+/*
 	//on recupere tous les tags existants
 	$tab_tous_les_tags = $this->GetAllTags();
 	$tags = '';
@@ -20,11 +21,13 @@ if (!defined("WIKINI_VERSION"))
 
 
 	$tous_les_tags = split(' ', $tags);
+*/
 	$remplacement ='
 	<link rel="stylesheet" href="tools/tags/presentation/tags.css" type="text/css" media="screen" />
-    <script type="text/javascript" src="tools/tags/lib/tag.js"></script>    
+	<script src="tools/tags/libs/tag.js" type="text/javascript"></script>
 	';
 
+/*
 	if ($this->GetMethod() == "edit")
 	{
 		$remplacement .='
@@ -39,6 +42,7 @@ if (!defined("WIKINI_VERSION"))
 	    </script>
 		 ';
 	}
+*/
 
 	$plugin_output_new=preg_replace ('/<\/head>/', $remplacement."\n".'</head>', $plugin_output_new);
 

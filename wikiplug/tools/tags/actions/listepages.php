@@ -61,7 +61,7 @@ if (!empty($notags))
 if (!empty($type))
 {
 	$req_from .= ", ".$this->config["table_prefix"]."triples type ";
-	$req .= ' AND type.resource=tag AND type.property="http://outils-reseaux.org/_vocabulary/type" AND type.value="microblog" ';
+	$req .= ' AND type.resource=tag AND type.property="http://outils-reseaux.org/_vocabulary/type" AND type.value="'.$type.'" ';
 }
 
 $req .= ' GROUP BY tag ';
@@ -87,7 +87,7 @@ else
 
 $requete = "SELECT DISTINCT tag, time, user, owner, body FROM ".$this->config["table_prefix"]."pages".$req_from." WHERE latest = 'Y' and comment_on = '' ".$req;
 
-require_once 'tools/tags/lib/MDB2.php';
+require_once 'tools/tags/libs/MDB2.php';
 $dsn = array(
     'phptype'  => 'mysql',
     'username' => $this->config["mysql_user"],
@@ -101,7 +101,7 @@ $db =& MDB2::connect($dsn);
 
 if (!empty($nb))
 {
-	require_once 'tools/tags/lib/Pager/Pager_Wrapper.php'; //this file
+	require_once 'tools/tags/libs/Pager/Pager_Wrapper.php'; //this file
 	$pagerOptions = array(
     	'mode'    => 'Sliding',
    	 	'delta'   => 2,
@@ -123,7 +123,7 @@ foreach ($paged_data['data'] as $microblogpost)
 	}
 	elseif ( $this->tag!=$microblogpost['tag'] )
 	{
-		include_once('tools/tags/lib/squelettephp.class.php');
+		include_once('tools/tags/libs/squelettephp.class.php');
 		$valtemplate=array();
 		$squel = new SquelettePhp('tools/tags/presentation/'.$template);
 		$valtemplate['class'] = $class;
@@ -140,7 +140,7 @@ foreach ($paged_data['data'] as $microblogpost)
 			$valtemplate['date'] = date("\l\e d.m.Y &\a\g\\r\av\e; H:i:s", strtotime($microblogpost["time"]));
 			$valtemplate['billet'] = $this->Format($microblogpost["body"]);
 			// load comments for this page
-	        include_once('tools/tags/lib/tags.functions.php');
+	        include_once('tools/tags/libs/tags.functions.php');
 	        $valtemplate['commentaire'] = '<strong class="lien_commenter">Commentaires</strong>'."\n";
     		$valtemplate['commentaire'] .= "<div class=\"commentaires_billet_microblog\">\n";
 			$valtemplate['commentaire'] .= afficher_commentaires_recursif($microblogpost['tag'], $this);

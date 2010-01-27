@@ -4,11 +4,23 @@ if (!defined("WIKINI_VERSION"))
 {
             die ("acc&egrave;s direct interdit");
 }
+$selectiontags = '';
+$tags = $this->GetParameter('tags');
+if (!empty($tags))
+{
+	$tags=trim($tags);
+	$tab_tags = explode(" ", $tags);
+	$tags = implode(",", array_filter($tab_tags, "trim"));
+	$tags = '"'.str_replace(',','","',$tags).'"';
+	$selectiontags = ' AND value IN ('.$tags.')';
+}
+$nb_taille_tag = $this->GetParameter('nbclasses');
+if (empty($nb_taille_tag)) $nb_taille_tag=6;
 
 //on récupère le nb maximum et le nb minimum d'occurences
-$sql = 'SELECT COUNT(value) AS nb FROM '.$this->config['table_prefix'].'triples WHERE property="http://outils-reseaux.org/_vocabulary/tag" GROUP BY value';
+$sql = 'SELECT COUNT(value) AS nb FROM '.$this->config['table_prefix'].'triples WHERE property="http://outils-reseaux.org/_vocabulary/tag" '.$selectiontags.' GROUP BY value';
 $min_max = $this->LoadAll($sql);
-$min=1000000;$max=0;
+$min=100000000;$max=0;
 foreach ($min_max as $tab_min_max)
 {
 		if ($tab_min_max['nb']>$max)
@@ -21,12 +33,12 @@ foreach ($min_max as $tab_min_max)
 		}
 }
 //permettra de fixer une classe pour la taille du tag
-$nb_taille_tag=6;
+
 $mult=$max/$nb_taille_tag;
 if ($mult<1) $mult=1;
 
 //on récupère tous les tags existants
-$sql = 'SELECT value, resource FROM '.$this->config['table_prefix'].'triples WHERE property="http://outils-reseaux.org/_vocabulary/tag" ORDER BY value ASC, resource ASC';
+$sql = 'SELECT value, resource FROM '.$this->config['table_prefix'].'triples WHERE property="http://outils-reseaux.org/_vocabulary/tag" '.$selectiontags.' ORDER BY value ASC, resource ASC';
 $tab_tous_les_tags = $this->LoadAll($sql);
 
 if (is_array($tab_tous_les_tags))
@@ -40,24 +52,24 @@ if (is_array($tab_tous_les_tags))
 		if ($tab_les_tags['value']==$tag_precedent || $tag_precedent== '')
 		{
 			$nb_pages++;
-			$liste_page .= '<li><a class="link_pagewiki" href="'.$this->href('',$tab_les_tags['resource']).'">'.$tab_les_tags['resource'].'</a></li>'."\n";
+			$liste_page .= '<li class="liste_pageswiki"><a class="link_pagewiki" href="'.$this->href('',$tab_les_tags['resource']).'">'.$tab_les_tags['resource'].'</a></li>'."\n";
 
 		}
 		else
 		{
 			//on affiche les informations pour ce tag
-			if ($nb_pages>1) $texte_page= $nb_pages.' pages associ&eacute;es';
-			else $texte_page='Une page associ&eacute;e';
-			$texte_liste  = '<li>'."\n".'<a class="size'.ceil($nb_pages/$mult).'" href="#" id="j'.$i.'">'.$tag_precedent.'</a>'."\n";
-			$texte_liste .= '<ul style="display: block;" class="hovertip" target="j'.$i.'"><li class="texte_pages_assoc">'.$texte_page.' :</li>'."\n";
+			if ($nb_pages>1) $texte_page= $nb_pages.' pages';
+			else $texte_page='Une page';
+			$texte_liste  = '<li class="liste_tooltip">'."\n".'<a class="tooltip size'.ceil($nb_pages/$mult).'" href="'.$this->href('listepages',$this->GetPageTag(),'tags='.$tag_precedent).'" id="j'.$i.'">'.$tag_precedent.'</a>'."\n";
+			$texte_liste .= '<div class="hovertip" id="tooltipj'.$i.'">'."\n".'<span class="texte_pages_assoc">'.$texte_page.' avec le mot cl&eacute; "'.$tag_precedent.'" :</span>'."\n".'<ul>'."\n";
 			$texte_liste .= $liste_page."\n";
-			$texte_liste .= '</ul>'."\n";
+			$texte_liste .= '</ul>'."\n".'</div>'."\n";
 			$texte_liste .= '</li>'."\n";
 			$tab_tag[] = $texte_liste;
 
 			//on réinitialise les variables
 			$nb_pages = 1;
-			$liste_page = '<li><a class="link_pagewiki" href="'.$this->href('',$tab_les_tags['resource']).'">'.$tab_les_tags['resource'].'</a></li>'."\n";
+			$liste_page = '<li class="liste_pageswiki"><a class="link_pagewiki" href="'.$this->href('',$tab_les_tags['resource']).'">'.$tab_les_tags['resource'].'</a></li>'."\n";
 			$i++;
 		}
 		$tag_precedent = $tab_les_tags['value'];

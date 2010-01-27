@@ -1,6 +1,6 @@
 <?php
 /*
-$Id: ajaxedit.php,v 1.2 2009/10/12 16:10:32 mrflos Exp $
+$Id: ajaxedit.php,v 1.3 2010/01/27 15:19:41 mrflos Exp $
 Copyright (c) 2002, Hendrik Mans <hendrik@mans.de>
 Copyright 2002, 2003 David DELON
 Copyright 2002, 2003 Charles NEPOTE
@@ -129,14 +129,14 @@ if (isset($_GET['jsonp_callback']))
 							$valcomment['commentaires'][0]['tag'] = $comment["tag"];
 							$valcomment['commentaires'][0]['body'] = $this->Format($comment["body"]);
 							$valcomment['commentaires'][0]['infos'] = "de ".$this->Format($comment["user"]).", ".date("\l\e d.m.Y &\a\g\\r\av\e; H:i:s", strtotime($comment["time"]));
-							$valcomment['commentaires'][0]['actions'] = '<a href="'.$this->href('', $comment['tag']).'" class="repondre_billet">R&eacute;pondre</a> ';
+							$valcomment['commentaires'][0]['actions'] = '<a href="'.$this->href('', $comment['tag']).'" class="repondre_commentaire">R&eacute;pondre</a> ';
 							if ($this->HasAccess('write', $comment['tag']) || $this->UserIsOwner($comment['tag']) || $this->UserIsAdmin($comment['tag']))
 							{
-								$valcomment['commentaires'][0]['actions'] .= '<a href="'.$this->href('edit', $comment['tag']).'" class="editer_billet">Editer</a> ';
+								$valcomment['commentaires'][0]['actions'] .= '<a href="'.$this->href('edit', $comment['tag']).'" class="editer_commentaire">Editer</a> ';
 							}			
 							if ($this->UserIsOwner($comment['tag']) || $this->UserIsAdmin())
 							{
-								$valcomment['commentaires'][0]['actions'] .= '<a href="'.$this->href('deletepage', $comment['tag']).'" class="supprimer_billet">Supprimer</a>'."\n" ;
+								$valcomment['commentaires'][0]['actions'] .= '<a href="'.$this->href('deletepage', $comment['tag']).'" class="supprimer_commentaire">Supprimer</a>'."\n" ;
 							}									
 							include_once('tools/tags/lib/squelettephp.class.php');
 							$squelcomment = new SquelettePhp('tools/tags/presentation/commentaire_microblog.tpl.html');

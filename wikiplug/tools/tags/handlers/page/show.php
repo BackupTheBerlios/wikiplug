@@ -1,6 +1,6 @@
 <?php
 /*
-$Id: show.php,v 1.1 2009/10/12 16:10:32 mrflos Exp $
+$Id: show.php,v 1.2 2010/01/27 15:19:41 mrflos Exp $
 Copyright (c) 2002, Hendrik Mans <hendrik@mans.de>
 Copyright 2002, 2003 David DELON
 Copyright 2002, 2003 Charles NEPOTE
@@ -102,36 +102,50 @@ else
 
 
 <?php
-if ($HasAccessRead && (!$this->page || !$this->page["comment_on"]))
-{
-	// load comments for this page
-	$comments = $this->LoadComments($this->tag);
-	
-	// store comments display in session
-	$tag = $this->GetPageTag();
-	if (!isset($_SESSION["show_comments"][$tag]))
-		$_SESSION["show_comments"][$tag] = ($this->UserWantsComments() ? "1" : "0");
-	if (isset($_REQUEST["show_comments"])){	
-	switch($_REQUEST["show_comments"])
+$pageouverte = $this->GetTripleValue($this->GetPageTag(),'http://outils-reseaux.org/_vocabulary/comments', '', '');
+if ((COMMENTAIRES_OUVERTS_PAR_DEFAUT && $pageouverte!='0' ) || (!COMMENTAIRES_OUVERTS_PAR_DEFAUT && $pageouverte=='1')) {
+	if ($HasAccessRead && (!$this->page || !$this->page["comment_on"]))
 	{
-	case "0":
-		$_SESSION["show_comments"][$tag] = 0;
-		break;
-	case "1":
-		$_SESSION["show_comments"][$tag] = 1;
-		break;
+		// load comments for this page
+		$comments = $this->LoadComments($this->tag);
+		
+		// store comments display in session
+		$tag = $this->GetPageTag();
+		if (!isset($_SESSION["show_comments"][$tag]))
+			$_SESSION["show_comments"][$tag] = ($this->UserWantsComments() ? "1" : "0");
+		if (isset($_REQUEST["show_comments"])){	
+		switch($_REQUEST["show_comments"])
+		{
+		case "0":
+			$_SESSION["show_comments"][$tag] = 0;
+			break;
+		case "1":
+			$_SESSION["show_comments"][$tag] = 1;
+			break;
+		}
+		}
+		// display comments!
+		include_once('tools/tags/libs/tags.functions.php');
+		$gestioncommentaire = '<strong class="lien_commenter">Commentaires sur cette page.'."\n";
+		if (($this->UserIsOwner()) || ($this->UserIsAdmin()))
+		{
+			$gestioncommentaire .= '<a href="'.$this->href('closecomments').'" title="D&eacute;sactiver les commentaires sur cette page">D&eacute;sactiver les commentaires</a>'."\n";
+		}
+		$gestioncommentaire .= '</strong>.'."\n";
+		$gestioncommentaire .= "<div class=\"commentaires_billet_microblog\">\n";
+		$gestioncommentaire .= afficher_commentaires_recursif($this->getPageTag(), $this);
+		$gestioncommentaire .= "</div>\n";
+		echo $gestioncommentaire;
+	
 	}
-	}
-	// display comments!
-	include_once('tools/tags/lib/tags.functions.php');
-	$gestioncommentaire = '<strong class="lien_commenter">Commentaires sur cette page</strong>'."\n";
-	$gestioncommentaire .= "<div class=\"commentaires_billet_microblog\">\n";
-	$gestioncommentaire .= afficher_commentaires_recursif($this->getPageTag(), $this);
-	$gestioncommentaire .= "</div>\n";
-	echo $gestioncommentaire;
-
 }
-
+else //commentaire pas ouverts
+{
+	if (($this->UserIsOwner()) || ($this->UserIsAdmin()))
+	{
+		echo '<strong class="admin_commenter">Commentaires d&eacute;sactiv&eacute;s '."\n".'<a href="'.$this->href('opencomments').'" title="Activer les commentaires sur cette page">Activer les commentaires</a></strong>.'."\n";
+	}
+}
 $content = ob_get_clean();
 echo $this->Header();
 echo $content;

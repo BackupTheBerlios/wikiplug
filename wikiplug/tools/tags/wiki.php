@@ -6,6 +6,12 @@ if (!defined("WIKINI_VERSION"))
 {
         die ("acc&egrave;s direct interdit");
 }
+//CONFIGURATION
+//si 0 les admins ou le propriétaire d'une page doivent ouvrir les commentaires
+//si 1 ils sont ouverts par defaut
+define('COMMENTAIRES_OUVERTS_PAR_DEFAUT', 1);
+define('CACHER_MOTS_CLES', 0);
+
 $wiki  = new WikiTools($wakkaConfig);
 $wikiClasses [] = 'Tags';
 $wikiClassesContent [] = '
@@ -26,7 +32,7 @@ $wikiClassesContent [] = '
 
 	function SaveTags($page, $liste_tags)
     {
-		$tags = explode(" ", mysql_escape_string($liste_tags));
+		$tags = explode(",", mysql_escape_string($liste_tags));
 		//on récupére les anciens tags de la page courante
 		$tabtagsexistants = $this->GetAllTriplesValues($page, \'http://outils-reseaux.org/_vocabulary/tag\', \'\', \'\');
 		if (is_array($tabtagsexistants))
@@ -37,7 +43,7 @@ $wikiClassesContent [] = '
 			}
 		}
 
-		//on ajoute le tag s il n existe pas dÃ©jÃ 
+		//on ajoute le tag s il n existe pas déjà 
 		foreach ($tags as $tag)
 		{
 			trim($tag);
@@ -77,7 +83,104 @@ $wikiClassesContent [] = '
 		}
 	}
 
+	function ParseQuery($string)
+	{
+		$tab = array();
+		$tab[\'+\'] = preg_split("/\+([^-\+]+)/", $string);
+		$tab[\'-\'] = preg_split("/-([^-\+]+)/", $string);	
+		var_dump($tab);	
+		return $tab;
+	}
+
+	function PageList($tags=\'\', $type=\'\', $nb=\'\', $tri=\'\', $template=\'\', $class=\'\', $lienedit=\'\')
+	{
+		if (isset($tags))
+		{
+			list($tags, $notags) = $this->ParseQuery($tags);
+		}
+		if (isset($type))
+		{
+			list($type, $notype) = $this->ParseQuery($type);
+		}
+		$req = \'\';
+		$req_from = \'\';
+		$req_having = \'\';
+
+		//on fait les tableaux pour les tags, puis on met des virgules et des guillemets
+		if (isset($tags))
+		{
+			$req_from .= ", ".$this->config["table_prefix"]."triples tags ";
+			$tags=trim($tags);
+			$tab_tags = explode(",", $tags);
+			$nbdetags = count($tab_tags);
+			$tags = implode(",", array_filter($tab_tags, "trim"));
+			$tags = \'"\'.str_replace(\',\',\'","\',$tags).\'"\';
+			$req .= \' AND tags.value IN (\'.$tags.\') \';
+			$req .= \' AND tags.property="http://outils-reseaux.org/_vocabulary/tag" AND tags.resource=tag \';
+			$req_having .= \' HAVING COUNT(tag)=\'.$nbdetags.\' \';
+		}
+
+		if (isset($notags))
+		{
+			$notags=trim($notags);
+			$tab_notags = explode(" ", $notags);
+			$notags = implode(",", array_filter($tab_notags, "trim"));
+			$notags = \'"\'.str_replace(\',\',\'","\',$notags).\'"\';
+			$req .= \' AND NOT EXISTS (SELECT NULL FROM \'.$this->config["table_prefix"].\'triples notags WHERE notags.resource = tags.resource and notags.value IN (\'.$notags.\') AND notags.property="http://outils-reseaux.org/_vocabulary/tag" AND notags.resource=tag ) \';
+		}
+
+
+		//traitement du type de page
+		if (isset($type))
+		{
+			$req_from .= ", ".$this->config["table_prefix"]."triples type ";
+			$req .= \' AND type.resource=tag AND type.property="http://outils-reseaux.org/_vocabulary/type" AND type.value="\'.$type.\'" \';
+		}
+
+		$req .= \' GROUP BY tag \';
+		if ($req_having!=\'\') $req .= $req_having;
+
+		//gestion du tri de l\'affichage
+		if ($tri == "alpha")
+		{
+			$req .= \' ORDER BY tag ASC \';
+		}
+		elseif ($tri == "date")
+		{
+			$req .= \' ORDER BY time DESC \';
+		}
+
+		$requete = "SELECT DISTINCT tag, time, user, owner, body FROM ".$this->config["table_prefix"]."pages".$req_from." WHERE latest = \'Y\' and comment_on = \'\' ".$req;
+
+		require_once \'tools/tags/libs/MDB2.php\';
+		$dsn = array(
+			\'phptype\'  => \'mysql\',
+			\'username\' => $this->config["mysql_user"],
+			\'password\' => $this->config["mysql_password"],
+			\'hostspec\' => $this->config["mysql_host"],
+			\'database\' => $this->config["mysql_database"],
+		);
+
+		// create MDB2 instance
+		$db =& MDB2::connect($dsn);
+
+		if (isset($nb))
+		{
+			require_once \'tools/tags/libs/Pager/Pager_Wrapper.php\'; //this file
+			$pagerOptions = array(
+				\'mode\'    => \'Sliding\',
+				\'delta\'   => 2,
+				\'perPage\' => $nb,
+			);
+			$paged_data = Pager_Wrapper_MDB2($db, $requete, $pagerOptions);
+			$nb_total = $paged_data[\'totalItems\'];
+			//$paged_data[\'page_numbers\']; //array(\'current\', \'total\');
+		} else
+		{
+			$paged_data[\'data\'] = $db->queryAll($requete, null, MDB2_FETCHMODE_ASSOC);
+			$nb_total = count($paged_data[\'data\']);
+		}
+		return $paged_data;
+	}
 ';
-
-
 ?>
