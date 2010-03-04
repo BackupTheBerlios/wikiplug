@@ -344,8 +344,16 @@ class attach {
         $large=$this->large;
         if (!$haut) $haut = "650";
         if (!$large) $large = "100%";
-        $mindmap_url = $this->wiki->href("download",$this->wiki->GetPageTag(),"file=$this->file");
-     	$output = '<embed id="visorFreeMind" height="'.$haut.'" align="middle" width="'.$large.'" flashvars="openUrl=_blank&initLoadFile='.$fullFilename.'&startCollapsedToLevel=5" quality="high" bgcolor="#ffffff" src="tools/attach/players/visorFreemind.swf" type="application/x-shockwave-flash"/>';
+        $mindmap_url = $this->wiki->href("download",$this->wiki->GetPageTag(),"file=$this->file");     	
+		$output = '<object width="'.$large.'" height="'.$haut.'" type="application/x-shockwave-flash" data="tools/attach/players/visorFreemind.swf">
+			<param value="false" name="allowfullscreen"/>
+			<param value="always" name="allowscriptaccess"/>
+			<param value="high" name="quality"/>
+			<param value="false" name="cachebusting"/>
+			<param value="middle" name="align"/>
+			<param value="opaque" name="wmode"/>
+			<param value="openUrl=_blank&amp;initLoadFile='.$fullFilename.'&amp;startCollapsedToLevel=5" name="flashvars"/>
+		</object>';
 		$output .="[<a href=\"$fullFilename\" title=\"T&eacute;l&eacute;charger le fichier Freemind\">mm</a>]";
 		echo $output;
 		$this->showUpdateLink();
