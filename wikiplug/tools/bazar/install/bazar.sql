@@ -1,135 +1,515 @@
-CREATE TABLE `bazar_abonnement` (
-  `ba_id_utilisateur` int(11) NOT NULL default '0',
-  `ba_id_rubrique` int(11) NOT NULL default '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+-- phpMyAdmin SQL Dump
+-- version 3.2.2.1deb1
+-- http://www.phpmyadmin.net
+--
+-- Serveur: localhost
+-- Généré le : Ven 05 Février 2010 à 13:30
+-- Version du serveur: 5.1.37
+-- Version de PHP: 5.2.10-2ubuntu6.4
 
-CREATE TABLE `bazar_commentaires` (
-  `bc_ce_id_fiche` int(11) NOT NULL default '0',
-  `bc_nom` varchar(255) NOT NULL default '',
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+
+--
+-- Base de données: `wikini`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `bazar_commentaires`
+--
+
+DROP TABLE IF EXISTS `bazar_commentaires`;
+CREATE TABLE IF NOT EXISTS `bazar_commentaires` (
+  `bc_ce_id_fiche` int(11) NOT NULL DEFAULT '0',
+  `bc_nom` varchar(255) NOT NULL DEFAULT '',
   `bc_commentaire` text NOT NULL,
-  `bc_date` datetime NOT NULL default '0000-00-00 00:00:00'
+  `bc_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`bc_ce_id_fiche`,`bc_date`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-CREATE TABLE `bazar_droits` (
-  `bd_id_utilisateur` int(11) unsigned NOT NULL default '0',
-  `bd_id_nature_offre` int(10) unsigned NOT NULL default '0',
-  `bd_niveau_droit` int(10) unsigned default NULL,
-  PRIMARY KEY  (`bd_id_utilisateur`,`bd_id_nature_offre`)
+--
+-- Contenu de la table `bazar_commentaires`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `bazar_droits`
+--
+
+DROP TABLE IF EXISTS `bazar_droits`;
+CREATE TABLE IF NOT EXISTS `bazar_droits` (
+  `bd_id_utilisateur` int(11) unsigned NOT NULL DEFAULT '0',
+  `bd_id_nature_offre` int(10) unsigned NOT NULL DEFAULT '0',
+  `bd_niveau_droit` int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY (`bd_id_utilisateur`,`bd_id_nature_offre`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-CREATE TABLE `bazar_fiche` (
-  `bf_id_fiche` int(10) unsigned NOT NULL default '0',
-  `bf_ce_utilisateur` int(11) unsigned NOT NULL default '0',
-  `bf_ce_nature` int(10) unsigned NOT NULL default '0',
-  `bf_ce_type_parution` int(10) unsigned default NULL,
-  `bf_ce_departement` int(10) unsigned default NULL,
-  `bf_ce_region` int(10) unsigned default NULL,
-  `bf_ce_pays` char(2) default NULL,
-  `bf_titre` varchar(255) default NULL,
-  `bf_code` varchar(20) default NULL,
+--
+-- Contenu de la table `bazar_droits`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `bazar_fiche`
+--
+
+DROP TABLE IF EXISTS `bazar_fiche`;
+CREATE TABLE IF NOT EXISTS `bazar_fiche` (
+  `bf_id_fiche` int(10) unsigned NOT NULL DEFAULT '0',
+  `bf_ce_utilisateur` varchar(255) DEFAULT NULL,
+  `bf_ce_nature` int(10) unsigned NOT NULL DEFAULT '0',
+  `bf_titre` varchar(255) DEFAULT NULL,
   `bf_description` text,
-  `bf_url_image` varchar(255) default NULL,
-  `bf_date_debut_validite_fiche` date NOT NULL default '0000-00-00',
-  `bf_date_fin_validite_fiche` date NOT NULL default '0000-00-00',
-  `bf_date_creation_fiche` datetime NOT NULL default '0000-00-00 00:00:00',
-  `bf_date_maj_fiche` datetime NOT NULL default '0000-00-00 00:00:00',
-  `bf_statut_fiche` int(10) unsigned default NULL,
-  `bf_date_debut_evenement` date default NULL,
-  `bf_date_fin_evenement` date default NULL,
-  `bf_lieu_evenement` varchar(255) default NULL,
-  `bf_capacite_accueil` int(10) unsigned default NULL,
-  `bf_nb_animateurs` int(10) unsigned default NULL,
-  `bf_tarif_individuel` varchar(255) default NULL,
-  `bf_numero_module` varchar(8) NOT NULL default '',
-  `bf_total_module` varchar(8) NOT NULL default '',
-  `bf_ce_type_formation` int(11) NOT NULL default '0',
-  `bf_ce_diplome` int(11) NOT NULL default '0',
-  `bf_ce_niveau` int(11) NOT NULL default '0',
-  `bf_qualif_preparee` varchar(60) NOT NULL default '',
-  `bf_contenu_formation` text NOT NULL,
-  `bf_conditions_acces` text NOT NULL,
-  `bf_date_fin_inscription` date NOT NULL default '0000-00-00',
-  `bf_cp_lieu_evenement` varchar(7) NOT NULL default '',
-  `bf_tarif_entreprise` varchar(255) NOT NULL default '',
-  `bf_tarif_opca` varchar(255) NOT NULL default '',
-  `bf_num_agrement` varchar(20) NOT NULL default '',
-  `bf_prenom_contact` varchar(60) NOT NULL default '',
-  `bf_nom_contact` varchar(60) NOT NULL default '',
-  `bf_adresse_contact` varchar(255) NOT NULL default '',
-  `bf_mail` varchar(255) default NULL,
-  `bf_telephone` varchar(14) NOT NULL default '',
-  `bf_profession` varchar(255) NOT NULL,
-  `bf_structure` varchar(255) NOT NULL,
-  `bf_nom_wikini` varchar(255) NOT NULL,
-  `bf_massif` varchar(255) NOT NULL,
-  `bf_intervenants` text NOT NULL,
-  `bf_infos_complementaires` text NOT NULL,
-  `bf_public` varchar(255) NOT NULL default '',
-  `bf_editeur` varchar(255) NOT NULL default '',
-  `bf_annee_parution` mediumint(8) unsigned NOT NULL default '0',
-  `bf_theme` tinyint(3) unsigned NOT NULL default '1',
-  `bf_ce_langue` char(2) NOT NULL default '',
-  `bf_commentaire` text NOT NULL,
-  `bf_auteur` varchar(255) NOT NULL default '',
-  `bf_auteur_coordonnee` varchar(255) NOT NULL default '',
-  `bf_editeur_coordonnee` varchar(255) NOT NULL default '',
-  `bf_ce_echelle_geo` tinyint(3) unsigned NOT NULL default '0',
-  `bf_ce_secteur` tinyint(4) NOT NULL default '0',
-  `bf_qualite` varchar(255) NOT NULL default '',
-  `bf_forme_aide` varchar(255) NOT NULL default '',
-  `bf_ce_nature_aide` tinyint(4) NOT NULL default '0',
-  `bf_source_aide` varchar(255) NOT NULL default '',
-  `bf_condition_aide` text NOT NULL,
-  `bf_site_internet` varchar(255) NOT NULL default '',
-  `bf_gestionnaire` varchar(255) NOT NULL default '',
-  `bf_nb_consultations` int(10) unsigned NOT NULL default '0',
-  `bf_fax` varchar(132) NOT NULL default '',
-  `bf_adresse1` varchar(255) NOT NULL,
-  `bf_adresse2` varchar(255) NOT NULL,
-  `bf_code_postal` varchar(255) NOT NULL,
-  `bf_ville` varchar(255) NOT NULL,
+  `bf_date_debut_validite_fiche` date NOT NULL DEFAULT '0000-00-00',
+  `bf_date_fin_validite_fiche` date NOT NULL DEFAULT '0000-00-00',
+  `bf_date_creation_fiche` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `bf_date_maj_fiche` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `bf_statut_fiche` int(10) unsigned DEFAULT NULL,
+  `bf_ce_langue` char(2) NOT NULL DEFAULT '',
+  `bf_nb_consultations` int(10) unsigned NOT NULL DEFAULT '0',
   `bf_latitude` varchar(255) NOT NULL,
   `bf_longitude` varchar(255) NOT NULL,
   `bf_categorie_fiche` varchar(255) NOT NULL,
-  PRIMARY KEY  (`bf_id_fiche`)
+  PRIMARY KEY (`bf_id_fiche`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-CREATE TABLE `bazar_fiche_valeur_liste` (
-  `bfvl_ce_fiche` int(10) unsigned NOT NULL default '0',
-  `bfvl_ce_liste` int(10) unsigned NOT NULL default '0',
-  `bfvl_valeur` int(10) unsigned NOT NULL default '0',
-  PRIMARY KEY  (`bfvl_ce_fiche`,`bfvl_ce_liste`,`bfvl_valeur`)
+--
+-- Contenu de la table `bazar_fiche`
+--
+
+INSERT INTO `bazar_fiche` (`bf_id_fiche`, `bf_ce_utilisateur`, `bf_ce_nature`, `bf_titre`, `bf_description`, `bf_date_debut_validite_fiche`, `bf_date_fin_validite_fiche`, `bf_date_creation_fiche`, `bf_date_maj_fiche`, `bf_statut_fiche`, `bf_ce_langue`, `bf_nb_consultations`, `bf_latitude`, `bf_longitude`, `bf_categorie_fiche`) VALUES
+(8, 'FloriaN', 16, 'Université de Bourgogne', NULL, '2009-11-29', '0000-00-00', '2009-11-29 16:31:09', '2009-12-05 11:52:16', 1, '', 76, '', '', 'toutes'),
+(5, 'FloriaN', 6, 'sdqsqdssqd', NULL, '2009-11-29', '0000-00-00', '2009-11-29 14:59:52', '2009-11-29 16:27:27', 1, '', 1, '', '', 'toutes'),
+(3, 'FloriaN', 6, 'Quoi???', 'J''ai toujours trop le feu au cul!!', '2009-11-23', '0000-00-00', '2009-11-29 11:22:32', '2009-12-05 21:30:35', 1, '', 14, '', '', 'toutes'),
+(6, 'FloriaN', 6, 'youpi dansons', NULL, '2009-11-29', '0000-00-00', '2009-11-29 15:14:07', '2009-11-30 10:12:58', 1, '', 17, '', '', 'toutes'),
+(7, 'FloriaN', 6, 'Florian Schmitt', NULL, '2009-11-29', '0000-00-00', '2009-11-29 15:21:43', '2009-12-05 21:23:51', 1, '', 5, '', '', 'toutes'),
+(20, 'FloriaN', 20, 'Yes we can', NULL, '2010-02-05', '0000-00-00', '2010-02-05 10:38:53', '2010-02-05 10:39:26', 1, '', 4, '', '', 'universites'),
+(13, 'FloriaN', 17, 'Sebastien Chevalier', NULL, '2009-12-05', '0000-00-00', '2009-12-05 21:52:10', '2010-02-04 18:55:06', 1, '', 2, '', '', 'toutes'),
+(19, 'FloriaN', 16, 'tot claret', NULL, '2010-01-25', '0000-00-00', '2010-01-25 18:27:44', '2010-01-25 18:27:44', 1, '', 7, '', '', 'toutes'),
+(16, 'FloriaN', 16, 'Université Montpellier 2', NULL, '2009-12-09', '0000-00-00', '2009-12-09 20:12:29', '2010-02-05 11:00:25', 1, '', 28, '43.6314038', '3.8610052', 'toutes'),
+(17, 'FloriaN', 19, 'test ballades', NULL, '2010-01-08', '0000-00-00', '2010-01-08 14:36:02', '2010-01-08 23:27:55', 1, '', 28, '', '', 'toutes'),
+(18, 'FloriaN', 19, 'test ballades 2', NULL, '2010-01-08', '0000-00-00', '2010-01-08 23:53:48', '2010-01-08 23:53:48', 1, '', 20, '', '', 'toutes');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `bazar_fiche_valeur_liste`
+--
+
+DROP TABLE IF EXISTS `bazar_fiche_valeur_liste`;
+CREATE TABLE IF NOT EXISTS `bazar_fiche_valeur_liste` (
+  `bfvl_ce_fiche` int(10) unsigned NOT NULL DEFAULT '0',
+  `bfvl_ce_liste` varchar(255) NOT NULL,
+  `bfvl_valeur` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`bfvl_ce_fiche`,`bfvl_ce_liste`,`bfvl_valeur`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-CREATE TABLE `bazar_fichier_joint` (
-  `bfj_id_fichier` int(10) unsigned NOT NULL default '0',
-  `bfj_ce_fiche` int(10) unsigned NOT NULL default '0',
-  `bfj_description` text,
-  `bfj_fichier` varchar(255) default NULL,
-  PRIMARY KEY  (`bfj_id_fichier`)
+--
+-- Contenu de la table `bazar_fiche_valeur_liste`
+--
+
+INSERT INTO `bazar_fiche_valeur_liste` (`bfvl_ce_fiche`, `bfvl_ce_liste`, `bfvl_valeur`) VALUES
+(3, '30', 1),
+(3, '30', 2),
+(3, '30', 3),
+(3, '30', 17),
+(3, 'checkbox30', 1),
+(3, 'checkbox30', 2),
+(5, '30', 14),
+(6, '30', 1),
+(6, '30', 2),
+(6, '30', 9),
+(6, '30', 11),
+(6, '30', 14),
+(6, '30', 21),
+(7, '30', 4),
+(7, '30', 8),
+(7, '30', 16),
+(7, 'checkbox30', 1),
+(7, 'checkbox30', 10),
+(8, '31', 1),
+(9, 'liste12autonomie', 1),
+(9, 'liste12pres', 1),
+(9, 'liste31', 1),
+(10, '10', 2),
+(10, 'liste12autonomie', 1),
+(10, 'liste12pres', 1),
+(10, 'liste31', 2),
+(11, 'checkbox10idnom', 1),
+(11, 'checkbox10idnom', 2),
+(11, 'liste12autonomie', 2),
+(11, 'liste12pres', 2),
+(11, 'liste31', 2),
+(12, 'checkbox10idnom', 1),
+(12, 'checkbox10idnom', 2),
+(12, 'liste12autonomie', 1),
+(12, 'liste12pres', 1),
+(12, 'liste31', 2),
+(12, 'listefiche6', 3),
+(13, 'checkbox36', 2),
+(13, 'liste19', 19),
+(13, 'liste34', 1),
+(13, 'liste35', 1),
+(13, 'listefiche16', 8),
+(15, 'liste12autonomie', 1),
+(15, 'liste12pres', 1),
+(15, 'liste31', 2),
+(15, 'listefiche6', 7),
+(16, 'liste12acces_public', 1),
+(16, 'liste12autonomie', 2),
+(16, 'liste12culture', 1),
+(16, 'liste12CultureST', 1),
+(16, 'liste12espace_admin', 2),
+(16, 'liste12espace_admin_cst', 1),
+(16, 'liste12espace_depot', 2),
+(16, 'liste12espace_depot_cst', 1),
+(16, 'liste12espace_expo', 1),
+(16, 'liste12espace_mediation_cst', 1),
+(16, 'liste12Patrimoine', 1),
+(16, 'liste12pres', 1),
+(16, 'liste19', 34),
+(16, 'liste19dep-struct', 34),
+(16, 'liste19dep-struct_cst', 40),
+(16, 'liste19dep-struct_patrimoine', 1),
+(16, 'liste1archeologie', 1),
+(16, 'liste1astronomie', 2),
+(16, 'liste1biologie', 3),
+(16, 'liste1botanique', 1),
+(16, 'liste1chimie', 1),
+(16, 'liste31', 1),
+(17, 'checkbox30', 8),
+(17, 'checkbox30', 9),
+(17, 'checkbox30', 18),
+(17, 'liste12', 1),
+(17, 'liste19', 34),
+(18, 'checkbox30', 2),
+(18, 'checkbox30', 15),
+(18, 'liste19', 34),
+(19, 'liste12autonomie', 1),
+(19, 'liste12culture', 1),
+(19, 'liste12espace_admin', 1),
+(19, 'liste12espace_depot', 1),
+(19, 'liste12espace_expo', 1),
+(19, 'liste12espace_mediation_cst', 1),
+(19, 'liste12pres', 2),
+(19, 'liste31', 1),
+(20, 'checkbox36', 1),
+(20, 'checkbox36', 2),
+(20, 'checkbox36', 3),
+(20, 'listefiche16', 8);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `bazar_fiche_valeur_texte`
+--
+
+DROP TABLE IF EXISTS `bazar_fiche_valeur_texte`;
+CREATE TABLE IF NOT EXISTS `bazar_fiche_valeur_texte` (
+  `bfvt_ce_fiche` int(11) NOT NULL,
+  `bfvt_id_element_form` varchar(255) NOT NULL,
+  `bfvt_texte` varchar(255) NOT NULL,
+  PRIMARY KEY (`bfvt_ce_fiche`,`bfvt_id_element_form`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-CREATE TABLE `bazar_licence` (
-  `bl_id_licence` int(10) unsigned NOT NULL default '0',
-  `bl_nom` varchar(255) default NULL,
-  `bl_contenu` text,
-  PRIMARY KEY  (`bl_id_licence`)
+--
+-- Contenu de la table `bazar_fiche_valeur_texte`
+--
+
+INSERT INTO `bazar_fiche_valeur_texte` (`bfvt_ce_fiche`, `bfvt_id_element_form`, `bfvt_texte`) VALUES
+(7, 'bf_titre', 'Florian Schmitt'),
+(7, 'bf_date_debut_validite_fiche', '2009-11-29'),
+(7, 'bf_date_fin_validite_fiche', '2009-12-5'),
+(6, 'bf_titre', 'youpi dansons'),
+(6, 'bf_date_debut_validite_fiche', '2009-11-29'),
+(6, 'bf_date_fin_validite_fiche', '2009-11-30'),
+(5, 'bf_titre', 'sdqsqdssqd'),
+(5, 'bf_date_debut_validite_fiche', '2009-11-29'),
+(5, 'bf_date_fin_validite_fiche', '2009-11-29'),
+(8, 'bf_titre', 'Université de Bourgogne'),
+(8, 'bf_adresse1', 'Maison de l’Université '),
+(8, 'bf_adresse2', 'Esplanade Erasme'),
+(8, 'bf_code_postal', '21000'),
+(8, 'bf_ville', 'Dijon'),
+(8, 'bf_ce_pays', 'fr'),
+(8, 'bf_site_internet', 'http://www.u-bourgogne.fr'),
+(8, 'bf_specialite_pedagogique', 'moutarde'),
+(8, 'bf_effectif_etudiant', '12'),
+(8, 'bf_effectif_personnel', '1434'),
+(8, 'bf_effectif_enseignant', '1223'),
+(8, 'bf_site_internet_structure', 'http://'),
+(8, 'bf_site_internet_structure_cst', 'http://'),
+(8, 'bf_site_internet_structure_patrimoine', 'http://'),
+(9, 'bf_titre', 'ddd'),
+(9, 'bf_specialite_pedagogique', 'd'),
+(10, 'bf_titre', 'youpi dansons'),
+(11, 'bf_titre', 'test2'),
+(12, 'bf_titre', 'Flos'),
+(3, 'bf_titre', 'Quoi???'),
+(3, 'bf_date_debut_validite_fiche', '2009-11-23'),
+(3, 'bf_date_fin_validite_fiche', '2009-12-5'),
+(13, 'bf_titre', 'Sebastien Chevalier'),
+(13, 'bf_fonctions', 'Directeur artistique'),
+(13, 'bf_entite_rattachement_directe', 'dd'),
+(13, 'bf_entite_rattachement_globale', 'ee'),
+(13, 'bf_telephone', 'ff'),
+(13, 'bf_adresse1', 'hh'),
+(13, 'bf_adresse2', 'ii'),
+(13, 'bf_code_postal', 'jj'),
+(13, 'bf_ville', 'kk'),
+(13, 'bf_ce_pays', 'fr'),
+(13, 'carte_google', '|'),
+(20, 'bf_titre', 'Yes we can'),
+(20, 'bf_type_action_autre', 'test'),
+(20, 'bf_participation_evenement', 'test2'),
+(20, 'bf_nom', 'Schmitt'),
+(20, 'bf_prenom', 'Florian'),
+(20, 'bf_fonctions', 'rien'),
+(15, 'bf_titre', 'test flo'),
+(15, 'bf_ce_pays', 'fr'),
+(15, 'bf_site_internet', 'http://'),
+(15, 'bf_site_internet_structure', 'http://'),
+(15, 'bf_site_internet_structure_cst', 'http://'),
+(15, 'bf_site_internet_structure_patrimoine', 'http://'),
+(16, 'bf_titre', 'Université Montpellier 2'),
+(16, 'bf_adresse1', 'Place Eugène '),
+(16, 'bf_code_postal', '34095'),
+(16, 'bf_ville', 'Montpellier'),
+(16, 'bf_ce_pays', 'fr'),
+(16, 'bf_site_internet', 'http://'),
+(16, 'bf_effectif_etudiant', '12'),
+(16, 'bf_effectif_personnel', '234'),
+(16, 'bf_effectif_enseignant', '342432'),
+(16, 'bf_nom_structure', 'dsds'),
+(16, 'bf_entite_rattachement', 'fdfd'),
+(16, 'bf_entite_rattachement_directe', 'ferfd'),
+(16, 'bf_entite_rattachement_globale', 'fdfd'),
+(16, 'bf_domaine_rattachement', 'fdfd'),
+(16, 'bf_adresse1_structure', 'dfd'),
+(16, 'bf_adresse2_structure', 'efrefgt²'),
+(16, 'bf_code_postal_structure', 'frefe²'),
+(16, 'bf_ville_structure', 'rzedf'),
+(16, 'bf_site_internet_structure', 'http://'),
+(16, 'bf_structure_reseaux', 'fdf'),
+(16, 'bf_structure_partenariat', 'fdf'),
+(16, 'bf_entites_specifiques', 'fdfdf'),
+(16, 'bf_nom_structure_cst', 'df'),
+(16, 'bf_entite_rattachement_cst', 'lk'),
+(16, 'bf_entite_rattachement_cst_directe', 'lk'),
+(16, 'bf_entite_rattachement_cst_globale', 'lk'),
+(16, 'bf_domaine_rattachement_cst', 'lk'),
+(16, 'bf_adresse1_structure_cst', 'lk'),
+(16, 'bf_adresse2_structure_cst', 'lk'),
+(16, 'bf_code_postal_structure_cst', 'lk'),
+(16, 'bf_ville_structure_cst', 'lk'),
+(16, 'bf_site_internet_structure_cst', 'http://'),
+(16, 'bf_structure_reseaux_cst', 'lk'),
+(16, 'bf_structure_partenariat_cst', 'lk'),
+(16, 'bf_entites_specifiques_cst', 'mk'),
+(16, 'bf_nom_structure_patrimoine', 'a'),
+(16, 'bf_entite_rattachement_patrimoine', 'aa'),
+(16, 'bf_entite_rattachement_directe_patrimoine', 'a'),
+(16, 'bf_entite_rattachement_globale_patrimoine', 'a'),
+(16, 'bf_domaine_rattachement_patrimoine', 'a'),
+(16, 'bf_adresse1_structure_patrimoine', 'a'),
+(16, 'bf_adresse2_structure_patrimoine', 'a'),
+(16, 'bf_code_postal_structure_patrimoine', 'a'),
+(16, 'bf_ville_structure_patrimoine', 'a'),
+(16, 'bf_site_internet_structure_patrimoine', 'http://'),
+(16, 'bf_structure_publications_patrimoine', 'a'),
+(16, 'bf_structure_reseaux_patrimoine', 'a'),
+(16, 'bf_structure_partenariat_patrimoine', 'a'),
+(16, 'bf_entites_specifiques_patrimoine', 'a'),
+(16, 'bf_nb_obj_inventories_archeologie', '1'),
+(16, 'bf_nb_obj_non_inventories_archeologie', '1'),
+(16, 'bf_nb_doc_inventories_archeologie', '1'),
+(16, 'bf_nb_doc_non_inventories_archeologie', '1'),
+(16, 'bf_nb_obj_inventories_botanique', '1'),
+(16, 'bf_nb_obj_non_inventories_botanique', '1'),
+(16, 'bf_nb_doc_inventories_botanique', '1'),
+(19, 'bf_site_internet_structure_patrimoine', 'http://'),
+(16, 'bf_nb_obj_inventories_chimie', '1'),
+(16, 'bf_nb_obj_non_inventories_chimie', '2'),
+(16, 'bf_nb_doc_inventories_chimie', '2'),
+(19, 'carte_google', '43.862983|3.9059801'),
+(19, 'bf_site_internet', 'http://'),
+(19, 'bf_effectif_etudiant', '32'),
+(19, 'bf_effectif_personnel', '3234'),
+(19, 'bf_effectif_enseignant', '45346'),
+(19, 'bf_site_internet_structure', 'http://'),
+(19, 'bf_entites_specifiques', 'fdsfd'),
+(19, 'bf_site_internet_structure_cst', 'http://'),
+(16, 'bf_autres_collections_classiques', 'cdsds'),
+(19, 'bf_code_postal', '34270'),
+(19, 'bf_ville', 'Claret'),
+(19, 'bf_ce_pays', 'fr'),
+(16, 'bf_autres_collections_vivantes', 'dfs'),
+(19, 'bf_titre', 'tot claret'),
+(19, 'bf_adresse1', 'claret'),
+(16, 'carte_google', '43.6314038|3.8610052'),
+(15, 'imagelogo', '280px-Universite_Montpellier_2_(logo).svg.png'),
+(17, 'bf_adresse1', 'Place Eugène Bataillon'),
+(16, 'imagebf_image', '280px-Universite_Montpellier_2_(logo).svg.png'),
+(16, 'bf_structure_publications', 'toto,eteet,poili'),
+(16, 'bf_structure_publications_cst', 'lk'),
+(17, 'bf_code_postal', '34095'),
+(17, 'bf_ville', 'Montpellier'),
+(17, 'bf_ce_pays', 'fr'),
+(17, 'bf_site_internet', 'http://'),
+(17, 'bf_site_internet_structure', 'http://'),
+(17, 'bf_site_internet_structure_cst', 'http://'),
+(17, 'bf_site_internet_structure_patrimoine', 'http://'),
+(21, 'bf_site_internet_structure_patrimoine', 'http://'),
+(21, 'bf_site_internet_structure_cst', 'http://'),
+(17, 'bf_titre', 'test ballades'),
+(17, 'imagebf_image1', 'gandhi.jpg'),
+(17, 'imagebf_image2', 'pope.jpg'),
+(17, 'imagebf_image3', 'PersoBD.gif'),
+(17, 'imagebf_image4', 'PersoBD.gif'),
+(17, 'imagebf_image5', 'PersoBD.gif'),
+(17, 'bf_telephone', '1'),
+(21, 'bf_site_internet_structure', 'http://'),
+(17, 'imagebf_image', 'bf_imageles_pierres_de_st_martin.JPG'),
+(18, 'bf_titre', 'test ballades 2'),
+(18, 'imagebf_image', 'bf_imagePIC_0016.JPG'),
+(18, 'imagebf_image1', 'bf_image1PIC_0017.JPG'),
+(18, 'imagebf_image2', 'bf_image2PIC_0018.JPG'),
+(18, 'imagebf_image3', 'bf_image3PIC_0019.JPG'),
+(18, 'imagebf_image4', 'bf_image4PIC_0020.JPG'),
+(18, 'imagebf_image5', 'bf_image5PIC_0021.JPG'),
+(21, 'bf_site_internet', 'http://'),
+(21, 'carte_google', '|'),
+(21, 'bf_ce_pays', 'fr'),
+(18, 'bf_site_internet', 'http://'),
+(18, 'bf_ce_pays', 'fr'),
+(16, 'bf_adresse2', 'Bataillon'),
+(16, 'bf_autres_collections_autres', 'YOUPI'),
+(16, 'bf_latitude', '43.6314038'),
+(16, 'bf_longitude', '3.8610052');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `bazar_fiche_valeur_texte_long`
+--
+
+DROP TABLE IF EXISTS `bazar_fiche_valeur_texte_long`;
+CREATE TABLE IF NOT EXISTS `bazar_fiche_valeur_texte_long` (
+  `bfvtl_ce_fiche` int(11) NOT NULL,
+  `bfvtl_id_element_form` varchar(255) NOT NULL,
+  `bfvtl_texte_long` text NOT NULL,
+  PRIMARY KEY (`bfvtl_ce_fiche`,`bfvtl_id_element_form`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-INSERT INTO `bazar_licence` (`bl_id_licence`, `bl_nom`, `bl_contenu`) VALUES (1, 'CeCill', 'bla, bla, bla....'),
-(2, 'Creative Commons', 'bla, bla, bla....'),
-(3, 'GNU - GPL', 'bla, bla, bla....'),
-(4, 'Domaine Public', 'bla, bla, bla....');
+--
+-- Contenu de la table `bazar_fiche_valeur_texte_long`
+--
 
-CREATE TABLE `bazar_liste` (
-  `bl_id_liste` int(11) NOT NULL default '0',
-  `bl_label_liste` varchar(255) NOT NULL default '',
-  `bl_ce_i18n` varchar(5) NOT NULL default '',
-  PRIMARY KEY  (`bl_id_liste`,`bl_ce_i18n`)
+INSERT INTO `bazar_fiche_valeur_texte_long` (`bfvtl_ce_fiche`, `bfvtl_id_element_form`, `bfvtl_texte_long`) VALUES
+(7, 'bf_description', 'Quel bel homme!'),
+(6, 'bf_description', 'la carioca!!'),
+(5, 'bf_description', 'dfsdfsdfs'),
+(3, 'bf_description', 'dfdf'),
+(13, 'bf_informations_complementaires', 'yo yo'),
+(17, 'bf_descriptif', 'test 1'),
+(17, 'bf_horaires', 'test2'),
+(17, 'bf_tarifs', 'test3'),
+(17, 'bf_video', ''),
+(18, 'bf_descriptif', 'youpi'),
+(18, 'bf_video', ''),
+(18, 'bf_horaires', ''),
+(18, 'bf_tarifs', ''),
+(16, 'bf_nom_monument_historique', ''),
+(19, 'bf_structure_publications', ''),
+(19, 'bf_structure_publications_cst', ''),
+(19, 'bf_structure_publications_patrimoine', ''),
+(19, 'bf_nom_monument_historique', ''),
+(19, 'nb_infos_complementaires_archeologie', ''),
+(19, 'nb_infos_complementaires_astronomie', ''),
+(19, 'nb_infos_complementaires_biologie', ''),
+(19, 'nb_infos_complementaires_bota', ''),
+(19, 'nb_infos_complementaires_chimie', ''),
+(19, 'nb_infos_complementaires_geologie', ''),
+(19, 'nb_infos_complementaires_medecine', ''),
+(19, 'nb_infos_complementaires_mineralogie', ''),
+(19, 'nb_infos_complementaires_odontologie', ''),
+(19, 'nb_infos_complementaires_paleontologie', ''),
+(19, 'nb_infos_complementaires_pharmacie', ''),
+(19, 'nb_infos_complementaires_physique', ''),
+(19, 'nb_infos_complementaires_zoologie', ''),
+(19, 'nb_infos_complementaires_arts', ''),
+(19, 'nb_infos_complementaires_geographie', ''),
+(16, 'nb_infos_complementaires_paleontologie', ''),
+(16, 'nb_infos_complementaires_odontologie', ''),
+(16, 'nb_infos_complementaires_mineralogie', ''),
+(16, 'nb_infos_complementaires_medecine', ''),
+(16, 'nb_infos_complementaires_geologie', ''),
+(16, 'nb_infos_complementaires_chimie', ''),
+(16, 'nb_infos_complementaires_bota', ''),
+(16, 'nb_infos_complementaires_biologie', ''),
+(16, 'nb_infos_complementaires_astronomie', ''),
+(16, 'nb_infos_complementaires_archeologie', ''),
+(20, 'bf_informations_complementaires', 'toujours rien'),
+(16, 'bf_structure_publications', ''),
+(16, 'bf_structure_publications_cst', ''),
+(16, 'bf_structure_publications_patrimoine', ''),
+(21, 'bf_structure_publications', ''),
+(21, 'bf_structure_publications_cst', ''),
+(21, 'bf_structure_publications_patrimoine', ''),
+(21, 'bf_nom_monument_historique', ''),
+(21, 'nb_infos_complementaires_archeologie', ''),
+(21, 'nb_infos_complementaires_astronomie', ''),
+(21, 'nb_infos_complementaires_biologie', ''),
+(21, 'nb_infos_complementaires_bota', ''),
+(21, 'nb_infos_complementaires_chimie', ''),
+(21, 'nb_infos_complementaires_geologie', ''),
+(21, 'nb_infos_complementaires_medecine', ''),
+(21, 'nb_infos_complementaires_mineralogie', ''),
+(21, 'nb_infos_complementaires_odontologie', ''),
+(21, 'nb_infos_complementaires_paleontologie', ''),
+(21, 'nb_infos_complementaires_pharmacie', ''),
+(21, 'nb_infos_complementaires_physique', ''),
+(21, 'nb_infos_complementaires_zoologie', ''),
+(21, 'nb_infos_complementaires_arts', ''),
+(21, 'nb_infos_complementaires_geographie', ''),
+(16, 'nb_infos_complementaires_pharmacie', ''),
+(16, 'nb_infos_complementaires_physique', ''),
+(16, 'nb_infos_complementaires_zoologie', ''),
+(16, 'nb_infos_complementaires_arts', ''),
+(16, 'nb_infos_complementaires_geographie', '');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `bazar_liste`
+--
+
+DROP TABLE IF EXISTS `bazar_liste`;
+CREATE TABLE IF NOT EXISTS `bazar_liste` (
+  `bl_id_liste` int(11) NOT NULL DEFAULT '0',
+  `bl_label_liste` varchar(255) NOT NULL DEFAULT '',
+  `bl_ce_i18n` varchar(5) NOT NULL DEFAULT '',
+  PRIMARY KEY (`bl_id_liste`,`bl_ce_i18n`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-INSERT INTO `bazar_liste` (`bl_id_liste`, `bl_label_liste`, `bl_ce_i18n`) VALUES (1, 'Type de formation', 'fr-FR'),
-(2, 'Tranches d\'&acirc;ges', 'fr-FR'),
+--
+-- Contenu de la table `bazar_liste`
+--
+
+INSERT INTO `bazar_liste` (`bl_id_liste`, `bl_label_liste`, `bl_ce_i18n`) VALUES
+(1, 'Type de formation', 'fr-FR'),
+(2, 'Tranches d''&acirc;ges', 'fr-FR'),
 (3, 'Dipl&ocirc;mes', 'fr-FR'),
 (4, 'Niveau formation', 'fr-FR'),
 (5, 'Agr&eacute;ments', 'fr-FR'),
@@ -156,17 +536,29 @@ INSERT INTO `bazar_liste` (`bl_id_liste`, `bl_label_liste`, `bl_ce_i18n`) VALUES
 (29, 'Langues', 'fr-FR'),
 (30, 'Type de ressources humaines', 'fr-FR');
 
-CREATE TABLE `bazar_liste_valeurs` (
-  `blv_ce_liste` int(11) unsigned NOT NULL default '0',
-  `blv_valeur` int(11) unsigned NOT NULL default '0',
-  `blv_label` varchar(255) NOT NULL default '',
-  `blv_ce_i18n` varchar(5) NOT NULL default '',
-  PRIMARY KEY  (`blv_ce_liste`,`blv_valeur`,`blv_ce_i18n`)
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `bazar_liste_valeurs`
+--
+
+DROP TABLE IF EXISTS `bazar_liste_valeurs`;
+CREATE TABLE IF NOT EXISTS `bazar_liste_valeurs` (
+  `blv_ce_liste` int(11) unsigned NOT NULL DEFAULT '0',
+  `blv_valeur` int(11) unsigned NOT NULL DEFAULT '0',
+  `blv_label` varchar(255) NOT NULL DEFAULT '',
+  `blv_ce_i18n` varchar(5) NOT NULL DEFAULT '',
+  PRIMARY KEY (`blv_ce_liste`,`blv_valeur`,`blv_ce_i18n`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-INSERT INTO `bazar_liste_valeurs` (`blv_ce_liste`, `blv_valeur`, `blv_label`, `blv_ce_i18n`) VALUES (1, 1, 'Continue', 'fr-FR'),
-(1, 2, 'Dipl&ocirc;mante', 'fr-FR'),
-(1, 3, 'Qualifiante', 'fr-FR'),
+--
+-- Contenu de la table `bazar_liste_valeurs`
+--
+
+INSERT INTO `bazar_liste_valeurs` (`blv_ce_liste`, `blv_valeur`, `blv_label`, `blv_ce_i18n`) VALUES
+(1, 1, 'Oui', 'fr-FR'),
+(1, 2, 'Non', 'fr-FR'),
+(1, 3, 'ne sait pas', 'fr-FR'),
 (2, 1, '4 &agrave; 7 ans', 'fr-FR'),
 (2, 2, '8 &agrave; 12 ans', 'fr-FR'),
 (2, 3, '12 &agrave; 15 ans', 'fr-FR'),
@@ -267,27 +659,27 @@ INSERT INTO `bazar_liste_valeurs` (`blv_ce_liste`, `blv_valeur`, `blv_label`, `b
 (16, 2, 'Priv', 'fr-FR'),
 (17, 13, '&nbsp;13 flore', 'fr-FR'),
 (17, 14, '&nbsp;14 eau / milieux humides', 'fr-FR'),
-(17, 15, '&nbsp;15 for�t', 'fr-FR'),
-(17, 16, '&nbsp;16 espaces prot�g�s', 'fr-FR'),
+(17, 15, '&nbsp;15 forêt', 'fr-FR'),
+(17, 16, '&nbsp;16 espaces protégés', 'fr-FR'),
 (17, 17, '&nbsp;17 milieu hivernal', 'fr-FR'),
 (17, 18, '&nbsp;18 autres', 'fr-FR'),
 (17, 20, '20 Paysages', 'fr-FR'),
-(17, 21, '&nbsp;21 vall�es / moyenne montagne', 'fr-FR'),
+(17, 21, '&nbsp;21 vallées / moyenne montagne', 'fr-FR'),
 (17, 22, '&nbsp;22 haute montagne', 'fr-FR'),
 (17, 23, '&nbsp;23 glaciers', 'fr-FR'),
-(17, 24, '&nbsp;24 g�ologie', 'fr-FR'),
-(17, 25, '&nbsp;25 pal�ontologie', 'fr-FR'),
-(17, 26, '&nbsp;26 am�nagement', 'fr-FR'),
+(17, 24, '&nbsp;24 géologie', 'fr-FR'),
+(17, 25, '&nbsp;25 paléontologie', 'fr-FR'),
+(17, 26, '&nbsp;26 aménagement', 'fr-FR'),
 (17, 27, '&nbsp;27 Autres', 'fr-FR'),
-(17, 30, '30 Activit�s humaines', 'fr-FR'),
+(17, 30, '30 Activités humaines', 'fr-FR'),
 (17, 31, '&nbsp;31 agriculture / pastoralisme', 'fr-FR'),
-(17, 32, '&nbsp;32 p�che', 'fr-FR'),
+(17, 32, '&nbsp;32 pêche', 'fr-FR'),
 (17, 33, '&nbsp;33 jardins alpins', 'fr-FR'),
 (17, 34, '&nbsp;34 artisanat', 'fr-FR'),
 (17, 35, '&nbsp;35 Autres', 'fr-FR'),
-(17, 40, '40 Activit�s physiques de pleine nature', 'fr-FR'),
-(17, 41, '&nbsp;41 randonn�e moyenne montagne', 'fr-FR'),
-(17, 42, '&nbsp;42 randonn�e haute montagne', 'fr-FR'),
+(17, 40, '40 Activités physiques de pleine nature', 'fr-FR'),
+(17, 41, '&nbsp;41 randonnée moyenne montagne', 'fr-FR'),
+(17, 42, '&nbsp;42 randonnée haute montagne', 'fr-FR'),
 (18, 1, 'S&eacute;jours', 'fr-FR'),
 (18, 2, 'Chantiers', 'fr-FR'),
 (18, 3, 'Classes environnement', 'fr-FR'),
@@ -312,8 +704,8 @@ INSERT INTO `bazar_liste_valeurs` (`blv_ce_liste`, `blv_valeur`, `blv_label`, `b
 (19, 18, 'Cher', 'fr-FR'),
 (19, 19, 'Corr&egrave;ze', 'fr-FR'),
 (19, 20, 'Corse', 'fr-FR'),
-(19, 21, 'C&ocirc;te-d\'Or', 'fr-FR'),
-(19, 22, 'C&ocirc;tes-d\'Armor', 'fr-FR'),
+(19, 21, 'C&ocirc;te-d''Or', 'fr-FR'),
+(19, 22, 'C&ocirc;tes-d''Armor', 'fr-FR'),
 (19, 23, 'Creuse', 'fr-FR'),
 (19, 24, 'Dordogne', 'fr-FR'),
 (19, 25, 'Doubs', 'fr-FR'),
@@ -386,7 +778,7 @@ INSERT INTO `bazar_liste_valeurs` (`blv_ce_liste`, `blv_valeur`, `blv_label`, `b
 (19, 92, 'Hauts-de-Seine', 'fr-FR'),
 (19, 93, 'Seine-Saint-Denis', 'fr-FR'),
 (19, 94, 'Val-de-Marne', 'fr-FR'),
-(19, 95, 'Val-d\'Oise', 'fr-FR'),
+(19, 95, 'Val-d''Oise', 'fr-FR'),
 (19, 99, 'Etranger', 'fr-FR'),
 (19, 971, 'Guadeloupe', 'fr-FR'),
 (19, 972, 'Martinique', 'fr-FR'),
@@ -399,7 +791,7 @@ INSERT INTO `bazar_liste_valeurs` (`blv_ce_liste`, `blv_valeur`, `blv_label`, `b
 (19, 987, 'Polyn&eacute;sie-Francaise', 'fr-FR'),
 (19, 988, 'Nouvelle-Cal&eacute;donie', 'fr-FR'),
 (20, 3, 'Carnet', 'fr-FR'),
-(20, 2, 'P�riodique', 'fr-FR'),
+(20, 2, 'Périodique', 'fr-FR'),
 (20, 1, 'Livre', 'fr-FR'),
 (22, 1, 'tous publics', 'fr-FR'),
 (22, 2, 'enfants', 'fr-FR'),
@@ -548,17 +940,17 @@ INSERT INTO `bazar_liste_valeurs` (`blv_ce_liste`, `blv_valeur`, `blv_label`, `b
 (27, 2, 'dehors', 'fr-FR'),
 (27, 3, 'sur un site particulier', 'fr-FR'),
 (27, 4, 'autres', 'fr-FR'),
-(28, 1, 'Les services de l\'Etat', 'fr-FR'),
-(28, 2, 'Les &eacute;tablissements publics de l\'Etat', 'fr-FR'),
+(28, 1, 'Les services de l''Etat', 'fr-FR'),
+(28, 2, 'Les &eacute;tablissements publics de l''Etat', 'fr-FR'),
 (28, 3, 'Les collectivit&eacute;s territoriales et locales', 'fr-FR'),
 (28, 4, 'Les chambres consulaires', 'fr-FR'),
 (28, 5, 'Les associations', 'fr-FR'),
 (28, 6, 'Les entreprises priv&eacute;es', 'fr-FR'),
 (28, 7, 'Autre', 'fr-FR'),
 (17, 12, '&nbsp;12 faune', 'fr-FR'),
-(17, 11, '&nbsp;11 �cosyst�mes montagnards', 'fr-FR'),
+(17, 11, '&nbsp;11 écosystèmes montagnards', 'fr-FR'),
 (17, 10, '10 Milieux naturels', 'fr-FR'),
-(29, 1, 'Fran�ais', 'fr-FR'),
+(29, 1, 'Français', 'fr-FR'),
 (29, 2, 'Italien', 'fr-FR'),
 (29, 3, 'Allemand', 'fr-FR'),
 (29, 4, 'Anglais', 'fr-FR'),
@@ -566,42 +958,42 @@ INSERT INTO `bazar_liste_valeurs` (`blv_ce_liste`, `blv_valeur`, `blv_label`, `b
 (30, 3, 'Art', 'fr-FR'),
 (30, 2, 'Alimentation', 'fr-FR'),
 (30, 1, 'Air', 'fr-FR'),
-(17, 43, '&nbsp;43 randonn�e avec �nes', 'fr-FR'),
-(17, 44, '&nbsp;44 sp�l�ologie', 'fr-FR'),
-(17, 45, '&nbsp;45 sports d\'eau vive', 'fr-FR'),
+(17, 43, '&nbsp;43 randonnée avec ânes', 'fr-FR'),
+(17, 44, '&nbsp;44 spéléologie', 'fr-FR'),
+(17, 45, '&nbsp;45 sports d''eau vive', 'fr-FR'),
 (17, 46, '&nbsp;46 escalade', 'fr-FR'),
 (17, 47, '&nbsp;47 ski alpin / nordique', 'fr-FR'),
-(17, 48, '&nbsp;48 tra�neaux � chiens', 'fr-FR'),
+(17, 48, '&nbsp;48 traîneaux à chiens', 'fr-FR'),
 (17, 49, '&nbsp;49 Autres', 'fr-FR'),
-(17, 50, '50 Probl�matiques environnementales', 'fr-FR'),
+(17, 50, '50 Problématiques environnementales', 'fr-FR'),
 (17, 51, '&nbsp;51 risques naturels', 'fr-FR'),
-(17, 52, '&nbsp;52 d�chets', 'fr-FR'),
-(17, 53, '&nbsp;53 �nergies', 'fr-FR'),
+(17, 52, '&nbsp;52 déchets', 'fr-FR'),
+(17, 53, '&nbsp;53 énergies', 'fr-FR'),
 (17, 54, '&nbsp;54 air', 'fr-FR'),
 (17, 55, '&nbsp;55 transports', 'fr-FR'),
 (17, 56, '&nbsp;56 ville / montagne', 'fr-FR'),
 (17, 57, '&nbsp;57 Autres', 'fr-FR'),
 (17, 60, '60 Cultures', 'fr-FR'),
 (17, 61, '&nbsp;61 histoire', 'fr-FR'),
-(17, 62, '&nbsp;62 arch�ologie', 'fr-FR'),
-(17, 63, '&nbsp;63 patrimoine b�ti', 'fr-FR'),
+(17, 62, '&nbsp;62 archéologie', 'fr-FR'),
+(17, 63, '&nbsp;63 patrimoine bâti', 'fr-FR'),
 (17, 64, '&nbsp;64 imaginaire', 'fr-FR'),
 (17, 65, '&nbsp;65 arts et montagne', 'fr-FR'),
 (17, 66, '&nbsp;66 Autres', 'fr-FR'),
 (17, 70, '70 AUTRES', 'fr-FR'),
-(1, 4, 'Initiale', 'fr-FR'),
-(1, 5, 'Professionnelle', 'fr-FR'),
+(36, 2, 'Culture scientifique et technique', 'fr-FR'),
+(36, 1, 'Culture', 'fr-FR'),
 (20, 4, 'CDROM', 'fr-FR'),
-(20, 5, 'Vid�o VHS', 'fr-FR'),
-(20, 6, 'Vid�o DVD', 'fr-FR'),
+(20, 5, 'Vidéo VHS', 'fr-FR'),
+(20, 6, 'Vidéo DVD', 'fr-FR'),
 (20, 7, 'Mallette', 'fr-FR'),
 (20, 8, 'Jeu', 'fr-FR'),
-(20, 9, 'Dossier p�dagogique', 'fr-FR'),
+(20, 9, 'Dossier pédagogique', 'fr-FR'),
 (20, 10, 'livret', 'fr-FR'),
-(20, 11, 'D�pliant', 'fr-FR'),
+(20, 11, 'Dépliant', 'fr-FR'),
 (20, 12, 'exposition', 'fr-FR'),
-(7, 5, '5  	Alpes fran�aise\r\nAlpes fran�aise', 'fr-FR'),
-(7, 6, 'Arc alpin europ�en', 'fr-FR'),
+(7, 5, '5  	Alpes française\r\nAlpes française', 'fr-FR'),
+(7, 6, 'Arc alpin européen', 'fr-FR'),
 (20, 13, 'Site internet', 'fr-FR'),
 (30, 5, 'D&eacute;chets', 'fr-FR'),
 (30, 6, 'Eau', 'fr-FR'),
@@ -615,50 +1007,71 @@ INSERT INTO `bazar_liste_valeurs` (`blv_ce_liste`, `blv_valeur`, `blv_label`, `b
 (30, 14, 'Jeunesse', 'fr-Fr'),
 (30, 15, 'Sports', 'fr-FR'),
 (30, 16, 'Nuit', 'fr-Fr'),
-(30, 17, 'D�veloppement durable', 'fr-Fr'),
+(30, 17, 'Développement durable', 'fr-Fr'),
 (30, 18, 'Environnement', 'fr-Fr'),
 (30, 19, 'Transports', 'fr-Fr'),
 (30, 20, 'AUTRES', 'fr-Fr'),
-(30, 21, 'Risques naturels', 'fr-Fr');
+(30, 21, 'Risques naturels', 'fr-Fr'),
+(31, 1, 'pluridisciplinaire', 'fr-FR'),
+(31, 2, 'spécialisée', 'fr-FR'),
+(34, 1, 'Titulaire', 'fr-FR'),
+(34, 2, 'Contractuel(le) CDI', 'fr-FR'),
+(34, 3, 'Contractue(le) CDD', 'fr-FR'),
+(34, 4, 'Stagiaire', 'fr-FR'),
+(34, 5, 'Bénévole', 'fr-FR'),
+(34, 6, 'Emploi aidé', 'fr-FR'),
+(35, 1, 'plein temps', 'fr-FR'),
+(35, 2, 'temps partiel', 'fr-FR'),
+(36, 3, 'Patrimoine', 'fr-FR');
 
-CREATE TABLE `bazar_nature` (
-  `bn_id_nature` int(10) unsigned NOT NULL default '0',
-  `bn_label_nature` varchar(255) default NULL,
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `bazar_nature`
+--
+
+DROP TABLE IF EXISTS `bazar_nature`;
+CREATE TABLE IF NOT EXISTS `bazar_nature` (
+  `bn_id_nature` int(10) unsigned NOT NULL DEFAULT '0',
+  `bn_label_nature` varchar(255) DEFAULT NULL,
   `bn_description` text,
   `bn_condition` text,
-  `bn_ce_id_menu` int(3) unsigned NOT NULL default '0',
-  `bn_commentaire` tinyint(3) unsigned NOT NULL default '0',
-  `bn_appropriation` tinyint(3) unsigned NOT NULL default '0',
-  `bn_image_titre` varchar(255) NOT NULL default '',
-  `bn_image_logo` varchar(255) NOT NULL default '',
-  `bn_couleur_calendrier` varchar(255) NOT NULL default '',
-  `bn_picto_calendrier` varchar(255) NOT NULL default '',
+  `bn_ce_id_menu` int(3) unsigned NOT NULL DEFAULT '0',
+  `bn_commentaire` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `bn_appropriation` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `bn_image_titre` varchar(255) NOT NULL DEFAULT '',
+  `bn_image_logo` varchar(255) NOT NULL DEFAULT '',
+  `bn_couleur_calendrier` varchar(255) NOT NULL DEFAULT '',
+  `bn_picto_calendrier` varchar(255) NOT NULL DEFAULT '',
   `bn_template` text NOT NULL,
-  `bn_ce_i18n` varchar(5) NOT NULL default '',
+  `bn_ce_i18n` varchar(5) NOT NULL DEFAULT '',
   `bn_type_fiche` varchar(255) NOT NULL,
   `bn_label_class` varchar(255) NOT NULL,
-  PRIMARY KEY  (`bn_id_nature`)
+  PRIMARY KEY (`bn_id_nature`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-INSERT INTO `bazar_nature` (`bn_id_nature`, `bn_label_nature`, `bn_description`, `bn_condition`, `bn_ce_id_menu`, `bn_commentaire`, `bn_appropriation`, `bn_image_titre`, `bn_image_logo`, `bn_couleur_calendrier`, `bn_picto_calendrier`, `bn_template`, `bn_ce_i18n`, `bn_type_fiche`, `bn_label_class`) VALUES (1, 'Ressources documentaires', 'toutes les sources de connaissances formalis�es : ouvrages, publications, c�d�roms, sites internet, outils p�dagogiques (malles, expositions, livret,...), etc.', '', 69, 0, 0, '', '', '', '', 'texte***bf_titre***Titre***45***200*** *** *** ***1\r\nliste***17***Th�me***160***1***1***17***bt_id_theme***1***1\r\ntexte***bf_public***Public***45***200*** *** ***1\r\nliste***20***Type de parution***160***1***1***bazar_type_parution***btp_id***1\r\ntextelong***bf_description***Description***40***20*** *** *** ***\r\ntexte***bf_auteur***Auteur\r\ntextelong***bf_auteur_coordonnee***Coordonn�es***40***3\r\ntexte***bf_editeur***Editeur***40***255***Saisissez l\'�diteur*** *** ***1\r\ntextelong***bf_editeur_coordonnee***Coordonn�es de l\'�diteur***40***3\r\ntexte***bf_annee_parution***Ann�e de parution***5***4*** *** *** ***1\r\nliste***29***Langue***160***1***1***gen_i18n_langue***gil_id_langue***1 \r\ntextelong***bf_commentaire***Commentaires***40***20*** *** *** *** \r\n', 'fr-FR', 'ressources', 'ressources'),
-(2, 'Ressources physiques', 'ce sont des r�alisations impliqu�es ou cr�es dans le cadre des projets : sentiers, mus�es, espaces d\'accueil, de d�couverte ou d\'h�bergement...).', '', 69, 0, 0, '', '', '', '', 'texte***bf_titre***Titre***45***200*** *** *** ***1\r\ntexte***bf_qualite***Qualit�*** *** *** *** *** ***\r\ntexte***bf_gestionnaire***Gestionnaire*** *** *** *** *** ***\r\ntextelong***bf_adresse_contact***Adresse contact***40***5*** *** *** ***\r\ntexte***bf_telephone***T�l�phone*** *** *** *** *** ***\r\ntexte***bf_mail***Courriel*** *** *** *** *** *** ***\r\ntexte***bf_fax***Fax***30***30*** *** *** ***\r\ntexte***bf_site_internet***Site internet***40*** *** *** *** *** ***\r\ntexte***bf_contenu_formation***Nature du service***45*** *** *** *** ***\r\ntextelong***bf_condition_aide***P�riode heure***40***3*** *** *** ***\r\nliste***17***Th�mes abord�s***160***1***1***bazar_theme***bt_id_theme***\r\ntexte***bf_public***Public***45***200*** *** ***1\r\ntextelong***bf_description***Description***40***20*** *** *** ***\r\ntextelong***bf_commentaire***Commentaires***40***20*** *** *** *** \r\n', 'fr-FR', 'ressources', 'ressources'),
-(3, 'Ressources financi�res', 'toutes les aides techniques et financi�res permettant de monter ou de contribuer � la r�alisation d\'un projet ;', '', 69, 1, 0, '', '', '', '', 'texte***bf_titre***Intitul�***45***200*** *** *** ***1\r\ntextelong***bf_description***Description***40***20*** *** *** ***\r\nliste***7***Echelle g�ographique***160***1***1***bazar_liste_echelle_geo***bleg_id_echelle***\r\nliste***16***Secteur***160***1***1***bazar_liste_secteur***bls_id_secteur***\r\nliste***10***Nature de l\'aide***160***1***1***bazar_liste_nature_aide***blna_id_nature_aide***\r\ntextelong***bf_forme_aide***Forme de l\'aide***40***3*** *** *** ***\r\ntextelong***bf_source_aide***Source***40***3*** *** *** ***\r\ntextelong***bf_condition_aide***Conditions***40***5*** *** *** ***\r\ntexte***bf_nom_contact***Nom contact*** *** *** *** *** ***\r\ntextelong***bf_adresse_contact***Adresse contact***40***5*** *** *** ***\r\ntexte***bf_telephone***T�l�phone*** *** *** *** *** ***\r\ntexte***bf_mail***Courriel***40***100*** *** *** ***0\r\ntexte***bf_site_internet***Lien internet***40***50*** **** *** ***\r\ntextelong***bf_commentaire***Commentaires***40***20*** *** *** *** \r\n', 'fr-FR', 'ressources', ''),
-(4, 'Ressources humaines', 'tous les acteurs apportant une comp�tence, un savoir-faire, une activit� au sein d\'un projet.', '', 69, 1, 0, '', '', '', '', 'texte***bf_titre***Titre***45***200*** *** *** ***1\r\nliste***30***Type***160***1***1***bazar_type_ressource_humaine***btrh_id_type\r\ntexte***bf_qualite***Qualit�*** *** *** *** *** ***\r\ntexte***bf_nom_contact***Nom du contact*** *** *** *** *** ***\r\ntextelong***bf_adresse_contact***Adresse du contact***40***5*** *** *** ***\r\ntexte***bf_telephone***T�l�phone*** *** *** *** *** ***\r\ntexte***bf_fax***Fax***20***20*** *** *** ***\r\ntexte***bf_mail***Courriel*** *** *** *** *** *** ***\r\ntexte***bf_site_internet***Site internet***40*** *** *** *** *** ***\r\nliste***17***Th�mes abord�s***160***1***1***bazar_theme***bt_id_theme***\r\ntexte***bf_public***Public***45***200*** *** ***1\r\ntextelong***bf_description***Nature du service***40***20*** *** *** ***\r\ntextelong***bf_commentaire***Description***40***20*** *** *** *** \r\n', 'fr-FR', 'ressources', ''),
-(5, 'Ressources formation', 'toute contribution structur�e destin�e � transmettre ou �changer des savoirs ou des comp�tences pendant une p�riode limit�e. ', '', 69, 1, 0, '', '', '', '', 'texte***bf_titre***Titre***45***200*** *** *** ***1\r\ntexte***bf_qualite***Organisme*** *** *** *** *** ***\r\ntexte***bf_nom_contact***Nom contact*** *** *** *** *** ***\r\ntextelong***bf_adresse_contact***Adresse contact***40***5*** *** *** ***\r\ntexte***bf_telephone***T�l�phone*** *** *** *** *** ***\r\ntexte***bf_fax***Fax***20***20*** *** *** ***\r\ntexte***bf_mail***Courriel*** *** *** *** *** *** ***\r\ntexte***bf_site_internet***Site internet***40*** *** *** *** *** ***\r\nliste***1***Type de formation***160*** *** *** bazar_liste_type_formation*** bltf_id_type_formation***\r\nliste***17***Th�me abord�***160***1***1***bazar_theme***bt_id_theme***\r\ntexte***bf_public***Public***45***200*** *** ***1\r\ntextelong***bf_description***Description***40***20*** *** *** ***\r\ntextelong***bf_commentaire***Commentaires***40***20*** *** *** *** \r\n', 'fr-FR', 'ressources', ''),
-(6, 'Annonces (sans date)', 'saisir une communication br&egrave;ve pour mettre en avant une actualit&eacute; touchant &agrave; l\'EE : appels d\'offres, appels � projets, nouvelles d\'une structure, petites annonces, dispositifs, programme ...', '', 77, 0, 0, '', '', '', '', 'texte***bf_titre***Titre***45***200*** *** *** ***1***0\r\ncheckbox***30***Th&eacute;matiques***160***1*** *** *** ***1***1\r\ntextelong***bf_description***Annonce***40***20*** *** *** ***1***0\r\nlabelhtml*** ***<br />*** *** *** *** *** ***0***0\r\nlabelhtml*** ***<h4>Dur&eacute;e de parution de la fiche :</h4> la date de d&eacute;but de parution indique le moment ou la fiche devient visible sur le site, et la date de fin de parution, le moment o&ugrave; elle dispara�t.<br /><br />*** *** *** *** *** ***0***0\r\nlistedatedeb***bf_date_debut_validite_fiche***Date de d&eacute;but de parution***10***20*** *** *** ***1***0\r\nlistedatefin***bf_date_fin_validite_fiche***Date de fin de parution***10***20*** *** ***  ***1***0\r\nfichier***1***Joindre un fichier***4000000***2000000*** *** *** ***0***0\r\nimage***2***Joindre une image***4000000***2000000*** *** *** ***0***0\r\nurl***1***Associer un lien (nom et adresse URL)***45***200*** *** *** ***0***0\r\n', 'fr-FR', 'actualites', 'actu'),
-(7, 'Co-voiturage', 'Rubrique pour g�rer des co-voiturage entre personnes habitants dans l\'arc alpin.', '', 75, 0, 0, '', '', '', '', 'texte***bf_titre***Lieu de d�part***45***200*** *** *** ***1\r\ntexte***bf_description***Lieu d\'ariv�e***45***200*** *** *** ***1\r\nlistedatedeb***bf_date_debut_validite_fiche***Date de d�but de validit�***10***20*** *** *** ***1\r\nlistedatefin***bf_date_fin_validite_fiche***Date de fin de validit�***10***20*** *** ***  ***1\r\ntextelong***bf_condition_aide***Itin�raire***40***5*** *** *** ***\r\ntextelong***bf_commentaires***D�tails (heures ...) ***40***5*** *** *** ***\r\n', 'fr-FR', 'actualites', 'actu'),
-(8, 'Formation', 'saisir toute formation, quelle que soit sa dur&eacute;e, en lien avec l\'Education &agrave; l\'Environnement ou abordant des contenus p&eacute;riph&eacute;riques (communication, gestion, partenariat, animation de r&eacute;seaux ...) et mettant en oeuvre des pratiques p&eacute;dagogiques sp&eacute;cifiques (inter-disciplinarit&eacute; - co-&eacute;ducation - pratique de terrain - p&eacute;dagogie de projet ...).', '', 79, 0, 0, '', '', '', '', 'texte***bf_titre***Intitul&eacute; de la formation***45***200*** *** *** ***1***0\r\ncheckbox***30***Th&eacute;matiques***160***1*** *** *** ***1***1\r\ncheckbox***1***Type de formation***160***1*** ***bazar_liste_type_formation***bltf_id_type_formation***1***1\r\ntextelong***bf_description***Objectifs***40***15*** *** *** ***1***0\r\ntextelong***bf_contenu_formation***Contenu***40***10*** *** *** ***0***0\r\ntexte***bf_public***Public***45***200*** *** *** ***1***0\r\ntexte***bf_conditions_acces***Conditions d\'acc&egrave;s***45***200*** *** *** *** ***0\r\nlistedatedeb***bf_date_debut_evenement***Date de d&eacute;but de formation***10***20*** *** *** ***0***0\r\nlistedatefin***bf_date_fin_evenement***Date de fin de formation***10***20***  *** ***  ***0***0\r\nlistedatefin***bf_date_fin_inscription***Date limite des inscriptions***10***20***  *** ***  ***0***0\r\ntexte***bf_cp_lieu_evenement***Code postal du lieu de l\'&eacute;v&egrave;nement***7***7***  *** *** ***0***0\r\ntexte***bf_lieu_evenement***Lieu de l\'&eacute;v&egrave;nement***40***60***  *** *** ***0***0\r\ntexte***bf_tarif_individuel***Tarif individuel***5***5*** *** *** ***0***0\r\ntexte***bf_tarif_entreprise***Tarif entreprise***5***5*** *** *** ***0***0\r\ntexte***bf_tarif_opca***Tarif OPCA***5***5*** *** *** ***0***0\r\ntextelong***bf_intervenants***Intervenants***40***3*** *** *** ***0***0\r\ntextelong***bf_infos_complementaires***Informations compl&eacute;mentaires***40***3*** *** *** ***0***0\r\nlabelhtml*** ***<hr />*** *** *** *** *** ***0***0\r\nlabelhtml*** ***Si plusieurs modules de formation*** *** *** *** *** ***0***0\r\ntexte***bf_numero_module***Num&eacute;ro du module***4***4*** *** *** ***0***0\r\ntexte***bf_total_module***Nombre total de modules***4***4*** *** *** ***0***0\r\nlabelhtml*** ***<hr />*** *** *** *** *** ***0***0\r\nlabelhtml*** ***Si la formation est diplomante*** *** *** *** *** ***0***0\r\nliste***3***Diplome pr&eacute;par&eacute;***160***1***0***bazar_liste_diplome***bld_id_diplome***0***1\r\nliste***4***Niveau***160***1***0***bazar_liste_niveau***bln_id_niveau***0***1\r\nlabelhtml*** ***<hr />*** *** *** *** *** ***0***0\r\nlabelhtml*** ***Si la formation est qualifiante*** *** *** *** *** ***0***0\r\ntexte***bf_qualif_preparee***Qualification pr&eacute;par&eacute;e***45***60*** *** *** ***0***1\r\nlabelhtml*** ***<hr />*** *** *** *** *** ***0***0\r\nlabelhtml*** ***Coordonn&eacute;es du contact*** *** *** *** *** ***0***0\r\ntexte***bf_prenom_contact***Pr&eacute;nom***20***30*** *** *** ***1***0\r\ntexte***bf_nom_contact***Nom***20***30*** *** *** ***1***0\r\nchamps_mail***bf_mail***Courriel***50***80*** *** *** ***0***0\r\ntexte***bf_telephone***T&eacute;l&eacute;phone***10***10*** *** *** ***0***0\r\nlabelhtml*** ***<hr />*** *** *** *** *** ***0***0\r\nlabelhtml*** ***<h4>Dur&eacute;e de parution de la fiche :</h4> la date de d&eacute;but de parution indique le moment ou la fiche devient visible sur le site, et la date de fin de parution, le moment o&ugrave; elle dispara�t.<br />*** *** *** *** *** ***0***0\r\nlabelhtml*** ***<br />*** *** *** *** *** ***0***0\r\nlistedatedeb***bf_date_debut_validite_fiche***Date de d&eacute;but de parution***10***20*** *** *** ***1***0\r\nlistedatefin***bf_date_fin_validite_fiche***Date de fin de parution***10***20*** *** ***  ***1***0\r\nfichier***1***Joindre un fichier***4000000***2000000*** *** *** ***0***0\r\nimage***2***Joindre une image***4000000***2000000*** *** *** ***0***0\r\nurl***1***Associer un lien (nom et adresse URL)***45***200*** *** *** ***0***0\r\n', 'fr-FR', 'emploisstages', 'emploistages'),
-(9, 'Acteurs', 'les acteurs du r�seau alpins', '', 0, 0, 0, '', '', '', '', 'texte***bf_titre***Pr&eacute;nom et nom de famille***60***255*** *** *** ***1***0\r\ntexte***bf_profession***Profession***50***255*** *** *** ***0***0\r\ntexte***bf_structure***Structure***50***255*** *** *** ***0***0\r\ntexte***bf_adresse1***Adresse***30***50*** *** *** ***1***0\r\ntexte***bf_adresse2***Adresse (suite)***30***50*** *** *** ***0***0\r\ntexte***bf_code_postal***Code postal***8***8*** *** *** ***1***0\r\ntexte***bf_ville***Ville***30***50*** *** *** ***1***0\r\nliste***19***D�partement*** ***1*** *** *** ***1***1\r\ncarte_google*** *** ***bf_latitude***bf_longitude*** *** *** ***\r\ntexte***bf_telephone***T&eacute;l&eacute;phone***15***15*** *** *** ***0***0\r\nchamps_mail***bf_mail***Courriel***40***255*** *** *** ***1***1\r\nutilisateur_wikini*** *** ***40***255*** *** *** ***0***0\r\nlien_internet***bf_site_internet***Site Internet/blog***40***255*** *** *** ***0***0\r\ntextelong***bf_description***Informations compl�mentaires***40***20*** *** *** *** \r\nchamps_cache***bf_ce_pays***Pays***400*** ***fr*** ***gip_id_pays*** ***\r\nimage***bf_image***Logo ou petite image (200x200 pixels)*** *** *** *** *** ***\r\n', 'fr-FR', 'acteurs', 'acteurs'),
-(10, 'Ev&eacute;nements (avec dates)', 'saisir tous &eacute;v&egrave;nements, manifestations, rencontres, colloques, congr&egrave;s ayant trait &agrave; l\'&eacute;ducation &agrave; l\'environnement.', '', 0, 0, 0, '', '', '', '', 'texte***bf_titre***Titre***45***200*** *** *** ***1***0\r\ncheckbox***30***Th&eacute;matiques***160***1*** *** *** ***1***1\r\ntexte***bf_adresse1***Adresse de l\'&eacute;v&egrave;nement***30***50*** *** *** ***1***0\r\ntexte***bf_adresse2***Adresse de l\'&eacute;v&egrave;nement (suite)***30***50*** *** *** ***0***0\r\ntexte***bf_code_postal***Code postal***8***8*** *** *** ***1***0\r\ntexte***bf_ville***Ville***30***50*** *** *** ***1***0\r\nliste***19***D�partement*** ***1*** *** *** ***1***1\r\ncarte_google*** *** ***bf_latitude***bf_longitude*** *** *** ***\r\nlistedatedeb***bf_date_debut_evenement***Date de d&eacute;but de l\'&eacute;v&egrave;nement***10***20*** *** *** ***1***0\r\nlistedatefin***bf_date_fin_evenement***Date de fin de l\'&eacute;v&egrave;nement***10***20***  *** ***  ***1***0\r\ntextelong***bf_description***Description***40***20*** *** *** ***1***0\r\nlabelhtml*** ***<hr />*** *** *** *** *** ***0***0\r\nlabelhtml*** ***<h4>Dur&eacute;e de parution de la fiche :</h4> la date de d&eacute;but de parution indique le moment ou la fiche devient visible sur le site, et la date de fin de parution, le moment o&ugrave; elle dispara�t.<br />*** *** *** *** *** ***0***0\r\nlabelhtml*** ***<br />*** *** *** *** *** ***0***0\r\nlistedatedeb***bf_date_debut_validite_fiche***Date de d&eacute;but de parution***10***20*** *** *** ***1***0\r\nlistedatefin***bf_date_fin_validite_fiche***Date de fin de parution***10***20*** *** ***  ***1***0\r\nfichier***1***Joindre un fichier***4000000***2000000*** *** *** ***0***0\r\nimage***2***Joindre une image***4000000***2000000*** *** *** ***0***0\r\nurl***1***Associer un lien (nom et adresse URL)***45***200*** *** *** ***0***0\r\n', 'fr-FR', 'actualites', 'actu'),
-(11, 'Offres de stages', 'saisir une offre de stage ayant un rapport avec l\'&eacute;ducation &agrave; l\'environnement.', '', 0, 0, 0, '', '', '', '', 'labelhtml*** ***<h2>Saisir une offre de stage</h2>*** *** *** *** *** ***0***0\r\ntexte***bf_titre***Intitul&eacute; du stage***45***200*** *** *** ***1***0\r\ntextelong***bf_description***Description de la structure***40***15*** *** *** ***1***0\r\ntexte***bf_cp_lieu_evenement***Code postal du lieu de stage***7***7***  *** *** ***1***0\r\ntexte***bf_lieu_evenement***Lieu de stage***40***60***  *** *** ***0***0\r\ntextelong***bf_intervenants***Missions du stage***40***7*** *** *** ***0***0\r\ntexte***bf_qualif_preparee***Niveau de diplome demand&eacute;***45***60*** *** *** ***0***1\r\ntexte***bf_tarif_opca***Forme de candidature***45***200*** *** *** ***0***0\r\ntexte***bf_tarif_individuel***Indemnit&eacute;s mensuel***45***200*** *** *** ***1***0\r\nlistedatefin***bf_date_fin_inscription***Ech&eacute;ance de candidature***10***20***  *** ***  ***0***0\r\nlistedatedeb***bf_date_debut_evenement***Date de debut du stage***10***20*** *** *** ***0***0\r\ntextelong***bf_infos_complementaires***Informations compl&eacute;mentaires***40***3*** *** *** ***0***0\r\nlabelhtml*** ***<hr />*** *** *** *** *** ***0***0\r\nlabelhtml*** ***Coordonn&eacute;es du contact*** *** *** *** *** ***0***0\r\ntexte***bf_prenom_contact***Pr&eacute;nom du contact***20***30*** *** *** ***1***0\r\ntexte***bf_nom_contact***Nom du contact***20***30*** *** *** ***1***0\r\nchamps_mail***bf_mail***Courriel***40***50*** *** *** ***0***0\r\ntexte***bf_telephone***T&eacute;l&eacute;phone***10***10*** *** *** ***1***0\r\nlabelhtml*** ***<hr />*** *** *** *** *** ***0***0\r\nlabelhtml*** ***<h4>Dur&eacute;e de parution de la fiche</h4>*** *** *** *** *** ***0***0\r\nlistedatedeb***bf_date_debut_validite_fiche***Date de d&eacute;but de parution***10***20*** *** *** ***1***0\r\nlistedatefin***bf_date_fin_validite_fiche***Date de fin de parution***10***20*** *** ***  ***1***0\r\nfichier***1***Joindre un fichier***4000000***2000000*** *** *** ***0***0\r\nimage***2***Joindre une image***4000000***2000000*** *** *** ***0***0\r\nurl***1***Associer un lien (nom et adresse URL)***45***200*** *** ***\r\n***0***0\r\n', 'fr-FR', 'emploisstages', 'emploistages'),
-(12, 'Offres d\'emplois', 'saisir une offre d\'emploi ayant un rapport avec l\'&eacute;ducation &agrave; l\'environnement.', '', 0, 0, 0, '', '', '', '', 'texte***bf_titre***Intitul&eacute; du poste***45***200*** *** *** ***1***0\r\ntextelong***bf_description***Description de la structure***40***15*** *** *** ***1***0\r\ntexte***bf_cp_lieu_evenement***Code postal du lieu de travail***7***7***  *** *** ***0***0\r\ntexte***bf_lieu_evenement***Lieu de travail***40***60***  *** *** ***0***0\r\ntextelong***bf_intervenants***Missions du poste***40***7*** *** *** ***0***0\r\ntextelong***bf_contenu_formation***Profil du poste***40***8*** *** *** ***1***0\r\ntexte***bf_qualif_preparee***Niveau de diplome demand&eacute;***45***60*** *** *** ***0***1\r\ntexte***bf_public***&eacute;l&eacute;gibilit&eacute;***45***200*** *** *** ***0***1\r\ntexte***bf_tarif_entreprise***Type de contrat***45***200*** *** *** ***1***1\r\ntexte***bf_tarif_opca***Forme de candidature***45***200*** *** *** ***0***0\r\ntexte***bf_numero_module***Indice salaire***4***4*** *** *** ***0***0\r\ntexte***bf_tarif_individuel***Salaire brut mensuel***45***200*** *** *** ***1***0\r\nlistedatefin***bf_date_fin_inscription***Ech&eacute;ance de candidature***10***20***  *** ***  ***0***0\r\nlistedatedeb***bf_date_debut_evenement***Date d\'embauche***10***20*** *** *** ***0***0\r\ntextelong***bf_infos_complementaires***Informations compl&eacute;mentaires***40***3*** *** *** ***0***0\r\nlabelhtml*** ***<hr />*** *** *** *** *** ***0***0\r\nlabelhtml*** ***Coordonn&eacute;es du contact*** *** *** *** *** ***0***0\r\ntexte***bf_prenom_contact***Pr&eacute;nom du contact***20***30*** *** *** ***1***0\r\ntexte***bf_nom_contact***Nom du contact***20***30*** *** *** ***1***0\r\nchamps_mail***bf_mail***Adresse mail***40***50*** *** *** ***0***0\r\ntexte***bf_telephone***T&eacute;l&eacute;phone***10***10*** *** *** ***1***0\r\nlabelhtml*** ***<hr />*** *** *** *** *** ***0***0\r\nlabelhtml*** ***<h4>Dur&eacute;e de parution de la fiche</h4>*** *** *** *** *** ***0***0\r\nlistedatedeb***bf_date_debut_validite_fiche***Date de d&eacute;but de parution***10***20*** *** *** ***1***0\r\nlistedatefin***bf_date_fin_validite_fiche***Date de fin de parution***10***20*** *** ***  ***1***0\r\nfichier***1***Joindre un fichier***4000000***2000000*** *** *** ***0***0\r\nimage***2***Joindre une image***4000000***2000000*** *** *** ***0***0\r\nurl***1***Associer un lien (nom et adresse URL)***45***200*** *** ***\r\n***0***0\r\n', 'fr-FR', 'emploisstages', 'emploistages'),
-(13, 'Demandes d\'emplois', 'saisir une demande d\'emploi ayant un rapport avec l\'&eacute;ducation &agrave; l\'environnement.', '', 0, 0, 0, '', '', '', '', 'labelhtml*** ***<h2>Saisir votre demande d\'emploi</h2>*** *** *** *** *** ***0***0\r\ntexte***bf_titre***Intitul&eacute; de ma demande d\'emploi***45***200*** *** *** ***1***0\r\ntextelong***bf_description***Description de mon profil***40***15*** *** *** ***1***0\r\ntexte***bf_qualif_preparee***Niveau de diplome ***45***60*** *** *** ***0***1\r\ntexte***bf_tarif_individuel***Pr�tention salariale***45***200*** *** *** ***0***0\r\ntextelong***bf_infos_complementaires***Informations compl&eacute;mentaires***40***3*** *** *** ***0***0\r\nlabelhtml*** ***<hr />*** *** *** *** *** ***0***0\r\nlabelhtml*** ***Coordonn&eacute;es du contact*** *** *** *** *** ***0***0\r\ntexte***bf_prenom_contact***Pr&eacute;nom du contact***20***30*** *** *** ***1***0\r\ntexte***bf_nom_contact***Nom du contact***20***30*** *** *** ***1***0\r\nchamps_mail***bf_mail***Adresse mail***40***50*** *** *** ***0***0\r\ntexte***bf_telephone***T&eacute;l&eacute;phone***10***10*** *** *** ***1***0\r\nlabelhtml*** ***<hr />*** *** *** *** *** ***0***0\r\nlabelhtml*** ***<h4>Dur&eacute;e de parution de la fiche</h4>*** *** *** *** *** ***0***0\r\nlistedatedeb***bf_date_debut_validite_fiche***Date de d&eacute;but de parution***10***20*** *** *** ***1***0\r\nlistedatefin***bf_date_fin_validite_fiche***Date de fin de parution***10***20*** *** ***  ***1***0\r\nfichier***1***Joindre un fichier***4000000***2000000*** *** *** ***0***0\r\nimage***2***Joindre une image***4000000***2000000*** *** *** ***0***0\r\nurl***1***Associer un lien (nom et adresse URL)***45***200*** *** ***\r\n***0***0\r\n', 'fr-FR', 'emploisstages', 'emploistages'),
-(14, 'Demandes de stages', 'saisir une demande de stage ayant un rapport avec l\'&eacute;ducation &agrave; l\'environnement.', '', 0, 0, 0, '', '', '', '', 'texte***bf_titre***Intitul&eacute; de ma demande de stage***45***200*** *** *** ***1***0\r\ntextelong***bf_description***Description de mon profil***40***15*** *** *** ***1***0\r\ntexte***bf_qualif_preparee***Niveau de dipl�me ***45***60*** *** *** ***0***1\r\ntextelong***bf_infos_complementaires***Informations compl&eacute;mentaires***40***3*** *** *** ***0***0\r\nlabelhtml*** ***<hr />*** *** *** *** *** ***0***0\r\nlabelhtml*** ***Coordonn&eacute;es du contact*** *** *** *** *** ***0***0\r\ntexte***bf_prenom_contact***Pr&eacute;nom du contact***20***30*** *** *** ***1***0\r\ntexte***bf_nom_contact***Nom du contact***20***30*** *** *** ***1***0\r\nchamps_mail***bf_mail***Adresse mail***40***50*** *** *** ***0***0\r\ntexte***bf_telephone***T&eacute;l&eacute;phone***10***10*** *** *** ***1***0\r\nlabelhtml*** ***<hr />*** *** *** *** *** ***0***0\r\nlabelhtml*** ***<h4>Dur&eacute;e de parution de la fiche</h4>*** *** *** *** *** ***0***0\r\nlistedatedeb***bf_date_debut_validite_fiche***Date de d&eacute;but de parution***10***20*** *** *** ***1***0\r\nlistedatefin***bf_date_fin_validite_fiche***Date de fin de parution***10***20*** *** ***  ***1***0\r\nfichier***1***Joindre un fichier***4000000***2000000*** *** *** ***0***0\r\nimage***2***Joindre une image***4000000***2000000*** *** *** ***0***0\r\nurl***1***Associer un lien (nom et adresse URL)***45***200*** *** ***\r\n***0***0\r\n', 'fr-FR', 'emploisstages', 'emploistages');
+--
+-- Contenu de la table `bazar_nature`
+--
 
-CREATE TABLE `bazar_url` (
-  `bu_id_url` int(10) unsigned NOT NULL auto_increment,
-  `bu_ce_fiche` int(10) unsigned NOT NULL default '0',
-  `bu_url` varchar(255) default NULL,
-  `bu_descriptif_url` varchar(255) default NULL,
-  PRIMARY KEY  (`bu_id_url`)
-) ENGINE=MyISAM AUTO_INCREMENT=62 DEFAULT CHARSET=latin1 AUTO_INCREMENT=62 ;
+INSERT INTO `bazar_nature` (`bn_id_nature`, `bn_label_nature`, `bn_description`, `bn_condition`, `bn_ce_id_menu`, `bn_commentaire`, `bn_appropriation`, `bn_image_titre`, `bn_image_logo`, `bn_couleur_calendrier`, `bn_picto_calendrier`, `bn_template`, `bn_ce_i18n`, `bn_type_fiche`, `bn_label_class`) VALUES
+(1, 'Ressources documentaires', 'toutes les sources de connaissances formalisées : ouvrages, publications, cédéroms, sites internet, outils pédagogiques (malles, expositions, livret,...), etc.', '', 69, 0, 0, '', '', '', '', 'texte***bf_titre***Titre***45***200*** *** *** ***1\r\nliste***17***Thème***160***1***1***17***bt_id_theme***1***1\r\ntexte***bf_public***Public***45***200*** *** ***1\r\nliste***20***Type de parution***160***1***1***bazar_type_parution***btp_id***1\r\ntextelong***bf_description***Description***40***20*** *** *** ***\r\ntexte***bf_auteur***Auteur\r\ntextelong***bf_auteur_coordonnee***Coordonnées***40***3\r\ntexte***bf_editeur***Editeur***40***255***Saisissez l''éditeur*** *** ***1\r\ntextelong***bf_editeur_coordonnee***Coordonnées de l''éditeur***40***3\r\ntexte***bf_annee_parution***Année de parution***5***4*** *** *** ***1\r\nliste***29***Langue***160***1***1***gen_i18n_langue***gil_id_langue***1 \r\ntextelong***bf_commentaire***Commentaires***40***20*** *** *** *** \r\n', 'fr-FR', 'ressources', 'ressources'),
+(2, 'Ressources physiques', 'ce sont des réalisations impliquées ou crées dans le cadre des projets : sentiers, musées, espaces d''accueil, de découverte ou d''hébergement...).', '', 69, 0, 0, '', '', '', '', 'texte***bf_titre***Titre***45***200*** *** *** ***1\r\ntexte***bf_qualite***Qualité*** *** *** *** *** ***\r\ntexte***bf_gestionnaire***Gestionnaire*** *** *** *** *** ***\r\ntextelong***bf_adresse_contact***Adresse contact***40***5*** *** *** ***\r\ntexte***bf_telephone***Téléphone*** *** *** *** *** ***\r\ntexte***bf_mail***Courriel*** *** *** *** *** *** ***\r\ntexte***bf_fax***Fax***30***30*** *** *** ***\r\ntexte***bf_site_internet***Site internet***40*** *** *** *** *** ***\r\ntexte***bf_contenu_formation***Nature du service***45*** *** *** *** ***\r\ntextelong***bf_condition_aide***Période heure***40***3*** *** *** ***\r\nliste***17***Thèmes abordés***160***1***1***bazar_theme***bt_id_theme***\r\ntexte***bf_public***Public***45***200*** *** ***1\r\ntextelong***bf_description***Description***40***20*** *** *** ***\r\ntextelong***bf_commentaire***Commentaires***40***20*** *** *** *** \r\n', 'fr-FR', 'ressources', 'ressources'),
+(3, 'Ressources financières', 'toutes les aides techniques et financières permettant de monter ou de contribuer à la réalisation d''un projet ;', '', 69, 1, 0, '', '', '', '', 'texte***bf_titre***Intitulé***45***200*** *** *** ***1\r\ntextelong***bf_description***Description***40***20*** *** *** ***\r\nliste***7***Echelle géographique***160***1***1***bazar_liste_echelle_geo***bleg_id_echelle***\r\nliste***16***Secteur***160***1***1***bazar_liste_secteur***bls_id_secteur***\r\nliste***10***Nature de l''aide***160***1***1***bazar_liste_nature_aide***blna_id_nature_aide***\r\ntextelong***bf_forme_aide***Forme de l''aide***40***3*** *** *** ***\r\ntextelong***bf_source_aide***Source***40***3*** *** *** ***\r\ntextelong***bf_condition_aide***Conditions***40***5*** *** *** ***\r\ntexte***bf_nom_contact***Nom contact*** *** *** *** *** ***\r\ntextelong***bf_adresse_contact***Adresse contact***40***5*** *** *** ***\r\ntexte***bf_telephone***Téléphone*** *** *** *** *** ***\r\ntexte***bf_mail***Courriel***40***100*** *** *** ***0\r\ntexte***bf_site_internet***Lien internet***40***50*** **** *** ***\r\ntextelong***bf_commentaire***Commentaires***40***20*** *** *** *** \r\n', 'fr-FR', 'ressources', ''),
+(4, 'Ressources humaines', 'tous les acteurs apportant une compétence, un savoir-faire, une activité au sein d''un projet.', '', 69, 1, 0, '', '', '', '', 'texte***bf_titre***Titre***45***200*** *** *** ***1\r\nliste***30***Type***160***1***1***bazar_type_ressource_humaine***btrh_id_type\r\ntexte***bf_qualite***Qualité*** *** *** *** *** ***\r\ntexte***bf_nom_contact***Nom du contact*** *** *** *** *** ***\r\ntextelong***bf_adresse_contact***Adresse du contact***40***5*** *** *** ***\r\ntexte***bf_telephone***Téléphone*** *** *** *** *** ***\r\ntexte***bf_fax***Fax***20***20*** *** *** ***\r\ntexte***bf_mail***Courriel*** *** *** *** *** *** ***\r\ntexte***bf_site_internet***Site internet***40*** *** *** *** *** ***\r\nliste***17***Thèmes abordés***160***1***1***bazar_theme***bt_id_theme***\r\ntexte***bf_public***Public***45***200*** *** ***1\r\ntextelong***bf_description***Nature du service***40***20*** *** *** ***\r\ntextelong***bf_commentaire***Description***40***20*** *** *** *** \r\n', 'fr-FR', 'ressources', ''),
+(5, 'Ressources formation', 'toute contribution structurée destinée à transmettre ou échanger des savoirs ou des compétences pendant une période limitée. ', '', 69, 1, 0, '', '', '', '', 'texte***bf_titre***Titre***45***200*** *** *** ***1\r\ntexte***bf_qualite***Organisme*** *** *** *** *** ***\r\ntexte***bf_nom_contact***Nom contact*** *** *** *** *** ***\r\ntextelong***bf_adresse_contact***Adresse contact***40***5*** *** *** ***\r\ntexte***bf_telephone***Téléphone*** *** *** *** *** ***\r\ntexte***bf_fax***Fax***20***20*** *** *** ***\r\ntexte***bf_mail***Courriel*** *** *** *** *** *** ***\r\ntexte***bf_site_internet***Site internet***40*** *** *** *** *** ***\r\nliste***1***Type de formation***160*** *** *** bazar_liste_type_formation*** bltf_id_type_formation***\r\nliste***17***Thème abordé***160***1***1***bazar_theme***bt_id_theme***\r\ntexte***bf_public***Public***45***200*** *** ***1\r\ntextelong***bf_description***Description***40***20*** *** *** ***\r\ntextelong***bf_commentaire***Commentaires***40***20*** *** *** *** \r\n', 'fr-FR', 'ressources', ''),
+(6, 'Annonces (sans date)', 'saisir une communication br&egrave;ve pour mettre en avant une actualit&eacute; touchant &agrave; l''EE : appels d''offres, appels à projets, nouvelles d''une structure, petites annonces, dispositifs, programme ...', '', 77, 0, 0, '', '', '', '', 'labelhtml***toto***tata***titi***tutu*** *** *** ***0***0\r\n', 'fr-FR', 'actualites', 'actu'),
+(7, 'Co-voiturage', 'Rubrique pour gérer des co-voiturage entre personnes habitants dans l''arc alpin.', '', 75, 0, 0, '', '', '', '', 'champs_cache***bf_titre***Titre***400*** ***Offre de covoiturage*** *** *** ***\r\ntexte***bf_adresse1***Lieu de départ***45***200*** *** *** ***1\r\ntexte***bf_adresse2***Lieu d''arrivée***45***200*** *** *** ***1\r\nlistedatedeb***bf_date_debut_evenement***Date de début de validité***10***20*** *** *** ***1\r\nlistedatefin***bf_date_fin_evenement***Date de fin de validité***10***20*** *** ***  ***1\r\ntextelong***bf_description***Itinéraire***40***5*** *** *** ***\r\ntextelong***bf_commentaire***Détails (heures ...) ***40***5*** *** *** ***\r\ntexte***bf_structure***Prénom et Nom du contact***50***255*** *** *** ***1***1\r\ntexte***bf_telephone***T&eacute;l&eacute;phone contact***15***15*** *** *** ***1***1\r\nchamps_mail***bf_mail***Courriel contact***40***255*** *** *** ***1***1\r\n', 'fr-FR', 'actualites', 'actu'),
+(8, 'Formation', 'saisir toute formation, quelle que soit sa dur&eacute;e, en lien avec l''Education &agrave; l''Environnement ou abordant des contenus p&eacute;riph&eacute;riques (communication, gestion, partenariat, animation de r&eacute;seaux ...) et mettant en oeuvre des pratiques p&eacute;dagogiques sp&eacute;cifiques (inter-disciplinarit&eacute; - co-&eacute;ducation - pratique de terrain - p&eacute;dagogie de projet ...).', '', 79, 0, 0, '', '', '', '', 'texte***bf_titre***Intitul&eacute; de la formation***45***200*** *** *** ***1***0\r\ncheckbox***30***Th&eacute;matiques***160***1*** *** *** ***1***1\r\ncheckbox***1***Type de formation***160***1*** ***bazar_liste_type_formation***bltf_id_type_formation***1***1\r\ntextelong***bf_description***Objectifs***40***15*** *** *** ***1***0\r\ntextelong***bf_contenu_formation***Contenu***40***10*** *** *** ***0***0\r\ntexte***bf_public***Public***45***200*** *** *** ***1***0\r\ntexte***bf_conditions_acces***Conditions d''acc&egrave;s***45***200*** *** *** *** ***0\r\nlistedatedeb***bf_date_debut_evenement***Date de d&eacute;but de formation***10***20*** *** *** ***0***0\r\nlistedatefin***bf_date_fin_evenement***Date de fin de formation***10***20***  *** ***  ***0***0\r\nlistedatefin***bf_date_fin_inscription***Date limite des inscriptions***10***20***  *** ***  ***0***0\r\ntexte***bf_cp_lieu_evenement***Code postal du lieu de l''&eacute;v&egrave;nement***7***7***  *** *** ***0***0\r\ntexte***bf_lieu_evenement***Lieu de l''&eacute;v&egrave;nement***40***60***  *** *** ***0***0\r\ntexte***bf_tarif_individuel***Tarif individuel***5***5*** *** *** ***0***0\r\ntexte***bf_tarif_entreprise***Tarif entreprise***5***5*** *** *** ***0***0\r\ntexte***bf_tarif_opca***Tarif OPCA***5***5*** *** *** ***0***0\r\ntextelong***bf_intervenants***Intervenants***40***3*** *** *** ***0***0\r\ntextelong***bf_infos_complementaires***Informations compl&eacute;mentaires***40***3*** *** *** ***0***0\r\nlabelhtml*** ***<hr />*** *** *** *** *** ***0***0\r\nlabelhtml*** ***Si plusieurs modules de formation*** *** *** *** *** ***0***0\r\ntexte***bf_numero_module***Num&eacute;ro du module***4***4*** *** *** ***0***0\r\ntexte***bf_total_module***Nombre total de modules***4***4*** *** *** ***0***0\r\nlabelhtml*** ***<hr />*** *** *** *** *** ***0***0\r\nlabelhtml*** ***Si la formation est diplomante*** *** *** *** *** ***0***0\r\nliste***3***Diplome pr&eacute;par&eacute;***160***1***0***bazar_liste_diplome***bld_id_diplome***0***1\r\nliste***4***Niveau***160***1***0***bazar_liste_niveau***bln_id_niveau***0***1\r\nlabelhtml*** ***<hr />*** *** *** *** *** ***0***0\r\nlabelhtml*** ***Si la formation est qualifiante*** *** *** *** *** ***0***0\r\ntexte***bf_qualif_preparee***Qualification pr&eacute;par&eacute;e***45***60*** *** *** ***0***1\r\nlabelhtml*** ***<hr />*** *** *** *** *** ***0***0\r\nlabelhtml*** ***Coordonn&eacute;es du contact*** *** *** *** *** ***0***0\r\ntexte***bf_prenom_contact***Pr&eacute;nom***20***30*** *** *** ***1***0\r\ntexte***bf_nom_contact***Nom***20***30*** *** *** ***1***0\r\nchamps_mail***bf_mail***Courriel***50***80*** *** *** ***0***0\r\ntexte***bf_telephone***T&eacute;l&eacute;phone***10***10*** *** *** ***0***0\r\nlabelhtml*** ***<hr />*** *** *** *** *** ***0***0\r\nlabelhtml*** ***<h4>Dur&eacute;e de parution de la fiche :</h4> la date de d&eacute;but de parution indique le moment ou la fiche devient visible sur le site, et la date de fin de parution, le moment o&ugrave; elle disparaît.<br />*** *** *** *** *** ***0***0\r\nlabelhtml*** ***<br />*** *** *** *** *** ***0***0\r\nlistedatedeb***bf_date_debut_validite_fiche***Date de d&eacute;but de parution***10***20*** *** *** ***1***0\r\nlistedatefin***bf_date_fin_validite_fiche***Date de fin de parution***10***20*** *** ***  ***1***0\r\nfichier***1***Joindre un fichier***4000000***2000000*** *** *** ***0***0\r\nimage***2***Joindre une image***4000000***2000000*** *** *** ***0***0\r\nurl***1***Associer un lien (nom et adresse URL)***45***200*** *** *** ***0***0\r\n', 'fr-FR', 'emploisstages', 'emploistages'),
+(9, 'Personne physique', 'les acteurs du réseau alpin.', '', 0, 0, 0, '', '', '', '', 'texte***bf_titre***Pr&eacute;nom et nom de famille***60***255*** *** *** ***1***0\r\ntexte***bf_profession***Profession***50***255*** *** *** ***0***0\r\ntexte***bf_structure***Structure***50***255*** *** *** ***0***0\r\ntexte***bf_adresse1***Adresse***30***50*** *** *** ***1***0\r\ntexte***bf_adresse2***Adresse (suite)***30***50*** *** *** ***0***0\r\ntexte***bf_code_postal***Code postal***8***8*** *** *** ***1***0\r\ntexte***bf_ville***Ville***30***50*** *** *** ***1***0\r\nliste***19***Département*** ***1*** *** *** ***1***1\r\ncarte_google*** *** ***bf_latitude***bf_longitude*** *** *** ***\r\ntexte***bf_telephone***T&eacute;l&eacute;phone***15***15*** *** *** ***0***0\r\nchamps_mail***bf_mail***Courriel***40***255*** *** *** ***1***1\r\nutilisateur_wikini*** *** ***40***255*** *** *** ***0***0\r\nlien_internet***bf_site_internet***Site Internet/blog***40***255*** *** *** ***0***0\r\ntextelong***bf_description***Informations complémentaires***40***20*** *** *** *** \r\nchamps_cache***bf_ce_pays***Pays***400*** ***fr*** ***gip_id_pays*** ***\r\nimage***bf_image***Logo ou petite image (200x200 pixels)*** *** *** *** *** ***\r\n', 'fr-FR', 'acteurs', 'acteurs'),
+(10, 'Ev&eacute;nements (avec dates)', 'saisir tous &eacute;v&egrave;nements, manifestations, rencontres, colloques, congr&egrave;s ayant trait &agrave; l''&eacute;ducation &agrave; l''environnement.', '', 0, 0, 0, '', '', '', '', 'texte***bf_titre***Titre***45***200*** *** *** ***1***0\r\ncheckbox***30***Th&eacute;matiques***160***1*** *** *** ***1***1\r\ntexte***bf_adresse1***Adresse de l''&eacute;v&egrave;nement***30***50*** *** *** ***1***0\r\ntexte***bf_adresse2***Adresse de l''&eacute;v&egrave;nement (suite)***30***50*** *** *** ***0***0\r\ntexte***bf_code_postal***Code postal***8***8*** *** *** ***1***0\r\ntexte***bf_ville***Ville***30***50*** *** *** ***1***0\r\nliste***19***Département*** ***1*** *** *** ***1***1\r\nchamps_cache***bf_ce_pays***Pays***400*** ***fr*** ***gip_id_pays*** ***\r\ncarte_google*** *** ***bf_latitude***bf_longitude*** *** *** ***\r\nlistedatedeb***bf_date_debut_evenement***Date de d&eacute;but de l''&eacute;v&egrave;nement***10***20*** *** *** ***1***0\r\nlistedatefin***bf_date_fin_evenement***Date de fin de l''&eacute;v&egrave;nement***10***20***  *** ***  ***1***0\r\ntextelong***bf_description***Description***40***20*** *** *** ***1***0\r\nlabelhtml*** ***<hr />*** *** *** *** *** ***0***0\r\nlabelhtml*** ***<h4>Dur&eacute;e de parution de la fiche :</h4> la date de d&eacute;but de parution indique le moment ou la fiche devient visible sur le site, et la date de fin de parution, le moment o&ugrave; elle disparaît.<br />*** *** *** *** *** ***0***0\r\nlabelhtml*** ***<br />*** *** *** *** *** ***0***0\r\nlistedatedeb***bf_date_debut_validite_fiche***Date de d&eacute;but de parution***10***20*** *** *** ***1***0\r\nlistedatefin***bf_date_fin_validite_fiche***Date de fin de parution***10***20*** *** ***  ***1***0\r\nfichier***1***Joindre un fichier***4000000***2000000*** *** *** ***0***0\r\nimage***2***Joindre une image***4000000***2000000*** *** *** ***0***0\r\nurl***1***Associer un lien (nom et adresse URL)***45***200*** *** *** ***0***0\r\n', 'fr-FR', 'actualites', 'actu'),
+(11, 'Offres de stages', 'saisir une offre de stage ayant un rapport avec l''&eacute;ducation &agrave; l''environnement.', '', 0, 0, 0, '', '', '', '', 'labelhtml*** ***<h2>Saisir une offre de stage</h2>*** *** *** *** *** ***0***0\r\ntexte***bf_titre***Intitul&eacute; du stage***45***200*** *** *** ***1***0\r\ntextelong***bf_description***Description de la structure***40***15*** *** *** ***1***0\r\ntexte***bf_cp_lieu_evenement***Code postal du lieu de stage***7***7***  *** *** ***1***0\r\ntexte***bf_lieu_evenement***Lieu de stage***40***60***  *** *** ***0***0\r\ntextelong***bf_intervenants***Missions du stage***40***7*** *** *** ***0***0\r\ntexte***bf_qualif_preparee***Niveau de diplome demand&eacute;***45***60*** *** *** ***0***1\r\ntexte***bf_tarif_opca***Forme de candidature***45***200*** *** *** ***0***0\r\ntexte***bf_tarif_individuel***Indemnit&eacute;s mensuelles***45***200*** *** *** ***1***0\r\nlistedatefin***bf_date_fin_inscription***Ech&eacute;ance de candidature***10***20***  *** ***  ***0***0\r\nlistedatefin***bf_date_debut_embauche***Date de début du stage***10***20*** *** *** ***0***0\r\ntextelong***bf_infos_complementaires***Informations compl&eacute;mentaires***40***3*** *** *** ***0***0\r\nlabelhtml*** ***<strong>Coordonn&eacute;es du contact</strong>*** *** *** *** *** ***0***0\r\ntexte***bf_prenom_contact***Pr&eacute;nom du contact***20***30*** *** *** ***1***0\r\ntexte***bf_nom_contact***Nom du contact***20***30*** *** *** ***1***0\r\nchamps_mail***bf_mail***Courriel***40***50*** *** *** ***0***0\r\ntexte***bf_telephone***T&eacute;l&eacute;phone***10***10*** *** *** ***1***0\r\nlabelhtml*** ***<h4>Dur&eacute;e de parution de la fiche</h4>*** *** *** *** *** ***0***0\r\nlistedatedeb***bf_date_debut_validite_fiche***Date de d&eacute;but de parution***10***20*** *** *** ***1***0\r\nlistedatefin***bf_date_fin_validite_fiche***Date de fin de parution***10***20*** *** ***  ***1***0\r\n', 'fr-FR', 'emploisstages', 'emploisstages'),
+(12, 'Offres d''emplois', 'saisir une offre d''emploi ayant un rapport avec l''&eacute;ducation &agrave; l''environnement.', '', 0, 0, 0, '', '', '', '', 'texte***bf_titre***Intitul&eacute; du poste***45***200*** *** *** ***1***0\r\ntextelong***bf_description***Description de la structure***40***15*** *** *** ***1***0\r\ntexte***bf_cp_lieu_evenement***Code postal du lieu de travail***7***7***  *** *** ***0***0\r\ntexte***bf_lieu_evenement***Lieu de travail***40***60***  *** *** ***0***0\r\ntextelong***bf_intervenants***Missions du poste***40***7*** *** *** ***0***0\r\ntextelong***bf_contenu_formation***Profil du poste***40***8*** *** *** ***1***0\r\ntexte***bf_qualif_preparee***Niveau de diplome demand&eacute;***45***60*** *** *** ***0***1\r\ntexte***bf_public***&eacute;l&eacute;gibilit&eacute;***45***200*** *** *** ***0***1\r\ntexte***bf_tarif_entreprise***Type de contrat***45***200*** *** *** ***1***1\r\ntexte***bf_tarif_opca***Forme de candidature***45***200*** *** *** ***0***0\r\ntexte***bf_numero_module***Indice salaire***4***4*** *** *** ***0***0\r\ntexte***bf_tarif_individuel***Salaire brut mensuel***45***200*** *** *** ***1***0\r\nlistedatefin***bf_date_fin_inscription***Ech&eacute;ance de candidature***10***20***  *** ***  ***0***0\r\nlistedatefin***bf_date_debut_embauche***Date d''embauche***10***20*** *** *** ***0***0\r\ntextelong***bf_infos_complementaires***Informations compl&eacute;mentaires***40***3*** *** *** ***0***0\r\nlabelhtml*** ***<hr />*** *** *** *** *** ***0***0\r\nlabelhtml*** ***Coordonn&eacute;es du contact*** *** *** *** *** ***0***0\r\ntexte***bf_prenom_contact***Pr&eacute;nom du contact***20***30*** *** *** ***1***0\r\ntexte***bf_nom_contact***Nom du contact***20***30*** *** *** ***1***0\r\nchamps_mail***bf_mail***Adresse mail***40***50*** *** *** ***0***0\r\ntexte***bf_telephone***T&eacute;l&eacute;phone***10***10*** *** *** ***1***0\r\nlabelhtml*** ***<hr />*** *** *** *** *** ***0***0\r\nlabelhtml*** ***<h4>Dur&eacute;e de parution de la fiche</h4>*** *** *** *** *** ***0***0\r\nlistedatedeb***bf_date_debut_validite_fiche***Date de d&eacute;but de parution***10***20*** *** *** ***1***0\r\nlistedatefin***bf_date_fin_validite_fiche***Date de fin de parution***10***20*** *** ***  ***1***0\r\nfichier***1***Joindre un fichier***4000000***2000000*** *** *** ***0***0\r\nimage***2***Joindre une image***4000000***2000000*** *** *** ***0***0\r\nurl***1***Associer un lien (nom et adresse URL)***45***200*** *** *** ***0***0\r\n', 'fr-FR', 'emploisstages', 'emploistages'),
+(13, 'Demandes d''emplois', 'saisir une demande d''emploi ayant un rapport avec l''&eacute;ducation &agrave; l''environnement.', '', 0, 0, 0, '', '', '', '', 'labelhtml*** ***<h2>Saisir votre demande d''emploi</h2>*** *** *** *** *** ***0***0\r\ntexte***bf_titre***Intitul&eacute; de ma demande d''emploi***45***200*** *** *** ***1***0\r\ntextelong***bf_description***Description de mon profil***40***15*** *** *** ***1***0\r\ntexte***bf_qualif_preparee***Niveau de diplome ***45***60*** *** *** ***0***1\r\ntexte***bf_tarif_individuel***Prétention salariale***45***200*** *** *** ***0***0\r\ntextelong***bf_infos_complementaires***Informations compl&eacute;mentaires***40***3*** *** *** ***0***0\r\nlabelhtml*** ***<hr />*** *** *** *** *** ***0***0\r\nlabelhtml*** ***Coordonn&eacute;es du contact*** *** *** *** *** ***0***0\r\ntexte***bf_prenom_contact***Pr&eacute;nom du contact***20***30*** *** *** ***1***0\r\ntexte***bf_nom_contact***Nom du contact***20***30*** *** *** ***1***0\r\nchamps_mail***bf_mail***Adresse mail***40***50*** *** *** ***0***0\r\ntexte***bf_telephone***T&eacute;l&eacute;phone***10***10*** *** *** ***1***0\r\nlabelhtml*** ***<hr />*** *** *** *** *** ***0***0\r\nlabelhtml*** ***<h4>Dur&eacute;e de parution de la fiche</h4>*** *** *** *** *** ***0***0\r\nlistedatedeb***bf_date_debut_validite_fiche***Date de d&eacute;but de parution***10***20*** *** *** ***1***0\r\nlistedatefin***bf_date_fin_validite_fiche***Date de fin de parution***10***20*** *** ***  ***1***0\r\nfichier***1***Joindre un fichier***4000000***2000000*** *** *** ***0***0\r\nimage***2***Joindre une image***4000000***2000000*** *** *** ***0***0\r\nurl***1***Associer un lien (nom et adresse URL)***45***200*** *** *** ***0***0\r\n', 'fr-FR', 'emploisstages', 'emploistages'),
+(14, 'Demandes de stages', 'saisir une demande de stage ayant un rapport avec l''&eacute;ducation &agrave; l''environnement.', '', 0, 0, 0, '', '', '', '', 'texte***bf_titre***Intitul&eacute; de ma demande de stage***45***200*** *** *** ***1***0\r\ntextelong***bf_description***Description de mon profil***40***15*** *** *** ***1***0\r\ntexte***bf_qualif_preparee***Niveau de diplôme ***45***60*** *** *** ***0***1\r\ntextelong***bf_infos_complementaires***Informations compl&eacute;mentaires***40***3*** *** *** ***0***0\r\nlabelhtml*** ***<hr />*** *** *** *** *** ***0***0\r\nlabelhtml*** ***Coordonn&eacute;es du contact*** *** *** *** *** ***0***0\r\ntexte***bf_prenom_contact***Pr&eacute;nom du contact***20***30*** *** *** ***1***0\r\ntexte***bf_nom_contact***Nom du contact***20***30*** *** *** ***1***0\r\nchamps_mail***bf_mail***Adresse mail***40***50*** *** *** ***0***0\r\ntexte***bf_telephone***T&eacute;l&eacute;phone***10***10*** *** *** ***1***0\r\nlabelhtml*** ***<hr />*** *** *** *** *** ***0***0\r\nlabelhtml*** ***<h4>Dur&eacute;e de parution de la fiche</h4>*** *** *** *** *** ***0***0\r\nlistedatedeb***bf_date_debut_validite_fiche***Date de d&eacute;but de parution***10***20*** *** *** ***1***0\r\nlistedatefin***bf_date_fin_validite_fiche***Date de fin de parution***10***20*** *** ***  ***1***0\r\nfichier***1***Joindre un fichier***4000000***2000000*** *** *** ***0***0\r\nimage***2***Joindre une image***4000000***2000000*** *** *** ***0***0\r\nurl***1***Associer un lien (nom et adresse URL)***45***200*** *** *** ***0***0\r\n', 'fr-FR', 'emploisstages', 'emploistages'),
+(15, 'Personne morale', 'Les structures du réseau alpin', '', 0, 0, 0, '', '', '', '', 'texte***bf_titre***Nom de la structure***60***255*** *** *** ***1***0\r\ntextelong***bf_description***Informations sur la structure***40***20*** *** *** *** \r\ntexte***bf_adresse1***Adresse***30***50*** *** *** ***1***0\r\ntexte***bf_adresse2***Adresse (suite)***30***50*** *** *** ***0***0\r\ntexte***bf_code_postal***Code postal***8***8*** *** *** ***1***0\r\ntexte***bf_ville***Ville***30***50*** *** *** ***1***0\r\nliste***19***Département*** ***1*** *** *** ***1***1\r\ncarte_google*** *** ***bf_latitude***bf_longitude*** *** *** ***\r\ntexte***bf_telephone***T&eacute;l&eacute;phone***15***15*** *** *** ***0***0\r\nchamps_mail***bf_mail***Courriel***40***255*** *** *** ***1***1\r\nutilisateur_wikini*** *** ***40***255*** *** *** ***0***0\r\nlien_internet***bf_site_internet***Site Internet/blog***40***255*** *** *** ***0***0\r\nchamps_cache***bf_ce_pays***Pays***400*** ***fr*** ***gip_id_pays*** ***\r\nimage***bf_image***Logo ou petite image (200x200 pixels)*** *** *** *** *** ***\r\n', 'fr-FR', 'acteurs', 'acteurs');
+INSERT INTO `bazar_nature` (`bn_id_nature`, `bn_label_nature`, `bn_description`, `bn_condition`, `bn_ce_id_menu`, `bn_commentaire`, `bn_appropriation`, `bn_image_titre`, `bn_image_logo`, `bn_couleur_calendrier`, `bn_picto_calendrier`, `bn_template`, `bn_ce_i18n`, `bn_type_fiche`, `bn_label_class`) VALUES
+(16, 'Université', 'universités', '', 0, 0, 0, '', '', '', '', 'labelhtml***<fieldset class="tab universite"><legend>UNIVERSITE</legend>*** ***<fieldset class="tab universite"><legend>UNIVERSITE</legend>\r\nlabelhtml***<h4>Informations générales</h4>*** ***<h4>Informations générales</h4>\r\ntexte***bf_titre***Nom***60***255*** *** *** ***1***0***\r\ntexte***bf_adresse1***Adresse postale***50***50*** *** *** ***1***0\r\ntexte***bf_adresse2***Adresse (suite)***50***50*** *** *** ***0***0\r\ntexte***bf_code_postal***Code postal***8***8*** *** *** ***1***0\r\ntexte***bf_ville***Ville***50***80*** *** *** ***1***0\r\nchamps_cache***bf_ce_pays***Pays***400*** ***fr*** ***gip_id_pays*** ***\r\ncarte_google***bf_latitude***bf_longitude***cartogoogle***1\r\nliste***19***Département*** ***1*** *** *** ***1***1\r\nlien_internet***bf_site_internet***Site Internet***40***255***http://*** *** ***0***0\r\nimage***bf_image***Logo ou petite image*** *** *** *** *** *** *** ***Votre image doit faire 200 pixels de large sur 200 pixels de haut maximum\r\nliste***31***Orientations pédagogiques***1***1*** *** *** ***1***0\r\ntexte***bf_specialite_pedagogique***Grande spécialité d''enseignement (si spécialisée)***60***255*** *** *** *** *** ***Exemple : Sciences exactes,  Sciences Humaines et Sociales, Arts, Lettres et Langues, Economie - Gestion, etc.\r\nliste***12***Autonomie*** ***1*** ***autonomie*** ***1***0***Votre université est-elle passée à l''autonomie dans le cadre de la LRU ?\r\nliste***12***PRES*** ***1*** ***pres*** ***1***0***Votre université appartient-elle à un Pôle de Recherche et d''Enseignement Supérieur (PRES) ?\r\nlabelhtml***<h4>Effectif</h4>*** ***<h4>Effectif</h4>\r\ntexte***bf_effectif_etudiant***Etudiants***5***7*** ***1*** ***1***0***Indiquez le nombre d''étudiants\r\ntexte***bf_effectif_personnel***Personnel administratif et technique***5***7*** ***1*** ***1***0***Indiquez le nombre de personnes\r\ntexte***bf_effectif_enseignant***Enseignants-chercheurs***5***7*** ***1*** ***1***0***Indiquez le nombre d''enseignants-chercheurs\r\nlabelhtml***</fieldset><fieldset class="tab culture"><legend >CULTURE</legend>*** ***</fieldset><fieldset class="tab culture"><legend >CULTURE</legend>\r\nliste***12***Existe-il une structure spécifique en charge de la Culture?*** *** ***0***culture*** ***0***1***Exemple : Service culturel, etc.\r\nlabelhtml***<div id="ouiculture" style="display:none;">*** ***<div id="ouiculture" style="display:none;">\r\nlabelhtml***<h4>Informations générales sur la structure</h4>*** ***<h4>Informations générales sur la structure</h4>\r\ntexte***bf_nom_structure***Nom***60***255*** *** *** ***0***0\r\ntexte***bf_entite_rattachement_directe***Entité de rattachement directe***60***255*** *** *** ***0***0***A quelle entité la structure est-elle directement rattachée? Par exemple : si la structure est rattachée à la Direction de la Culture, vous répondez "Direction de la Culture"\r\ntexte***bf_entite_rattachement_globale***Entité de rattachement globale***60***255*** *** *** ***0***0***Quelle est la hiérarchie supérieure de la structure? Par exemple : si la structure est rattachée à la Direction de la  Culture qui elle même est rattachée au Pôle Culture et Patrimoine, vous répondez "Pôle Culture et Patrimoine"\r\ntexte***bf_domaine_rattachement***Domaine de rattachement***60***255*** *** *** ***0***0***Exemple : CST, Recherche, Culture, Communication, etc.\r\ntexte***bf_adresse1_structure***Adresse postale***50***50*** *** *** ***0***0\r\ntexte***bf_adresse2_structure***Adresse (suite)***50***50*** *** *** ***0***0\r\ntexte***bf_code_postal_structure***Code postal***8***8*** *** *** ***0***0\r\ntexte***bf_ville_structure***Ville***50***80*** *** *** ***0***0\r\nliste***19***Département*** ***1*** ***dep-struct*** ***0***0\r\nlien_internet***bf_site_internet_structure***Site Internet ou espace Web dédié***40***255***http://*** *** ***0***0\r\ntextelong***bf_structure_publications***Publication(s)***40***5*** *** *** ***0***0***Indiquez ici les noms de toutes les publications éditées par votre structure (publications électroniques, publications papiers, etc.)\r\ntexte***bf_structure_reseaux***Réseau(x)***50***255*** *** *** ***0***0***Indiquez ici le(s) réseau(x) professionnel(s) au(x)quel(s) votre structure appartient.\r\ntexte***bf_structure_partenariat***Partenariat(s)***50***255*** *** *** ***0***0***Indiquez ici le(s) partenariat(s) mis en place avec d''autres structures.\r\nliste***12***Accès au public*** ***1*** ***acces_public*** ***0***0\r\nlabelhtml***<div style="display:block;clear:both;">&nbsp;</div></div><div id="nonculture" style="display:none;">*** ***<div style="display:block;clear:both;">&nbsp;</div></div><div id="nonculture" style="display:none;">\r\nlabelhtml***</div><div style="clear:both;"></div><h4>Personnel</h4>*** ***</div><div style="clear:both;"></div><h4>Personnel</h4>\r\ncheckboxfiche***17***Ajouter une fiche "personne"***Vous pourrez ajouter des fiches "personne" une fois que votre université sera saisie.***Personne(s)*** *** *** ***0***0\r\nlabelhtml***<h4>Actions de médiation</h4>*** ***<h4>Actions de médiation</h4>\r\ncheckboxfiche***18***Ajouter une fiche "action de médiation"***Vous pourrez ajouter des fiches "action de médiation" une fois que votre université sera saisie.***Action(s) de médiation*** *** *** ***0***0\r\nlabelhtml***<h4>Espaces dédiés</h4>*** ***<h4>Espaces dédiés</h4>\r\nliste***12***Espace(s) d''exposition*** ***1*** ***espace_expo*** ***0***0***Indiquez ici si vous possedez des espaces de médiation (salle d''exposition, salle de conférence, etc.)\r\nliste***12***Espace(s) dépôt matériel*** ***1*** ***espace_depot*** ***0***0***\r\nliste***12***Espace(s) administratif(s)*** ***1*** ***espace_admin*** ***0***0***\r\ntexte***bf_entites_specifiques***Entité(s) spécifique(s)***50***255*** *** *** ***0***0***Indiquez ici la (les) entité(s) spécifique(s) que vous utilisez (salle de concert, théâtre, etc.)\r\nlabelhtml***</fieldset><fieldset class="tab cst"><legend>CULTURE SCIENTIFIQUE ET TECHNIQUE</legend>*** ***</fieldset><fieldset class="tab cst"><legend>CULTURE SCIENTIFIQUE ET TECHNIQUE</legend>\r\nliste***12***Existe-il une structure spécifique en charge de la Culture Scientifique et technique ?*** *** ***0***CultureST*** ***0***1***Exemple : Mission CST\r\nlabelhtml***<div id="ouiCultureST" style="display:none;">*** ***<div id="ouiCultureST" style="display:none;">\r\nlabelhtml***<h4>Informations générales sur la structure</h4>*** ***<h4>Informations générales sur la structure</h4>\r\ntexte***bf_nom_structure_cst***Nom***60***255*** *** *** ***0***0\r\ntexte***bf_entite_rattachement_cst_directe***Entité de rattachement directe***60***255*** *** *** ***0***0***A quelle entité la structure est-elle directement rattachée? Par exemple : si la structure est rattachée au Service communication de l''université, vous répondez "Service communication"\r\ntexte***bf_entite_rattachement_cst_globale***Entité de rattachement globale***60***255*** *** *** ***0***0***Quelle est la hiérarchie supérieure de la structure? Par exemple : si la structure est rattachée au Service communication de l''université qui est lui-même est rattaché à au Service général de l''université, vous répondez "Service général"\r\ntexte***bf_domaine_rattachement_cst***Domaine de rattachement***60***255*** *** *** ***0***0***Exemple : CST, Recherche, Culture, Communication, etc.\r\ntexte***bf_adresse1_structure_cst***Adresse***50***50*** *** *** ***0***0\r\ntexte***bf_adresse2_structure_cst***Adresse (suite)***50***50*** *** *** ***0***0\r\ntexte***bf_code_postal_structure_cst***Code postal***8***8*** *** *** ***0***0\r\ntexte***bf_ville_structure_cst***Ville***50***80*** *** *** ***0***0\r\nliste***19***Département*** ***1*** ***dep-struct_cst*** ***0***0\r\nlien_internet***bf_site_internet_structure_cst***Site Internet ou espace web dédié***40***255***http://*** *** ***0***0\r\ntextelong***bf_structure_publications_cst***Publication(s)***40***5*** *** *** ***0***0***Indiquez ici les noms de toutes les publications éditées par votre structure (publications électroniques, publications papiers, etc.)\r\ntexte***bf_structure_reseaux_cst***Réseau(x)***50***255*** *** *** ***0***0***Indiquez ici le(s) réseau(x) professionnel(s) au(x)quel (s) votre structure appartient.\r\ntexte***bf_structure_partenariat_cst***Partenariat(s)***50***255*** *** *** ***0***0***Indiquez ici le(s) partenariat(s) mis en place avec d''autres structures.\r\nliste***12***Accès au public*** ***1*** ***acces_public_cst*** ***0***0\r\nlabelhtml***<div style="display:block;clear:both;">&nbsp;</div></div>*** ***<div style="display:block;clear:both;">&nbsp;</div></div>\r\nlabelhtml***<h4>Personnel</h4>*** ***<h4>Personnel pour la CST</h4>\r\ncheckboxfiche***17***Ajouter une fiche "personne"***Vous pourrez ajouter des fiches "personne" une fois que votre université sera saisie.*** *** *** *** ***0***0\r\nlabelhtml***<h4>Actions de médiation</h4>*** ***<h4>Actions de médiation</h4>\r\ncheckboxfiche***18***Ajouter une fiche "action de médiation"***Vous pourrez ajouter des fiches "action de médiation" une fois que votre université sera saisie.*** *** *** *** ***0***0\r\nlabelhtml***<h4>Espaces dédiés</h4>*** ***<h4>Espaces dédiés</h4>\r\nliste***12***Espace(s) de médiation*** ***1*** ***espace_mediation_cst*** ***0***0***Indiquez ici si vous utilisez des espaces de médiation (salle d'' exposition, salle de conférence, etc.)\r\nliste***12***Espace(s) dépôt matériel*** ***1*** ***espace_depot_cst*** ***0***0***\r\nliste***12***Espace(s) administratif(s)*** ***1*** ***espace_admin_cst*** ***0***0***\r\ntexte***bf_entites_specifiques_cst***Entité(s) spécifique(s)***50***255*** *** *** ***0***0***Indiquez ici la (les) entité(s) spécifique(s) que vous utilisez (Planétarium, etc.)\r\nlabelhtml***<div style="clear:both;"></div></fieldset><fieldset class="tab patrimoine"><legend>PATRIMOINE</legend>*** ***<div style="clear:both;"></div></fieldset><fieldset class="tab patrimoine"><legend>PATRIMOINE</legend>\r\nliste***12***Existe-il une structure spécifique en charge du patrimoine ?*** *** ***0***Patrimoine*** ***0***1***Exemple : Service des collections universitaires\r\nlabelhtml***<div id="ouiPatrimoine" style="display:none;">***<div id="recherche_patrimoine"><h3>Collections disponibles</h3>***<div id="ouiPatrimoine" style="display:none;">\r\nlabelhtml***<h4>Informations générales sur la structure</h4>*** ***<h4>Informations générales sur la structure</h4>\r\ntexte***bf_nom_structure_patrimoine***Nom***60***255*** *** *** ***0***0\r\ntexte***bf_entite_rattachement_directe_patrimoine***Entité de rattachement directe***60***255*** *** *** ***0***0***A quelle entité la structure est-elle directement rattachée? Par exemple : si la structure est rattachée à la Direction de la Culture, vous répondez "Direction de la Culture"\r\ntexte***bf_entite_rattachement_globale_patrimoine***Entité de rattachement globale***60***255*** *** *** ***0***0***Quelle est la hiérarchie supérieure de la structure? Par exemple : si la structure est rattachée à la Direction de la  Culture qui elle même est rattachée au Pôle Culture et Patrimoine, vous répondez "Pôle Culture et Patrimoine"\r\ntexte***bf_domaine_rattachement_patrimoine***Domaine de rattachement***60***255*** *** *** ***0***0***Exemple : CST, Recherche, Culture, Communication, etc.\r\ntexte***bf_adresse1_structure_patrimoine***Adresse postale***50***50*** *** *** ***0***0\r\ntexte***bf_adresse2_structure_patrimoine***Adresse (suite)***50***50*** *** *** ***0***0\r\ntexte***bf_code_postal_structure_patrimoine***Code postal***8***8*** *** *** ***0***0\r\ntexte***bf_ville_structure_patrimoine***Ville***50***80*** *** *** ***0***0\r\nliste***19***Département*** ***1*** ***dep-struct_patrimoine*** ***0***0\r\nlien_internet***bf_site_internet_structure_patrimoine***Site Internet ou espace Web dédié***40***255***http://*** *** ***0***0\r\ntextelong***bf_structure_publications_patrimoine***Publication(s)***40***5*** *** *** ***0***0***Indiquez ici les noms de toutes les publications éditées par votre structure (publications électroniques, publications papiers, etc.)\r\ntexte***bf_structure_reseaux_patrimoine***Réseau(x)***50***255*** *** *** ***0***0***Indiquez ici le(s) réseau(x) professionnel(s) au(x)quel(s) votre structure appartient.\r\ntexte***bf_structure_partenariat_patrimoine***Partenariat(s)***50***255*** *** *** ***0***0***Indiquez ici le(s) partenariat(s) mis en place avec d''autres structures.\r\nliste***12***Accès au public*** ***1*** ***acces_public_patrimoine*** ***0***0\r\nlabelhtml***<div style="display:block;clear:both;">&nbsp;</div></div><div id="nonPatrimoine" style="display:none;">*** ***<div style="display:block;clear:both;">&nbsp;</div></div><div id="nonPatrimoine" style="display:none;">\r\nlabelhtml***<div style="clear:both;"></div></div>*** ***<div style="clear:both;"></div></div>\r\nlabelhtml***<h4>Personnel</h4>*** ***<h4>Personnel</h4>\r\ncheckboxfiche***17***Ajouter une fiche "personne"***Vous pourrez ajouter des fiches "personne" une fois que votre université sera saisie.*** *** *** *** ***0***0\r\nlabelhtml***<h4>Patrimoine immobilier</h4>*** ***<h4>Patrimoine immobilier</h4>\r\nliste***1***Classé/inscrit au titre des Monuments historiques*** ***1*** ***MonumentHistorique*** ***0***0***\r\nlabelhtml***<div id="ouiMonumentHistorique" style="display:none;">*** ***<div id="ouiMonumentHistorique" style="display:none;">\r\ntextelong***bf_nom_monument_historique***Nom du batiment***40***5*** *** *** ***0***0***Inscrivez un nom par ligne\r\nliste***1***Non classé mais à caractère patrimonial*** ***1*** ***CaracterePatrimonial*** ***0***0***\r\nlabelhtml***<div id="ouiCaracterePatrimonial" style="display:none;">*** ***<div id="ouiCaracterePatrimonial" style="display:none;">\r\ntexte***bf_nom_monument_patrimonial***Nom du batiment à caractère patrimonial***50***255*** *** *** ***0***0***Inscrivez un nom par ligne\r\nlabelhtml***<div style="clear:both;"></div></div>*** ***<div style="clear:both;"></div></div>\r\nlabelhtml***<div style="clear:both;"></div></div>*** ***<div style="clear:both;"></div></div>\r\nlabelhtml***<h4>Collections scientifiques</h4>*** ***<h4>Collections scientifiques</h4>\r\nlabelhtml***<h5>Collections muséales</h5>*** ***<h5>Collections muséales</h5>\r\nliste***1***Archéologie*** *** ***0***archeologie*** ***0***1***\r\nlabelhtml***<div id="ouiarcheologie" style="display:none;">*** ***<div id="ouiarcheologie" style="display:none;">\r\ntexte***nb_col_archeologie***Nombre de collections***9***12*** ***1*** ***0***0***Précisez le nombre de collections de votre université rattachées à cette discipline\r\ntexte***nb_objets_archeologie***Nombre estimé d''objets et/ou d''échantillons***9***12*** ***1*** ***0***0***Donnez une estimation du nombre d''objets, d''échantillons, de documents, inventoriés ou non, de l''ensemble des collections rattachées à cette discipline\r\ntextelong***nb_infos_complementaires_archeologie***Information(s) complémentaire(s)***40***5*** ***1*** ***0***0***Ecrivez toute information qui vous semble importante concernant une ou l''ensemble des collections de cette discipline\r\nlabelhtml***<div style="clear:both;"></div></div>*** ***<div style="clear:both;"></div></div>\r\nliste***1***Astronomie*** *** ***0***astronomie*** ***0***1***\r\nlabelhtml***<div id="ouiastronomie" style="display:none;">*** ***<div id="ouiastronomie" style="display:none;">\r\ntexte***nb_col_astronomie***Nombre de collections***9***12*** ***1*** ***0***0***Précisez le nombre de collections de votre université rattachées à cette discipline\r\ntexte***nb_objets_astronomie***Nombre estimé d''objets et/ou d''échantillons***9***12*** ***1*** ***0***0***Donnez une estimation du nombre d''objets, d''échantillons, de documents, inventoriés ou non, de l''ensemble des collections rattachées à cette discipline\r\ntextelong***nb_infos_complementaires_astronomie***Information(s) complémentaire(s)***40***5*** ***1*** ***0***0***Ecrivez toute information qui vous semble importante concernant une ou l''ensemble des collections de cette discipline\r\nlabelhtml***<div style="clear:both;"></div></div>*** ***<div style="clear:both;"></div></div>\r\nliste***1***Biologie*** *** ***0***biologie*** ***0***1***\r\nlabelhtml***<div id="ouibiologie" style="display:none;">*** ***<div id="ouibiologie" style="display:none;">\r\ntexte***nb_col_biologie***Nombre de collections***9***12*** ***1*** ***0***0***Précisez le nombre de collections de votre université rattachées à cette discipline\r\ntexte***nb_objets_biologie***Nombre estimé d''objets et/ou d''échantillons***9***12*** ***1*** ***0***0***Donnez une estimation du nombre d''objets, d''échantillons, de documents, inventoriés ou non, de l''ensemble des collections rattachées à cette discipline\r\ntextelong***nb_infos_complementaires_biologie***Information(s) complémentaire(s)***40***5*** ***1*** ***0***0***Ecrivez toute information qui vous semble importante concernant une ou l''ensemble des collections de cette discipline\r\nlabelhtml***<div style="clear:both;"></div></div>*** ***<div style="clear:both;"></div></div>\r\nliste***1***Botanique*** *** ***0***botanique*** ***0***1***\r\nlabelhtml***<div id="ouibotanique" style="display:none;">*** ***<div id="ouibotanique" style="display:none;">\r\ntexte***nb_col_bota***Nombre de collections***9***12*** ***1*** ***0***0***Précisez le nombre de collections de votre université rattachées à cette discipline\r\ntexte***nb_objets_bota***Nombre estimé d''objets et/ou d''échantillons***9***12*** ***1*** ***0***0***Donnez une estimation du nombre d''objets, d''échantillons, de documents, inventoriés ou non, de l''ensemble des collections rattachées à cette discipline\r\ntextelong***nb_infos_complementaires_bota***Information(s) complémentaire(s)***40***5*** ***1*** ***0***0***Ecrivez toute information qui vous semble importante concernant une ou l''ensemble des collections de cette discipline\r\nlabelhtml***<div style="clear:both;"></div></div>*** ***<div style="clear:both;"></div></div>\r\nliste***1***Chimie*** *** ***0***chimie*** ***0***1***\r\nlabelhtml***<div id="ouichimie" style="display:none;">*** ***<div id="ouichimie" style="display:none;">\r\ntexte***nb_col_chimie***Nombre de collections***9***12*** ***1*** ***0***0***Précisez le nombre de collections de votre université rattachées à cette discipline\r\ntexte***nb_objets_chimie***Nombre estimé d''objets et/ou d''échantillons***9***12*** ***1*** ***0***0***Donnez une estimation du nombre d''objets, d''échantillons, de documents, inventoriés ou non, de l''ensemble des collections rattachées à cette discipline\r\ntextelong***nb_infos_complementaires_chimie***Information(s) complémentaire(s)***40***5*** ***1*** ***0***0***Ecrivez toute information qui vous semble importante concernant une ou l''ensemble des collections de cette discipline\r\nlabelhtml***<div style="clear:both;"></div></div>*** ***<div style="clear:both;"></div></div>\r\nliste***1***Géologie*** *** ***0***geologie*** ***0***1***\r\nlabelhtml***<div id="ouigeologie" style="display:none;">*** ***<div id="ouigeologie" style="display:none;">\r\ntexte***nb_col_geologie***Nombre de collections***9***12*** ***1*** ***0***0***Précisez le nombre de collections de votre université rattachées à cette discipline\r\ntexte***nb_objets_geologie***Nombre estimé d''objets et/ou d''échantillons***9***12*** ***1*** ***0***0***Donnez une estimation du nombre d''objets, d''échantillons, de documents, inventoriés ou non, de l''ensemble des collections rattachées à cette discipline\r\ntextelong***nb_infos_complementaires_geologie***Information(s) complémentaire(s)***40***5*** ***1*** ***0***0***Ecrivez toute information qui vous semble importante concernant une ou l''ensemble des collections de cette discipline\r\nlabelhtml***<div style="clear:both;"></div></div>*** ***<div style="clear:both;"></div></div>\r\nliste***1***Médecine*** *** ***0***medecine*** ***0***1***\r\nlabelhtml***<div id="ouimedecine" style="display:none;">*** ***<div id="ouimedecine" style="display:none;">\r\ntexte***nb_col_medecine***Nombre de collections***9***12*** ***1*** ***0***0***Précisez le nombre de collections de votre université rattachées à cette discipline\r\ntexte***nb_objets_medecine***Nombre estimé d''objets et/ou d''échantillons***9***12*** ***1*** ***0***0***Donnez une estimation du nombre d''objets, d''échantillons, de documents, inventoriés ou non, de l''ensemble des collections rattachées à cette discipline\r\ntextelong***nb_infos_complementaires_medecine***Information(s) complémentaire(s)***40***5*** ***1*** ***0***0***Ecrivez toute information qui vous semble importante concernant une ou l''ensemble des collections de cette discipline\r\nlabelhtml***<div style="clear:both;"></div></div>*** ***<div style="clear:both;"></div></div>\r\nliste***1***Minéralogie*** *** ***0***mineralogie*** ***0***1***\r\nlabelhtml***<div id="ouimineralogie" style="display:none;">*** ***<div id="ouimineralogie" style="display:none;">\r\ntexte***nb_col_mineralogie***Nombre de collections***9***12*** ***1*** ***0***0***Précisez le nombre de collections de votre université rattachées à cette discipline\r\ntexte***nb_objets_mineralogie***Nombre estimé d''objets et/ou d''échantillons***9***12*** ***1*** ***0***0***Donnez une estimation du nombre d''objets, d''échantillons, de documents, inventoriés ou non, de l''ensemble des collections rattachées à cette discipline\r\ntextelong***nb_infos_complementaires_mineralogie***Information(s) complémentaire(s)***40***5*** ***1*** ***0***0***Ecrivez toute information qui vous semble importante concernant une ou l''ensemble des collections de cette discipline\r\nlabelhtml***<div style="clear:both;"></div></div>*** ***<div style="clear:both;"></div></div>\r\nliste***1***Odontologie*** *** ***0***odontologie*** ***0***1***\r\nlabelhtml***<div id="ouiodontologie" style="display:none;">*** ***<div id="ouiodontologie" style="display:none;">\r\ntexte***nb_col_odontologie***Nombre de collections***9***12*** ***1*** ***0***0***Précisez le nombre de collections de votre université rattachées à cette discipline\r\ntexte***nb_objets_odontologie***Nombre estimé d''objets et/ou d''échantillons***9***12*** ***1*** ***0***0***Donnez une estimation du nombre d''objets, d''échantillons, de documents, inventoriés ou non, de l''ensemble des collections rattachées à cette discipline\r\ntextelong***nb_infos_complementaires_odontologie***Information(s) complémentaire(s)***40***5*** ***1*** ***0***0***Ecrivez toute information qui vous semble importante concernant une ou l''ensemble des collections de cette discipline\r\nlabelhtml***<div style="clear:both;"></div></div>*** ***<div style="clear:both;"></div></div>\r\nliste***1***Paléontologie*** *** ***0***paleontologie*** ***0***1***\r\nlabelhtml***<div id="ouipaleontologie" style="display:none;">*** ***<div id="ouipaleontologie" style="display:none;">\r\ntexte***nb_col_paleontologie***Nombre de collections***9***12*** ***1*** ***0***0***Précisez le nombre de collections de votre université rattachées à cette discipline\r\ntexte***nb_objets_paleontologie***Nombre estimé d''objets et/ou d''échantillons***9***12*** ***1*** ***0***0***Donnez une estimation du nombre d''objets, d''échantillons, de documents, inventoriés ou non, de l''ensemble des collections rattachées à cette discipline\r\ntextelong***nb_infos_complementaires_paleontologie***Information(s) complémentaire(s)***40***5*** ***1*** ***0***0***Ecrivez toute information qui vous semble importante concernant une ou l''ensemble des collections de cette discipline\r\nlabelhtml***<div style="clear:both;"></div></div>*** ***<div style="clear:both;"></div></div>\r\nliste***1***Pharmacie*** *** ***0***pharmacie*** ***0***1***\r\nlabelhtml***<div id="ouipharmacie" style="display:none;">*** ***<div id="ouipharmacie" style="display:none;">\r\ntexte***nb_col_pharmacie***Nombre de collections***9***12*** ***1*** ***0***0***Précisez le nombre de collections de votre université rattachées à cette discipline\r\ntexte***nb_objets_pharmacie***Nombre estimé d''objets et/ou d''échantillons***9***12*** ***1*** ***0***0***Donnez une estimation du nombre d''objets, d''échantillons, de documents, inventoriés ou non, de l''ensemble des collections rattachées à cette discipline\r\ntextelong***nb_infos_complementaires_pharmacie***Information(s) complémentaire(s)***40***5*** ***1*** ***0***0***Ecrivez toute information qui vous semble importante concernant une ou l''ensemble des collections de cette discipline\r\nlabelhtml***<div style="clear:both;"></div></div>*** ***<div style="clear:both;"></div></div>\r\nliste***1***Physique*** *** ***0***physique*** ***0***1***\r\nlabelhtml***<div id="ouiphysique" style="display:none;">*** ***<div id="ouiphysique" style="display:none;">\r\ntexte***nb_col_physique***Nombre de collections***9***12*** ***1*** ***0***0***Précisez le nombre de collections de votre université rattachées à cette discipline\r\ntexte***nb_objets_physique***Nombre estimé d''objets et/ou d''échantillons***9***12*** ***1*** ***0***0***Donnez une estimation du nombre d''objets, d''échantillons, de documents, inventoriés ou non, de l''ensemble des collections rattachées à cette discipline\r\ntextelong***nb_infos_complementaires_physique***Information(s) complémentaire(s)***40***5*** ***1*** ***0***0***Ecrivez toute information qui vous semble importante concernant une ou l''ensemble des collections de cette discipline\r\nlabelhtml***<div style="clear:both;"></div></div>*** ***<div style="clear:both;"></div></div>\r\nliste***1***Zoologie*** *** ***0***zoologie*** ***0***1***\r\nlabelhtml***<div id="ouizoologie" style="display:none;">*** ***<div id="ouizoologie" style="display:none;">\r\ntexte***nb_col_zoologie***Nombre de collections***9***12*** ***1*** ***0***0***Précisez le nombre de collections de votre université rattachées à cette discipline\r\ntexte***nb_objets_zoologie***Nombre estimé d''objets et/ou d''échantillons***9***12*** ***1*** ***0***0***Donnez une estimation du nombre d''objets, d''échantillons, de documents, inventoriés ou non, de l''ensemble des collections rattachées à cette discipline\r\ntextelong***nb_infos_complementaires_zoologie***Information(s) complémentaire(s)***40***5*** ***1*** ***0***0***Ecrivez toute information qui vous semble importante concernant une ou l''ensemble des collections de cette discipline\r\nlabelhtml***<div style="clear:both;"></div></div>*** ***<div style="clear:both;"></div></div>\r\ntexte***bf_autres_collections_museales***Autre(s) collection(s) muséale(s)***50***255*** *** *** ***0***0***\r\nlabelhtml***<h5>Collections vivantes</h5>*** ***<h5>Collections vivantes</h5>\r\nliste***1***Aquarium*** *** ***0***aquarium*** ***0***1***\r\nlabelhtml***<div id="ouiaquarium" style="display:none;">*** ***<div id="ouiaquarium" style="display:none;">\r\ntexte***bf_nb_especes_aquarium***Nombre d''espèces/individus***9***12*** ***1*** ***0***0***\r\nlabelhtml***<div style="clear:both;"></div></div>*** ***<div style="clear:both;"></div></div>\r\nliste***1***Jardin botanique*** *** ***0***jardin*** ***0***1***\r\nlabelhtml***<div id="ouijardin" style="display:none;">*** ***<div id="ouijardin" style="display:none;">\r\ntexte***bf_nb_especes_jardin***Nombre d''espèces/individus***9***12*** ***1*** ***0***0***\r\nlabelhtml***<div style="clear:both;"></div></div>*** ***<div style="clear:both;"></div></div>\r\nliste***1***Vivarium*** *** ***0***vivarium*** ***0***1***\r\nlabelhtml***<div id="ouivivarium" style="display:none;">*** ***<div id="ouivivarium" style="display:none;">\r\ntexte***bf_nb_especes_vivarium***Nombre d''espèces/individus***9***12*** ***1*** ***0***0***\r\nlabelhtml***<div style="clear:both;"></div></div>*** ***<div style="clear:both;"></div></div>\r\nliste***1***Vollière*** *** ***0***volliere*** ***0***1***\r\nlabelhtml***<div id="ouivolliere" style="display:none;">*** ***<div id="ouivolliere" style="display:none;">\r\ntexte***bf_nb_especes_volliere***Nombre d''espèces/individus***9***12*** ***1*** ***0***0***\r\nlabelhtml***<div style="clear:both;"></div></div>*** ***<div style="clear:both;"></div></div>\r\nliste***1***Zoo*** *** ***0***zoo*** ***0***1***\r\nlabelhtml***<div id="ouizoo" style="display:none;">*** ***<div id="ouizoo" style="display:none;">\r\ntexte***bf_nb_especes_zoo***Nombre d''espèces/individus***9***12*** ***1*** ***0***0***\r\nlabelhtml***<div style="clear:both;"></div></div>*** ***<div style="clear:both;"></div></div>\r\ntexte***bf_autres_collections_vivantes***Autre(s) collection(s) vivante(s)***50***255*** *** *** ***0***0***\r\nlabelhtml***<h5>Autres collections</h5>*** ***<h5>Autres collections</h5>\r\nliste***1***Arts*** *** ***0***arts*** ***0***1***\r\nlabelhtml***<div id="ouiarts" style="display:none;">*** ***<div id="ouiarts" style="display:none;">\r\ntexte***nb_col_arts***Nombre de collections***9***12*** ***1*** ***0***0***Précisez le nombre de collections de votre université rattachées à cette discipline\r\ntexte***nb_objets_arts***Nombre estimé d''objets et/ou d''échantillons***9***12*** ***1*** ***0***0***Donnez une estimation du nombre d''objets, d''échantillons, de documents, inventoriés ou non, de l''ensemble des collections rattachées à cette discipline\r\ntextelong***nb_infos_complementaires_arts***Information(s) complémentaire(s)***40***5*** ***1*** ***0***0***Ecrivez toute information qui vous semble importante concernant une ou l''ensemble des collections de cette discipline\r\nlabelhtml***<div style="clear:both;"></div></div>*** ***<div style="clear:both;"></div></div>\r\nliste***1***Géographie*** *** ***0***geographie*** ***0***1***\r\nlabelhtml***<div id="ouigeographie" style="display:none;">*** ***<div id="ouigeographie" style="display:none;">\r\ntexte***nb_col_geographie***Nombre de collections***9***12*** ***1*** ***0***0***Précisez le nombre de collections de votre université rattachées à cette discipline\r\ntexte***nb_objets_geographie***Nombre estimé d''objets et/ou d''échantillons***9***12*** ***1*** ***0***0***Donnez une estimation du nombre d''objets, d''échantillons, de documents, inventoriés ou non, de l''ensemble des collections rattachées à cette discipline\r\ntextelong***nb_infos_complementaires_geographie***Information(s) complémentaire(s)***40***5*** ***1*** ***0***0***Ecrivez toute information qui vous semble importante concernant une ou l''ensemble des collections de cette discipline\r\nlabelhtml***<div style="clear:both;"></div></div>*** ***<div style="clear:both;"></div></div>\r\ntexte***bf_autres_collections_autres***Autre(s) collection(s)***50***255*** *** *** ***0***0***\r\nlabelhtml***<h4>Espaces dédiés</h4>*** ***<h4>Espaces dédiés</h4>\r\nliste***12***Espace(s) de conservation*** ***1*** ***espace_conservation_patrimoine*** ***0***0***Indiquez ici si vous possédez des espaces de conservation\r\nlabelhtml***<div id="ouiespace_conservation_patrimoine" style="display:none;">*** ***<div id="ouiespace_conservation_patrimoine" style="display:none;">\r\ntexte***bf_surface_conservation***Surface estimée***6***255*** *** *** ***0***0***Donnez une estimation de la surface de cet (ces) espace(s) en m²\r\nlabelhtml***</div><div id="nonespace_conservation_patrimoine" style="display:none;"></div>*** ***</div><div id="nonespace_conservation_patrimoine" style="display:none;"></div>\r\nliste***12***Espace(s) d''étude*** ***1*** ***espace_etude_patrimoine*** ***0***0***Indiquez ici si vous possédez des espaces d''étude\r\nlabelhtml***<div id="ouiespace_etude_patrimoine" style="display:none;">*** ***<div id="ouiespace_etude_patrimoine" style="display:none;">\r\ntexte***bf_surface_etude***Surface estimée***6***255*** *** *** ***0***0***Donnez une estimation de la surface de cet (ces) espace(s) en m²\r\nlabelhtml***</div><div id="nonespace_etude_patrimoine" style="display:none;"></div>*** ***</div><div id="nonespace_etude_patrimoine" style="display:none;"></div>\r\nliste***12***Espace(s) de restauration*** ***1*** ***espace_restauration_patrimoine*** ***0***0***Indiquez ici si vous possédez des espaces de restauration\r\nlabelhtml***<div id="ouiespace_restauration_patrimoine" style="display:none;">*** ***<div id="ouiespace_restauration_patrimoine" style="display:none;">\r\ntexte***bf_surface_restauration***Surface estimée***6***255*** *** *** ***0***0***Donnez une estimation de la surface de cet (ces) espace(s) en m²\r\nlabelhtml***</div><div id="nonespace_restauration_patrimoine" style="display:none;"></div>*** ***</div><div id="nonespace_restauration_patrimoine" style="display:none;"></div>\r\nliste***12***Espace(s) de dépôt du matériel*** ***1*** ***espace_depot_patrimoine*** ***0***0***\r\nlabelhtml***<div id="ouiespace_depot_patrimoine" style="display:none;">*** ***<div id="ouiespace_depot_patrimoine" style="display:none;">\r\ntexte***bf_surface_depot***Surface estimée***6***255*** *** *** ***0***0***Donnez une estimation de la surface de cet (ces) espace(s) en m²\r\nlabelhtml***</div><div id="nonespace_depot_patrimoine" style="display:none;"></div>*** ***</div><div id="nonespace_depot_patrimoine" style="display:none;"></div>\r\nliste***12***Espace(s) administratif(s)*** ***1*** ***espace_admin_patrimoine*** ***0***0***\r\nlabelhtml***<div id="ouiespace_admin_patrimoine" style="display:none;">*** ***<div id="ouiespace_admin_patrimoine" style="display:none;">\r\ntexte***bf_surface_admin_patrimoine***Surface estimée***6***255*** *** *** ***0***0***Donnez une estimation de la surface de cet (ces) espace(s) en m²\r\nlabelhtml***</div><div id="nonespace_admin_patrimoine" style="display:none;"></div>*** ***</div><div id="nonespace_admin_patrimoine" style="display:none;"></div>\r\nliste***12***Espace(s) de médiation*** ***1*** ***espace_mediation*** ***0***0***\r\nlabelhtml***<div id="ouiespace_mediation" style="display:none;">*** ***<div id="ouiespace_mediation" style="display:none;">\r\ntexte***bf_surface_mediation***Surface estimée***6***255*** *** *** ***0***0***Donnez une estimation de la surface de cet (ces) espace(s) en m²\r\nlabelhtml***</div><div id="nonespace_mediation" style="display:none;"></div>*** ***</div><div id="nonespace_mediation" style="display:none;"></div>\r\ntexte***bf_entites_specifiques_patrimoine***Entité(s) spécifique(s)***50***255*** *** *** ***0***0***Indiquez ici la (les) entité(s) spécifique(s) que vous utilisez (musée, etc.)\r\nlabelhtml***<h4>Actions de médiation</h4>*** ***<h4>Actions de médiation</h4>\r\ncheckboxfiche***18***Ajouter une fiche "action de médiation"***Vous pourrez ajouter des fiches "action de médiation" une fois que votre université sera saisie.*** *** *** *** ***0***0\r\nlabelhtml***</fieldset>***<div style="clear:both;"></div></div>***</fieldset>\r\n', 'fr-FR', 'universites', 'universite'),
+(19, 'balades', '', '', 0, 0, 0, '', '', '', '', 'labelhtml***<fieldset class="tab presentation"><legend>Présentation</legend>*** ***<fieldset class="tab presentation"><legend>Présentation</legend>*** *** *** ***1***1*** ***\r\nimage***bf_image***Logo ou image de présentation de la fiche***200***200*** *** ***right*** *** ***Votre image doit être au format jpg, png ou gif\r\nlabelhtml***<h3>Descriptif</h3>*** ***<h3>Descriptif</h3>*** *** *** *** ***1***1***\r\ntexte***bf_titre***Titre***60***255*** *** *** ***1***0***\r\nlabelhtml***Thématiques*** ***Thématiques*** *** *** *** ***0***1***\r\ncheckbox***30***Th&eacute;matiques***160***1*** *** *** ***1***1\r\nlabelhtml***<br />*** ***<br />*** *** *** *** ***0***1***\r\ntextelong***bf_descriptif***Descriptif***40***20*** *** *** *** *** *** ***\r\nlabelhtml***<h3 style="clear:both;">Photos pour la galerie</h3>*** ***<div style="clear:both;"></div>*** *** *** *** ***1***1***\r\nimage***bf_image1***Image de présentation 1***140***140***600***600***left galerie*** *** ***Votre image doit faire 140 pixels de large sur 140 pixels de haut maximum\r\nimage***bf_image2***Image de présentation 2***140***140***600***600***left galerie*** *** ***Votre image doit faire 140 pixels de large sur 140 pixels de haut maximum\r\nimage***bf_image3***Image de présentation 3***140***140***600***600***left galerie*** *** ***Votre image doit faire 140 pixels de large sur 140 pixels de haut maximum\r\nimage***bf_image4***Image de présentation 4***140***140***600***600***left galerie*** *** ***Votre image doit faire 140 pixels de large sur 140 pixels de haut maximum\r\nlabelhtml*** *** ***<div style="clear:both;"></div>*** *** *** *** ***1***1***\r\ntextelong***bf_video***Vidéo***40***20*** *** *** *** *** ***Copier ici le code html de YouTube (lecteur exportable)\r\nlabelhtml***</fieldset><fieldset class="tab actu"><legend >Actualités</legend>*** ***</fieldset><fieldset class="tab actu"><legend >Actualités</legend>*** *** *** *** ***1***1\r\ninterfiche***15***Ajouter une actualité pour ce lieu*** *** *** *** *** ***0***0\r\nlabelhtml***</fieldset><fieldset class="tab infoprat"><legend >Informations Pratiques</legend>*** ***</fieldset><fieldset class="tab infoprat"><legend >Informations Pratiques</legend>*** *** *** *** ***1***1\r\ntextelong***bf_horaires***Périodes et Horaires***40***20*** *** *** *** *** *** ***\r\ntextelong***bf_tarifs***Tarifs***40***20*** *** *** *** *** *** ***\r\nliste***12***Accessibilité aux personnes à mobilité réduite*** *** ***0*** *** ***0***1***\r\nlabelhtml***</fieldset><fieldset class="tab coordonnees"><legend >Coordonnées</legend>*** ***</fieldset><fieldset class="tab coordonnees"><legend >Coordonnées</legend>*** *** *** *** ***1***1\r\nliste***19***Département*** ***1***34*** *** ***1***1\r\ntexte***bf_adresse1***Adresse postale***50***50*** *** *** ***0***0\r\ntexte***bf_adresse2***Adresse (suite)***50***50*** *** *** ***0***0\r\ntexte***bf_code_postal***Code postal***8***8*** *** *** ***0***0\r\ntexte***bf_ville***Ville***50***80*** *** *** ***1***1\r\ntexte***bf_telephone***Téléphone***15***15*** *** *** ***0***0\r\nchamps_mail***bf_mail***Courriel***40***255*** *** *** ***0***1\r\nlien_internet***bf_site_internet***Site Internet***40***255***http://*** *** ***0***0\r\nchamps_cache***bf_ce_pays***Pays***400*** ***fr*** ***gip_id_pays*** ***\r\ncarte_google*** *** ***bf_latitude***bf_longitude*** *** *** ***\r\nlabelhtml***</fieldset>*** ***</fieldset>*** *** *** *** ***1***1\r\n', 'fr-FR', 'balades', 'balades'),
+(17, 'Personne', 'personnes associées aux universités', '', 0, 0, 0, '', '', '', '', 'texte***bf_titre***Nom et prénom***60***255*** *** *** ***1***0***\r\nlistefiche***16***Université reliée*** *** *** *** *** ***1***1***\r\ncheckbox***36***Domaine(s) rattaché(s)*** *** *** *** *** ***1***1***\r\nlabelhtml***<h3>Informations générales</h3>*** ***<h3>Informations générales</h3>*** *** *** *** ***1***1***\r\ntexte***bf_fonctions***Fonction(s)***60***255*** *** *** ***1***0***\r\nliste***34***Statut*** *** *** *** *** ***1***0***\r\nliste***35***Type emploi*** *** *** *** *** ***1***0***(plein temps ; temps partiel)\r\ntexte***bf_entite_rattachement_directe***Entité de rattachement directe***60***255*** *** *** ***1***0***A quelle entité la personne est-elle directement attachée? Par exemple : Si la personne est rattaché au service communication de l''université, vous répondez "Service communication"\r\ntexte***bf_entite_rattachement_globale***Entité de rattachement globale***60***255*** *** *** ***1***0***Quelle est la hiérarchie supérieure de la personne? Par exemple : Si la personne est rattachée au service communication de l''université qui est lui-même rattaché à la direction de la Culture, vous répondez "Direction de la Culture"\r\nlabelhtml***<h3>Coordonnées</h3>*** ***<h3>Coordonnées</h3>*** *** *** *** ***1***1***\r\ntexte***bf_telephone***Téléphone***15***15*** *** *** ***0***0\r\nchamps_mail***bf_mail***Courriel***40***255*** *** *** ***1***1\r\ntexte***bf_adresse1***Adresse postale***50***50*** *** *** ***1***0\r\ntexte***bf_adresse2***Adresse (suite)***50***50*** *** *** ***0***0\r\ntexte***bf_code_postal***Code postal***8***8*** *** *** ***1***0\r\ntexte***bf_ville***Ville***50***80*** *** *** ***1***0\r\nliste***19***Département*** ***1*** *** *** ***1***1*** *** *** ***0***0***\r\nchamps_cache***bf_ce_pays***Pays***400*** ***fr*** ***gip_id_pays*** ***\r\ncarte_google*** *** ***bf_latitude***bf_longitude*** *** *** ***\r\nlabelhtml***<h3>Informations complémentaires</h3>*** ***<h3>Informations complémentaires</h3>*** *** *** *** ***1***1***\r\ntextelong***bf_informations_complementaires***Informations complémentaires***40***20*** *** *** *** \r\n', 'fr-FR', 'universites', 'personnel'),
+(20, 'Actions de médiation', 'pour les universités', '', 0, 0, 0, '', '', '', '', 'texte***bf_titre***Nom de l''action de médiation***60***255*** *** *** ***1***0***Entrer le descriptif de l''action\r\nlistefiche***16***Université reliée*** *** *** *** *** ***1***1***\r\ncheckbox***36***Domaine(s) rattaché(s)*** *** *** *** *** ***1***1***\r\ntexte***bf_type_action_autre***Type d''action (si autre)***60***255*** *** *** ***1***0***\r\ntexte***bf_participation_evenement***Participation à un événement national***60***255*** *** *** ***1***0***\r\nlabelhtml***<h3>Responsable</h3>*** ***<h3>Responsable</h3>*** *** *** *** ***1***1***\r\ntexte***bf_nom***Nom***60***255*** *** *** ***1***0***\r\ntexte***bf_prenom***Prénom***60***255*** *** *** ***1***0***\r\ntexte***bf_fonctions***Fonction(s)***60***255*** *** *** ***1***0***\r\nlabelhtml***<h3>Informations complémentaires</h3>*** ***<h3>Informations complémentaires</h3>*** *** *** *** ***1***1***\r\ntextelong***bf_informations_complementaires***Informations complémentaires***60***10*** *** *** *** \r\n', 'fr-FR', 'universites', 'actionsdemediation');

@@ -21,7 +21,7 @@
 // | along with Foobar; if not, write to the Free Software                                                |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: wiki.php,v 1.4 2009/09/09 15:36:37 mrflos Exp $
+// CVS : $Id: wiki.php,v 1.5 2010/03/04 14:19:04 mrflos Exp $
 /**
 * wiki.php
 *
@@ -32,14 +32,14 @@
 *@author        Florian SCHMITT <florian.schmitt@laposte.net>
 //Autres auteurs :
 *@copyright     outils-reseaux-coop.org 2008
-*@version       $Revision: 1.4 $ $Date: 2009/09/09 15:36:37 $
+*@version       $Revision: 1.5 $ $Date: 2010/03/04 14:19:04 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
 // +------------------------------------------------------------------------------------------------------+
 // |                                            ENTETE du PROGRAMME                                       |
 // +------------------------------------------------------------------------------------------------------+
-
+//error_reporting(E_ALL);
 //chemin relatif d'acces au bazar
 define ('BAZ_CHEMIN', 'tools'.DIRECTORY_SEPARATOR.'bazar'.DIRECTORY_SEPARATOR);
 
@@ -58,10 +58,23 @@ require_once BAZ_CHEMIN.'actions'.DIRECTORY_SEPARATOR.'bazar'.DIRECTORY_SEPARATO
 // |                                            CORPS du PROGRAMME                                        |
 // +------------------------------------------------------------------------------------------------------+
 
-$GLOBALS['_BAZAR_']['wiki']=new Wiki($wakkaConfig);
+$GLOBALS['_BAZAR_']['wiki'] = new Wiki($wakkaConfig);
+
+$wikireq = $_REQUEST['wiki'];
+// remove leading slash
+$wikireq = preg_replace("/^\//", "", $wikireq);
+// split into page/method, checking wiki name & method name (XSS proof)
+if (preg_match('`^' . '(' . "[A-Za-z0-9]+" . ')/(' . "[A-Za-z0-9_-]" . '*)' . '$`', $wikireq, $matches))
+{
+	list(, $page, $method) = $matches;
+}
+elseif (preg_match('`^' . "[A-Za-z0-9]+" . '$`', $wikireq))
+{
+	$page = $wikireq;
+}
 
 // Variable d'url
-$GLOBALS['_BAZAR_']['url'] = new Net_URL($wakkaConfig['base_url'].$_GET['wiki']);
+$GLOBALS['_BAZAR_']['url'] = new Net_URL($wakkaConfig['base_url'].$page);
 
 // Connection a la base de donnee
 $dsn='mysql://'.$wakkaConfig['mysql_user'].':'.$wakkaConfig['mysql_password'].'@'.$wakkaConfig['mysql_host'].'/'.$wakkaConfig['mysql_database'];
@@ -83,7 +96,7 @@ if ($resultat->numRows() == 0) {
                     $ligne_suivante='FIN';
                 } else {
                     $ligne_suivante=$lines[$i+1];
-                }            
+                }
                 while ($i<count($lines)) {
                     $line_in=$ligne_courante;
                     while (($i < count($lines)) && ((substr($ligne_suivante, 0, 6) != 'INSERT') && (substr($ligne_suivante, 0, 6) != 'CREATE') ) && ($ligne_suivante != 'FIN')) {
@@ -96,12 +109,12 @@ if ($resultat->numRows() == 0) {
                         $ligne_suivante=$lines[$i+1];
                         }
                     }
-                        
+
                     $requete = $line_in;
-                    
+
                     //requete sql
                     $result = $GLOBALS['_BAZAR_']['db']->query ($requete);
-                    
+
                     $i++;
                     $ligne_courante=$lines[$i];
                     if (($i+1)>=count($lines))  {
@@ -109,7 +122,7 @@ if ($resultat->numRows() == 0) {
                     } else {
                         $ligne_suivante=$lines[$i+1];
                     }
-                    
+
                     //if ($i == (int)$this->test) {
                     //    break;
                     //}
@@ -119,14 +132,14 @@ if ($resultat->numRows() == 0) {
         } else {
             echo 'Fichier sql introuvable'."\n";
         }
-        
+
 }
 
 
 // +------------------------------------------------------------------------------------------------------+
 // |                             LES CONSTANTES DES ACTIONS DE BAZAR                                      |
 // +------------------------------------------------------------------------------------------------------+
-define ('BAZ_VOIR_TOUTES_ANNONCES', 'recherche') ;
+define ('BAZ_MOTEUR_RECHERCHE', 'recherche') ;
 define ('BAZ_ACTION_VOIR_VOS_ANNONCES', 'vos_fiches');
 define ('BAZ_DEPOSER_ANNONCE', 'choisir_type_fiche') ;
 define ('BAZ_ANNONCES_A_VALIDER', 'voir_validation') ;
@@ -134,7 +147,6 @@ define ('BAZ_GERER_DROITS', 'droits') ;
 define ('BAZ_ADMINISTRER_ANNONCES', 'voir_admin_fiches') ;
 define ('BAZ_MODIFIER_FICHE', 'modif_fiches') ;
 define ('BAZ_VOIR_FICHE', 'voir_fiche') ;
-define ('BAZ_SUPPRIMER_FICHE', 'supprimer_fiche') ;
 define ('BAZ_ACTION_NOUVEAU', 'saisir_fiche') ;
 define ('BAZ_ACTION_NOUVEAU_V', 'sauver_fiche') ;
 define ('BAZ_ACTION_MODIFIER', 'modif_fiche') ;
@@ -142,7 +154,7 @@ define ('BAZ_ACTION_MODIFIER_V', 'modif_sauver_fiche') ;
 define ('BAZ_ACTION_SUPPRESSION', 'supprimer') ;
 define ('BAZ_ACTION_PUBLIER', 'publier') ;
 define ('BAZ_ACTION_PAS_PUBLIER', 'pas_publier') ;
-define ('BAZ_S_INSCRIRE', 'rss');
+define ('BAZ_LISTE_RSS', 'rss');
 define ('BAZ_VOIR_FLUX_RSS', 'affiche_rss');
 
 // Constante des noms des variables
@@ -150,7 +162,7 @@ define ('BAZ_VARIABLE_VOIR', 'vue');
 define ('BAZ_VARIABLE_ACTION', 'action');
 
 // Indique les onglets de vues a afficher.
-define ('BAZ_VOIR_AFFICHER', 'consulter,rss,saisir,formulaire,administrer,droits');
+define ('BAZ_VOIR_AFFICHER', 'mes_fiches,consulter,rss,saisir,formulaire,administrer,droits');
 
 // Permet d'indiquer la vue par defaut si la variable vue n'est pas defini
 define ('BAZ_VOIR_DEFAUT', 'consulter');
@@ -164,6 +176,10 @@ define ('BAZ_VOIR_GESTION_DROITS', 'droits');
 
 // Constante pour se passer d'identification
 define ('BAZ_SANS_AUTH', true);
+
+// Constante pour l'envoi automatique de mail aux admins
+define ('BAZ_ENVOI_MAIL_ADMIN', true);
+define ('BAZ_ADRESSE_MAIL_ADMIN', 'accueil@outils-reseaux.org');
 
 
 //==================================== LES FLUX RSS==================================
@@ -188,7 +204,7 @@ define('BAZ_RSS_CATEGORIE', 'Economie Sociale et Solidaire'); //categorie du flu
 define ('BAZ_ETAT_VALIDATION', 1);
 
 //Valeur maximale en octets pour la taille d'un fichier joint a telecharger
-define ('BAZ_TAILLE_MAX_FICHIER', 2000*1024);
+define ('BAZ_TAILLE_MAX_FICHIER', 10000*1024);
 
 //Type d'affichage des dates dans la liste
 //Mettre jma pour jour mois annee, ou jm, ou jmah
@@ -247,7 +263,7 @@ define ('BAZ_SQUELETTE_DEFAUT', 'baz_cal.tpl.html');
 
 
 //=========================== PARAMETRAGE GOOGLE MAP API ===========================
-// parametres pour la carto google 
+// parametres pour la carto google
 //==================================================================================
 
 // coordonnees du centre de la carte
@@ -258,7 +274,7 @@ define ('BAZ_GOOGLE_CENTRE_LON', '3.438720703125');
 define ('BAZ_GOOGLE_ALTITUDE', '8'); // de 1 (plus eloigne) a 15 (plus proche)
 
 // type de carto google
-define ('BAZ_TYPE_CARTO', 'TERRAIN'); //ROADMAP ou SATELLITE ou HYBRID ou TERRAIN 
+define ('BAZ_TYPE_CARTO', 'TERRAIN'); //ROADMAP ou SATELLITE ou HYBRID ou TERRAIN
 
 // taille de la carte a l'ecran
 define ('BAZ_GOOGLE_IMAGE_LARGEUR', '100%');  // valeur de l'attribut css width de la carte
@@ -280,6 +296,7 @@ define ('BAZ_COORD_ARRIVEE_IMAGE_OMBRE_MARQUEUR','0,20');
 define ('BAZ_AFFICHER_NAVIGATION','true'); // true ou false
 define ('BAZ_AFFICHER_CHOIX_CARTE','true'); // true ou false
 define ('BAZ_AFFICHER_ECHELLE','false'); // true ou false
+define ('BAZ_PERMETTRE_ZOOM_MOLETTE','false');
 define ('BAZ_STYLE_NAVIGATION','ZOOM_PAN'); // SMALL ou ZOOM_PAN ou ANDROID ou DEFAULT
 define ('BAZ_STYLE_CHOIX_CARTE','DROPDOWN_MENU'); // HORIZONTAL_BAR ou DROPDOWN_MENU ou DEFAULT
 

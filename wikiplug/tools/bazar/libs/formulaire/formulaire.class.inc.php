@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: formulaire.class.inc.php,v 1.2 2008/07/29 17:32:25 mrflos Exp $
+// CVS : $Id: formulaire.class.inc.php,v 1.3 2010/03/04 14:19:02 mrflos Exp $
 /**
 * Formulaire
 *
@@ -30,7 +30,7 @@
 *@author        Florian SCHMITT <florian@ecole-et-nature.org>
 //Autres auteurs :
 *@copyright     Tela-Botanica 2000-2004
-*@version       $Revision: 1.2 $ $Date: 2008/07/29 17:32:25 $
+*@version       $Revision: 1.3 $ $Date: 2010/03/04 14:19:02 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -61,6 +61,22 @@ require_once bugFixRequirePath('../../../api/pear/HTML/QuickForm.php') ;
 require_once bugFixRequirePath('../../../api/pear/HTML/QuickForm/html.php') ;
 require_once bugFixRequirePath('../../../api/pear/HTML/QuickForm/textarea.php') ;
 require_once 'formulaire.fonct.inc.php' ;
+
+class formulaire {
+	function formulaire($url, $langue, $template_champs_formulaire) {}	
+	function formulaire_saisie() {}
+	function formulaire_recherche() {}
+	function affiche_enregistrement($id_fiche) {}
+	function sauver_enregistrement($id_fiche='') {}
+	function effacer_enregistrement($id_fiche) {}
+	function valeurs_enregistrement($id_fiche) {}
+	function tableau_valeurs_enregistrements($recherche) {}
+	function genere_rss($tab_enregistrement) {}
+	function genere_liste($tab_enregistrement) {}
+	function genere_ical($tab_enregistrement) {}
+	function genere_liste($tab_enregistrement) {}
+}
+
 
 class HTML_formulaire extends HTML_Quickform {
     /**

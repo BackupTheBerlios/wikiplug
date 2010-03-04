@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: baz_langue_fr.inc.php,v 1.5 2009/08/01 17:01:58 mrflos Exp $
+// CVS : $Id: baz_langue_fr.inc.php,v 1.6 2010/03/04 14:19:04 mrflos Exp $
 /**
 * Fichier de traduction en fran�ais de l'application Bazar
 *
@@ -30,13 +30,9 @@
 //Autres auteurs :
 *@author        Aucun
 *@copyright     Tela-Botanica 2000-2004
-*@version       $Revision: 1.5 $ $Date: 2009/08/01 17:01:58 $
+*@version       $Revision: 1.6 $ $Date: 2010/03/04 14:19:04 $
 // +------------------------------------------------------------------------------------------------------+
 */
-
-if (file_exists(BAZ_CHEMIN_APPLI.'langues/baz_langue_fr.local.php')) {
-	include_once BAZ_CHEMIN_APPLI.'langues/baz_langue_fr.local.php' ;
-}
 
 define ('BAZ_FORMULAIRE', 'Formulaires');
 define ('BAZ_MODIFIER_FORMULAIRES', 'Gestion des formulaires');
@@ -44,7 +40,7 @@ define ('BAZ_INTRO_MODIFIER_FORMULAIRE', 'Pour &eacute;diter un formulaire, cliq
 define ('BAZ_CONFIRM_SUPPRIMER_FORMULAIRE', 'Attention! Toutes les donn&eacute;es enregistr&eacute;es seront perdues.. Etes-vous s&ucirc;rs de vouloir supprimer ce type de formulaire et toutes ses fiches associ&eacute;es');
 define ('BAZ_NOUVEAU_FORMULAIRE', 'Saisir un nouveau type de questionnaire');
 define ('BAZ_FORMULAIRE_ET_FICHES_SUPPRIMES', 'Le type de formulaire et ses fiches associ&eacute;es ont bien &eacute;t&eacute; supprim&eacute;s.');
-define ('BAZ_NOM_FORMULAIRE','Nom du formulaire'); 	
+define ('BAZ_NOM_FORMULAIRE','Nom du formulaire');
 define ('BAZ_EFFACER', 'Effacer');
 define ('BAZ_TEMPLATE','Template');
 define ('BAZ_CONDITION','Conditions de saisie');
@@ -61,9 +57,9 @@ define ('BAZ_FICHE_ENREGISTREE', 'La fiche a bien &eacute;t&eacute; enregistr&ea
 define ('BAZ_TITREAPPLI','Gestionnaire de fiches (Bazar) ');
 define ('BAZ_DESCRIPTIONAPPLI','D&eacute;couvrez Bazar, une application de gestion de fiches class&eacute;es, consultables en ligne ou par flux RSS, grandement personnalisable.');
 define ('BAZ_MOTS_CLES','Bazar, fiches, flux, rss, nouveaut&eacute;, information, gestionnaire, xml, syndication, info, application, php, dynamique, mise, aacute; , jour ');
-if (!defined ('BAZ_TOUTES_LES_ANNONCES')) define ('BAZ_TOUTES_LES_ANNONCES', 'Consulter les fiches');
+if (!defined ('BAZ_TOUTES_LES_ANNONCES')) define ('BAZ_TOUTES_LES_ANNONCES', 'Recherche avanc&eacute;e');
 define ('BAZ_CONSULTER_FICHES_VALIDEES', 'Consulter les fiches valid&eacute;es');
-define ('BAZ_TOUTES_LES_ANNONCES_DE_TYPE', 'Consulter toutes les fiches de type:');
+define ('BAZ_TOUTES_LES_ANNONCES_DE_TYPE', 'Rechercher : ');
 define ('BAZ_TOUS_TYPES_FICHES', 'Tous types de fiches');
 if (!defined ('BAZ_TOUS_LES_EMETTEURS')) define ('BAZ_TOUS_LES_EMETTEURS', 'Tous les emetteurs');
 define ('BAZ_ENTRER_VOS_CRITERES_DE_RECHERCHE','Pr&eacute;cisez vos crit&egrave;res de recherche et appuyez sur le bouton "Rechercher" pour consulter les fiches.');
@@ -73,7 +69,7 @@ define ('BAZ_NOM', 'Nom') ;
 define ('BAZ_PRENOM', 'Pr&eacute;nom') ;
 define ('BAZ_TOUS', 'Tous');
 define ('BAZ_TOUTES', 'Toutes');
-define ('BAZ_MOT_CLE', 'Mots cl&eacute;s');
+define ('BAZ_MOT_CLE', 'mots cl�s (facultatif)');
 if (!defined ('BAZ_EMETTEUR')) define ('BAZ_EMETTEUR', '&Eacute;metteur');
 define ('BAZ_NATURE', 'Nature de la fiche' );
 define ('BAZ_STATUT', 'Statut' );
@@ -98,9 +94,9 @@ define ('BAZ_ETATPUBLICATION', 'Etat de publication') ;
 define ('BAZ_ENCOURSDEVALIDATION', 'En attente de validation');
 define ('BAZ_REJETEE', 'Rejet&eacute;e');
 define ('BAZ_PUBLIEE', 'Publi&eacute;e') ;
-define ('BAZ_PAS_DE_FICHE', '<br />Vous n\'avez pas encore d&eacute;pos&eacute; de fiches.') ;
+define ('BAZ_PAS_DE_FICHE', '<br />Vous n\'avez pas encore saisi de fiches.') ;
 define ('BAZ_PAS_DE_FICHE_A_VALIDER', 'Pas de fiche &agrave; valider pour l\'instant.');
-define ('BAZ_VOS_ANNONCES', 'Vos fiches d&eacute;pos&eacute;es') ;
+define ('BAZ_VOS_ANNONCES', 'Mes fiches saisies') ;
 define ('BAZ_ANNONCES_A_ADMINISTRER', 'Les fiches &agrave; valider') ;
 define ('BAZ_MOTS_DE_PASSE_DIFFERENTS', 'Les mots de passe sont diff&eacute;rents !') ;
 define ('BAZ_EMAIL_REQUIS', 'Vous devez saisir un email.') ;
@@ -115,7 +111,7 @@ define ('BAZ_MODIFIER_LA_FICHE', 'Modifier la fiche') ;
 define ('BAZ_SUPPRIMER', 'Supprimer') ;
 define ('BAZ_SELECTION', '--S&eacute;lectionnez ici--');
 define ('BAZ_DROITS_PAR_TYPE', 'Droits par type de fiches:');
-define ('BAZ_TITRE_SAISIE_ANNONCE', 'Entrer une fiche de type: ');
+define ('BAZ_TITRE_SAISIE_ANNONCE', 'Saisir une fiche : ');
 define ('BAZ_ACCUEIL','Accueil');
 define ('BAZ_SORTIRDELAPPLI','Quittez l\'application Bazar');
 define ('BAZ_DEPOSE_UNE_NOUVELLE_ANNONCE', 'Saisir une fiche') ;
@@ -146,9 +142,9 @@ if (!defined ('BAZ_LAIUS_S_ABONNER')) define ('BAZ_LAIUS_S_ABONNER', 'Il y a deu
 define ('BAZ_SE_DESABONNER', 'Se d&eacute;sabonner');
 define ('BAZ_RSS', 'Flux RSS');
 define ('BAZ_DERNIERE_ACTU', 'Derni&egrave;res actualit&eacute;s');
-if (!defined ('BAZ_DERNIERES_FICHES')) define ('BAZ_DERNIERES_FICHES', 'Les derni&egrave;res fiches enregistr&eacute;es');
+if (!defined ('BAZ_DERNIERES_FICHES')) define ('BAZ_DERNIERES_FICHES', 'Les derni&egrave;res fiches saisies');
 define ('BAZ_A_MODERER',' &agrave; mod&eacute;rer');
-define ('BAZ_CONSULTER','Consulter');
+define ('BAZ_CONSULTER','Rechercher');
 define ('BAZ_SAISIR','Saisir');
 define ('BAZ_ADMINISTRER','Administrer');
 define ('BAZ_FICHE_ECRITE','Fiche &eacute;crite par : ');
@@ -172,7 +168,7 @@ define ('BAZ_FICHES_PERIMEES','Seulement les fiches p&eacute;rim&eacute;es');
 define ('BAZ_FICHES_PAS_PERIMEES','Seulement les fiches non p&eacute;rim&eacute;es');
 define ('BAZ_TOUTES_LES_DATES','Les fiches p&eacute;rim&eacute;es et non p&eacute;rim&eacute;es');
 define ('BAZ_DATE','Dates des fiches');
-define ('BAZ_VOIR_VOS_ANNONCES', 'Vos fiches');
+define ('BAZ_VOIR_VOS_ANNONCES', 'Mes fiches');
 define ('BAZ_RECHERCHER','Rechercher');
 define ('BAZ_SAISIR_UNE_NOUVELLE_FICHE','Saisir une nouvelle fiche');
 define ('BAZ_POUR_CHANGER_IMAGE','Pour changer d\'image, il suffit d\'en saisir une autre ci dessous.');
@@ -185,7 +181,7 @@ define ('BAZ_GOOGLE_MSG', '<br />Si l\'&eacute;v&egrave;nement est bien situ&eac
 define ('BAZ_SUPPRIMER_LA_FICHE', 'Supprimer la fiche');
 define ('BAZ_INVALIDER_LA_FICHE', 'Invalider la fiche');
 define ('BAZ_TOUTES_LES_FICHES', 'Toutes les fiches');
-
+define ('BAZ_PAS_DROIT_SUPPRIMER', 'Vous n\'avez pas les droits pour supprimer cette fiche');
 define ('BAZ_LATITUDE', 'Latitude');
 define ('BAZ_LONGITUDE', 'Longitude');
 define ('BAZ_VERIFIER_MON_ADRESSE', 'V&eacute;rifier mon adresse avec la carte');
@@ -491,6 +487,9 @@ define ('BAZ_DECEMBRE','D&eacute;cembre');
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: baz_langue_fr.inc.php,v $
+* Revision 1.6  2010/03/04 14:19:04  mrflos
+* nouvelle version bazar
+*
 * Revision 1.5  2009/08/01 17:01:58  mrflos
 * nouvelle action bazarcalendrier, correction bug typeannonce, validité html améliorée
 *
