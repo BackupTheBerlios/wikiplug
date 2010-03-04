@@ -92,7 +92,7 @@
 	    descript = document.ACEditor.description.value;
 	    align = document.ACEditor.alignment.value;
 
-	    lft= " {{attach file=\"" + nom + "\" desc=\"" + descript + "\" class=\"" + align + "\" }} ";
+	    lft= "{{attach file=\"" + nom + "\" desc=\"" + descript + "\" class=\"" + align + "\" }}";
 	    rgt = "";
         wrapSelectionBis(txtarea, lft, rgt);
 		return;

@@ -41,7 +41,7 @@ if ($this->HasAccess("write") && $this->HasAccess("read"))
 		<img class=\"buttons\" onmouseover=\"mouseover(this);\" onmouseout=\"mouseout(this);\" onmousedown=\"mousedown(this);\" onmouseup=\"mouseup(this);\" onclick=\"wrapSelection(thisForm.body,'%%(php)','%%');\" src=\"tools/aceditor/ACEdImages/php.gif\" title=\"Code PHP\" alt=\"\" />
 		</div>
 		<div id=\"toolbar_suite\">   		   
-		<img class=\"buttons\" onmouseover=\"mouseover(this);\" onmouseout=\"mouseout(this);\" onmousedown=\"mousedown(this);\" onmouseup=\"mouseup(this);\" onclick=\"wrapSelectionWithImage(thisForm.body);\" src=\"tools/aceditor/ACEdImages/image.gif\"    title=\"ins�re un tag image \" alt=\"\" />		
+		<img class=\"buttons\" onmouseover=\"mouseover(this);\" onmouseout=\"mouseout(this);\" onmousedown=\"mousedown(this);\" onmouseup=\"mouseup(this);\" onclick=\"wrapSelectionWithImage(thisForm.body);\" src=\"tools/aceditor/ACEdImages/image.gif\"    title=\"ins&egrave;re un tag image \" alt=\"\" />		
 		<span class=\"texteChampsImage\">
 		&nbsp;&nbsp;Fichier&nbsp;<input type=\"text\" name=\"filename\" class=\"ACsearchbox\" size=\"10\"/>&nbsp;&nbsp;Description&nbsp;<input type=\"text\" name=\"description\" class=\"ACsearchbox\" size=\"10\"/>
 		&nbsp;&nbsp;Alignement&nbsp;<select id=\"alignment\" class=\"ACsearchbox\">
