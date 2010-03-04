@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version : nouvelle fonctionnalitï¿½ du HEAD, nouvelle branche
+# Version : nouvelle fonctionnalité du HEAD, nouvelle branche
 # Release : correction de livraison, tag
 # Prendre modele sur hashcash V1
 # L'arborescence locale contient les branches (V0, V1 etc) qui font office de head. Au moment de la livraison, pose de tag.
@@ -30,7 +30,7 @@
 #  Toolsmng_V1_R1 revision/tag
 #  
 #  Wikiplug_V0_R1 branch
-#  Wikiplug_V0_R2 branch (aurait du ï¿½tre revision/tag)
+#  Wikiplug_V0_R2 branch (aurait du être revision/tag)
 #  
 #  
 
@@ -119,9 +119,9 @@ mv all.zip distrib
 
 mkdir distrib/plugins
 cd ..
-sh make_plug.sh
+# sans doute plus utilisé : sh make_plug.sh
 
 # Copie vers serveur
-sitecopy --update outils-reseaux.org-download-wikini-base
+# sitecopy --update outils-reseaux.org-download-wikini-base
 
 
