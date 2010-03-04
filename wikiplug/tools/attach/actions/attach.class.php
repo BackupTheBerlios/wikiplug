@@ -42,8 +42,8 @@ if (!defined("WIKINI_VERSION"))
 if (!class_exists('attach')){
 
 class attach {
-	var $wiki = '';					//objet wiki courant
-   var $attachConfig = array();	//configuration de l'action
+   var $wiki = '';					//objet wiki courant
+   var $attachConfig = array();		//configuration de l'action
    var $file = '';					//nom du fichier
    var $desc = '';					//description du fichier
    var $link = '';					//url de lien (image sensible)
@@ -54,7 +54,7 @@ class attach {
    var $classes = '';				//classe pour afficher une image
    var $attachErr = '';				//message d'erreur
    var $pageId = 0;					//identifiant de la page
-   var $isSafeMode = false;		//indicateur du safe mode de PHP
+   var $isSafeMode = false;			//indicateur du safe mode de PHP
    /**
    * Constructeur. Met les valeurs par defaut aux paramètres de configuration
    */
@@ -73,6 +73,7 @@ class attach {
 		if (empty($this->attachConfig['fmDelete_symbole'])) $this->attachConfig['fmDelete_symbole'] = 'Supr';
 		if (empty($this->attachConfig['fmRestore_symbole'])) $this->attachConfig['fmRestore_symbole'] = 'Rest';
 		if (empty($this->attachConfig['fmTrash_symbole'])) $this->attachConfig['fmTrash_symbole'] = 'Poubelle';
+		
 		$this->isSafeMode = ini_get("safe_mode");
 	}
 /******************************************************************************
@@ -129,7 +130,7 @@ class attach {
 		//decompose le nom du fichier en nom+extension
 		if (preg_match('`^(.*)\.(.*)$`', str_replace(' ','_',$this->file), $match)){
 			list(,$file['name'],$file['ext'])=$match;
-			if(!$this->isPicture() && !$this->isAudio() && !$this->isFreeMindMindMap() && !$this->isWma()) $file['ext'] .= '_';
+			if(!$this->isPicture() && !$this->isAudio() && !$this->isFreeMindMindMap() && !$this->isWma() && !$this->isFlashvideo()) $file['ext'] .= '_';
 		}else{
 			return false;
 		}
@@ -293,6 +294,8 @@ class attach {
    		foreach ($array_classes as $c) { $this->classes = $this->classes . "attach_" . $c . " "; }
    		$this->classes = trim($this->classes);
 		}
+		$height = $this->wiki->GetParameter('height');
+		$width = $this->wiki->GetParameter('width');
 	}
 	/**
 	* Affiche le fichier lié comme une image
@@ -330,89 +333,30 @@ class attach {
 	}
 	// Affiche le fichier liee comme un fichier audio
 	function showAsAudio($fullFilename){
-		$output =  '<object type="application/x-shockwave-flash" data="tools/attach/players/dewplayer.swf?son='.$fullFilename.'&amp;bgcolor=EEEEEE&amp;showtime=1" width="200" height="20"><param name="wmode" value="transparent" />
-						<param name="movie" value="tools/attach/players/dewplayer.swf?son='.$fullFilename.'&amp;bgcolor=EEEEEE&amp;showtime=1" />
-					</object>';
-		$output .="[<a href=\"$fullFilename\" title=\"T&eacute;l&eacute;charger le fichier mp3\">mp3</a>]";
+		$output = $this->wiki->format('{{player url="'.str_replace('wakka.php?wiki=', '', $this->wiki->getConfig['base_url']).$fullFilename.'"}}');
 		echo $output;
 		$this->showUpdateLink();
 	}
 
 		// Affiche le fichier liee comme un fichier mind map  freemind
 	function showAsFreeMindMindMap($fullFilename){
-        $haut=$this->haut;
-        $large=$this->large;
-        if (!$haut) $haut = "650";
-        if (!$large) $large = "100%";
-        $mindmap_url = $this->wiki->href("download",$this->wiki->GetPageTag(),"file=$this->file");     	
-		$output = '<object width="'.$large.'" height="'.$haut.'" type="application/x-shockwave-flash" data="tools/attach/players/visorFreemind.swf">
-			<param value="false" name="allowfullscreen"/>
-			<param value="always" name="allowscriptaccess"/>
-			<param value="high" name="quality"/>
-			<param value="false" name="cachebusting"/>
-			<param value="middle" name="align"/>
-			<param value="opaque" name="wmode"/>
-			<param value="openUrl=_blank&amp;initLoadFile='.$fullFilename.'&amp;startCollapsedToLevel=5" name="flashvars"/>
-		</object>';
-		$output .="[<a href=\"$fullFilename\" title=\"T&eacute;l&eacute;charger le fichier Freemind\">mm</a>]";
+        $output = $this->wiki->format('{{player url="'.str_replace('wakka.php?wiki=', '', $this->wiki->getConfig['base_url']).$fullFilename.'" '.
+         'height="'.(!empty($height) ? $height : '650px').'" '.
+         'width="'.(!empty($width) ? $width : '100%').'"}}');
 		echo $output;
 		$this->showUpdateLink();
       }
       
 // Affiche le fichier liee comme un fichier mind map  freemind
 	function showAsWma($fullFilename){
-        $haut=$this->haut;
-        $large=$this->large;
-        if (!$haut) $haut = "30";
-        if (!$large) $large = "100";
-        $wma_url = $this->wiki->href("download",$this->wiki->GetPageTag(),"file=$this->file");
-        $output = '<embed src="'.$fullFilename.'" autostart="false" loop="false" console="true" height="'.$haut.'" width="'.$large.'" />';
-		$output .="[<a href=\"$fullFilename\" title=\"T&eacute;l&eacute;charger le fichier wma\">wma</a>]";
-		echo $output;
-		$this->showUpdateLink();
+        
       }
       
 		// Affiche le fichier liee comme une video flash
 	function showAsFlashvideo($fullFilename){
-        $haut=$this->haut;
-        $large=$this->large;
-        if (!$haut) $haut = "300px";
-        if (!$large) $large = "400px";
-        $video_url = $this->wiki->href("download",$this->wiki->GetPageTag(),"file=$this->file");
-     	$output = '<a  
-						 href="'.$fullFilename.'"  
-						 style="display:block;width:'.$large.';height:'.$haut.'"  
-						 class="flvplayer"> 
-					</a>'."\n";         
-		$output .='<script type="text/javascript" src="tools/attach/players/flowplayer-3.0.6.min.js"></script> 
-<script>
-	flowplayer("a.flvplayer", "tools/attach/players/flowplayer-3.0.7.swf", { 
-	    clip:  { 
-		autoPlay: false, 
-		autoBuffering: true 
-	    },
-	    plugins:  { 
-	        controls: {             
-			url: \'tools/attach/players/flowplayer.controls-3.0.4.swf\', 
-			autoHide: \'always\', 
-			 
-			// which buttons are visible and which are not? 
-			play:true,      
-			volume:true, 
-			mute:true,  
-			time:true,  
-			stop:true, 
-			playlist:false,  
-			fullscreen:true, 
-			 
-			// scrubber is a well-known nickname for the timeline/playhead combination 
-			scrubber: true         
-			 
-			// you can also use the "all" flag to disable/enable all controls 
-		}
-	    } 
-	});
-</script>';
+        $output = $this->wiki->format('{{player url="'.str_replace('wakka.php?wiki=', '', $this->wiki->getConfig['base_url']).$fullFilename.'" '.
+         'height="'.(!empty($height) ? $height : '300px').'" '.
+         'width="'.(!empty($width) ? $width : '400px').'"}}');
 		echo $output;
 		$this->showUpdateLink();
       }

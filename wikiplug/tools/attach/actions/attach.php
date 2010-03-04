@@ -117,7 +117,6 @@ if (!defined("WIKINI_VERSION"))
         die ("acc&egrave;s direct interdit");
 }
 
-
 if (!class_exists('attach')){
 	include('tools/attach/actions/attach.class.php');
 }

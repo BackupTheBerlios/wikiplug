@@ -34,11 +34,11 @@ if (!defined("WIKINI_VERSION"))
 $url = $this->GetParameter('url');
 if (empty($url)) exit($this->Format("//Action player : paramêtre url obligatoire.//"));
 
-$haut = $this->GetParameter('haut');
-if (empty($haut)) $haut="300px";
+$height = $this->GetParameter('height');
+if (empty($height)) $height="300px";
 
-$large = $this->GetParameter('large');
-if (empty($large)) $large="400px";
+$width = $this->GetParameter('width');
+if (empty($width)) $width="400px";
 
 
 if (fopen($url, "r")) 
@@ -56,19 +56,19 @@ if (fopen($url, "r"))
 	{
 		$output = '<a  
 						 href="'.$url.'"  
-						 style="display:block;width:'.$large.';height:'.$haut.'"  
+						 style="display:block;width:'.$width.';height:'.$height.'"  
 						 class="flvplayer"> 
 					</a>'."\n";         
-		$output .= '<script type="text/javascript" src="tools/attach/players/flowplayer-3.0.6.min.js"></script> 
+		$output .= '<script type="text/javascript" src="tools/attach/players/flowplayer-3.1.4.min.js"></script> 
 					<script>
-						flowplayer("a.flvplayer", "tools/attach/players/flowplayer-3.0.7.swf", { 
+						flowplayer("a.flvplayer", "tools/attach/players/flowplayer-3.1.5.swf", { 
 						    clip:  { 
 							autoPlay: false, 
 							autoBuffering: true 
 						    },
 						    plugins:  { 
 						        controls: {             
-								url: \'tools/attach/players/flowplayer.controls-3.0.4.swf\', 
+								url: \'tools/attach/players/flowplayer.controls-3.1.5.swf\', 
 								autoHide: \'always\', 
 								 
 								// which buttons are visible and which are not? 
@@ -92,15 +92,15 @@ if (fopen($url, "r"))
 	}
 	elseif ($extension==".mm" or $extension==".MM") 
 	{
-		$output = '<embed id="visorFreeMind" height="'.$haut.'" align="middle" width="'.$large.'" flashvars="openUrl=_blank&initLoadFile='.$url.'&startCollapsedToLevel=5" quality="high" bgcolor="#ffffff" src="tools/attach/players/visorFreemind.swf" type="application/x-shockwave-flash"/>';
+		$output = '<embed id="visorFreeMind" height="'.$height.'" align="middle" width="'.$width.'" flashvars="openUrl=_blank&initLoadFile='.$url.'&startCollapsedToLevel=5" quality="high" bgcolor="#ffffff" src="tools/attach/players/visorFreemind.swf" type="application/x-shockwave-flash"/>';
 		$output .="[<a href=\"$url\" title=\"T&eacute;l&eacute;charger le fichier Freemind\">mm</a>]";
 		echo $output;
 	}
-	else echo "Le player ne peut que lire les fichiers mp3, flv et mm, et votre URL ne pointe pas sur ces types de fichiers.";
+	else echo "Le player ne peut que lire les fichiers mp3, flv et mm, et votre URL (".$url.") ne pointe pas sur ces types de fichiers.";
 }
 else
 {
-	echo 'Action player : URL pas valide';
+	echo 'Action player : l\'URL n\'est pas valide';
 }
 
 ?>
