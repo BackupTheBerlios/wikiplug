@@ -34,10 +34,6 @@ $titre = $this->GetParameter("titre");
 if (empty($titre)) {
 	$titre='Identifiez-vous ici :';
 }
-$bienvenue = $this->GetParameter("bienvenue");
-if (empty($bienvenue)) {
-	$bienvenue='Bonjour ';
-}
 
 $urllogin = $this->GetParameter("url");
 if (empty($urllogin)) {
@@ -45,13 +41,40 @@ if (empty($urllogin)) {
 }
 
 $pageacceuil = $this->GetParameter("pageaccueil");
-
+if (empty($pageacceuil)) {
+	//$urllogin=$this->href("", "ParametresUtilisateur", "");
+	$pageacceuil=$this->href("");
+}
 
 if (!isset($_REQUEST["action"])) $_REQUEST["action"] = '';
 if ($_REQUEST["action"] == "logout")
 {
 	$this->LogoutUser();
 	$this->SetMessage("Vous &ecirc;tes maintenant d&eacute;connect&eacute; !");
+	$this->Redirect($this->href());
+}
+
+if ($_REQUEST["action"] == "login")
+{
+	// if user name already exists, check password
+	if ($existingUser = $this->LoadUser($_POST["name"]))
+	{
+		// check password
+		if ($existingUser["password"] == md5($_POST["password"]))
+		{
+			$this->SetUser($existingUser, $_POST["remember"]);
+			if (!empty($pageacceuil))
+			{
+				if ( $pageacceuil=='utilisateur' && $this->LoadPage($_POST["name"]) ) $this->Redirect($this->href('', $_POST["name"], ''));
+				else $this->Redirect($this->href('', $pageacceuil, ''));
+			}
+			else $this->Redirect($this->href('', '', 'action=checklogged', false));
+		}
+		else
+		{
+			$error = "Mauvais mot de passe&nbsp;!";
+		}
+	}
 }
 
 if ($user = $this->GetUser())
@@ -61,37 +84,22 @@ if ($user = $this->GetUser())
 	$template_formulaire = $this->GetParameter("templateiden");
 	if (empty($template_formulaire) || !file_exists('tools/login/presentation/'.$template_formulaire) ) $template_formulaire="iden_default.tpl.html";
 	$squel = new SquelettePhp('tools/login/presentation/'.$template_formulaire);
-	if ($this->LoadPage("PageMenuUser")!=null) { $PageMenuUser=$this->Format("{{include page=\"PageMenuUser\"}}");} else $PageMenuUser = '';
-	$squel->set(array("bienvenue"=>$bienvenue.$this->Link($user["name"]), "urldepart"=>$this->href(), "urllogin"=>$urllogin,  "PageMenuUser"=>$PageMenuUser));
+	$PageMenuUser = '';
+	if ( $pageacceuil=='utilisateur' ) 
+	{
+		$PageMenuUser .= '<a class="lien_espace_perso" href="'.$this->href('', $user["name"], '').'" title="Voir mon espace personnel">Mon espace personnel</a><br />';
+	}
+	if ($this->LoadPage("PageMenuUser")!=null) 
+	{ 
+		$PageMenuUser .= $this->Format("{{include page=\"PageMenuUser\"}}");
+	} else $PageMenuUser .= '';
+	$squel->set(array("nomwiki"=>$user["name"], "urldepart"=>"http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], "urllogin"=>$urllogin,  "PageMenuUser"=>$PageMenuUser));
 	echo $squel->analyser();
 }
 else
 {
-	// user is not logged in
-	
-	// is user trying to log in or register?
-	if ($_REQUEST["action"] == "login")
-	{
-		// if user name already exists, check password
-		if ($existingUser = $this->LoadUser($_POST["name"]))
-		{
-			// check password
-			if ($existingUser["password"] == md5($_POST["password"]))
-			{
-				$this->SetUser($existingUser, 0);
-				SetCookie("name", $existingUser["name"],0, $this->CookiePath);
-				SetCookie("password", $existingUser["password"],0, $this->CookiePath);
-				if (!empty($pageacceuil)&&$pageacceuil=='utilisateur') $this->Redirect($this->href("", $_POST["name"], ""));
-				else $this->Redirect($_POST['urldepart']);
-				
-			}
-			else
-			{
-				$error = "Mauvais mot de passe&nbsp;!";
-			}
-		}
-	}
-	elseif ($_REQUEST['action'] == 'checklogged')
+	// user is not logged in	
+	if ($_REQUEST['action'] == 'checklogged')
 	{
 		$error = 'Vous devez accepter les cookies pour pouvoir vous connecter.';
 	}
@@ -100,7 +108,7 @@ else
 	$template_formulaire = $this->GetParameter("templateform");
 	if (empty($template_formulaire) || !file_exists('tools/login/presentation/'.$template_formulaire) ) $template_formulaire="form_default.tpl.html";
 	$squel = new SquelettePhp('tools/login/presentation/'.$template_formulaire);
-	$squel->set(array("error"=>isset($error)?$error:'', "urllogin"=>$urllogin, "urldepart"=>$this->href(), "name"=>isset($_POST["name"])?$_POST["name"]:''));
+	$squel->set(array("error"=>isset($error)?$error:'', "urllogin"=>$urllogin, "urldepart"=>"http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'] , "name"=>isset($_POST["name"])?$_POST["name"]:''));
 	echo $squel->analyser();
 }
 ?>

@@ -1,0 +1,32 @@
+<a href="#" class="signin"><span><?= $nomwiki; ?></span></a>
+<fieldset id="signin_menu">
+    <form class="formulaire_identification" method="post" id="signin" action="<?= $urllogin; ?>">
+		<input type="hidden" name="action" value="update" />
+		<input type="hidden" name="urldepart" value="<?= $urldepart; ?>" />
+		<input class="bouton_iden" type="button" value="D&eacute;connexion" onclick="document.location='<?= $urllogin; ?>&amp;action=logout'" />
+		<span class="modif_inscription_iden"><a href="<?= $urllogin; ?>" title="Modifier mon inscription">Modifier mon inscription</a></span>
+		<?= $PageMenuUser; ?>
+    </form>
+</fieldset>
+<script type="text/javascript">
+	$(document).ready(function() {
+
+		$(".signin").click(function(e) {          
+			e.preventDefault();
+			$("fieldset#signin_menu").toggle();
+			$(".signin").toggleClass("menu-open");
+			return false;
+		});
+		
+		$("fieldset#signin_menu").mouseup(function() {
+			return false
+		});
+		$(document).mouseup(function(e) {
+			if($(e.target).parent("a.signin").length==0) {
+				$(".signin").removeClass("menu-open");
+				$("fieldset#signin_menu").hide();
+			}
+		});			
+		
+	});
+</script>
