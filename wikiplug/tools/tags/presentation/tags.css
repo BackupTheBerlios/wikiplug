@@ -54,7 +54,8 @@ strong.lien_commenter,strong.admin_commenter{display:inline;margin:30px 0 0 0;pa
 .microblogcommentform{margin:10px 0 0 0;text-align:right;}
 .commentaire_microblog{width:99%;height:50px;border:1px solid #BBB;text-align:left;}
 .bouton_submit,.bouton_annul,.bouton_microblog{border:1px solid #BBB;font-size:.8em;}
-textarea:focus,input:focus{background:#ffc;}
+textarea,input{border:1px solid #333;}
+textarea:focus,input:focus{background-color:#ffc;}
 .info_nb_car_max{display:none;}
 .liens_rss{text-align:right;width:100%;display:block;margin:3px 0 5px 0;}
 .liens_rss a{color:#e77630;}

@@ -1,6 +1,6 @@
 <?php
 /*
-$Id: ajaxaddcomment.php,v 1.2 2009/10/12 16:10:32 mrflos Exp $
+$Id: ajaxaddcomment.php,v 1.3 2010/03/04 14:17:59 mrflos Exp $
 Copyright (c) 2002, Hendrik Mans <hendrik@mans.de>
 Copyright 2002, 2003 David DELON
 Copyright 2003  Eric FELDSTEIN
@@ -78,7 +78,7 @@ if (isset($_GET['jsonp_callback']))
 			{
 				$valcomment['commentaires'][0]['actions'] .= '<a href="'.$this->href('deletepage', $comment['tag']).'" class="supprimer_commentaire">Supprimer</a>'."\n" ;
 			}									
-			include_once('tools/tags/lib/squelettephp.class.php');
+			include_once('tools/tags/libs/squelettephp.class.php');
 			$squelcomment = new SquelettePhp('tools/tags/presentation/commentaire_microblog.tpl.html');
 			$squelcomment->set($valcomment);
 			$commentaire = $squelcomment->analyser();

@@ -7,9 +7,9 @@ if (!defined("WIKINI_VERSION"))
         die ("acc&egrave;s direct interdit");
 }
 //CONFIGURATION
-//si 0 les admins ou le propriÈtaire d'une page doivent ouvrir les commentaires
+//si 0 les admins ou le propriÔøΩtaire d'une page doivent ouvrir les commentaires
 //si 1 ils sont ouverts par defaut
-define('COMMENTAIRES_OUVERTS_PAR_DEFAUT', 1);
+define('COMMENTAIRES_OUVERTS_PAR_DEFAUT', 0);
 define('CACHER_MOTS_CLES', 0);
 
 $wiki  = new WikiTools($wakkaConfig);
@@ -18,7 +18,7 @@ $wikiClassesContent [] = '
 	function DeleteAllTags($page)
     {
 		$tags = explode(" ", mysql_escape_string($liste_tags));
-		//on rÈcupÈre les anciens tags de la page courante
+		//on r√©cup√®re les anciens tags de la page courante
 		$tabtagsexistants = $this->GetAllTriplesValues($page, \'http://outils-reseaux.org/_vocabulary/tag\', \'\', \'\');
 		if (is_array($tabtagsexistants))
 		{
@@ -33,7 +33,7 @@ $wikiClassesContent [] = '
 	function SaveTags($page, $liste_tags)
     {
 		$tags = explode(",", mysql_escape_string($liste_tags));
-		//on rÈcupÈre les anciens tags de la page courante
+		//on r√©cup√®re les anciens tags de la page courante
 		$tabtagsexistants = $this->GetAllTriplesValues($page, \'http://outils-reseaux.org/_vocabulary/tag\', \'\', \'\');
 		if (is_array($tabtagsexistants))
 		{
@@ -43,7 +43,7 @@ $wikiClassesContent [] = '
 			}
 		}
 
-		//on ajoute le tag s il n existe pas dÈj‡†
+		//on ajoute le tag s il n existe pas d√©j√†
 		foreach ($tags as $tag)
 		{
 			trim($tag);

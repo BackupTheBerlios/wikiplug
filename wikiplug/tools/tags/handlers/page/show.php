@@ -1,6 +1,6 @@
 <?php
 /*
-$Id: show.php,v 1.2 2010/01/27 15:19:41 mrflos Exp $
+$Id: show.php,v 1.3 2010/03/04 14:17:59 mrflos Exp $
 Copyright (c) 2002, Hendrik Mans <hendrik@mans.de>
 Copyright 2002, 2003 David DELON
 Copyright 2002, 2003 Charles NEPOTE
@@ -131,7 +131,7 @@ if ((COMMENTAIRES_OUVERTS_PAR_DEFAUT && $pageouverte!='0' ) || (!COMMENTAIRES_OU
 		{
 			$gestioncommentaire .= '<a href="'.$this->href('closecomments').'" title="D&eacute;sactiver les commentaires sur cette page">D&eacute;sactiver les commentaires</a>'."\n";
 		}
-		$gestioncommentaire .= '</strong>.'."\n";
+		$gestioncommentaire .= '.</strong>'."\n";
 		$gestioncommentaire .= "<div class=\"commentaires_billet_microblog\">\n";
 		$gestioncommentaire .= afficher_commentaires_recursif($this->getPageTag(), $this);
 		$gestioncommentaire .= "</div>\n";

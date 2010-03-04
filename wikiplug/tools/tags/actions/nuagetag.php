@@ -77,7 +77,8 @@ if (is_array($tab_tous_les_tags))
 
 	if (is_array($tab_tag))
 	{
-		echo '<ul class="nuage">'."\n";
+		echo '<div class="boite_nuage">
+		<ul class="nuage">'."\n";
 		//on regarde s'il faut trier alphabetiquement
 		$tri = $this->GetParameter('tri');
 		if (!empty($tri) && $tri=="alpha")
@@ -90,7 +91,7 @@ if (is_array($tab_tous_les_tags))
 		foreach ($tab_tag as $tag) {
 			echo $tag;
 		}
-		echo '</ul><div style="clear:both">&nbsp;</div>'."\n";
+		echo '</ul><div style="clear:both">&nbsp;</div>'."\n".'</div>'."\n";
 	}
 }
 

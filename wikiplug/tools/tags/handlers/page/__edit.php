@@ -6,7 +6,7 @@ if (!defined("WIKINI_VERSION"))
 }
 
 //Sauvegarde
-if ( $_POST["submit"] == 'Sauver' && isset($_POST["tags"]) )
+if ( isset($_POST["submit"]) && $_POST["submit"] == 'Sauver' && isset($_POST["tags"]) )
 {
 	$this->SaveTags($this->GetPageTag(), $_POST["tags"]);
 }
