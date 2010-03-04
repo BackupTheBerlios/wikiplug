@@ -9,8 +9,6 @@ if ($this->HasAccess("write")) {
 	//action pour le footer de wikini
 	$wikini_barre_bas =
 	'<div class="footer">'."\n";
-	$wikini_barre_bas .=
-	$this->FormOpen("", "RechercheTexte", "get")."\n";
 	if ( $this->HasAccess("write") ) {
 		$wikini_barre_bas .= "<a href=\"".$this->href("edit")."\" title=\"Cliquez pour &eacute;diter cette page.\">&Eacute;diter cette page</a> ::\n";
 	}
@@ -25,7 +23,7 @@ if ($this->HasAccess("write")) {
 		{
 			$wikini_barre_bas .=
 			"Propri&eacute;taire&nbsp;: vous :: \n".
-			"<a href=\"".$this->href("acls")."\" title=\"Cliquez pour &eacute;diter les permissions de cette page.\">&Eacute;diter permissions</a> :: \n".
+			"<a href=\"".$this->href("acls")."\" title=\"Cliquez pour &eacute;diter les permissions de cette page.\">Permissions</a> :: \n".
 			"<a href=\"".$this->href("deletepage")."\">Supprimer</a> :: \n";
 		}
 		else
@@ -45,9 +43,7 @@ if ($this->HasAccess("write")) {
 	$wikini_barre_bas .=
 	'<a href="'.$this->href("referrers").'" title="Cliquez pour voir les URLs faisant r&eacute;f&eacute;rence &agrave; cette page.">'."\n".
 	'R&eacute;f&eacute;rences</a> ::'."\n".
-	$this->Link($this->tag, "plugin", "Extensions")." ::\n".
-	'Recherche : <input name="phrase" size="15" class="searchbox" />'."\n".
-	$this->FormClose().
+	$this->Link($this->tag, "plugin", "Extensions")."\n".
 	'</div>'."\n";
 	
 	echo $wikini_barre_bas;	

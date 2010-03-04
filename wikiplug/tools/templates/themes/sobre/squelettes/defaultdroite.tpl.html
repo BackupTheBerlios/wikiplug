@@ -18,20 +18,24 @@
 
    <body {{parambody}}>
         <div id="container">
-            <div id="container-header">
-                <div id="container-name"><a class="lien_accueil" href="{{configuration param="base_url"}}" title="Aller &agrave; la page d'accueil">{{configuration param="wakka_name"}}</a></div>
-				<div id="container-slogan">{{configuration param="meta_description"}}</div>
-            </div><!-- fin container-header -->
-            
-	   		<div id="container-eyecatcher">
+            <div id="container-eyecatcher">
                 <div id="container-navigation">
-                	{{include page="PageMenuHaut" doubleclic="1"}}                
+                	{{include page="PageMenuHaut" doubleclic="1"}}
                 </div><!-- fin container-navigation -->
-            	{{include page="PageBandeau" doubleclic="1"}}
+                <div id="recherche">
+						{{moteurrecherche}}
+                </div><!-- fin recherche -->
+            	<div id="bandeau-haut">
+					{{include page="PageBandeau" doubleclic="1"}}
+            	</div><!-- fin bandeau-haut-->
+            	<div id="titre-site">
+					<div id="container-name"><a class="lien_accueil" href="{{configuration param="base_url"}}" title="Aller &agrave; la page d'accueil">{{configuration param="wakka_name"}}</a></div>
+					<div id="container-slogan">{{configuration param="meta_description"}}</div>
+            	</div><!-- fin titre-site -->
 	    	</div><!-- fin container-eyecatcher -->
 
         	<div id="container-content">
-				<div id="colonne-gauche">
+				<div id="colonne-droite">
 					{{include page="PageMenu" doubleclic="1"}}
 				</div><!-- fin border -->
 				<div id="content" {{doubleclic}}>    
@@ -41,16 +45,14 @@
 	    	</div><!-- fin container-content -->
 
             <div id="container-footer">
-                 <div id="footer">
                     <div id="footer-copyright">
                     	{{include page="PageFooter" doubleclic="1"}}
                     </div>
                     <div id="footer-meta">
                     	<a href="http://validator.w3.org/check?uri=referer">XHTML</a> | 
                     	<a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a><br />
-                    	<a href="http://www.christian-pansch.de" title="Webdesign Bremen">Design by christian-pansch.de</a>
+                    	Design : <a href="http://www.christian-pansch.de" title="Webdesign Bremen"> christian-pansch.de</a>, adapt&eacute; par <a href="http://outils-reseaux.org" title="Outils-R&eacute;seaux">Outils-R&eacute;seaux</a>
                     </div>
-                 </div><!-- fin footer -->
             </div><!-- fin container-footer -->
 
         </div> <!-- fin container -->
