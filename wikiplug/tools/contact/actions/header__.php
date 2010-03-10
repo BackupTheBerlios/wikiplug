@@ -10,7 +10,10 @@ if (($this->GetMethod() == "show") && ($act=preg_match_all ("/".'(\\{\\{contact)
 
 	$plugin_output_new=preg_replace ('/<\/head>/',
 	'
-	<script type="text/javascript">                                         
+	<script type="text/javascript"> 
+
+	  // <![CDATA[
+	
    // we will add our javascript code here           
    
 $(document).ready(function(){
@@ -61,6 +64,9 @@ return false;
 });
 
 });
+
+  // ]]>
+
 
  </script>  
 

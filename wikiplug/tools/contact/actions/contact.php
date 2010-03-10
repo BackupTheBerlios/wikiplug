@@ -21,7 +21,7 @@
 // | along with Foobar; if not, write to the Free Software                                                |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: contact.php,v 1.1 2009/09/21 14:54:47 mrflos Exp $
+// CVS : $Id: contact.php,v 1.2 2010/03/10 14:49:28 ddelon Exp $
 /**
 * contact.php
 *
@@ -33,7 +33,7 @@
 //Autres auteurs :
 *@author        Aucun
 *@copyright     Kaleidos-coop.org 2008
-*@version       $Revision: 1.1 $ $Date: 2009/09/21 14:54:47 $
+*@version       $Revision: 1.2 $ $Date: 2010/03/10 14:49:28 $
 // +------------------------------------------------------------------------------------------------------+
 */
 if (!defined("WIKINI_VERSION"))
@@ -49,11 +49,11 @@ if (empty($entete)) {$entete=$this->config['wakka_name'];}
 echo '<div class="formulairemail">
 <div class="note"></div>
 <form id="ajax-contact-form" action="javascript:alert(\'success!\');">
-	<label>Votre nom</label><INPUT class="textbox" type="text" name="name" value="" /><br />
-	<label>Votre adresse mail</label><INPUT class="textbox" type="text" name="email" value="" /><br />
-	<label>Sujet du message</label><INPUT class="textbox" type="text" name="subject" value="" /><br />
-	<label>Corps du message</label><TEXTAREA class="textbox" NAME="message" ROWS="5" COLS="25"></TEXTAREA><br />
-	<label>&nbsp;</label><INPUT class="button" type="submit" name="submit" value="Envoyer" />
+	<label>Votre nom</label><input class="textbox" type="text" name="name" value="" /><br />
+	<label>Votre adresse mail</label><input class="textbox" type="text" name="email" value="" /><br />
+	<label>Sujet du message</label><input class="textbox" type="text" name="subject" value="" /><br />
+	<label>Corps du message</label><textarea class="textbox" name="message" rows="5" cols="25"></textarea><br />
+	<label>&nbsp;</label><input class="button" type="submit" name="submit" value="Envoyer" />
 	<input type="hidden" name="mail" value="'.$mail.'" />
 	<input type="hidden" name="entete" value="'.$entete.'" />	
 	<input type="hidden" name="type" value="contact" />	
