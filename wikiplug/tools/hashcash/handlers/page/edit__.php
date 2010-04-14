@@ -17,18 +17,14 @@ if ($this->HasAccess("write") && $this->HasAccess("read"))
 
 		// UPDATE RANDOM SECRET
 		$curr = @file_get_contents(HASHCASH_SECRET_FILE);
-		if(empty($curr) || (time() - @filemtime(HASHCASH_SECRET_FILE)) > HASHCASH_REFRESH){
-	
-			// update our secret
-			$fp = fopen(HASHCASH_SECRET_FILE, 'w');
-
-//			if(@flock($fp, LOCK_EX)){
+		if(empty($curr) || (time() - @filemtime(HASHCASH_SECRET_FILE)) > HASHCASH_REFRESH) {	
+			if (is_writable(HASHCASH_SECRET_FILE)) {
+				//update our secret
+				$fp = fopen(HASHCASH_SECRET_FILE, 'w');
 				fwrite($fp, rand(21474836, 2126008810));
-//				@flock($fp, LOCK_UN);
-//			}
-
-			fclose($fp);
-	
+				fclose($fp);
+			}
+			else echo 'ERREUR Hashcash : pour &ecirc;tre bien s&eacute;curis&eacute; contre le spam, il faut donner les droits d\'acc&egrave;s en &eacute;criture au fichier '.HASHCASH_SECRET_FILE ;
 		}
 		
 		if (substr($this->config['base_url'],0,4)!="http") { // Wakka.config mal configure
