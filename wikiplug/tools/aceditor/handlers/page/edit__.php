@@ -62,9 +62,9 @@ if ($this->HasAccess("write") && $this->HasAccess("read"))
 			}
 			else  {
 				if (substr(WIKINI_VERSION,2,1)>=5) {
-						$plugin_output_new=preg_replace ('/\<textarea id="body"/',
+						$plugin_output_new=preg_replace ('/\<textarea id="body" name="body" cols="60" rows="40" wrap="soft"/',
 						$ACbuttonsBar.
-						'<textarea id="body"',
+						'<textarea id="body" name="body" cols="60" rows="40" ',
 						$plugin_output_new);
 					
 				}
