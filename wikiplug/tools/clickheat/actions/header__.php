@@ -24,7 +24,7 @@ $plugin_output_new=preg_replace ('/<head>/',
 	    clickHeatSite = \''.$clickheatsite.'\'; 
 	    clickHeatGroup = \''.$clickheatgroup.'\'; 
 	    clickHeatServer = \''.$clickheatserver.'\';
-	    initClickHeat(); 
+	    if (typeof initClickHeat == \'string\' && eval(\'typeof \' + initClickHeat) == \'function\') {initClickHeat();}; 
 	//--> </script>',
 	$plugin_output_new);
 ?>
