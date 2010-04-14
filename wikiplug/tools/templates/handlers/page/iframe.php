@@ -8,28 +8,41 @@ if (!defined("WIKINI_VERSION"))
 	die ("acc&egrave;s direct interdit");
 }
 
-echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" >
+ob_start();
 
-<head>
-        <title> '.$this->Format("{{titrepage}}").'</title>
-        '.$this->Format("{{metarobots}}").'
-        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
-        <meta name="keywords" content="'.$this->Format("{{configuration param=\"meta_keywords\"}}").' />
-        <meta name="description" content="'.$this->Format("{{configuration param=\"meta_description\"}}").' />
-        <link rel="alternate" type="application/rss+xml" title="Flux RSS des derniers changements" href="'.$this->Format("{{configuration param=\"base_url\"}}").'DerniersChangementsRSS/xml" />
-        '.$this->Format("{{liensstyle}}").'
-        '.$this->Format("{{liensjavascripts}}").'
+//javascript pour gerer les liens (ouvrir vers l'extérieur) dans les iframes
+$scripts_iframe = '<script type="text/javascript">
+		$(document).ready(function () {
+			$("body").css(\'background-color\', \'transparent\').css(\'background-image\', \'none\').css(\'text-align\',\'left\');
+			$("a[href^=\'http://\']:not(a[href$=\'/slide_show\'])").click(function() {
+				if (window.location != window.parent.location)
+				{
+					//alert(\'iframe\');
+					if (!($(this).hasClass("bouton_annuler")))
+					{
+						window.open($(this).attr("href"));
+						return false;
+					}
+				}
+				else 
+				{
+					//alert(\'pas iframe\');					
+				}
+			});			
+		});
+		</script>
 </head>
 
-<body>';
+<body';
 
-// Generate page before displaying the header, so that it might interract with the header
-ob_start();
+$head = explode('<body',$this->Header());
+
+$head = str_replace('</head>',$scripts_iframe, $head[0]);
+echo $head;
 
 echo '<div class="page"';
 echo (($user = $this->GetUser()) && ($user['doubleclickedit'] == 'N') || !$this->HasAccess('write')) ? '' : ' ondblclick="doubleClickEdit(event);"';
-echo '>'."\n";
+echo ' style="text-align:left;">'."\n";
 if (!empty($_SESSION['redirects']))
 {
 	$trace = $_SESSION['redirects'];
@@ -82,10 +95,14 @@ else
 {
 	echo "<i>Vous n'&ecirc;tes pas autoris&eacute; &agrave; lire cette page</i>" ;
 }
-//l'expression reguliere pour que tous les liens s'ouvrent dans une nouvelle fenetre
-$pattern = '/<a href="(.*)>(.*)<\/a>/U';
-echo preg_replace($pattern,"<a href=\"\\1 onclick=\"window.open(this.href);return false\">\\2</a>", ob_get_clean());
+
 echo '</div>'."\n";
+
+$content = ob_get_clean();
+
+echo $content;
+
 echo '</body>
 </html>';
+
 ?>

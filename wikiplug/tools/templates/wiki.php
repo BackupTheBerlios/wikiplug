@@ -14,20 +14,23 @@ if (isset($plugins_list['navigation']))
 	return;
 }
 
+//pour que seul le propriétaire et l'admin puissent changer de theme
+define ('SEUL_ADMIN_ET_PROPRIO_CHANGENT_THEME', true);
+
 // Dans Wakka.config.php, on peut preciser : favorite_theme, favorite_style, favorite_squelette,  hide_action_template 
 // Sinon, on prend les parametres ci dessous :
 
 // Configuration du fonctionnement des templates : faut il laisser le choix autre que par défaut 
-define('FORCER_TEMPLATE_PAR_DEFAUT', false);
+define('FORCER_TEMPLATE_PAR_DEFAUT', (isset($wakkaConfig['hide_action_template'])) ? $wakkaConfig['hide_action_template'] : false);
 
 //Theme par défaut
-define ('THEME_PAR_DEFAUT', 'sobre');
+define ('THEME_PAR_DEFAUT', (isset($wakkaConfig['favorite_theme'])) ? $wakkaConfig['favorite_theme'] : 'generique');
 
 //Style par défaut
-define ('CSS_PAR_DEFAUT', 'bleu.css');
+define ('CSS_PAR_DEFAUT', (isset($wakkaConfig['favorite_style'])) ? $wakkaConfig['favorite_style'] : 'generique.css');
 
 //squelette par défaut
-define ('SQUELETTE_PAR_DEFAUT', 'defaultdroite.tpl.html');
+define ('SQUELETTE_PAR_DEFAUT', (isset($wakkaConfig['favorite_squelette'])) ? $wakkaConfig['favorite_squelette'] : 'colonnegauche.tpl.html');
 
 //on cherche tous les dossiers du repertoire themes et des sous dossier styles et squelettes, et on les range dans le tableau $wakkaConfig['templates']
 $repertoire = 'tools'.DIRECTORY_SEPARATOR.'templates'.DIRECTORY_SEPARATOR.'themes';
@@ -109,6 +112,16 @@ $wikiClassesContent [] = '
                         return $pages;
                 }
         }	
+    function GetMethod() {
+	  	if ($this->method==\'iframe\')
+	  	{
+			return \'show\';
+	    } 
+	    else
+	    {
+			return Wiki::GetMethod();
+		}
+    }	
 ';	
 
 

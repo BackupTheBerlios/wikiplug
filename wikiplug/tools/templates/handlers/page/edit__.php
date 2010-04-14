@@ -11,7 +11,9 @@ $plugin_output_new=preg_replace ("/".'(\\{\\{template)'.'(.*?)'.'(\\}\\})'."/is"
 
 if (!isset($this->config['hide_action_template']) or (isset($this->config['hide_action_template']) && !$this->config['hide_action_template'])) { // TODO : utiliser ACL
 
-	if ($this->HasAccess("write") && $this->HasAccess("read")) {
+	if ($this->HasAccess("write") && $this->HasAccess("read") && 
+	(!SEUL_ADMIN_ET_PROPRIO_CHANGENT_THEME || 
+	(SEUL_ADMIN_ET_PROPRIO_CHANGENT_THEME && ($this->UserIsAdmin() || $this->UserIsOwner())))) {
 		// Edition
 	
 		if (!isset($_POST["submit"]) or (isset($_POST["submit"]) && $_POST["submit"] != html_entity_decode('Aper&ccedil;u') && $_POST["submit"] != 'Sauver')) {

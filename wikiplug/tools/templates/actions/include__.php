@@ -38,7 +38,7 @@ if (!function_exists('nomwikidouble'))
 	}
 }
 
-if (!$this->config['hide_action_template']) 
+if (isset($this->config['hide_action_template']) && !$this->config['hide_action_template']) 
 { 		
 	$pattern = '/<span class="missingpage">(.*)<\/span><a href="'.str_replace(array('/','?'), array('\/','\?'),$this->config['base_url']).'(.*)\/edit">\?<\/a>/U';
 	preg_match_all($pattern, $plugin_output_new, $matches, PREG_SET_ORDER);
