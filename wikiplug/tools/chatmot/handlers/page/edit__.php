@@ -16,7 +16,7 @@ if ($this->HasAccess("write") && $this->HasAccess("read"))
 	{
 		$ACbuttonsBarPage = "
 	
-		<div id=\"toolbar_suite\">
+		<div id=\"toolbar_chameau\">
 		<span class=\"texteChampsPage\">&nbsp;Nouvelle page&nbsp;:&nbsp;<input type=\"text\" name=\"nouvellepage\" class=\"ACsearchbox\" size=\"25\"/>
 		<a href=\"#\" class=\"ok\" onclick=\"wrapSelectionWithPage(thisForm.body);\">Créer</a> 
 		</span>
