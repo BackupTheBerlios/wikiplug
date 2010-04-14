@@ -12,6 +12,23 @@ if ($act=preg_match_all ("/".'(\\{\\{)'.'(.*?)'.'(\\}\\})'."/is", $template_foot
 		foreach($valeur as $val) {
 			if (isset($matches[2][$j]) && $matches[2][$j]!='') {
 				$action= $matches[2][$j];
+				
+				// Si  inclusion de page dans le template : creation automatique				
+				if (preg_match ('/^include.*/',$action)) {
+					if (preg_match_all("/([a-zA-Z0-9]*)=\"(.*)\"/U", $action, $action_param)) {
+						   for ($a = 0; $a < count($action_param[1]); $a++)  {
+	                        		if ($action_param[1][$a]=="page") {
+	                                	$action_param_page = $action_param[2][$a];
+	                                	if (!$tempPage = $this->LoadPage($action_param_page)) {
+	                                		$this->SavePage($action_param_page,"                    ");
+	                        			}
+	                        		}
+	                        }
+	                }
+				}
+				// Fin creation automatique
+				
+				
 				$template_footer=str_replace('{{'.$action.'}}', $this->Format('{{'.$action.'}}'), $template_footer);
 			}
 			$j++;
