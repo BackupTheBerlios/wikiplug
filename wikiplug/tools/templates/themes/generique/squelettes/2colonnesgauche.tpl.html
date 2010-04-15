@@ -11,7 +11,7 @@
 	</head>
 
 	<body {{parambody}}>
-		<div id="conteneur" class="milieu">
+		<div id="conteneur" class="gauche">
 			<div id="header">
 				<div id="menu_commun_haut">
 				  <div id="recherche">
@@ -32,11 +32,7 @@
 			<div id="col_menu">
 				{{include page="PageMenu" doubleclic="1"}}
 			</div><!-- fin div col_menu -->
-			
-			<div id="col_droite">
-				{{include page="PageColonneDroite" doubleclic="1"}}
-			</div> <!-- fin div col_droite -->
-			
+
 			<div id="content" {{doubleclic}}>
 				{WIKINI_PAGE}
 				{{barreredaction}}
