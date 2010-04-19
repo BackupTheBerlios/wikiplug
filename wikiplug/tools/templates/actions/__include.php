@@ -6,6 +6,7 @@ if (!defined("WIKINI_VERSION"))
 }
 
 $dblclic = $this->GetParameter('doubleclic');
+$actif = $this->GetParameter('actif');
 $pageincluded = $this->GetParameter('page');
 $clear = $this->GetParameter('clear');
 

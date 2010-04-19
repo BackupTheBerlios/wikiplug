@@ -45,22 +45,27 @@
 				<div id="banniere"></div>
 				<div class="spacer"></div>
 			</div><!-- fin header -->
+			
+			<div id="contenu">
+				<div id="menu_gauche">
+					{{include page="PageMenu" doubleclic="1"}}
+				</div><!-- fin div menu_gauche -->
+				<div id="colonne_droite">
+						{{include page="PageMenuDroit" doubleclic="1"}}
+				</div> <!-- fin div colonnedroite -->
+				<div id="contentmilieu" class="colonnemilieu" {{doubleclic}}>
+						{WIKINI_PAGE}
+						{{barreredaction}}
+				</div> <!-- fin div content -->
+				<div class="spacer"></div>
+			</div> <!-- fin div contenu -->
 
-			<div id="menu_gauche">
-				{{include page="PageMenu" doubleclic="1"}}
-			</div><!-- fin div menu_gauche -->
-			<div id="colonne_droite">
-					{{include page="PageMenuDroit" doubleclic="1"}}
-			</div> <!-- fin div colonnedroite -->
-			<div id="contentmilieu" class="colonnemilieu" {{doubleclic}}>
-					{WIKINI_PAGE}
-			</div> <!-- fin div content -->
 			<div id="footer">
-				{{barreredaction}}
-				<div id="liensfooter">
-					{{include page="PageFooter" doubleclic="1"}}
-				</div>  <!-- fin div liensfooter -->
+				{{include page="PageFooter" doubleclic="1"}}
+				<div id="copyright">
+					{{include page="PageCopyright" doubleclic="1"}}
+				</div>  <!-- fin div copyright -->
 			</div>  <!-- fin div footer -->
-		</div> <!-- fin div conteneur -->
+		</div>  <!-- fin div conteneur -->
 	</body>
 </html>

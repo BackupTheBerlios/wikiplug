@@ -8,23 +8,6 @@
 		<link rel="alternate" type="application/rss+xml" title="Flux RSS des derniers changements du wikini" href="{{configuration param="base_url"}}DerniersChangementsRSS/xml" />
 		{{liensstyle}}
 		{{liensjavascripts}}
-		<script type="text/javascript">
-		jQuery(function(){
-			//menu d�roulant du haut
-			$('#menu_haut ul').addClass('sf-menu').superfish();
-			//menu de gauche avec accordeon
-			$("#menu_gauche > div.div_include > ul > li > ul, #menu_droite > div.div_include > ul > li > ul").hide();
-			$("#menu_gauche > div.div_include > ul > li, #menu_droite > div.div_include > ul > li").children("ul").each(function(i) {
-				$(this).prev("a").addClass("depliable").bind("click", function()
-				{
-					if ( $(this).hasClass("depliable") ) { $(this).removeClass("depliable").addClass("deplie"); }
-					else {$(this).removeClass("deplie").addClass("depliable"); }
-					$(this).next("ul").slideToggle('fast');
-					return false;
-				})
-			});
-		});
-		</script>
 	</head>
 
 	<body {{parambody}}>

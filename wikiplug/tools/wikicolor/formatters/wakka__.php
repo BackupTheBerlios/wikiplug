@@ -16,5 +16,4 @@ if (!function_exists("wakkaColor")) {
 }
 $plugin_output_new = preg_replace_callback("#~~\(.*\).*~~#", "wakkaColor", $plugin_output_new);
 
-?> 
-
+?>

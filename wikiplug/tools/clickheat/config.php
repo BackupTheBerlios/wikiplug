@@ -19,11 +19,11 @@ $clickheatsite = "Nom_Site";
 # Nom du groupe 
 #$clickheatgroup = "FermeDeWiki";   // Si vous voulez toute les pages ensemble
 $clickheatgroup = $_GET["wiki"];    // Pour separer chaque page
-# Adresse appelÃ©e pour envoyer les donnÃ©es.
+# Adresse appelée pour envoyer les données.
 $clickheatserver = "http://[domaine]/[chemin_vers]/clickheat/click.php";
 
-# Si des paramÃªtres sont passÃ© dans wakka.config.php 
-# On ecrase ceux par dÃ©faut.
+# Si des paramêtres sont passé dans wakka.config.php 
+# On ecrase ceux par défaut.
 
 $clickheat = $this->config["clickheat"];
 if (isset($clickheat)) {
@@ -33,4 +33,8 @@ if (isset($clickheat)) {
     $clickheatserver   = $clickheat["clickheatserver"]; 
 }
 
+if ($clickheatsource == "http://[domaine]/[chemin_vers]/clickheat/js/clickheat.js") {
+	echo 'tools clickheat : il faut éditer config.php et renseigner une url pour clickheat.<br />';
+	return;
+}
 ?>

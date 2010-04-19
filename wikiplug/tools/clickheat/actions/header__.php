@@ -1,5 +1,5 @@
 <?php
-include("tools/clickheat/config.php");
+include_once("tools/clickheat/config.php");
 
 if (!defined("WIKINI_VERSION"))
 {

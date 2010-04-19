@@ -30,7 +30,7 @@ if ($this->HasAccess("write")) {
 		{
 			if ($owner = $this->GetPageOwner())
 			{
-				$wikini_barre_bas .= "Propri&eacute;taire : ".$this->Format($owner);
+				$wikini_barre_bas .= "Propri&eacute;taire : $owner";
 			}
 			else
 			{
@@ -42,8 +42,8 @@ if ($this->HasAccess("write")) {
 	}
 	$wikini_barre_bas .=
 	'<a href="'.$this->href("referrers").'" title="Cliquez pour voir les URLs faisant r&eacute;f&eacute;rence &agrave; cette page.">'."\n".
-	'R&eacute;f&eacute;rences</a> ::'."\n".
-	$this->Link($this->tag, "plugin", "Extensions")."\n".
+	'R&eacute;f&eacute;rences</a> :: '."\n".
+	"<a href=\"".$this->href("plugin")."\">Extensions</a>\n".
 	'</div>'."\n";
 	
 	echo $wikini_barre_bas;	

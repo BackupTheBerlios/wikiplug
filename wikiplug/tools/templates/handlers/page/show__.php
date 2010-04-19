@@ -60,5 +60,5 @@ if (!$this->config['hide_action_template'])
 		$plugin_output_new = str_replace_once( $values[0], $replacement, $plugin_output_new );
 	}
 }
-
+$plugin_output_new = str_replace('ondblclick="doubleClickEdit(event);"', '', $plugin_output_new );
 ?>

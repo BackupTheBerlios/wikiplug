@@ -69,6 +69,15 @@ if (isset($this->config['hide_action_template']) && !$this->config['hide_action_
 if (!empty($clear) && $clear=='non') $texteclear='';
 else $texteclear = '<div style="clear:both;display:block;"></div>'."\n";
 
+if (!$incPage = $this->LoadPage($incPageName))
+{
+	$plugin_output_new = '<a style="background:transparent url(tools/templates/presentation/images/crayon.png) no-repeat left center;padding-left:12px;" href="'.$this->href('edit', $incPageName).'">Editer '.$incPageName.'</a>';
+} 
+
+if (!empty($actif)&&$actif=="1") {
+    $plugin_output_new=str_ireplace('<a href="'.$this->config["base_url"].$this->tag,'<a class="actif" href="'.$this->config["base_url"].$this->tag,$plugin_output_new);
+}
+
 $plugin_output_new = '<div class="div_include"'.$actiondblclic.'>'."\n".$plugin_output_new."\n".$texteclear
 .'</div>'."\n";
 

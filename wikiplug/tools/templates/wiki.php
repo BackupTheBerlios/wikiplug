@@ -7,16 +7,6 @@ if (!defined("WIKINI_VERSION"))
 	die ("acc&egrave;s direct interdit");
 }
 
-// Desactivation de l'extension template si l'extension navigation est presente et active. 
-if (isset($plugins_list['navigation'])) 
-{
-	unset($k);	
-	return;
-}
-
-//pour que seul le propriétaire et l'admin puissent changer de theme
-define ('SEUL_ADMIN_ET_PROPRIO_CHANGENT_THEME', true);
-
 // Dans Wakka.config.php, on peut preciser : favorite_theme, favorite_style, favorite_squelette,  hide_action_template 
 // Sinon, on prend les parametres ci dessous :
 
@@ -27,10 +17,20 @@ define('FORCER_TEMPLATE_PAR_DEFAUT', (isset($wakkaConfig['hide_action_template']
 define ('THEME_PAR_DEFAUT', (isset($wakkaConfig['favorite_theme'])) ? $wakkaConfig['favorite_theme'] : 'generique');
 
 //Style par défaut
-define ('CSS_PAR_DEFAUT', (isset($wakkaConfig['favorite_style'])) ? $wakkaConfig['favorite_style'] : 'generique.css');
+define ('CSS_PAR_DEFAUT', (isset($wakkaConfig['favorite_style'])) ? $wakkaConfig['favorite_style'] : 'marron.css');
 
 //squelette par défaut
-define ('SQUELETTE_PAR_DEFAUT', (isset($wakkaConfig['favorite_squelette'])) ? $wakkaConfig['favorite_squelette'] : 'colonnegauche.tpl.html');
+define ('SQUELETTE_PAR_DEFAUT', (isset($wakkaConfig['favorite_squelette'])) ? $wakkaConfig['favorite_squelette'] : '2colonnesgauche.tpl.html');
+
+//pour que seul le propriétaire et l'admin puissent changer de theme
+define ('SEUL_ADMIN_ET_PROPRIO_CHANGENT_THEME', true);
+
+// Desactivation de l'extension template si l'extension navigation est presente et active. 
+if (isset($plugins_list['navigation'])) 
+{
+	unset($k);	
+	return;
+}
 
 //on cherche tous les dossiers du repertoire themes et des sous dossier styles et squelettes, et on les range dans le tableau $wakkaConfig['templates']
 $repertoire = 'tools'.DIRECTORY_SEPARATOR.'templates'.DIRECTORY_SEPARATOR.'themes';
