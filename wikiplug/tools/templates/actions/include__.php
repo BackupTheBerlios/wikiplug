@@ -48,7 +48,7 @@ if (isset($this->config['hide_action_template']) && !$this->config['hide_action_
 		$valuedep=$values[2];
 		$values[2] = nomwikidouble($values[2], $nomswiki); 
 		$nomswiki[] = $values[2];		
-		$replacement = '<span class="missingpage">'.$values[1].'</span><form name="'.$pageincluded.'editform'.$values[2].'" action="'.$this->href("edit",$valuedep).'" method="post" style="display:inline;margin-left:-5px;">
+		$replacement = '<div class="missingpage">'.$values[1].'<form class="form_include" name="'.$pageincluded.'editform'.$values[2].'" action="'.$this->href("edit",$valuedep).'" method="post" style="display:inline;margin-left:-5px;">
 		<a href="javascript:document.'.$pageincluded.'editform'.$values[2].'.submit();" title="Editer cette nouvelle page Wikini">?</a>';
 		
 		//si le lien de provenance n'est pas un NomWiki, on l'utilise comme titre de la nouvelle page
@@ -60,7 +60,7 @@ if (isset($this->config['hide_action_template']) && !$this->config['hide_action_
 		$replacement .= '<input type="hidden" name="theme" value="'.$this->config['favorite_theme'].'" />		
 		<input type="hidden" name="squelette" value="'.$this->config['favorite_squelette'].'" />
 		<input type="hidden" name="style" value="'.$this->config['favorite_style'].'" />
-		</form>'."\n";
+		</form></div>'."\n";
 		$plugin_output_new = str_replace_once( $values[0], $replacement, $plugin_output_new );
 	}
 	
