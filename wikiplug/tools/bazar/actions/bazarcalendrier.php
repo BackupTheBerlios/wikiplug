@@ -7,7 +7,7 @@
 //Auteur original :
 *@author        David DELON <david.delon@clapas.net>
 *@author        Florian SCHMITT <florian.schmitt@laposte.net>
-*@version       $Revision: 1.3 $ $Date: 2009/08/01 17:01:59 $
+*@version       $Revision: 1.4 $ $Date: 2010/05/03 08:36:15 $
 // +------------------------------------------------------------------------------------------------------+
 */
 //récupération des paramètres wikini
@@ -32,7 +32,7 @@ $type_cal = $this->GetParameter("typecal");
 if (empty($type_cal)) $type_cal = 'calendrier';
  
 //fichier des fonctions calendrier de Bazar
-include_once BAZ_CHEMIN.'actions'.DIRECTORY_SEPARATOR.'bazar'.DIRECTORY_SEPARATOR.'bibliotheque'.DIRECTORY_SEPARATOR.'bazar.fonct.cal.php'; 
+include_once BAZ_CHEMIN.'libs'.DIRECTORY_SEPARATOR.'bazar.fonct.cal.php'; 
 
 echo GestionAffichageCalendrier($type_cal);	
 ?>

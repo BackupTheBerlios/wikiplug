@@ -21,7 +21,7 @@
 // | along with Foobar; if not, write to the Free Software                                                |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: wiki.php,v 1.5 2010/03/04 14:19:04 mrflos Exp $
+// CVS : $Id: wiki.php,v 1.6 2010/05/03 08:36:15 mrflos Exp $
 /**
 * wiki.php
 *
@@ -32,7 +32,7 @@
 *@author        Florian SCHMITT <florian.schmitt@laposte.net>
 //Autres auteurs :
 *@copyright     outils-reseaux-coop.org 2008
-*@version       $Revision: 1.5 $ $Date: 2010/03/04 14:19:04 $
+*@version       $Revision: 1.6 $ $Date: 2010/05/03 08:36:15 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -42,6 +42,8 @@
 //error_reporting(E_ALL);
 //chemin relatif d'acces au bazar
 define ('BAZ_CHEMIN', 'tools'.DIRECTORY_SEPARATOR.'bazar'.DIRECTORY_SEPARATOR);
+define ('BAZ_CHEMIN_UPLOAD', 'tools'.DIRECTORY_SEPARATOR.'bazar'.DIRECTORY_SEPARATOR.'upload'.DIRECTORY_SEPARATOR);
+
 
 //bouh! c'est pas propre! c'est a cause de PEAR et de ses includes
 set_include_path(BAZ_CHEMIN.'libs'.DIRECTORY_SEPARATOR.PATH_SEPARATOR.get_include_path());
@@ -51,8 +53,7 @@ require_once BAZ_CHEMIN.'libs'.DIRECTORY_SEPARATOR.'DB.php' ;
 require_once BAZ_CHEMIN.'libs'.DIRECTORY_SEPARATOR.'Net'.DIRECTORY_SEPARATOR.'URL.php' ;
 
 //principales fonctions de bazar
-require_once BAZ_CHEMIN.'actions'.DIRECTORY_SEPARATOR.'bazar'.DIRECTORY_SEPARATOR.
-		'bibliotheque'.DIRECTORY_SEPARATOR.'bazar.fonct.php';
+require_once BAZ_CHEMIN.'libs'.DIRECTORY_SEPARATOR.'bazar.fonct.php';
 
 // +------------------------------------------------------------------------------------------------------+
 // |                                            CORPS du PROGRAMME                                        |
@@ -128,9 +129,9 @@ if ($resultat->numRows() == 0) {
                     //}
                 }
             }
-            exit('La base de donn&eacute;es bazar vient d\'&eacirc;tre ajout&eacute;e, veuillez r&eacute;-actualiser la page pour continuer');
+            echo '<div class="BAZ_info">La base de donn&eacute;es bazar vient d\'&eacirc;tre ajout&eacute;e, veuillez r&eacute;-actualiser la page pour continuer</div>'."\n";
         } else {
-            echo 'Fichier sql introuvable'."\n";
+            echo '<div class="BAZ_error">Fichier sql introuvable.</div>'."\n";
         }
 
 }
@@ -175,10 +176,10 @@ define ('BAZ_VOIR_ADMIN', 'administrer');
 define ('BAZ_VOIR_GESTION_DROITS', 'droits');
 
 // Constante pour se passer d'identification
-define ('BAZ_SANS_AUTH', true);
+//define ('BAZ_SANS_AUTH', true);
 
 // Constante pour l'envoi automatique de mail aux admins
-define ('BAZ_ENVOI_MAIL_ADMIN', true);
+define ('BAZ_ENVOI_MAIL_ADMIN', false);
 define ('BAZ_ADRESSE_MAIL_ADMIN', 'accueil@outils-reseaux.org');
 
 
@@ -212,7 +213,7 @@ define ('BAZ_TYPE_AFFICHAGE_LISTE', 'jma');
 
 /** Reglage des droits pour deposer des annonces */
 // Mettre a true pour limiter le depot aux redacteurs
-define ('BAZ_RESTREINDRE_DEPOT', false) ;
+//define ('BAZ_RESTREINDRE_DEPOT', false) ;
 
 /** Reglage de l'affichage de la liste deroulante pour la saisie des dates */
 // Mettre a true pour afficher une liste deroulante vide pour la saisie des dates
@@ -233,9 +234,9 @@ define ('BAZ_LANGUE_PAR_DEFAUT', 'fr') ; //Indique un code langue par defaut
 define ('BAZ_VAR_URL_LANGUE', 'lang') ; //Nom de la variable GET qui sera passee dans l'URL (Laisser vide pour les sites monolingues)
 //code pour l'inclusion des langues NE PAS MODIFIER
 if (BAZ_VAR_URL_LANGUE != '' && isset (${BAZ_VAR_URL_LANGUE})) {
-    include_once BAZ_CHEMIN.'actions/bazar/langues/baz_langue_'.${BAZ_VAR_URL_LANGUE}.'.inc.php';
+    include_once BAZ_CHEMIN.'langues'.DIRECTORY_SEPARATOR.'baz_langue_'.${BAZ_VAR_URL_LANGUE}.'.inc.php';
 } else {
-    include_once BAZ_CHEMIN.'actions/bazar/langues/baz_langue_'.BAZ_LANGUE_PAR_DEFAUT.'.inc.php';
+    include_once BAZ_CHEMIN.'langues'.DIRECTORY_SEPARATOR.'baz_langue_'.BAZ_LANGUE_PAR_DEFAUT.'.inc.php';
 }
 
 // Option concernant la division des resultats en pages
@@ -301,6 +302,9 @@ define ('BAZ_STYLE_NAVIGATION','ZOOM_PAN'); // SMALL ou ZOOM_PAN ou ANDROID ou D
 define ('BAZ_STYLE_CHOIX_CARTE','DROPDOWN_MENU'); // HORIZONTAL_BAR ou DROPDOWN_MENU ou DEFAULT
 
 // inclure l'url d'un fichier kml (carte google creee precedemment) a afficher sur la carte
-//define ('BAZ_GOOGLE_FOND_KML', 'tools/bazar/presentation/26.kml');
+define ('BAZ_GOOGLE_FOND_KML', '');
+
+//inclure un fichier js spécifique, pour ajouter des polygones à la carte par exemple
+define('BAZ_JS_INIT_MAP', '')
 
 ?>

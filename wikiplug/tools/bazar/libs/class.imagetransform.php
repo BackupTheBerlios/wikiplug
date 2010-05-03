@@ -24,8 +24,6 @@
  *  @example    example.php
  */
 
-error_reporting(E_ALL);
-
 class imageTransform
 {
 

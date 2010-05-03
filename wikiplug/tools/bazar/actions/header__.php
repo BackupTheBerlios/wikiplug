@@ -16,7 +16,7 @@ if (DB::isError($resultat)) {
 // Nettoyage de l url
 $GLOBALS['_BAZAR_']['url']->removeQueryString(BAZ_VARIABLE_VOIR);
 $liste='';
-$lien_RSS=$GLOBALS['_BAZAR_']['url'];
+$lien_RSS= clone($GLOBALS['_BAZAR_']['url']);
 $lien_RSS->addQueryString('wiki', $GLOBALS['_BAZAR_']['wiki']->minihref('xmlutf8',$this->tag));
 $lien_RSS->addQueryString(BAZ_VARIABLE_ACTION, BAZ_VOIR_FLUX_RSS);
 while ($ligne = $resultat->fetchRow(DB_FETCHMODE_ASSOC)) {
@@ -38,13 +38,11 @@ if (isset($_POST["submit"]) && $_POST["submit"] == html_entity_decode('Aper&cced
 if (($this->GetMethod() == "show") && $act=preg_match_all ("/".'(\\{\\{bazar)'.'(.*?)'.'(\\}\\})'."/is", $contenu["body"], $matches)) {
 	$style .= '<script type="text/javascript" src="tools/bazar/libs/jquery.tools.min.js"></script>'."\n";
 	$style .= '<script type="text/javascript" src="tools/bazar/libs/bazar.js"></script>'."\n";
-	//$style .= '<script type="text/javascript" src="tools/bazar/libs/jquery.form.js"></script>'."\n";	
-	if (isset($_GET[BAZ_VARIABLE_ACTION])&&($_GET[BAZ_VARIABLE_ACTION]==BAZ_ACTION_MODIFIER||$_GET[BAZ_VARIABLE_ACTION]==BAZ_ACTION_NOUVEAU)
+	if (isset($_GET[BAZ_VARIABLE_ACTION])&&($_GET[BAZ_VARIABLE_ACTION]==BAZ_ACTION_MODIFIER||$_GET[BAZ_VARIABLE_ACTION]==BAZ_ACTION_NOUVEAU||$_GET[BAZ_VARIABLE_ACTION]==BAZ_DEPOSER_ANNONCE)
 		||$act=preg_match_all ("/".'(\\{\\{bazarcarto)'.'(.*?)'.'(\\}\\})'."/is", $contenu["body"], $matches))
 	{
 		$style .= '<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>'."\n";
 		$style .= '<script type="text/javascript" src="http://www.google.com/jsapi"></script>'."\n";
-		//$plugin_output_new=preg_replace ('/<body /', '<body onload="initialize()" ',	$plugin_output_new, 1);
 	}
 }
 

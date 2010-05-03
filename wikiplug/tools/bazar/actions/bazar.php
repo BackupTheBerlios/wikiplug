@@ -21,7 +21,7 @@
 // | along with Foobar; if not, write to the Free Software                                                |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: bazar.php,v 1.6 2010/03/04 14:19:03 mrflos Exp $
+// CVS : $Id: bazar.php,v 1.7 2010/05/03 08:36:15 mrflos Exp $
 /**
 * bazar.php
 *
@@ -31,7 +31,7 @@
 //Auteur original :
 *@author        Florian SCHMITT <florian@outils-reseaux.org>
 *@copyright     Florian SCHMITT 2008
-*@version       $Revision: 1.6 $ $Date: 2010/03/04 14:19:03 $
+*@version       $Revision: 1.7 $ $Date: 2010/05/03 08:36:15 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -50,7 +50,6 @@ $action = $this->GetParameter(BAZ_VARIABLE_ACTION);
 if (!empty($action)) {
 	$_GET[BAZ_VARIABLE_ACTION]=$action;
 }
-
 
 $vue = $this->GetParameter("vue");
 if (!empty($vue) && !isset($_GET[BAZ_VARIABLE_VOIR])) {
@@ -106,7 +105,7 @@ if (isset($_REQUEST['id_fiche'])) {
 	else
 	{
 		$GLOBALS['_BAZAR_']['id_fiche']=NULL;
-		exit('<strong>Erreur</strong> : la fiche que vous recherchez n\'existe plus (sans doute a t\'elle &eacute;t&eacute; supprim&eacute;e entre temps)...');
+		exit('<div class="BAZ_error">la fiche que vous recherchez n\'existe plus (sans doute a t\'elle &eacute;t&eacute; supprim&eacute;e entre temps)...</div>');
 	}
 	$resultat->free();
 } else {
@@ -115,15 +114,13 @@ if (isset($_REQUEST['id_fiche'])) {
 
 if (isset($_REQUEST['id_typeannonce'])) $GLOBALS['_BAZAR_']['id_typeannonce']=$_REQUEST['id_typeannonce'];
 if ($GLOBALS['_BAZAR_']['id_typeannonce']!='toutes') {
-	baz_valeurs_type_de_fiche($GLOBALS['_BAZAR_']['id_typeannonce']);
-}
-
-$GLOBALS['_BAZAR_']['nomwiki']=$this->getUser();
-if ($this->UserIsInGroup('admins')) {
-	$GLOBALS['_BAZAR_']['isAdmin']=true;
-}
-else {
-	$GLOBALS['_BAZAR_']['isAdmin']=false;
+	$tab_nature = baz_valeurs_type_de_fiche($GLOBALS['_BAZAR_']['id_typeannonce']);
+	$GLOBALS['_BAZAR_']['typeannonce']=$tab_nature['bn_label_nature'];
+	$GLOBALS['_BAZAR_']['condition']=$tab_nature['bn_condition'];
+	$GLOBALS['_BAZAR_']['template']=$tab_nature['bn_template'];
+	$GLOBALS['_BAZAR_']['commentaire']=$tab_nature['bn_commentaire'];
+	$GLOBALS['_BAZAR_']['appropriation']=$tab_nature['bn_appropriation'];
+	$GLOBALS['_BAZAR_']['class']=$tab_nature['bn_label_class'];
 }
 
 //variable d'affichage du bazar
@@ -137,11 +134,11 @@ if ($GLOBALS['_BAZAR_']['affiche_menu']!='0') {
 }
 
 if (isset($_GET['message'])) {
-	$res .= '<p class="BAZ_info">';
+	$res .= '<div class="BAZ_info">';
 	if ($_GET['message']=='ajout_ok') $res.= BAZ_FICHE_ENREGISTREE;
 	if ($_GET['message']=='modif_ok') $res.= BAZ_FICHE_MODIFIEE;
 	if ($_GET['message']=='delete_ok') $res.= BAZ_FICHE_SUPPRIMEE;
-	$res .= '</p>'."\n";
+	$res .= '</div>'."\n";
 }
 
 if (isset ($_GET[BAZ_VARIABLE_VOIR])) {
@@ -150,7 +147,7 @@ if (isset ($_GET[BAZ_VARIABLE_VOIR])) {
 				if (isset ($_GET[BAZ_VARIABLE_ACTION])) {
 					switch ($_GET[BAZ_VARIABLE_ACTION]) {
 						case BAZ_MOTEUR_RECHERCHE : $res .= baz_rechercher($GLOBALS['_BAZAR_']['id_typeannonce'],$GLOBALS['_BAZAR_']['categorie_nature']); break;
-						case BAZ_VOIR_FICHE : $res .= baz_voir_fiche(1); break;
+						case BAZ_VOIR_FICHE : $res .= baz_voir_fiche(1, $GLOBALS['_BAZAR_']['id_fiche']); break;
 					}
 				}
 				else
@@ -181,15 +178,15 @@ if (isset ($_GET[BAZ_VARIABLE_VOIR])) {
 					switch ($_GET[BAZ_VARIABLE_ACTION])
 					{						
 						case BAZ_ACTION_SUPPRESSION : $res .= baz_suppression($_GET['id_fiche']); break;
-						case BAZ_ACTION_PUBLIER : $res .= publier_fiche(1).baz_voir_fiche(1); break;
-						case BAZ_ACTION_PAS_PUBLIER : $res .= publier_fiche(0).baz_voir_fiche(1); break;
+						case BAZ_ACTION_PUBLIER : $res .= publier_fiche(1).baz_voir_fiche(1, $GLOBALS['_BAZAR_']['id_fiche']); break;
+						case BAZ_ACTION_PAS_PUBLIER : $res .= publier_fiche(0).baz_voir_fiche(1, $GLOBALS['_BAZAR_']['id_fiche']); break;
 						default : $res .= baz_formulaire($_GET[BAZ_VARIABLE_ACTION]) ;break;
 					}
 				}
 				else
 				{
-					$_GET[BAZ_VARIABLE_ACTION]=BAZ_ACTION_NOUVEAU;
-					$res .= baz_formulaire(BAZ_DEPOSER_ANNONCE);
+					$_GET[BAZ_VARIABLE_ACTION] = BAZ_DEPOSER_ANNONCE;
+					$res .= baz_formulaire($_GET[BAZ_VARIABLE_ACTION]);
 				}
 				break;
 			case BAZ_VOIR_FORMULAIRE :
@@ -218,6 +215,9 @@ echo $res ;
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: bazar.php,v $
+* Revision 1.7  2010/05/03 08:36:15  mrflos
+* maj générale des fonctions de bazar
+*
 * Revision 1.6  2010/03/04 14:19:03  mrflos
 * nouvelle version bazar
 *

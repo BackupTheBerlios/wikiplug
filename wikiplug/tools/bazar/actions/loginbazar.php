@@ -55,7 +55,7 @@ if ($user = $this->GetUser())
 	
 	// user is logged in; display config form
 	include_once('tools/bazar/libs/squelettephp.class.php');
-	$squel = new SquelettePhp('tools/bazar/presentation/iden_loggue.tpl.html');
+	$squel = new SquelettePhp('tools/bazar/presentation/squelettes/iden_loggue.tpl.html');
 	$squel->set(array(
 		"id"=>$id,
 		"nom"=>$user['name'],
@@ -104,7 +104,7 @@ else
 	}
 
 	include_once('tools/bazar/libs/squelettephp.class.php');	
-	$squel = new SquelettePhp('tools/bazar/presentation/iden_form.tpl.html');
+	$squel = new SquelettePhp('tools/bazar/presentation/squelettes/iden_form.tpl.html');
 	$squel->set(array(
 		"urllogin"=>$urllogin,
 		"urldepart"=>$this->href(),
