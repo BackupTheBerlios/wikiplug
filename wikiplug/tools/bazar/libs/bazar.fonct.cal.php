@@ -164,7 +164,7 @@ function GestionAffichageCalendrier($type = 'calendrier') {
 		$ts_jour_fin_mois = $month->nextMonth('timestamp');
 		$ts_jour_debut_mois = $month->thisMonth('timestamp');; 
 	    $requete_evenements = 	"SELECT DISTINCT bf_id_fiche, bf_titre, bf_lieu_evenement, DAY(bf_date_debut_evenement) AS bf_jour_debut_evenement, bf_date_debut_evenement, bf_date_fin_evenement, bf_description ".
-								"FROM bazar_fiche, bazar_nature ".
+								"FROM '.BAZ_PREFIXE.'fiche, '.BAZ_PREFIXE.'nature ".
 								"WHERE bf_date_debut_evenement < '".date('Y-m-d', $ts_jour_fin_mois)."' ".
 								"AND bf_date_fin_evenement >= '".date('Y-m-d', $ts_jour_debut_mois)."' ".
 								"AND bf_ce_nature = bn_id_nature ";

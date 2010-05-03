@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: formulaire.fonct.inc.php,v 1.11 2010/05/03 08:36:15 mrflos Exp $
+// CVS : $Id: formulaire.fonct.inc.php,v 1.12 2010/05/03 15:59:45 mrflos Exp $
 /**
 * Formulaire
 *
@@ -31,7 +31,7 @@
 //Autres auteurs :
 *@author        Aleandre GRANIER <alexandre@tela-botanica.org>
 *@copyright     Tela-Botanica 2000-2004
-*@version       $Revision: 1.11 $ $Date: 2010/05/03 08:36:15 $
+*@version       $Revision: 1.12 $ $Date: 2010/05/03 15:59:45 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -143,11 +143,11 @@ function formulaire_valeurs_template_champs($template) {
 
 function formulaire_insertion_texte($champs, $valeur) {
 	//on supprime les anciennes valeurs
-	$requetesuppression='DELETE FROM bazar_fiche_valeur_texte WHERE bfvt_ce_fiche='.$GLOBALS['_BAZAR_']['id_fiche'].' AND bfvt_id_element_form="'.$champs.'"';
+	$requetesuppression='DELETE FROM '.BAZ_PREFIXE.'fiche_valeur_texte WHERE bfvt_ce_fiche='.$GLOBALS['_BAZAR_']['id_fiche'].' AND bfvt_id_element_form="'.$champs.'"';
 	$resultat = $GLOBALS['_BAZAR_']['db']->query($requetesuppression) ;
 	//on insere les nouvelles valeurs
 	if ($valeur!='') {
-		$requeteinsertion = 'INSERT INTO bazar_fiche_valeur_texte (bfvt_ce_fiche, bfvt_id_element_form, bfvt_texte) VALUES ';
+		$requeteinsertion = 'INSERT INTO '.BAZ_PREFIXE.'fiche_valeur_texte (bfvt_ce_fiche, bfvt_id_element_form, bfvt_texte) VALUES ';
 		$requeteinsertion .= '('.$GLOBALS['_BAZAR_']['id_fiche'].', "'.$champs.'", "'.mysql_escape_string(addslashes($valeur)).'")';
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requeteinsertion) ;
 	}
@@ -170,7 +170,7 @@ function liste(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 	{
 		$bulledaide = '';
 		if (isset($tableau_template[10]) && $tableau_template[10]!='') $bulledaide = ' <img class="tooltip_aide" title="'.htmlentities($tableau_template[10]).'" src="tools/bazar/presentation/images/aide.png" width="16" height="16" alt="image aide" />';
-		$requete =  'SELECT * FROM bazar_liste_valeurs WHERE blv_ce_liste='.$tableau_template[1].
+		$requete =  'SELECT * FROM '.BAZ_PREFIXE.'liste_valeurs WHERE blv_ce_liste='.$tableau_template[1].
 					' AND blv_ce_i18n like "'.$GLOBALS['_BAZAR_']['langue'].'%"';
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 		if (DB::isError ($resultat))
@@ -206,8 +206,8 @@ function liste(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 	}
 	elseif ($mode == 'requete')
 	{
-		//on supprime les anciennes valeurs de la table bazar_fiche_valeur_liste
-		$requetesuppression='DELETE FROM bazar_fiche_valeur_liste WHERE bfvl_ce_fiche='.$GLOBALS['_BAZAR_']['id_fiche'].' AND bfvl_ce_liste="'.$tableau_template[0].$tableau_template[1].$tableau_template[6].'"';
+		//on supprime les anciennes valeurs de la table '.BAZ_PREFIXE.'fiche_valeur_liste
+		$requetesuppression='DELETE FROM '.BAZ_PREFIXE.'fiche_valeur_liste WHERE bfvl_ce_fiche='.$GLOBALS['_BAZAR_']['id_fiche'].' AND bfvl_ce_liste="'.$tableau_template[0].$tableau_template[1].$tableau_template[6].'"';
 		//echo 'suppression : '.$requetesuppression.'<br />';
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requetesuppression) ;
 		if (DB::isError($resultat))
@@ -217,7 +217,7 @@ function liste(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		if (isset($valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]]) && ($valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]]!=0))
 		{
 			//on insere les nouvelles valeurs
-			$requeteinsertion='INSERT INTO bazar_fiche_valeur_liste (bfvl_ce_fiche, bfvl_ce_liste, bfvl_valeur) VALUES ';
+			$requeteinsertion='INSERT INTO '.BAZ_PREFIXE.'fiche_valeur_liste (bfvl_ce_fiche, bfvl_ce_liste, bfvl_valeur) VALUES ';
 			$requeteinsertion .= '('.$GLOBALS['_BAZAR_']['id_fiche'].', "'.$tableau_template[0].$tableau_template[1].$tableau_template[6].'", '.$valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]].')';
 			//echo 'insertion : '.$requeteinsertion.'<br />';
 			$resultat = $GLOBALS['_BAZAR_']['db']->query($requeteinsertion) ;
@@ -232,7 +232,7 @@ function liste(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		//on affiche la liste sous forme de liste dÈroulante
 		if ($tableau_template[9]==1)
 		{
-			$requete =  'SELECT * FROM bazar_liste_valeurs WHERE blv_ce_liste='.$tableau_template[1].
+			$requete =  'SELECT * FROM '.BAZ_PREFIXE.'liste_valeurs WHERE blv_ce_liste='.$tableau_template[1].
 						' AND blv_ce_i18n like "'.$GLOBALS['_BAZAR_']['langue'].'%" ORDER BY blv_label';
 			$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 			if (DB::isError ($resultat))
@@ -256,7 +256,7 @@ function liste(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		//on affiche la liste sous forme de checkbox
 		if ($tableau_template[9]==2)
 		{
-			$requete =  'SELECT * FROM bazar_liste_valeurs WHERE blv_ce_liste='.$tableau_template[1].
+			$requete =  'SELECT * FROM '.BAZ_PREFIXE.'liste_valeurs WHERE blv_ce_liste='.$tableau_template[1].
 						' AND blv_ce_i18n like "'.$GLOBALS['_BAZAR_']['langue'].'%" ORDER BY blv_label';
 			$resultat = & $GLOBALS['_BAZAR_']['db'] -> query($requete) ;
 			if (DB::isError ($resultat)) {
@@ -285,7 +285,7 @@ function liste(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 	{
 		if ($tableau_template[9]==1 && isset($_REQUEST[$tableau_template[0].$tableau_template[1].$tableau_template[6]]) && $_REQUEST[$tableau_template[0].$tableau_template[1].$tableau_template[6]] != 0)
 		{
-			return ' AND bf_id_fiche IN (SELECT bfvl_ce_fiche FROM bazar_fiche_valeur_liste WHERE bfvl_ce_liste="'.$tableau_template[0].$tableau_template[1].$tableau_template[6].'" AND bfvl_valeur='.$_REQUEST[$tableau_template[0].$tableau_template[1].$tableau_template[6]].') ';
+			return ' AND bf_id_fiche IN (SELECT bfvl_ce_fiche FROM '.BAZ_PREFIXE.'fiche_valeur_liste WHERE bfvl_ce_liste="'.$tableau_template[0].$tableau_template[1].$tableau_template[6].'" AND bfvl_valeur='.$_REQUEST[$tableau_template[0].$tableau_template[1].$tableau_template[6]].') ';
 		}
 	}
 	elseif ($mode == 'html')
@@ -293,7 +293,7 @@ function liste(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		$html = '';
 		if (isset($valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]]) && $valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]]!='')
 		{
-			$requete = 'SELECT blv_label FROM bazar_liste_valeurs WHERE blv_valeur IN ('.$valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]].') AND blv_ce_liste="'.$tableau_template[1].'" AND blv_ce_i18n="'.$GLOBALS['_BAZAR_']['langue'].'"';
+			$requete = 'SELECT blv_label FROM '.BAZ_PREFIXE.'liste_valeurs WHERE blv_valeur IN ('.$valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]].') AND blv_ce_liste="'.$tableau_template[1].'" AND blv_ce_i18n="'.$GLOBALS['_BAZAR_']['langue'].'"';
 			$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 			$resultat->fetchInto($res);
 			if (is_array($res))
@@ -321,7 +321,7 @@ function checkbox(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 	{
 		$bulledaide = '';
 		if (isset($tableau_template[10]) && $tableau_template[10]!='') $bulledaide = ' <img class="tooltip_aide" title="'.htmlentities($tableau_template[10]).'" src="tools/bazar/presentation/images/aide.png" width="16" height="16" alt="image aide" />';
-		$requete =  'SELECT * FROM bazar_liste_valeurs WHERE blv_ce_liste='.$tableau_template[1].
+		$requete =  'SELECT * FROM '.BAZ_PREFIXE.'liste_valeurs WHERE blv_ce_liste='.$tableau_template[1].
 				' AND blv_ce_i18n like "'.$GLOBALS['_BAZAR_']['langue'].'%" ORDER BY blv_label';
 		$resultat = & $GLOBALS['_BAZAR_']['db'] -> query($requete) ;
 		if (DB::isError ($resultat)) {
@@ -357,8 +357,8 @@ function checkbox(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 	}
 	elseif ( $mode == 'requete' )
 	{
-		//on supprime les anciennes valeurs de la table bazar_fiche_valeur_liste
-		$requetesuppression='DELETE FROM bazar_fiche_valeur_liste WHERE bfvl_ce_fiche='.$GLOBALS['_BAZAR_']['id_fiche'].' AND bfvl_ce_liste="'.$tableau_template[0].$tableau_template[1].$tableau_template[6].'"';
+		//on supprime les anciennes valeurs de la table '.BAZ_PREFIXE.'fiche_valeur_liste
+		$requetesuppression='DELETE FROM '.BAZ_PREFIXE.'fiche_valeur_liste WHERE bfvl_ce_fiche='.$GLOBALS['_BAZAR_']['id_fiche'].' AND bfvl_ce_liste="'.$tableau_template[0].$tableau_template[1].$tableau_template[6].'"';
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requetesuppression) ;
 		if (DB::isError($resultat))
 		{
@@ -367,7 +367,7 @@ function checkbox(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		if (isset($valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]]) && ($valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]]!=0))
 		{
 			//on insere les nouvelles valeurs
-			$requeteinsertion='INSERT INTO bazar_fiche_valeur_liste (bfvl_ce_fiche, bfvl_ce_liste, bfvl_valeur) VALUES ';
+			$requeteinsertion='INSERT INTO '.BAZ_PREFIXE.'fiche_valeur_liste (bfvl_ce_fiche, bfvl_ce_liste, bfvl_valeur) VALUES ';
 			//pour les checkbox, les diffÈrentes valeurs sont dans un tableau
 			if (is_array($valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]])) {
 				$nb=0;
@@ -387,7 +387,7 @@ function checkbox(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 	{
 		if ($tableau_template[9]==1)
 		{
-			$requete =  'SELECT * FROM bazar_liste_valeurs WHERE blv_ce_liste='.$tableau_template[1].
+			$requete =  'SELECT * FROM '.BAZ_PREFIXE.'liste_valeurs WHERE blv_ce_liste='.$tableau_template[1].
 						' AND blv_ce_i18n like "'.$GLOBALS['_BAZAR_']['langue'].'%" ORDER BY blv_label';
 			$resultat = & $GLOBALS['_BAZAR_']['db'] -> query($requete) ;
 			if (DB::isError ($resultat)) {
@@ -416,7 +416,7 @@ function checkbox(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		$html = '';
 		if (isset($valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]]) && $valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]]!='')
 		{
-			$requete = 'SELECT blv_label FROM bazar_liste_valeurs WHERE blv_valeur IN ('.$valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]].') AND blv_ce_liste='.$tableau_template[1].' AND blv_ce_i18n="'.$GLOBALS['_BAZAR_']['langue'].'"';
+			$requete = 'SELECT blv_label FROM '.BAZ_PREFIXE.'liste_valeurs WHERE blv_valeur IN ('.$valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]].') AND blv_ce_liste='.$tableau_template[1].' AND blv_ce_i18n="'.$GLOBALS['_BAZAR_']['langue'].'"';
 			$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 			$tabres = array();
 			while ($row =& $resultat->fetchRow()) { $tabres[]=$row[0]; }
@@ -851,10 +851,10 @@ function textelong(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 	elseif ( $mode == 'requete' )
 	{
 		//on supprime les anciennes valeurs
-		$requetesuppression='DELETE FROM bazar_fiche_valeur_texte_long WHERE bfvtl_ce_fiche='.$GLOBALS['_BAZAR_']['id_fiche'].' AND bfvtl_id_element_form="'.$identifiant.'"';
+		$requetesuppression='DELETE FROM '.BAZ_PREFIXE.'fiche_valeur_texte_long WHERE bfvtl_ce_fiche='.$GLOBALS['_BAZAR_']['id_fiche'].' AND bfvtl_id_element_form="'.$identifiant.'"';
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requetesuppression) ;
 		//on insere les nouvelles valeurs
-		$requeteinsertion = 'INSERT INTO bazar_fiche_valeur_texte_long (bfvtl_ce_fiche, bfvtl_id_element_form, bfvtl_texte_long) VALUES ';
+		$requeteinsertion = 'INSERT INTO '.BAZ_PREFIXE.'fiche_valeur_texte_long (bfvtl_ce_fiche, bfvtl_id_element_form, bfvtl_texte_long) VALUES ';
         $requeteinsertion .= '('.$GLOBALS['_BAZAR_']['id_fiche'].', "'.$identifiant.'", "'.addslashes($valeurs_fiche[$identifiant]).'")';
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requeteinsertion) ;
 		return;
@@ -893,7 +893,7 @@ function url(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		//recherche des URLs deja entrees dans la base
 		$html_url= '';
 		if (isset($GLOBALS['_BAZAR_']["id_fiche"]) && $GLOBALS['_BAZAR_']["id_fiche"]!=NULL) {
-			$requete = 'SELECT bu_id_url, bu_url, bu_descriptif_url FROM bazar_url WHERE bu_ce_fiche='.$GLOBALS['_BAZAR_']["id_fiche"];
+			$requete = 'SELECT bu_id_url, bu_url, bu_descriptif_url FROM '.BAZ_PREFIXE.'url WHERE bu_ce_fiche='.$GLOBALS['_BAZAR_']["id_fiche"];
 			$resultat = & $GLOBALS['_BAZAR_']['db'] -> query($requete) ;
 			if (DB::isError ($resultat)) {
 				die ($GLOBALS['_BAZAR_']['db']->getMessage().$GLOBALS['_BAZAR_']['db']->getDebugInfo()) ;
@@ -963,7 +963,7 @@ function url(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 	elseif ($mode == 'html')
 	{
 		//afficher les liens pour l'annonce
-		$requete = 'SELECT  bu_url, bu_descriptif_url FROM bazar_url WHERE bu_ce_fiche='.$GLOBALS['_BAZAR_']['id_fiche'];
+		$requete = 'SELECT  bu_url, bu_descriptif_url FROM '.BAZ_PREFIXE.'url WHERE bu_ce_fiche='.$GLOBALS['_BAZAR_']['id_fiche'];
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 		if (DB::isError($resultat)) {
 			die ($resultat->getMessage().$resultat->getDebugInfo()) ;
@@ -1115,7 +1115,7 @@ function image(&$formtemplate, $tableau_template, $mode, $valeurs_fiche) {
 			}
 			
 			//on efface une entrÈe de la base de donnÈes
-			$requetesuppression='DELETE FROM bazar_fiche_valeur_texte WHERE bfvt_ce_fiche='.$GLOBALS['_BAZAR_']['id_fiche'].' AND bfvt_id_element_form="'.$type.$identifiant.'" AND bfvt_texte="'.$valeurs_fiche[$type.$identifiant].'" LIMIT 1';
+			$requetesuppression='DELETE FROM '.BAZ_PREFIXE.'fiche_valeur_texte WHERE bfvt_ce_fiche='.$GLOBALS['_BAZAR_']['id_fiche'].' AND bfvt_id_element_form="'.$type.$identifiant.'" AND bfvt_texte="'.$valeurs_fiche[$type.$identifiant].'" LIMIT 1';
 			$resultat = $GLOBALS['_BAZAR_']['db']->query($requetesuppression) ;
 			
 			//on affiche les infos sur l'effacement du fichier, et on rÈinitialise la variable pour le fichier pour faire apparaitre le formulaire d'ajout par la suite
@@ -1151,7 +1151,7 @@ function image(&$formtemplate, $tableau_template, $mode, $valeurs_fiche) {
 			else {
 				echo '<div class="BAZ_error">'.BAZ_FICHIER.$valeurs_fiche[$type.$identifiant].BAZ_FICHIER_IMAGE_INEXISTANT.'</div>'."\n";
 				//on efface une entrÈe de la base de donnÈes dont le fichier n'existe pas
-				$requetesuppression='DELETE FROM bazar_fiche_valeur_texte WHERE bfvt_ce_fiche='.$GLOBALS['_BAZAR_']['id_fiche'].' AND bfvt_id_element_form="'.$type.$identifiant.'" AND bfvt_texte="'.$valeurs_fiche[$type.$identifiant].'" LIMIT 1';
+				$requetesuppression='DELETE FROM '.BAZ_PREFIXE.'fiche_valeur_texte WHERE bfvt_ce_fiche='.$GLOBALS['_BAZAR_']['id_fiche'].' AND bfvt_id_element_form="'.$type.$identifiant.'" AND bfvt_texte="'.$valeurs_fiche[$type.$identifiant].'" LIMIT 1';
 				$resultat = $GLOBALS['_BAZAR_']['db']->query($requetesuppression) ;
 			}
 		} 
@@ -1172,7 +1172,7 @@ function image(&$formtemplate, $tableau_template, $mode, $valeurs_fiche) {
 			if (isset($_FILES[$type.$identifiant]['name']) && $_FILES[$type.$identifiant]['name']!='') {
 				//dans le cas d'une modification, on vÈrifie l'existance d'une image prÈcÈdente, que l'on supprime et remplace
 				if (isset($GLOBALS['_BAZAR_']['id_fiche'])) {
-					$requete_nom_ancienne_image = 'SELECT bfvt_texte FROM bazar_fiche_valeur_texte WHERE bfvt_ce_fiche='.$GLOBALS['_BAZAR_']['id_fiche'].' AND bfvt_id_element_form="'.$type.$identifiant.'"';
+					$requete_nom_ancienne_image = 'SELECT bfvt_texte FROM '.BAZ_PREFIXE.'fiche_valeur_texte WHERE bfvt_ce_fiche='.$GLOBALS['_BAZAR_']['id_fiche'].' AND bfvt_id_element_form="'.$type.$identifiant.'"';
 					$resultat = $GLOBALS['_BAZAR_']['db']->query($requete_nom_ancienne_image) ;
 					$ligne = $resultat->fetchRow(DB_FETCHMODE_ASSOC);
 					$ancienne_image = $ligne['bfvt_texte'];
@@ -1530,7 +1530,7 @@ function listefiche(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		$bulledaide = '';
 		if (isset($tableau_template[10]) && $tableau_template[10]!='') $bulledaide = ' <img class="tooltip_aide" title="'.htmlentities($tableau_template[10]).'" src="tools/bazar/presentation/images/aide.png" width="16" height="16" alt="image aide" />';
 		//TODO: gestion multilinguisme
-		$requete =  'SELECT bf_id_fiche, bf_titre FROM bazar_fiche WHERE bf_ce_nature='.$tableau_template[1].' ORDER BY bf_titre';
+		$requete =  'SELECT bf_id_fiche, bf_titre FROM '.BAZ_PREFIXE.'fiche WHERE bf_ce_nature='.$tableau_template[1].' ORDER BY bf_titre';
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 		if (DB::isError ($resultat))
 		{
@@ -1567,8 +1567,8 @@ function listefiche(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 	}
 	elseif ($mode == 'requete')
 	{
-		//on supprime les anciennes valeurs de la table bazar_fiche_valeur_liste
-		$requetesuppression='DELETE FROM bazar_fiche_valeur_liste WHERE bfvl_ce_fiche='.$GLOBALS['_BAZAR_']['id_fiche'].' AND bfvl_ce_liste="'.$tableau_template[0].$tableau_template[1].$tableau_template[6].'"';
+		//on supprime les anciennes valeurs de la table '.BAZ_PREFIXE.'fiche_valeur_liste
+		$requetesuppression='DELETE FROM '.BAZ_PREFIXE.'fiche_valeur_liste WHERE bfvl_ce_fiche='.$GLOBALS['_BAZAR_']['id_fiche'].' AND bfvl_ce_liste="'.$tableau_template[0].$tableau_template[1].$tableau_template[6].'"';
 		//echo 'suppression : '.$requetesuppression.'<br />';
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requetesuppression) ;
 		if (DB::isError($resultat))
@@ -1578,7 +1578,7 @@ function listefiche(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		if (isset($valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]]) && ($valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]]!=0))
 		{
 			//on insere les nouvelles valeurs
-			$requeteinsertion='INSERT INTO bazar_fiche_valeur_liste (bfvl_ce_fiche, bfvl_ce_liste, bfvl_valeur) VALUES ';
+			$requeteinsertion='INSERT INTO '.BAZ_PREFIXE.'fiche_valeur_liste (bfvl_ce_fiche, bfvl_ce_liste, bfvl_valeur) VALUES ';
 			$requeteinsertion .= '('.$GLOBALS['_BAZAR_']['id_fiche'].', "'.$tableau_template[0].$tableau_template[1].$tableau_template[6].'", '.$valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]].')';
 			//echo 'insertion : '.$requeteinsertion.'<br />';
 			$resultat = $GLOBALS['_BAZAR_']['db']->query($requeteinsertion) ;
@@ -1592,7 +1592,7 @@ function listefiche(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 	{
 		if ($tableau_template[9]==1)
 		{
-			$requete =  'SELECT bf_id_fiche, bf_titre FROM bazar_fiche WHERE bf_ce_nature='.$tableau_template[1].' ORDER BY bf_titre';
+			$requete =  'SELECT bf_id_fiche, bf_titre FROM '.BAZ_PREFIXE.'fiche WHERE bf_ce_nature='.$tableau_template[1].' ORDER BY bf_titre';
 			$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 			if (DB::isError ($resultat))
 			{
@@ -1617,7 +1617,7 @@ function listefiche(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		$html = '';
 		if (isset($valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]]) && $valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]]!='')
 		{
-			$requete = 'SELECT bf_titre FROM bazar_fiche WHERE bf_id_fiche='.$valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]];
+			$requete = 'SELECT bf_titre FROM '.BAZ_PREFIXE.'fiche WHERE bf_id_fiche='.$valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]];
 			$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 			$resultat->fetchInto($res);
 			if (is_array($res))
@@ -1657,7 +1657,7 @@ function checkboxfiche(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 			$bulledaide = '';
 			if (isset($tableau_template[10]) && $tableau_template[10]!='') $bulledaide = ' <img class="tooltip_aide" title="'.htmlentities($tableau_template[10]).'" src="tools/bazar/presentation/images/aide.png" width="16" height="16" alt="image aide" />';
 			//TODO: gestion multilinguisme
-			$requete  = 'SELECT bf_id_fiche, bf_titre FROM bazar_fiche WHERE bf_ce_nature='.$tableau_template[1];
+			$requete  = 'SELECT bf_id_fiche, bf_titre FROM '.BAZ_PREFIXE.'fiche WHERE bf_ce_nature='.$tableau_template[1];
 			
 			//on affiche que les fiches saisie par un utilisateur donnÈ
 			if (isset($tableau_template[7]) && $tableau_template[7]==1) $requete .= ' AND bf_ce_utilisateur="'.$GLOBALS['_BAZAR_']['nomwiki']['name'].'"';
@@ -1725,8 +1725,8 @@ function checkboxfiche(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 	}
 	elseif ( $mode == 'requete' )
 	{
-		//on supprime les anciennes valeurs de la table bazar_fiche_valeur_liste
-		$requetesuppression='DELETE FROM bazar_fiche_valeur_liste WHERE bfvl_ce_fiche='.$GLOBALS['_BAZAR_']['id_fiche'].' AND bfvl_ce_liste="'.$tableau_template[0].$tableau_template[1].$tableau_template[6].'"';
+		//on supprime les anciennes valeurs de la table '.BAZ_PREFIXE.'fiche_valeur_liste
+		$requetesuppression='DELETE FROM '.BAZ_PREFIXE.'fiche_valeur_liste WHERE bfvl_ce_fiche='.$GLOBALS['_BAZAR_']['id_fiche'].' AND bfvl_ce_liste="'.$tableau_template[0].$tableau_template[1].$tableau_template[6].'"';
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requetesuppression) ;
 		if (DB::isError($resultat))
 		{
@@ -1735,7 +1735,7 @@ function checkboxfiche(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		if (isset($valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]]) && ($valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]]!=0))
 		{
 			//on insere les nouvelles valeurs
-			$requeteinsertion='INSERT INTO bazar_fiche_valeur_liste (bfvl_ce_fiche, bfvl_ce_liste, bfvl_valeur) VALUES ';
+			$requeteinsertion='INSERT INTO '.BAZ_PREFIXE.'fiche_valeur_liste (bfvl_ce_fiche, bfvl_ce_liste, bfvl_valeur) VALUES ';
 			//pour les checkbox, les diffÈrentes valeurs sont dans un tableau
 			if (is_array($valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]])) {
 				$nb=0;
@@ -1755,7 +1755,7 @@ function checkboxfiche(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 	{
 		if ($tableau_template[9]==1)
 		{
-			$requete =  'SELECT * FROM bazar_liste_valeurs WHERE blv_ce_liste='.$tableau_template[1].
+			$requete =  'SELECT * FROM '.BAZ_PREFIXE.'liste_valeurs WHERE blv_ce_liste='.$tableau_template[1].
 						' AND blv_ce_i18n like "'.$GLOBALS['_BAZAR_']['langue'].'%" ORDER BY blv_label';
 			$resultat = & $GLOBALS['_BAZAR_']['db'] -> query($requete) ;
 			if (DB::isError ($resultat)) {
@@ -1784,7 +1784,7 @@ function checkboxfiche(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		$html = '';
 		if (isset($valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]]) && $valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]]!='')
 		{
-			$requete  = 'SELECT bf_id_fiche, bf_titre FROM bazar_fiche WHERE bf_id_fiche IN ('.$valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]].') AND bf_ce_nature='.$tableau_template[1];
+			$requete  = 'SELECT bf_id_fiche, bf_titre FROM '.BAZ_PREFIXE.'fiche WHERE bf_id_fiche IN ('.$valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]].') AND bf_ce_nature='.$tableau_template[1];
 			
 			//on classe par ordre alphabetique
 			$requete .= ' ORDER BY bf_titre';
@@ -1879,7 +1879,7 @@ function listefiches(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 	{
 		if ($tableau_template[9]==1)
 		{
-			$requete =  'SELECT * FROM bazar_liste_valeurs WHERE blv_ce_liste='.$tableau_template[1].
+			$requete =  'SELECT * FROM '.BAZ_PREFIXE.'liste_valeurs WHERE blv_ce_liste='.$tableau_template[1].
 						' AND blv_ce_i18n like "'.$GLOBALS['_BAZAR_']['langue'].'%" ORDER BY blv_label';
 			$resultat = & $GLOBALS['_BAZAR_']['db'] -> query($requete) ;
 			if (DB::isError ($resultat)) {
@@ -1914,6 +1914,9 @@ function listefiches(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: formulaire.fonct.inc.php,v $
+* Revision 1.12  2010/05/03 15:59:45  mrflos
+* Un bazar par pr√©fixe de table
+*
 * Revision 1.11  2010/05/03 08:36:15  mrflos
 * maj g√©n√©rale des fonctions de bazar
 *

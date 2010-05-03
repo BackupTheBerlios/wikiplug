@@ -7,7 +7,7 @@ if (!defined("WIKINI_VERSION"))
 
 //requete pour obtenir l'id et le label des types d'annonces
 $requete = 'SELECT bn_id_nature, bn_label_nature '.
-           'FROM bazar_nature WHERE 1';
+           'FROM '.BAZ_PREFIXE.'nature WHERE 1';
 $resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 if (DB::isError($resultat)) {
 	return ($resultat->getMessage().$resultat->getDebugInfo()) ;

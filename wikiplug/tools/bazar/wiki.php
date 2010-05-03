@@ -21,7 +21,7 @@
 // | along with Foobar; if not, write to the Free Software                                                |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: wiki.php,v 1.6 2010/05/03 08:36:15 mrflos Exp $
+// CVS : $Id: wiki.php,v 1.7 2010/05/03 15:59:45 mrflos Exp $
 /**
 * wiki.php
 *
@@ -32,7 +32,7 @@
 *@author        Florian SCHMITT <florian.schmitt@laposte.net>
 //Autres auteurs :
 *@copyright     outils-reseaux-coop.org 2008
-*@version       $Revision: 1.6 $ $Date: 2010/05/03 08:36:15 $
+*@version       $Revision: 1.7 $ $Date: 2010/05/03 15:59:45 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -54,6 +54,9 @@ require_once BAZ_CHEMIN.'libs'.DIRECTORY_SEPARATOR.'Net'.DIRECTORY_SEPARATOR.'UR
 
 //principales fonctions de bazar
 require_once BAZ_CHEMIN.'libs'.DIRECTORY_SEPARATOR.'bazar.fonct.php';
+
+//prefixe des tables bazar
+define('BAZ_PREFIXE', $wakkaConfig['table_prefix']);
 
 // +------------------------------------------------------------------------------------------------------+
 // |                                            CORPS du PROGRAMME                                        |
@@ -83,8 +86,9 @@ $GLOBALS['_BAZAR_']['db'] =& DB::connect($dsn) ;
 if (DB::isError($GLOBALS['_BAZAR_']['db'])) {
 	echo $GLOBALS['_BAZAR_']['db']->getMessage();
 }
+
 //test de l'existance des tables de bazar
-$req = "SHOW TABLES FROM ".$wakkaConfig['mysql_database']." LIKE 'bazar_%'";
+$req = 'SHOW TABLES FROM '.$wakkaConfig['mysql_database'].' LIKE "'.BAZ_PREFIXE.'fiche%"';
 $resultat = $GLOBALS['_BAZAR_']['db']->query ($req);
 if ($resultat->numRows() == 0) {
 	$fichier_sql = 'tools/bazar/install/bazar.sql';
@@ -111,9 +115,10 @@ if ($resultat->numRows() == 0) {
                         }
                     }
 
-                    $requete = $line_in;
+                    $requete = str_replace('BAZ_PREFIXE', BAZ_PREFIXE, $line_in);
 
                     //requete sql
+                    //echo $requete.'<br />';
                     $result = $GLOBALS['_BAZAR_']['db']->query ($requete);
 
                     $i++;
@@ -129,9 +134,10 @@ if ($resultat->numRows() == 0) {
                     //}
                 }
             }
-            echo '<div class="BAZ_info">La base de donn&eacute;es bazar vient d\'&eacirc;tre ajout&eacute;e, veuillez r&eacute;-actualiser la page pour continuer</div>'."\n";
+            echo '<div class="BAZ_info">La base de donn&eacute;es de bazar vient d\'&ecirc;tre ajout&eacute;e,</div>'."\n";
         } else {
             echo '<div class="BAZ_error">Fichier sql introuvable.</div>'."\n";
+            die;
         }
 
 }
@@ -250,7 +256,7 @@ define ('BAZ_DELTA', 12);		// Le nombre de page a afficher avant le 'next';
 define ('BAZ_MOTEUR_RECHERCHE_AVANCEE', true);
 
 /** Reglage de l'utilisation ou non des templates */
-// Mettre a true pour afficher les pages incluses dans la base bazar_template, a false sinon
+// Mettre a true pour afficher les pages incluses dans la base '.BAZ_PREFIXE.'template, a false sinon
 define ('BAZ_UTILISE_TEMPLATE', false);
 
 /** Mettre a 0 pour le pas proposer de filtre dans le moteur de recherche */

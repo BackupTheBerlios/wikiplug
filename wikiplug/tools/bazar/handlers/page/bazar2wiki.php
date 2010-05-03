@@ -42,7 +42,7 @@ if ($this->UserIsInGroup('admins'))
 	$lien = str_replace("/wakka.php?wiki=","",$this->config["base_url"]);
 	$objetmail = '['.str_replace("http://","",$lien).'] Vos nouveaux identifiants sur le site '.$this->config["wakka_name"];
 		
-	$sql = 'SELECT bf_titre, bf_mail FROM bazar_fiche WHERE bf_ce_nature IN ('.$idtemplatebazar.') AND (bf_id_fiche=793 OR bf_id_fiche=804)';
+	$sql = 'SELECT bf_titre, bf_mail FROM '.BAZ_PREFIXE.'fiche WHERE bf_ce_nature IN ('.$idtemplatebazar.') AND (bf_id_fiche=793 OR bf_id_fiche=804)';
 	$tab = $this->LoadAll($sql);
 	foreach ($tab as $ligne) {
 		$nomwiki = genere_nom_wiki($ligne['bf_titre']);
@@ -65,7 +65,7 @@ if ($this->UserIsInGroup('admins'))
 		$this->Query($requete);
 		
 		//on ajoute le nom wiki comme createur de sa fiche
-		$requtilisateur = "UPDATE bazar_fiche SET bf_ce_utilisateur=\"".mysql_escape_string($nomwiki)."\" WHERE bf_mail=\"".$ligne['bf_mail']."\"";
+		$requtilisateur = "UPDATE '.BAZ_PREFIXE.'fiche SET bf_ce_utilisateur=\"".mysql_escape_string($nomwiki)."\" WHERE bf_mail=\"".$ligne['bf_mail']."\"";
 		$this->Query($requtilisateur);
 		
 		//envoi du mail

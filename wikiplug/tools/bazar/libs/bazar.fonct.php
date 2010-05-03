@@ -49,7 +49,7 @@ require_once BAZ_CHEMIN.'libs'.DIRECTORY_SEPARATOR.'formulaire/formulaire.fonct.
 * @return   string  HTML
 */
 function afficher_menu() {
-$res .= '<div id="BAZ_menu">'."\n".'<ul>'."\n";
+	$res .= '<div id="BAZ_menu">'."\n".'<ul>'."\n";
 	// Gestion de la vue par defaut
 	if (!isset($_GET[BAZ_VARIABLE_VOIR])) {
 		$_GET[BAZ_VARIABLE_VOIR] = BAZ_VOIR_DEFAUT;
@@ -99,7 +99,7 @@ $res .= '<div id="BAZ_menu">'."\n".'<ul>'."\n";
 	//$utilisateur = new Administrateur_bazar($GLOBALS['AUTH']) ;
 	//$est_admin=0;
 	if ((BAZ_SANS_AUTH!=true) && $GLOBALS['AUTH']->getAuth()) {
-		$requete='SELECT bn_id_nature FROM bazar_nature';
+		$requete='SELECT bn_id_nature FROM '.BAZ_PREFIXE.'nature';
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 		if (DB::isError($resultat)) {
 			die ($resultat->getMessage().$resultat->getDebugInfo()) ;
@@ -143,7 +143,7 @@ function fiches_a_valider() {
 	// On effectue une requete sur le bazar pour voir les fiches a administrer
 	$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_ADMIN);
 	$res= '<h2>'.BAZ_ANNONCES_A_ADMINISTRER.'</h2><br />'."\n";
-	$requete = 'SELECT * FROM bazar_fiche, bazar_nature WHERE bf_statut_fiche=0 AND ' .
+	$requete = 'SELECT * FROM '.BAZ_PREFIXE.'fiche, '.BAZ_PREFIXE.'nature WHERE bf_statut_fiche=0 AND ' .
 				'bn_id_nature=bf_ce_nature AND bn_ce_id_menu IN ('.$GLOBALS['_BAZAR_']['categorie_nature'].') ' ;
 	if (isset($GLOBALS['_BAZAR_']['langue'])) {
 		$requete .= ' and bn_ce_i18n like "'.$GLOBALS['_BAZAR_']['langue'].'%" ';
@@ -235,7 +235,7 @@ function fiches_a_valider() {
 
 	// Les autres fiches, deja validees
 	$res .= '<h2>'.BAZ_TOUTES_LES_FICHES.'</h2>'."\n";
-    $requete = 'SELECT * FROM bazar_fiche, bazar_nature WHERE bf_statut_fiche=1 AND ' .
+    $requete = 'SELECT * FROM '.BAZ_PREFIXE.'fiche, '.BAZ_PREFIXE.'nature WHERE bf_statut_fiche=1 AND ' .
 				'bn_id_nature=bf_ce_nature AND bn_ce_id_menu IN ('.$GLOBALS['_BAZAR_']['categorie_nature'].') ';
 	if (isset($GLOBALS['_BAZAR_']['langue'])) {
 		$requete .= ' and bn_ce_i18n like "'.$GLOBALS['_BAZAR_']['langue'].'%" ';
@@ -331,7 +331,7 @@ function mes_fiches() {
 	if ( baz_a_le_droit('voir_mes_fiches') ) {
 		$nomwiki = $GLOBALS['_BAZAR_']['wiki']->getUser();
 		// requete pour voir si l'utilisateur a des fiches a son nom, classees par date de MAJ et nature d'annonce
-		$requete = 'SELECT * FROM bazar_fiche, bazar_nature WHERE bf_ce_utilisateur="'. $nomwiki['name'].
+		$requete = 'SELECT * FROM '.BAZ_PREFIXE.'fiche, '.BAZ_PREFIXE.'nature WHERE bf_ce_utilisateur="'. $nomwiki['name'].
 		           '" AND bn_id_nature=bf_ce_nature ';
 		if ($GLOBALS['_BAZAR_']['categorie_nature']!='toutes') $requete .= ' AND bn_type_fiche = "'.$GLOBALS['_BAZAR_']['categorie_nature'].'" ';
 		if (isset($GLOBALS['_BAZAR_']['langue'])) $requete .= ' AND bn_ce_i18n like "'.$GLOBALS['_BAZAR_']['langue'].'%" ';
@@ -438,7 +438,7 @@ function baz_gestion_droits() {
 		$personne=$_GET['pers'];
 		//CAS DES DROITS POUR UN TYPE D'ANNONCE: On efface tous les droits de la personne pour ce type d'annonce
 		if (isset($_GET['idtypeannonce'])) {
-			$requete = 'DELETE FROM bazar_droits WHERE bd_id_utilisateur='.$_GET['pers'].
+			$requete = 'DELETE FROM '.BAZ_PREFIXE.'droits WHERE bd_id_utilisateur='.$_GET['pers'].
 				   ' AND bd_id_nature_offre='.$_GET['idtypeannonce'];
 			$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 			if (DB::isError($resultat)) {
@@ -447,28 +447,28 @@ function baz_gestion_droits() {
 		}
 		//CAS DU SUPER ADMIN: On efface tous les droits de la personne en general
 		else {
-			$requete = 'DELETE FROM bazar_droits WHERE bd_id_utilisateur='.$_GET['pers'];
+			$requete = 'DELETE FROM '.BAZ_PREFIXE.'droits WHERE bd_id_utilisateur='.$_GET['pers'];
 			$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 			if (DB::isError($resultat)) {
 				die ($resultat->getMessage().$resultat->getDebugInfo()) ;
 			}
 		}
 		if ($_GET['droits']=='superadmin') {
-			$requete = 'INSERT INTO bazar_droits VALUES ('.$_GET['pers'].',0,0)';
+			$requete = 'INSERT INTO '.BAZ_PREFIXE.'droits VALUES ('.$_GET['pers'].',0,0)';
 			$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 			if (DB::isError($resultat)) {
 				die ($resultat->getMessage().$resultat->getDebugInfo()) ;
 			}
 		}
 		elseif ($_GET['droits']=='redacteur') {
-			$requete = 'INSERT INTO bazar_droits VALUES ('.$_GET['pers'].','.$_GET['idtypeannonce'].',1)';
+			$requete = 'INSERT INTO '.BAZ_PREFIXE.'droits VALUES ('.$_GET['pers'].','.$_GET['idtypeannonce'].',1)';
 			$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 			if (DB::isError($resultat)) {
 				die ($resultat->getMessage().$resultat->getDebugInfo()) ;
 			}
 		}
 		elseif ($_GET['droits']=='admin') {
-			$requete = 'INSERT INTO bazar_droits VALUES ('.$_GET['pers'].','.$_GET['idtypeannonce'].',2)';
+			$requete = 'INSERT INTO '.BAZ_PREFIXE.'droits VALUES ('.$_GET['pers'].','.$_GET['idtypeannonce'].',2)';
 			$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 			if (DB::isError($resultat)) {
 				die ($resultat->getMessage().$resultat->getDebugInfo()) ;
@@ -514,7 +514,7 @@ function baz_gestion_droits() {
 			$res.= '<a href='.$lien_passer_superadmin->getURL().'>'.BAZ_PASSER_SUPERADMINISTRATEUR.'</a><br />'."\n";
 
 			//on cherche les differentes rubriques d'annonces
-			$requete = 'SELECT bn_id_nature, bn_label_nature, bn_image_titre FROM bazar_nature';
+			$requete = 'SELECT bn_id_nature, bn_label_nature, bn_image_titre FROM '.BAZ_PREFIXE.'nature';
 			if (isset($GLOBALS['_BAZAR_']['langue'])) $requete .= ' where bn_ce_i18n like "'.$GLOBALS['_BAZAR_']['langue'].'%"';
 			$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 			if (DB::isError($resultat)) {
@@ -659,7 +659,7 @@ function baz_formulaire($mode) {
 			$res.='<h2 class="titre_saisir_annonce">'.BAZ_DEPOSE_UNE_NOUVELLE_ANNONCE.'</h2>'."\n";
 
 			//requete pour obtenir le nom et la description des types d'annonce
-			$requete = 'SELECT * FROM bazar_nature WHERE ';
+			$requete = 'SELECT * FROM '.BAZ_PREFIXE.'nature WHERE ';
 			if ($GLOBALS['_BAZAR_']['categorie_nature']!='toutes') $requete .= 'bn_type_fiche="'.$GLOBALS['_BAZAR_']['categorie_nature'].'" ';
 			else $requete .= '1 ';
 			if (isset($GLOBALS['_BAZAR_']['langue'])) {
@@ -843,7 +843,7 @@ function baz_afficher_formulaire_fiche($mode = 'saisie', $formtemplate) {
 }
 
 
-/** baz_requete_bazar_fiche() - preparer la requete d'insertion ou de MAJ de la table bazar_fiche a partir du template
+/** baz_requete_bazar_fiche() - preparer la requete d'insertion ou de MAJ de la table '.BAZ_PREFIXE.'fiche a partir du template
 *
 * @global   mixed L'objet contenant les valeurs issues de la saisie du formulaire
 * @return   void
@@ -877,9 +877,9 @@ function baz_requete_bazar_fiche($valeur) {
 function baz_insertion($valeur) {
 
         // ===========  Insertion d'une nouvelle fiche ===================
-        //requete d'insertion dans bazar_fiche
+        //requete d'insertion dans '.BAZ_PREFIXE.'fiche
         $GLOBALS['_BAZAR_']['id_fiche'] = baz_nextid('bazar_fiche', 'bf_id_fiche', $GLOBALS['_BAZAR_']['db']) ;
-        $requete = 'INSERT INTO bazar_fiche SET bf_id_fiche='.$GLOBALS['_BAZAR_']['id_fiche'].', ';
+        $requete = 'INSERT INTO '.BAZ_PREFIXE.'fiche SET bf_id_fiche='.$GLOBALS['_BAZAR_']['id_fiche'].', ';
 		if ($GLOBALS['_BAZAR_']['nomwiki']!='' && $GLOBALS['_BAZAR_']['nomwiki']!=NULL) $requete .= 'bf_ce_utilisateur="'.$GLOBALS['_BAZAR_']['nomwiki']['name'].'", ';
 		$requete .= 'bf_categorie_fiche="'.$GLOBALS['_BAZAR_']['categorie_nature'].'", bf_ce_nature='.$GLOBALS['_BAZAR_']['id_typeannonce'].', '.
 		   'bf_date_creation_fiche=NOW(), ';
@@ -955,8 +955,8 @@ function baz_insertion($valeur) {
 * @return   void
 */
 function baz_mise_a_jour($valeur) {
-	//MAJ de bazar_fiche
-	$requete = 'UPDATE bazar_fiche SET '.baz_requete_bazar_fiche(&$valeur,$GLOBALS['_BAZAR_']['id_typeannonce']);
+	//MAJ de '.BAZ_PREFIXE.'fiche
+	$requete = 'UPDATE '.BAZ_PREFIXE.'fiche SET '.baz_requete_bazar_fiche(&$valeur,$GLOBALS['_BAZAR_']['id_typeannonce']);
 	$requete.= ' WHERE bf_id_fiche='.$GLOBALS['_BAZAR_']['id_fiche'];
 	$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 	if (DB::isError($resultat)) {
@@ -1019,21 +1019,21 @@ function baz_suppression($idfiche) {
 	$valeur = baz_valeurs_fiche($idfiche);
 	if ( baz_a_le_droit( 'saisie_fiche', $valeur['bf_ce_utilisateur'] ) ) {
 		// suppression des valeurs des listes et des cases à cocher
-		$requete = 'DELETE FROM bazar_fiche_valeur_liste WHERE bfvl_ce_fiche='.$idfiche;
+		$requete = 'DELETE FROM '.BAZ_PREFIXE.'fiche_valeur_liste WHERE bfvl_ce_fiche='.$idfiche;
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 		if (DB::isError($resultat)) {
 			die ($resultat->getMessage().$resultat->getDebugInfo()) ;
 		}
 
 		//suppression des valeurs des champs texte
-		$requete = 'DELETE FROM bazar_fiche_valeur_texte WHERE bfvt_ce_fiche = '.$idfiche;
+		$requete = 'DELETE FROM '.BAZ_PREFIXE.'fiche_valeur_texte WHERE bfvt_ce_fiche = '.$idfiche;
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 		if (DB::isError($resultat)) {
 			return ('Echec de la requete<br />'.$resultat->getMessage().'<br />'.$resultat->getDebugInfo().'<br />'."\n") ;
 		}
 
 		//suppression des valeurs des champs texte
-		$requete = 'DELETE FROM bazar_fiche_valeur_texte_long WHERE bfvtl_ce_fiche = '.$idfiche;
+		$requete = 'DELETE FROM '.BAZ_PREFIXE.'fiche_valeur_texte_long WHERE bfvtl_ce_fiche = '.$idfiche;
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 		if (DB::isError($resultat)) {
 			return ('Echec de la requete<br />'.$resultat->getMessage().'<br />'.$resultat->getDebugInfo().'<br />'."\n") ;
@@ -1041,8 +1041,8 @@ function baz_suppression($idfiche) {
 		
 		//TODO:suppression des fichiers et images associées
 
-		//suppression de la fiche dans bazar_fiche
-		$requete = 'DELETE FROM bazar_fiche WHERE bf_id_fiche = '.$idfiche;
+		//suppression de la fiche dans '.BAZ_PREFIXE.'fiche
+		$requete = 'DELETE FROM '.BAZ_PREFIXE.'fiche WHERE bf_id_fiche = '.$idfiche;
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 		if (DB::isError($resultat)) {
 			die ('Echec de la requete<br />'.$resultat->getMessage().'<br />'.$resultat->getDebugInfo().'<br />'."\n") ;
@@ -1073,15 +1073,15 @@ function publier_fiche($valid) {
 	//l'utilisateur à t'il le droit de valider
 	if ( baz_a_le_droit( 'valider_fiche' ) ) {
 		if ($valid==0) {
-			$requete = 'UPDATE bazar_fiche SET  bf_statut_fiche=2 WHERE bf_id_fiche="'.$_GET['id_fiche'].'"' ;
+			$requete = 'UPDATE '.BAZ_PREFIXE.'fiche SET  bf_statut_fiche=2 WHERE bf_id_fiche="'.$_GET['id_fiche'].'"' ;
 			echo '<div class="BAZ_info">'.BAZ_FICHE_PAS_VALIDEE.'</div>'."\n";
 		}
 		else {
-			$requete = 'UPDATE bazar_fiche SET  bf_statut_fiche=1 WHERE bf_id_fiche="'.$_GET['id_fiche'].'"' ;
+			$requete = 'UPDATE '.BAZ_PREFIXE.'fiche SET  bf_statut_fiche=1 WHERE bf_id_fiche="'.$_GET['id_fiche'].'"' ;
 			echo '<div class="BAZ_info">'.BAZ_FICHE_VALIDEE.'</div>'."\n";
 		}
 
-		// ====================Mise a jour de la table bazar_fiche====================
+		// ====================Mise a jour de la table '.BAZ_PREFIXE.'fiche====================
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 		if (DB::isError($resultat)) {
 			die ($resultat->getMessage().$resultat->getDebugInfo()) ;
@@ -1101,7 +1101,7 @@ function baz_liste_rss() {
 	$res= '<h2>'.BAZ_S_INSCRIRE_AUX_ANNONCES.'</h2>'."\n";
 	//requete pour obtenir l'id et le label des types d'annonces
 	$requete = 'SELECT bn_id_nature, bn_label_nature '.
-	           'FROM bazar_nature WHERE 1';
+	           'FROM '.BAZ_PREFIXE.'nature WHERE 1';
 	$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 	if (DB::isError($resultat)) {
 		return ($resultat->getMessage().$resultat->getDebugInfo()) ;
@@ -1182,7 +1182,7 @@ function baz_gestion_formulaire() {
 	// il y a un formulaire a modifier
 	if (isset($_GET['action_formulaire']) && $_GET['action_formulaire']=='modif') {
 		//recuperation des informations du type de formulaire
-		$requete = 'SELECT * FROM bazar_nature WHERE bn_id_nature='.$_GET['idformulaire'];
+		$requete = 'SELECT * FROM '.BAZ_PREFIXE.'nature WHERE bn_id_nature='.$_GET['idformulaire'];
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 		if (DB::isError($resultat)) {
 			return ($resultat->getMessage().$resultat->getDebugInfo()) ;
@@ -1199,7 +1199,7 @@ function baz_gestion_formulaire() {
 
 	//il y a des donnees pour ajouter un nouveau formulaire
 	} elseif (isset($_GET['action_formulaire']) && $_GET['action_formulaire']=='new_v') {
-		$requete = 'INSERT INTO bazar_nature (`bn_id_nature` ,`bn_ce_i18n` ,`bn_label_nature` ,`bn_template` ,`bn_description` ,`bn_condition`, `bn_label_class` ,`bn_type_fiche`)' .
+		$requete = 'INSERT INTO '.BAZ_PREFIXE.'nature (`bn_id_nature` ,`bn_ce_i18n` ,`bn_label_nature` ,`bn_template` ,`bn_description` ,`bn_condition`, `bn_label_class` ,`bn_type_fiche`)' .
 				   ' VALUES ('.baz_nextId('bazar_nature', 'bn_id_nature', $GLOBALS['_BAZAR_']['db']).
                    ', "fr-FR", "'.$_POST["bn_label_nature"].'", "'.addslashes($_POST["bn_template"]).
 				   '", "'.addslashes($_POST["bn_description"]).'", "'.addslashes($_POST["bn_condition"]).
@@ -1212,7 +1212,7 @@ function baz_gestion_formulaire() {
 
 	//il y a des donnees pour modifier un formulaire
 	} elseif (isset($_GET['action_formulaire']) && $_GET['action_formulaire']=='modif_v' && baz_a_le_droit('saisie_formulaire') ) {
-		$requete =  'UPDATE bazar_nature SET `bn_label_nature`="'.$_POST["bn_label_nature"].
+		$requete =  'UPDATE '.BAZ_PREFIXE.'nature SET `bn_label_nature`="'.$_POST["bn_label_nature"].
 				    '" ,`bn_template`="'.addslashes($_POST["bn_template"]).
 				    '" ,`bn_description`="'.$_POST["bn_description"].
 				    '" ,`bn_condition`="'.$_POST["bn_condition"].
@@ -1227,15 +1227,15 @@ function baz_gestion_formulaire() {
 
 	// il y a un id de formulaire à supprimer
 	} elseif (isset($_GET['action_formulaire']) && $_GET['action_formulaire']=='delete' && baz_a_le_droit('saisie_formulaire')) {
-		//suppression de l'entree dans bazar_nature
-		$requete = 'DELETE FROM bazar_nature WHERE bn_id_nature='.$_GET['idformulaire'];
+		//suppression de l'entree dans '.BAZ_PREFIXE.'nature
+		$requete = 'DELETE FROM '.BAZ_PREFIXE.'nature WHERE bn_id_nature='.$_GET['idformulaire'];
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 		if (DB::isError($resultat)) {
 			return ($resultat->getMessage().$resultat->getDebugInfo()) ;
 		}
 
-		//suppression des fiches associees dans bazar_fiche
-		$requete = 'DELETE FROM bazar_fiche WHERE bf_ce_nature='.$_GET['idformulaire'];
+		//suppression des fiches associees dans '.BAZ_PREFIXE.'fiche
+		$requete = 'DELETE FROM '.BAZ_PREFIXE.'fiche WHERE bf_ce_nature='.$_GET['idformulaire'];
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 		if (DB::isError($resultat)) {
 			return ($resultat->getMessage().$resultat->getDebugInfo()) ;
@@ -1250,7 +1250,7 @@ function baz_gestion_formulaire() {
 
 		//requete pour obtenir l'id et le label des types d'annonces
 		$requete = 'SELECT bn_id_nature, bn_label_nature, bn_type_fiche '.
-		           'FROM bazar_nature WHERE 1 ORDER BY bn_type_fiche';
+		           'FROM '.BAZ_PREFIXE.'nature WHERE 1 ORDER BY bn_type_fiche';
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 		if (DB::isError($resultat)) {
 			return ($resultat->getMessage().$resultat->getDebugInfo()) ;
@@ -1305,7 +1305,7 @@ function baz_valeurs_fiche($idfiche = '') {
 	if ($idfiche != '') {
 		
 		//infos dans bazar fiche
-		$requete = 'SELECT * FROM bazar_fiche WHERE bf_id_fiche='.$idfiche;
+		$requete = 'SELECT * FROM '.BAZ_PREFIXE.'fiche WHERE bf_id_fiche='.$idfiche;
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 		if (DB::isError($resultat)) {
 			die ($resultat->getMessage().'<br />'.$resultat->getDebugInfo()) ;
@@ -1313,7 +1313,7 @@ function baz_valeurs_fiche($idfiche = '') {
 		$valeurs_fiche = $resultat->fetchRow(DB_FETCHMODE_ASSOC) ;
 		
 		//metadonnees textelong
-		$requete = 'SELECT bfvtl_id_element_form, bfvtl_texte_long FROM bazar_fiche_valeur_texte_long WHERE bfvtl_ce_fiche='.$idfiche;
+		$requete = 'SELECT bfvtl_id_element_form, bfvtl_texte_long FROM '.BAZ_PREFIXE.'fiche_valeur_texte_long WHERE bfvtl_ce_fiche='.$idfiche;
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 		if (DB::isError($resultat)) {
 			die ($resultat->getMessage().'<br />'.$resultat->getDebugInfo()) ;
@@ -1325,7 +1325,7 @@ function baz_valeurs_fiche($idfiche = '') {
 		$valeurs_fiche = array_merge($valeurs_fiche, $valeurs_meta_textelong);
 		
 		//metadonnees texte
-		$requete = 'SELECT bfvt_id_element_form, bfvt_texte FROM bazar_fiche_valeur_texte WHERE bfvt_ce_fiche='.$idfiche;
+		$requete = 'SELECT bfvt_id_element_form, bfvt_texte FROM '.BAZ_PREFIXE.'fiche_valeur_texte WHERE bfvt_ce_fiche='.$idfiche;
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 		if (DB::isError($resultat)) {
 			die ($resultat->getMessage().'<br />'.$resultat->getDebugInfo()) ;
@@ -1337,7 +1337,7 @@ function baz_valeurs_fiche($idfiche = '') {
 		$valeurs_fiche = array_merge($valeurs_fiche, $valeurs_meta_texte);
 		
 		//metadonnees listes et checkbox
-		$requete =  'SELECT bfvl_ce_liste, bfvl_valeur FROM bazar_fiche_valeur_liste WHERE bfvl_ce_fiche='.$idfiche;
+		$requete =  'SELECT bfvl_ce_liste, bfvl_valeur FROM '.BAZ_PREFIXE.'fiche_valeur_liste WHERE bfvl_ce_fiche='.$idfiche;
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 		$valeurs_meta_listes = array();
 		while ($ligne = $resultat->fetchRow(DB_FETCHMODE_ASSOC)) {
@@ -1365,7 +1365,7 @@ function baz_valeurs_fiche($idfiche = '') {
 * @return   void
 */
 function baz_valeurs_type_de_fiche($idtypefiche) {
-	$requete = 'SELECT * FROM bazar_nature WHERE bn_id_nature = '.$idtypefiche;
+	$requete = 'SELECT * FROM '.BAZ_PREFIXE.'nature WHERE bn_id_nature = '.$idtypefiche;
 	if (isset($GLOBALS['_BAZAR_']['langue'])) {
 		$requete .= ' and bn_ce_i18n like "'.$GLOBALS['_BAZAR_']['langue'].'%"';
 	}
@@ -1460,7 +1460,7 @@ function baz_voir_fiche($danslappli, $idfiche) {
 	$res='';
 	//pour les stats, on ajoute une vue pour la fiche
 	if ($danslappli==1) {
-		$requete = 'UPDATE bazar_fiche SET bf_nb_consultations=bf_nb_consultations+1 WHERE bf_id_fiche='.$GLOBALS['_BAZAR_']['id_fiche'];
+		$requete = 'UPDATE '.BAZ_PREFIXE.'fiche SET bf_nb_consultations=bf_nb_consultations+1 WHERE bf_id_fiche='.$GLOBALS['_BAZAR_']['id_fiche'];
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 	}
 	
@@ -1666,7 +1666,7 @@ function gen_RSS($typeannonce='', $nbitem='', $emetteur='', $valide=1, $requeteS
 	// generation de la requete MySQL personnalisee
 	$req_where=0;
 	$requete = 'SELECT DISTINCT bf_id_fiche, bf_titre, bf_date_debut_validite_fiche, bf_description,  bn_label_nature, bf_date_creation_fiche '.
-				'FROM bazar_fiche, bazar_nature '.$requeteSQLFrom.' WHERE '.$requeteWhereListe;
+				'FROM '.BAZ_PREFIXE.'fiche, '.BAZ_PREFIXE.'nature '.$requeteSQLFrom.' WHERE '.$requeteWhereListe;
 	if ($valide!=2) {
 		$requete .= 'bf_statut_fiche='.$valide;
 		$req_where=1;
@@ -1677,7 +1677,7 @@ function gen_RSS($typeannonce='', $nbitem='', $emetteur='', $valide=1, $requeteS
 		$requete .= 'bf_ce_nature='.$typeannonce.' and bf_ce_nature=bn_id_nature ';;
 		$req_where=1;
 		//le nom du flux devient le type d'annonce
-		$requete_nom_flux = 'select bn_label_nature from bazar_nature where bn_id_nature = '.$typeannonce;
+		$requete_nom_flux = 'select bn_label_nature from '.BAZ_PREFIXE.'nature where bn_id_nature = '.$typeannonce;
 		$nomflux = $GLOBALS['_BAZAR_']['db']->getOne($requete_nom_flux) ;
 	}
 	// Cas ou il y plusieurs type d annonce demande
@@ -1881,7 +1881,7 @@ function baz_rechercher($typeannonce='toutes',$categorienature='toutes') {
 	
 	//cas du formulaire de recherche proposant de chercher parmis tous les types d'annonces
 	//requete pour obtenir l'id et le label des types d'annonces
-	$requete = 'SELECT bn_id_nature, bn_label_nature, bn_template FROM bazar_nature WHERE ';
+	$requete = 'SELECT bn_id_nature, bn_label_nature, bn_template FROM '.BAZ_PREFIXE.'nature WHERE ';
 	if ($categorienature!='toutes') $requete .= 'bn_type_fiche="'.$categorienature.'" ';
 	else $requete .= '1 ';
 	if (isset($GLOBALS['_BAZAR_']['langue'])) $requete .= ' AND bn_ce_i18n like "'.$GLOBALS['_BAZAR_']['langue'].'%" ';
@@ -1969,7 +1969,7 @@ function baz_rechercher($typeannonce='toutes',$categorienature='toutes') {
 	// dans le but de construire l'element de formulaire select avec les noms des emetteurs de fiche
 	if (BAZ_RECHERCHE_PAR_EMETTEUR) {
 		$requete = 'SELECT DISTINCT '.BAZ_CHAMPS_ID.', '.BAZ_CHAMPS_NOM.', '.BAZ_CHAMPS_PRENOM.' '.
-		           'FROM bazar_fiche,'.BAZ_ANNUAIRE.' WHERE ' ;
+		           'FROM '.BAZ_PREFIXE.'fiche,'.BAZ_ANNUAIRE.' WHERE ' ;
 
 		$requete .= ' bf_date_debut_validite_fiche<=NOW() AND bf_date_fin_validite_fiche>=NOW() and';
 
@@ -2028,7 +2028,7 @@ function baz_rechercher($typeannonce='toutes',$categorienature='toutes') {
 	//si la recherche n'a pas encore été effectué, on affiche les 10 dernières fiches
     if (!isset($_REQUEST['recherche_effectuee'])) {
 		    $requete = 'SELECT DISTINCT bf_id_fiche, bf_titre, bf_ce_utilisateur, bf_date_debut_validite_fiche, bf_description, '.
-		               'bn_label_nature, bf_date_creation_fiche FROM bazar_fiche, bazar_nature '.
+		               'bn_label_nature, bf_date_creation_fiche FROM '.BAZ_PREFIXE.'fiche, '.BAZ_PREFIXE.'nature '.
 		               'WHERE bn_id_nature=bf_ce_nature ';
 		    if ($GLOBALS['_BAZAR_']['categorie_nature'] != 'toutes') $requete .= 'AND bn_type_fiche = "'.$GLOBALS['_BAZAR_']['categorie_nature'].'" ';
 			if ($GLOBALS['_BAZAR_']['id_typeannonce'] != 'toutes') $requete .= 'AND bn_id_nature='.$GLOBALS['_BAZAR_']['id_typeannonce'].' ' ;
@@ -2136,7 +2136,7 @@ function baz_requete_recherche_fiches($tableau = '', $tri = '', $id_typeannonce 
 	reset($tableau);
 	while (list($nom, $val) = each($tableau)) 
 	{		
-			$requeteWhereListe .= ' AND bf_id_fiche IN (SELECT bfvl_ce_fiche FROM bazar_fiche_valeur_liste WHERE bfvl_ce_liste="'.$nom.'" AND bfvl_valeur IN ('.$val.')) ';
+			$requeteWhereListe .= ' AND bf_id_fiche IN (SELECT bfvl_ce_fiche FROM '.BAZ_PREFIXE.'fiche_valeur_liste WHERE bfvl_ce_liste="'.$nom.'" AND bfvl_valeur IN ('.$val.')) ';
 	}
 	
 	if ($id_typeannonce!='toutes') {
@@ -2151,7 +2151,7 @@ function baz_requete_recherche_fiches($tableau = '', $tri = '', $id_typeannonce 
 		$requeteSQL='';
 		for ($i=0; $i<$nbmots; $i++) {
 			if ($i>0) $requeteSQL.=' OR ';
-			$requeteSQL.=' bf_id_fiche IN ( SELECT bfvt_ce_fiche FROM bazar_fiche_valeur_texte WHERE bfvt_texte LIKE "%'.$recherche[$i].'%" ) OR bf_id_fiche IN ( SELECT bfvtl_ce_fiche FROM bazar_fiche_valeur_texte_long WHERE bfvtl_texte_long LIKE "%'.$recherche[$i].'%" ) ';
+			$requeteSQL.=' bf_id_fiche IN ( SELECT bfvt_ce_fiche FROM '.BAZ_PREFIXE.'fiche_valeur_texte WHERE bfvt_texte LIKE "%'.$recherche[$i].'%" ) OR bf_id_fiche IN ( SELECT bfvtl_ce_fiche FROM '.BAZ_PREFIXE.'fiche_valeur_texte_long WHERE bfvtl_texte_long LIKE "%'.$recherche[$i].'%" ) ';
 			
 		}
 	}
@@ -2172,7 +2172,7 @@ function baz_requete_recherche_fiches($tableau = '', $tri = '', $id_typeannonce 
 	
 	// generation de la requete MySQL personnalisee
 	$requete = 'SELECT * '.
-				'FROM bazar_fiche, bazar_nature '.$requeteFrom.' WHERE '.$requeteWhere;
+				'FROM '.BAZ_PREFIXE.'fiche, '.BAZ_PREFIXE.'nature '.$requeteFrom.' WHERE '.$requeteWhere;
 	if ($valides!=2) {
 		$requete .= ' AND bf_statut_fiche='.$valides;
 	}
@@ -2480,7 +2480,7 @@ function afficher_flux_rss() {
 * correction template
 *
 * Revision 1.71  2007-10-22 09:18:39  alexandre_tb
-* prise en compte de la langue dans les requetes sur bazar_nature
+* prise en compte de la langue dans les requetes sur '.BAZ_PREFIXE.'nature
 *
 * Revision 1.70  2007-10-10 13:26:36  alexandre_tb
 * utilisation de la classe Administrateur_bazar a la place de niveau_droit
@@ -2496,7 +2496,7 @@ function afficher_flux_rss() {
 * mise en place de divers templates :
 *  - mail pour admin (sujet et corps)
 *  - modele carte_google
-* ajout de lignes dans bazar_template
+* ajout de lignes dans '.BAZ_PREFIXE.'template
 *
 * Revision 1.66  2007-06-25 12:15:06  alexandre_tb
 * merge from narmer
@@ -2537,10 +2537,10 @@ function afficher_flux_rss() {
 * suppression du style clear:both dans les attribut du formulaire d identification
 *
 * Revision 1.57.2.4  2007/02/01 16:19:30  alexandre_tb
-* correction erreur de requete sur insertion bazar_fiche
+* correction erreur de requete sur insertion '.BAZ_PREFIXE.'fiche
 *
 * Revision 1.57.2.3  2007/02/01 16:11:05  alexandre_tb
-* correction erreur de requete sur insertion bazar_fiche
+* correction erreur de requete sur insertion '.BAZ_PREFIXE.'fiche
 *
 * Revision 1.57.2.2  2007/01/22 16:05:39  alexandre_tb
 * insertion de la date du jour dans bf_date_debut_validite_fiche quand il n'y a pas ce champs dans le formulaire (ï¿½vite le 0000-00-00)
@@ -2637,7 +2637,7 @@ function afficher_flux_rss() {
 * en cours
 *
 * Revision 1.29  2006/01/13 14:12:51  florian
-* utilisation des temlates dans la table bazar_nature
+* utilisation des temlates dans la table '.BAZ_PREFIXE.'nature
 *
 * Revision 1.28  2006/01/05 16:28:24  alexandre_tb
 * prise en chage des checkbox, reste la mise ï¿½ jour ï¿½ gï¿½rer
@@ -2664,7 +2664,7 @@ function afficher_flux_rss() {
 * correction bug modifs et saisies
 *
 * Revision 1.20  2005/11/30 13:58:45  florian
-* ajouts graphisme (logos, boutons), changement structure SQL bazar_fiche
+* ajouts graphisme (logos, boutons), changement structure SQL '.BAZ_PREFIXE.'fiche
 *
 * Revision 1.19  2005/11/24 16:17:13  florian
 * corrections bugs, ajout des cases Ã  cocher
