@@ -236,7 +236,7 @@ background:transparent;
 
 #content {
 	width:650px;
-	/*float:left;*/
+	float:left;
 	text-align:justify;
 }
 
@@ -484,7 +484,7 @@ ul.css-tabs .liste3 a.current, ul.css-tabs .liste3 a:hover  { color:white; backg
 #remember {clear:left;font-size:10px;}
 .label_iden {clear:left; display:block; float:left; margin:0 5px 0 0; text-align:right; width:80px; font-size:10px;}
 .titre_identification {font-weight:bold;margin:0 auto;display:block;width:89px;}
-.texte_iden, .inscription_iden, .commentsheader, .liste_action {display:none;}
+.texte_iden, .inscription_iden, .commentsheader {display:none;}
 .bouton_iden{margin:0 auto;display:block;}
 
 .rss_site_titre,.rss_site_titre a {font-size:14px;}
