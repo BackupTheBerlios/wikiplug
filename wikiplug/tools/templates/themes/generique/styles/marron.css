@@ -177,11 +177,11 @@ margin:0 0 0 15px;
 border:0; 
 background:transparent; 
 display:block; 
-width:100px; 
-height : 200px; 
 font-size:38px; 
 color : #89551B; 
-margin:0px; 
+margin:0;
+padding:0;
+text-align:center;
 text-shadow:2px 2px 1px #D9D6A0; 
 } 
 #titre a { 
