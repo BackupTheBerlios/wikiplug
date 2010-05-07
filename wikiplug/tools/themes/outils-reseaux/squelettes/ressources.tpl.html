@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+	<head>
+		<title>{{titrepage}}</title>{{metarobots}}
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+		<meta name="keywords" content="{{configuration param="meta_keywords"}}" />
+		<meta name="description" content="{{configuration param="meta_description"}}" />
+		<link rel="icon" type="image/png" href="http://outils-reseaux.org/favicon.png" />
+		<link rel="alternate" type="application/rss+xml" title="Flux RSS des derniers changements" href="{{configuration param="base_url"}}DerniersChangementsRSS/xml" />
+		{{liensstyle}}
+		{{liensjavascripts}}
+		<script type="text/javascript">
+		// initialise plugins
+		jQuery(function(){
+			jQuery('#menu ul').addClass('sf-menu').superfish();
+			jQuery('#menu > div > ul > li').each( function(i) {$(this).addClass("rubrique"+(i+1));} );
+			jQuery('#menu').show();
+		});
+		</script>
+	</head>
+	
+	<body {{parambody}}>
+		<div id="wrap">
+			<div id="top">
+				<a id="lien_accueil" href="http://outils-reseaux.org/wakka.php" title="Retour &agrave; la page d'accueil">&nbsp;</a>
+				<div id="menu">
+					{{include page="PageMenuHaut" doubleclic="1"}}
+				</div> <!-- fin div menu -->
+			</div> <!-- fin div top -->
+			<div id="content">
+				<div id="left">
+					<div class="left ressources">
+						<div class="menu_haut ressources_bas">Ressources</div>
+						<div id="nav">
+							{{include page="PageMenuRessourceS"}}
+						</div>
+					</div> <!-- fin div class left -->
+					<div id="identification" class="left ressources">
+						<div class="menu_haut ressources_bas">Identification</div>
+								{{login}}
+					</div> <!-- fin div identification -->
+				</div> <!-- fin div id left -->
+				<div id="right" {{doubleclic}}>
+					{WIKINI_PAGE}
+				</div> <!-- fin div right -->
+				<div id="clear">&nbsp;</div>
+			</div> <!-- fin div content -->
+			<div id="footer">
+				{{include page="PageFooter" doubleclic="1"}}
+			</div>  <!-- fin div footer -->
+		</div> <!-- fin div wrap -->
+	</body>
+</html>
