@@ -47,7 +47,6 @@ else if ($user = $this->GetUser())
 			<td align="right"></td>
 			<td>Bonjour, <?php echo $this->Link($user["name"]) ?>&nbsp;!</td>
 		</tr>
-		</tr>
 		<tr>
 			<td></td>
 			<td><input type="button" value="D&eacute;connexion" onclick="document.location='<?php echo $this->href("", "", "action=logout"); ?>'" /></td>
