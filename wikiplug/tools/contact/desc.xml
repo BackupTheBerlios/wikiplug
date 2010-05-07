@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<plugin name="wkcontact" version="$Name:  $" active="1">
+<plugin name="wkcontact" version="$Name:  $" active="0">
   <author>Florian Schmitt</author>
   <label>Contact</label>
   <desc>action pour générer un formulaire d'envoi de mails</desc>

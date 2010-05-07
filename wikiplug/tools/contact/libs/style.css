@@ -1,10 +1,3 @@
-/* 
-Credits: Bit Repository
-CSS Library: http://www.bitrepositiry.com/
-*/
-
-html, body  { padding: 0; border: 0px none; }
-
 .notification_error
 {
 border: 1px solid #A25965;
@@ -42,11 +35,14 @@ padding: 2px 5px 2px 5px;
 
 .button
 {
+
 border: 1px solid #999999; 
 border-top-color: #CCCCCC; 
-border-left-color: #CCCCCC; 
+border-left-color: #CCCCCC;
+margin : 5px; 
 
-background: white;
+background: white url(images/icone-email.png) no-repeat 3px 0px;
+padding: 3px 2px 3px 29px;
 
 color: #333333; 
 
@@ -56,14 +52,33 @@ font: 11px Verdana, Helvetica, Arial, sans-serif;
 }
 
 /* Label */
-label  { width: 140px; padding-left: 20px; margin: 5px; float: left; text-align: left; }
+.formulairemail label  { width: 140px; padding: 2px 0px 0px 0px; margin: 5px; float: left; text-align: right; }
 
 /* Input, Textarea */
-input, textarea
+input.textbox
 {
 margin: 5px;
 padding: 0px; 
 float: left;
+width:320px;
+border: 1px solid #999999; 
+border-top-color: #CCCCCC; 
+border-left-color: #CCCCCC; 
+
+color: #333333; 
+
+font: 11px Verdana, Helvetica, Arial, sans-serif;
+
+-moz-border-radius: 3px;
+}
+
+
+textarea.textbox
+{
+margin: 5px;
+padding: 0px; 
+float: left;
+width:320px;
 
 border: 1px solid #999999; 
 border-top-color: #CCCCCC; 
