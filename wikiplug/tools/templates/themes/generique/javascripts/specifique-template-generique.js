@@ -1,35 +1,35 @@
-function slideSwitch() {
-	var $active = $('#banniere img.active');
-	if ( $active.length == 0 ) $active = $('#banniere img:last');
-
-	// use this to pull the images in the order they appear in the markup
-	var $next =  $active.next().length ? $active.next()	: $('#banniere img:first');
+jQuery(document).ready(function() {
+	//ajout de classes pour traitement css
+	$("#menu_haut > div.div_include > ul > li").each(function(i) {$(this).addClass('menu'+i);});
+	$("#col_menu > div.div_include > ul > li").each(function(i) {$(this).addClass('menu'+i);});
+	$("a.actif").parent().addClass('liste-active').parents("ul").prev("a").addClass('actif').parent().addClass('liste-active');
 	
-	// uncomment the 3 lines below to pull the images in random order	
-	// var $sibs  = $active.siblings();
-	// var rndNum = Math.floor(Math.random() * $sibs.length );
-	// var $next  = $( $sibs[ rndNum ] );
-		
-	$active.addClass('last-active');
+	//pour les menus qui possèdent des sous menus, on affiche une petite fleche pour indiquer
+	$("#menu_haut > div.div_include > ul > li:has(ul)").find("a:first").append("<span class=\"fleche_menu_droite fleche_menu_bas\"></span>");
+	$("#col_menu > div.div_include > ul > li:has(ul)").find("a:first").append("<span class=\"fleche_menu_gauche fleche_menu_droit\"></span>");
+    $("#menu_haut ul li ul li:has(ul), #col_menu ul li ul li:has(ul)").find("a:first").append("<span class=\"fleche_menu_droite fleche_menu_droit\"></span>");	
 	
-	$next.css({opacity: 0.0}).addClass('active').animate({opacity: 1.0}, 1000, function() {
-		$active.removeClass('active last-active');
-	});
-}
-
-jQuery(function(){
-	//intervalle de changement d'image pour le diaporama
-	setInterval( "slideSwitch()", 4000 );
-	//menu deroulant du haut
-	$('#menu_haut ul').addClass('sf-menu').superfish();
-	//menu de gauche avec accordeon
-	$("#menu_gauche > div.div_include > ul > li > ul, #menu_droite > div.div_include > ul > li > ul").hide();
-	$("#menu_gauche > div.div_include > ul > li, #menu_droite > div.div_include > ul > li").children("ul").each(function(i) {
-		$(this).prev("a").addClass("depliable").bind("click", function() {
-			if ( $(this).hasClass("depliable") ) { $(this).removeClass("depliable").addClass("deplie"); }
-			else {$(this).removeClass("deplie").addClass("depliable"); }
-			$(this).next("ul").slideToggle('fast');
-			return false;
-		})
-	});
+	//menu haut
+	var config_menu_deroulant = {    
+		 sensitivity: 7, // number = sensitivity threshold (must be 1 or higher)    
+		 interval: 100, // number = milliseconds for onMouseOver polling interval    
+		 over: function(){ $('ul:first',this).slideDown('fast').parent().addClass('hover'); },
+		 timeout: 600, // number = milliseconds delay before onMouseOut    
+		 out: function(){ $('ul:first',this).slideUp('fast').parent().removeClass('hover'); }
+	};
+	$("#menu_haut ul li:has(ul)").hoverIntent( config_menu_deroulant );
+	
+	//PageMenu
+	var config_col_menu = {    
+		 sensitivity: 7, // number = sensitivity threshold (must be 1 or higher)    
+		 interval: 200, // number = milliseconds for onMouseOver polling interval    
+		 over: function(){ $('ul:first',this).slideDown('slow').parent().addClass('hover').siblings('li').removeClass('hover').find('ul').slideUp('slow'); },
+		 timeout: 100, // number = milliseconds delay before onMouseOut    
+		 out: function(){ return false; }
+	};
+	$("#col_menu > div.div_include > ul > li:has(ul)").hoverIntent( config_col_menu );
+	$("#col_menu ul li ul li:has(ul)").hoverIntent( config_menu_deroulant );
+	
+	//deroule le deuxieme niveau pour la PageMenu, si elle contient le lien actif
+	$("#col_menu > div.div_include > ul > li.liste-active:has(ul)").addClass('hover').find('ul:first').slideDown('fast');
 });
