@@ -117,10 +117,11 @@ if (!empty($urls)) {
         }    
 	// Trie des pages par date
 	krsort($syndication['pages']);
-
+	echo '<div class="boite_syndication">'."\n";
 	if (count($tab_url)==1 || $titre!='') echo '<h2 class="rss_site_titre"><a href="'.$syndication['pages'][key($syndication['pages'])]['url_site'].'">'.$syndication['pages'][key($syndication['pages'])]['titre_site'].'</a></h2>'."\n";
 	// Gestion des squelettes
 	include($template);
+	echo '</div>'."\n";
 } else {
 	echo 'Il faut entrer obligatoirement le param&ecirc;tre de l\'url pour syndiquer un flux RSS.';
 }
