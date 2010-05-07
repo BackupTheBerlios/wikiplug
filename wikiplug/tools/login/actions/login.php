@@ -5,6 +5,7 @@ Copyright (c) 2002, Hendrik Mans <hendrik@mans.de>
 Copyright 2002, 2008 David DELON
 Copyright 2002, 2003 Charles NEPOTE
 Copyright 2002  Patrick PAUL
+Copyright 2010  Florian SCHMITT
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions
@@ -38,6 +39,9 @@ if (empty($titre)) {
 $urllogin = $this->GetParameter("url");
 if (empty($urllogin)) {
 	$urllogin=$this->href("", "ParametresUtilisateur", "");
+} elseif ($urllogin == 'pagecourante')
+{
+	$urllogin=$this->href();
 }
 
 $pageacceuil = $this->GetParameter("pageaccueil");
@@ -66,7 +70,8 @@ if ($_REQUEST["action"] == "login")
 			if (!empty($pageacceuil))
 			{
 				if ( $pageacceuil=='utilisateur' && $this->LoadPage($_POST["name"]) ) $this->Redirect($this->href('', $_POST["name"], ''));
-				else $this->Redirect($this->href('', $pageacceuil, ''));
+				elseif ( $pageacceuil == 'pagecourante') $this->Redirect($_POST['urldepart']);
+				else $this->Redirect($pageacceuil);
 			}
 			else $this->Redirect($this->href('', '', 'action=checklogged', false));
 		}
