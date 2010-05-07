@@ -6,7 +6,7 @@ if (!defined("WIKINI_VERSION"))
 }
 
 //Sauvegarde
-if ( isset($_POST["submit"]) && $_POST["submit"] == 'Sauver' && isset($_POST["tags"]) )
+if (!CACHER_MOTS_CLES && isset($_POST["submit"]) && $_POST["submit"] == 'Sauver' && $this->HasAccess("write") && isset($_POST["tags"]) && $_POST['antispam']==1 )
 {
 	$this->SaveTags($this->GetPageTag(), $_POST["tags"]);
 }

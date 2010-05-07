@@ -46,7 +46,7 @@ if (!CACHER_MOTS_CLES && $this->HasAccess("write") && $this->HasAccess("read"))
             </div>
 	';
 	$plugin_output_new=preg_replace ('/\<input name=\"submit\" type=\"submit\" value=\"Sauver\"/',
-	$formtag.'<input name="submit" type="submit" value="Sauver"', $plugin_output_new);
+	$formtag.'<input type="hidden" class="antispam" name="antispam" value="0" /><input name="submit" type="submit" value="Sauver"', $plugin_output_new);
 }
 
 ?>

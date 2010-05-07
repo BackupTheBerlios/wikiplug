@@ -33,6 +33,8 @@ $wikiClassesContent [] = '
 	function SaveTags($page, $liste_tags)
     {
 		$tags = explode(",", mysql_escape_string($liste_tags));
+		
+		
 		//on récupère les anciens tags de la page courante
 		$tabtagsexistants = $this->GetAllTriplesValues($page, \'http://outils-reseaux.org/_vocabulary/tag\', \'\', \'\');
 		if (is_array($tabtagsexistants))
@@ -42,7 +44,7 @@ $wikiClassesContent [] = '
 				$tags_restants_a_effacer[] = $tab["value"];
 			}
 		}
-
+		
 		//on ajoute le tag s il n existe pas déjà
 		foreach ($tags as $tag)
 		{
@@ -53,10 +55,9 @@ $wikiClassesContent [] = '
 				{
 					$this->InsertTriple($page, \'http://outils-reseaux.org/_vocabulary/tag\', $tag, \'\', \'\');
 				}
-			}
-
-			//on supprime ce tag du tableau des tags restants à effacer
-			if (isset($tags_restants_a_effacer)) unset($tags_restants_a_effacer[array_search($tag, $tags_restants_a_effacer)]);
+				//on supprime ce tag du tableau des tags restants à effacer
+				if (isset($tags_restants_a_effacer)) unset($tags_restants_a_effacer[array_search($tag, $tags_restants_a_effacer)]);
+			}			
 		}
 
 		//on supprime les tags restants a effacer

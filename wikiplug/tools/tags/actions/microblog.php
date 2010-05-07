@@ -31,13 +31,17 @@ if (empty($vue)) $vue = 'bulle_microblog.tpl.html';
 $enhaut = $this->GetParameter('enhaut');
 if (empty($enhaut)) $enhaut="oui";
 
+//formulaire microblog seul ou avec la liste des billets?
+$afficher = $this->GetParameter('afficher');
+if (empty($afficher)) $afficher="liste";
+
 //tri alphabetique ou par date
 $tri = $this->GetParameter('tri');
 if (empty($tri)) $tri = 'date';
 
 //nom du template de formulaire
 $template_formulaire = $this->GetParameter('template');
-if (empty($template_formulaire)) $template_formulaire = "formulaire_microblog.tpl.html";
+if (empty($template_formulaire)) $template_formulaire = "formulaire_microblog_simple.tpl.html";
 
 //nombre de pages wiki affichées par page
 $nb = $this->GetParameter('nb');
@@ -48,10 +52,13 @@ if (empty($nbcar)) $nbcar=300;
 
 if (isset($_POST['FormMicroblog'])) {
 	if ($_POST['antispam']==1) {
-		$date = date("Ymdhis");
-	  	$this->SavePage($this->getPageTag().$date, $_POST['microblog_billet']);
-	  	$this->InsertTriple($this->getPageTag().$date, 'http://outils-reseaux.org/_vocabulary/type', 'microblog', '', '');
-		$this->SaveTags($this->getPageTag().$date, $tagsvirgule.','.$_POST['microblog_tags']);
+		if ($_POST['microblog_billet'] != '')
+		{
+			$date = date("Ymdhis");
+			$this->SavePage($this->getPageTag().$date, $_POST['microblog_billet']);
+			$this->InsertTriple($this->getPageTag().$date, 'http://outils-reseaux.org/_vocabulary/type', 'microblog', '', '');
+			$this->SaveTags($this->getPageTag().$date, $tagsvirgule.','.$_POST['microblog_tags']);
+		}
 		$this->Redirect($this->Href());
 		exit;
 	} else {
@@ -83,7 +90,9 @@ else {
 		{
 			include_once('tools/tags/libs/squelettephp.class.php');
 			$squel = new SquelettePhp('tools/tags/presentation/'.$template_formulaire);
-			$squel->set(array("nb"=>$nbcar, "rss"=>$html_rss));
+			//pour la veille,
+			if(!empty($_GET['microblog'])) $texte_billet=trim(urldecode($_GET['microblog']));
+			$squel->set(array("nb"=>$nbcar, "rss"=>$html_rss, "billet"=>$texte_billet));
 			$html_formulaire .= $squel->analyser();
 		}
 
@@ -122,13 +131,20 @@ else {
 		$texte .= '}}';
 
 		//le formulaire de saisie doit il etre en haut
-		if ($enhaut=='oui')
+		if ($afficher=='liste')
 		{
-			echo $html_formulaire.$this->Format($texte);
+			if ($enhaut=='oui')
+			{
+				echo $html_formulaire.$this->Format($texte);
+			}
+			else
+			{
+				echo $this->Format($texte).$html_formulaire;
+			}
 		}
 		else
 		{
-			echo $this->Format($texte).$html_formulaire;
+			echo $html_formulaire;
 		}
 	}
 	else {

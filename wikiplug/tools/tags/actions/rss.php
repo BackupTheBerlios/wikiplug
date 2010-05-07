@@ -86,7 +86,8 @@ else
 	{
 			$requete .= ' ORDER BY time DESC';
 	}
-	
+	$requete .= ' LIMIT 0,50';
+	//echo $requete;break;
 	//on a des résultats!
 	if ($pages = $this->LoadAll($requete)) {
 		if (!($link = $this->GetParameter("link"))) {$link=$this->config["root_page"];}
@@ -111,8 +112,8 @@ else
 	        $items .= "<description><![CDATA[";
 	
 			//on enleve les actions recentchangesrssplus pour eviter les boucles infinies, avant de formater en HTML le texte
-			$page["body"] = preg_replace("/\{\{recentchangesrssplus(.*?)\}\}/s", '', $page["body"]);
-	
+			$page["body"] = preg_replace("/\{\{recentchangesrss(.*?)\}\}/s", '', $page["body"]);
+			$page["body"] = preg_replace("/\{\{rss(.*?)\}\}/s", '', $page["body"]);
 			$texteformat = $this->Format($page['body']);
 	
 			//on tronque le texte apres le prochain espace
