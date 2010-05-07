@@ -75,7 +75,7 @@ if (!$incPage = $this->LoadPage($incPageName))
 } 
 
 if (!empty($actif)&&$actif=="1") {
-    $plugin_output_new=str_ireplace('<a href="'.$this->config["base_url"].$this->tag,'<a class="actif" href="'.$this->config["base_url"].$this->tag,$plugin_output_new);
+    $plugin_output_new=str_ireplace('<a href="'.$this->config["base_url"].$this->tag.'"','<a class="actif" href="'.$this->config["base_url"].$this->tag.'"', $plugin_output_new);
 }
 
 $plugin_output_new = '<div class="div_include"'.$actiondblclic.'>'."\n".$plugin_output_new."\n".$texteclear
