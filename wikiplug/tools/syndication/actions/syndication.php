@@ -1,4 +1,4 @@
-<?
+<?php
 //on inclue Magpie le parser RSS
 define('MAGPIE_OUTPUT_ENCODING', 'UTF-8');
 define('MAGPIE_DIR', 'tools/syndication/libs/');
@@ -20,6 +20,11 @@ if (file_exists('cache')) {
 $titre = $this->GetParameter("titre");
 
 $nb = $this->GetParameter("nb");
+
+$pagination = $this->GetParameter("pagination");
+if (empty($pagination)) $pagination = 2;
+
+$nbchar = $this->GetParameter("nbchar");
 
 $nouvellefenetre = $this->GetParameter("nouvellefenetre");
 
@@ -55,7 +60,7 @@ if (!empty($urls)) {
 						$i++;
 						$aso_page = array();
 						// Gestion du titre
-						if ( $titre == '' ) {
+						if ( $titre == 'rss' ) {
 							$aso_page['titre_site'] = htmlentities($feed->channel['title'], ENT_QUOTES, 'UTF-8');
 						} else {
 							$aso_page['titre_site'] = $titre;
@@ -68,8 +73,21 @@ if (!empty($urls)) {
 						$aso_page['url'] = htmlentities($item['link'], ENT_QUOTES, 'UTF-8');
 						//titre de l'article						
 						$aso_page['titre'] = html_entity_decode(htmlentities($item['title'], ENT_QUOTES, 'UTF-8'), ENT_QUOTES);
-						//description de l'article
-						$aso_page['description'] = html_entity_decode(htmlentities($item['description'], ENT_QUOTES, 'UTF-8'), ENT_QUOTES);					
+						//description de la description : soit tronquée, soit en entier
+						if (!empty($nbchar)) {
+							//On vérifie si le texte est plus grand que le nombre de caractères spécifiés
+							if (strlen($item['description']) > 0 &&  strlen($item['description']) > $nbchar) {
+							    $item['description'] = substr($item['description'], 0, $nbchar);
+								//on cherche l'espace le plus proche du maximum des caractères autorisés
+							    $last_space = strrpos($item['description'], " "); 
+								//On ajoute ... à la suite de cet espace    
+							    $item['description'] = substr($item['description'], 0, $last_space).' [..] <a href="'.$aso_page['url'].'" title="lire la suite">Lire la suite</a>'; 
+							}
+							$aso_page['description'] = html_entity_decode(htmlentities($item['description'], ENT_QUOTES, 'UTF-8'), ENT_QUOTES);
+						} else {
+							$aso_page['description'] = html_entity_decode(htmlentities($item['description'], ENT_QUOTES, 'UTF-8'), ENT_QUOTES);	
+						}
+													
 						//gestion de la date de publication, selon le flux, elle se trouve parsee à des endroits differents 
 						if ($item['pubdate']) {
 							$aso_page['datestamp'] = strtotime($item['pubdate']);
@@ -107,7 +125,8 @@ if (!empty($urls)) {
 								default :
 									$aso_page['date'] = '';
 							}
-						}												
+						}	
+						$aso_page['pagination'] = $pagination;											
 						$syndication['pages'][$aso_page['datestamp']] = $aso_page;
 					}
 				} else {

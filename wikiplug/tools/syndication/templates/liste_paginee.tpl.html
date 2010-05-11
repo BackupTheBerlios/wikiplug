@@ -114,7 +114,7 @@ $(document).ready(function(){
 	// Calling the jQuery plugin and splitting the
 	// .liste_rss_paginee UL into pages of 3 LIs each:
 	
-	$('.liste_rss_paginee').sweetPages({perPage:3});
+	$('.liste_rss_paginee').sweetPages({perPage:<?=$page['pagination']?>});
 	
 	// The default behaviour of the plugin is to insert the 
 	// page links in the ul, but we need them in the main container:
@@ -125,95 +125,6 @@ $(document).ready(function(){
 });
 -->
 </script>
-<style type="text/css">
-<!--
-.pagination {
-	position:relative;
-	margin:10px auto;
-	width:100%;
-	padding:10px 25px 50px;
-}
-	 
-.liste_rss_paginee{
-	/* The unordered list that is to be split into pages */
-
-	width:90%;
-	overflow:hidden;
-	position:relative;
-	background:#4e5355;
-	padding:10px;
-
-	/*	CSS3 inner shadow (the webkit one is commeted, because Google Chrome
-		does not like rounded corners combined with inset shadows): */
-
-	-moz-box-shadow:0 0 10px #222 inset;
-	/*-webkit-box-shadow:0 0 10px #222 inset;*/
-	box-shadow:0 0 10px #222 inset;
-}
-
-.swControls{
-	position:absolute;
-	margin-top:10px;
-}
-
-a.swShowPage{
-
-	/* The links that initiate the page slide */
-
-	background-color:#444444;
-	float:left;
-	height:15px;
-	margin:4px 3px;
-	text-indent:-9999px;
-	width:15px;
-	/*border:1px solid #ccc;*/
-	
-	/* CSS3 rounded corners */
-	
-	-moz-border-radius:7px;
-	-webkit-border-radius:7px;
-	border-radius:7px;
-}
-
-a.swShowPage:hover,
-a.swShowPage.active{
-	background-color:#2993dd;
-	
-	/*	CSS3 inner shadow */
-	
-	-moz-box-shadow:0 0 7px #1e435d inset;
-	/*-webkit-box-shadow:0 0 7px #1e435d inset;*/
-	box-shadow:0 0 7px #1e435d inset;
-}
-
-.liste_rss_paginee li{
-	background-color:#F4F4F4;
-	list-style:none outside none;
-	margin:10px 10px 0;
-	padding:20px;
-	float:left;
-
-	/* Regular CSS3 box shadows (not inset): */
-
-	-moz-box-shadow:0 0 6px #111111;
-	-webkit-box-shadow:0 0 6px #111111;
-	box-shadow:0 0 6px #111111;
-}
-
-.liste_rss_paginee,
-.liste_rss_paginee li{
-	/* Applying rouded corners to both the holder and the holder lis */
-	-moz-border-radius:8px;
-	-webkit-border-radius:8px;
-	border-radius:8px;
-}
-
-.clear{
-	/* This class clears the floated elements */
-	clear:both;
-}
--->
-</style>
 </div>
 <!-- SYNDICATION - FIN -->
 <?php endif; ?>
