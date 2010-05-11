@@ -878,7 +878,7 @@ function baz_insertion($valeur) {
 
         // ===========  Insertion d'une nouvelle fiche ===================
         //requete d'insertion dans '.BAZ_PREFIXE.'fiche
-        $GLOBALS['_BAZAR_']['id_fiche'] = baz_nextid('bazar_fiche', 'bf_id_fiche', $GLOBALS['_BAZAR_']['db']) ;
+        $GLOBALS['_BAZAR_']['id_fiche'] = baz_nextid(BAZ_PREFIXE.'fiche', 'bf_id_fiche', $GLOBALS['_BAZAR_']['db']) ;
         $requete = 'INSERT INTO '.BAZ_PREFIXE.'fiche SET bf_id_fiche='.$GLOBALS['_BAZAR_']['id_fiche'].', ';
 		if ($GLOBALS['_BAZAR_']['nomwiki']!='' && $GLOBALS['_BAZAR_']['nomwiki']!=NULL) $requete .= 'bf_ce_utilisateur="'.$GLOBALS['_BAZAR_']['nomwiki']['name'].'", ';
 		$requete .= 'bf_categorie_fiche="'.$GLOBALS['_BAZAR_']['categorie_nature'].'", bf_ce_nature='.$GLOBALS['_BAZAR_']['id_typeannonce'].', '.
@@ -1200,7 +1200,7 @@ function baz_gestion_formulaire() {
 	//il y a des donnees pour ajouter un nouveau formulaire
 	} elseif (isset($_GET['action_formulaire']) && $_GET['action_formulaire']=='new_v') {
 		$requete = 'INSERT INTO '.BAZ_PREFIXE.'nature (`bn_id_nature` ,`bn_ce_i18n` ,`bn_label_nature` ,`bn_template` ,`bn_description` ,`bn_condition`, `bn_label_class` ,`bn_type_fiche`)' .
-				   ' VALUES ('.baz_nextId('bazar_nature', 'bn_id_nature', $GLOBALS['_BAZAR_']['db']).
+				   ' VALUES ('.baz_nextId(BAZ_PREFIXE.'nature', 'bn_id_nature', $GLOBALS['_BAZAR_']['db']).
                    ', "fr-FR", "'.$_POST["bn_label_nature"].'", "'.addslashes($_POST["bn_template"]).
 				   '", "'.addslashes($_POST["bn_description"]).'", "'.addslashes($_POST["bn_condition"]).
 				   '", "'.$_POST["bn_label_class"].'", "'.$_POST["bn_type_fiche"].'")';
@@ -1263,7 +1263,7 @@ function baz_gestion_formulaire() {
 				'<ul class="BAZ_liste">'."\n";
 				$type_formulaire = $ligne['bn_type_fiche'];
 			}
-			$lien_formulaire=$GLOBALS['_BAZAR_']['url'];
+			$lien_formulaire=clone($GLOBALS['_BAZAR_']['url']);
 			$liste .= '<li>';
 			$lien_formulaire->addQueryString('action_formulaire', 'delete');
 			$lien_formulaire->addQueryString('idformulaire', $ligne['bn_id_nature']);
@@ -1286,6 +1286,7 @@ function baz_gestion_formulaire() {
 
 		//ajout du lien pour creer un nouveau formulaire
 		if (baz_a_le_droit('saisie_formulaire')) {
+			$lien_formulaire=clone($GLOBALS['_BAZAR_']['url']);
 			$lien_formulaire->addQueryString('action_formulaire', 'new');
 			$res .= '<a class="BAZ_lien_nouveau" href="'.str_replace('&','&amp;',$lien_formulaire->getURL()).'">'.BAZ_NOUVEAU_FORMULAIRE.'</a>'."\n";
 		}

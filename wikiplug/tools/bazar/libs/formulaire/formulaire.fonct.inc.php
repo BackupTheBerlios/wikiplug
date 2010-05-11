@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: formulaire.fonct.inc.php,v 1.12 2010/05/03 15:59:45 mrflos Exp $
+// CVS : $Id: formulaire.fonct.inc.php,v 1.13 2010/05/11 17:39:49 mrflos Exp $
 /**
 * Formulaire
 *
@@ -31,7 +31,7 @@
 //Autres auteurs :
 *@author        Aleandre GRANIER <alexandre@tela-botanica.org>
 *@copyright     Tela-Botanica 2000-2004
-*@version       $Revision: 1.12 $ $Date: 2010/05/03 15:59:45 $
+*@version       $Revision: 1.13 $ $Date: 2010/05/11 17:39:49 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -542,6 +542,69 @@ function listedatefin(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 	listedatedeb($formtemplate, $tableau_template , $mode, $valeurs_fiche);
 }
 
+/** tags() - Ajoute un élément de type mot clés (tags)
+*
+* @param    mixed   L'objet QuickForm du formulaire
+* @param    mixed   Le tableau des valeurs des différentes option pour l'élément texte
+* @param    string  Type d'action pour le formulaire : saisie, modification, vue,... saisie par défaut
+* @param    mixed   valeur par défaut du champs
+* @return   void
+*/
+function tags(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
+{
+	if ( $mode == 'saisie' )
+	{
+		$formtag = '<script src="tools/tags/libs/GrowingInput.js" type="text/javascript" charset="utf-8"></script>
+		<script src="tools/tags/libs/tags_suggestions.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+		$(document).ready(function() {
+			// Autocompletion des mot-cles	
+			var t = new $.TextboxList(\'.microblog_toustags\', {unique: true, plugins: {autocomplete: {}}});
+			t.getContainer().addClass(\'textboxlist-loading\');				
+			$.ajax({url: \''.$GLOBALS['_BAZAR_']['wiki']->href('json',$GLOBALS['_BAZAR_']['wiki']->GetPageTag()).'\', dataType: \'json\', success: function(r){
+				t.plugins[\'autocomplete\'].setValues(r);
+				t.getContainer().removeClass(\'textboxlist-loading\');
+			}});
+			'.$tags_javascript.'		
+		});
+		</script>';
+		
+		
+		$option=array('size'=>$tableau_template[3],'maxlength'=>$tableau_template[4], 'id' => $tableau_template[1], 'class' => 'input_texte microblog_toustags');
+		$bulledaide = '';
+		if (isset($tableau_template[10]) && $tableau_template[10]!='') $bulledaide = ' <img class="tooltip_aide" title="'.htmlentities($tableau_template[10]).'" src="tools/bazar/presentation/images/aide.png" width="16" height="16" alt="image aide" />';
+		$formtemplate->addElement('text', $tableau_template[1], $tableau_template[2].$bulledaide, $option) ;
+		$formtemplate->addElement('html',$formtag);
+		//gestion des valeurs par défaut
+		if (isset($valeurs_fiche[$tableau_template[1]])) $defauts = array( $tableau_template[1] => $valeurs_fiche[$tableau_template[1]] );
+		else $defauts = array( $tableau_template[1] => stripslashes($tableau_template[5]) );
+		$formtemplate->setDefaults($defauts);
+		$formtemplate->applyFilter($tableau_template[1], 'addslashes') ;
+		//gestion du champs obligatoire
+		if (($tableau_template[9]==0) && isset($tableau_template[8]) && ($tableau_template[8]==1))
+		{
+			$formtemplate->addRule($tableau_template[1],  $tableau_template[2].' obligatoire', 'required', '', 'client') ;
+		}
+	}
+	elseif ( $mode == 'requete' )
+	{
+		return formulaire_insertion_texte($tableau_template[1], $valeurs_fiche[$tableau_template[1]]);
+	}
+	elseif ($mode == 'html')
+	{
+		$html = '';
+		if (isset($valeurs_fiche[$tableau_template[1]]) && $valeurs_fiche[$tableau_template[1]]!='')
+		{
+			$html = '<div class="BAZ_rubrique  BAZ_rubrique_'.$GLOBALS['_BAZAR_']['class'].'">'."\n".
+						'<span class="BAZ_label BAZ_label_'.$GLOBALS['_BAZAR_']['class'].'">'.$tableau_template[2].':</span>'."\n";
+			$html .= '<span class="BAZ_texte BAZ_texte_'.$GLOBALS['_BAZAR_']['class'].'"> ';
+			$html .= htmlentities($valeurs_fiche[$tableau_template[1]]).'</span>'."\n".'</div>'."\n";
+		}
+		return $html;
+	}
+}
+
+
 
 /** texte() - Ajoute un élément de type texte au formulaire
 *
@@ -577,10 +640,6 @@ function texte(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 	elseif ( $mode == 'requete' )
 	{
 		return formulaire_insertion_texte($tableau_template[1], $valeurs_fiche[$tableau_template[1]]);
-	}
-	elseif ($mode == 'recherche')
-	{
-
 	}
 	elseif ($mode == 'html')
 	{
@@ -859,10 +918,6 @@ function textelong(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requeteinsertion) ;
 		return;
 	}
-	elseif ($mode == 'recherche')
-	{
-
-	}
 	elseif ($mode == 'html')
 	{
 		$html = '';
@@ -886,99 +941,6 @@ function textelong(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 * @param    string  Type d'action pour le formulaire : saisie, modification, vue,... saisie par défaut
 * @return   void
 */
-function url(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
-{
-	if ( $mode == 'saisie' )
-	{
-		//recherche des URLs deja entrees dans la base
-		$html_url= '';
-		if (isset($GLOBALS['_BAZAR_']["id_fiche"]) && $GLOBALS['_BAZAR_']["id_fiche"]!=NULL) {
-			$requete = 'SELECT bu_id_url, bu_url, bu_descriptif_url FROM '.BAZ_PREFIXE.'url WHERE bu_ce_fiche='.$GLOBALS['_BAZAR_']["id_fiche"];
-			$resultat = & $GLOBALS['_BAZAR_']['db'] -> query($requete) ;
-			if (DB::isError ($resultat)) {
-				die ($GLOBALS['_BAZAR_']['db']->getMessage().$GLOBALS['_BAZAR_']['db']->getDebugInfo()) ;
-			}
-			if ($resultat->numRows()>0) {
-				$html_url= '<strong>'.BAZ_LISTE_URL.'</strong>'."\n";
-				$tableAttr = array("class" => "bazar_table") ;
-				$table = new HTML_Table($tableAttr) ;
-				$entete = array (BAZ_LIEN , BAZ_SUPPRIMER) ;
-				$table->addRow($entete) ;
-				$table->setRowType(0, "th") ;
-
-				$lien_supprimer=$GLOBALS['_BAZAR_']['url'];
-				$lien_supprimer->addQueryString('action', $_GET['action']);
-				$lien_supprimer->addQueryString('id_fiche', $GLOBALS['_BAZAR_']["id_fiche"]);
-				$lien_supprimer->addQueryString('typeannonce', $_REQUEST['typeannonce']);
-
-				while ($ligne = $resultat->fetchRow(DB_FETCHMODE_OBJECT)) {
-					$lien_supprimer->addQueryString('id_url', $ligne->bu_id_url);
-					$table->addRow (array(
-					'<a href="'.$ligne->bu_url.'" target="_blank"> '.$ligne->bu_descriptif_url.'</a>', // col 1 : le lien
-					'<a href="'.$lien_supprimer->getURL().'" onclick="javascript:return confirm(\''.BAZ_CONFIRMATION_SUPPRESSION_LIEN.'\');" >'.BAZ_SUPPRIMER.'</a>'."\n")) ; // col 2 : supprimer
-					$lien_supprimer->removeQueryString('id_url');
-				}
-
-				// Nettoyage de l'url
-				$lien_supprimer->removeQueryString('action');
-				$lien_supprimer->removeQueryString('id_fiche');
-				$lien_supprimer->removeQueryString('typeannonce');
-
-				$table->altRowAttributes(1, array("class" => "ligne_impaire"), array("class" => "ligne_paire"));
-				$table->updateColAttributes(1, array("align" => "center"));
-				$html_url.= $table->toHTML()."\n\n" ;
-			}
-		}
-		$html ="\n".'<h4>'.$tableau_template[2].'</h4>'."\n";
-		$formtemplate->addElement('html', $html) ;
-		if ($html_url!='') $formtemplate->addElement('html', $html_url) ;
-		$formtemplate->addElement('text', 'url_lien'.$tableau_template[1], BAZ_URL_LIEN) ;
-		$defs=array('url_lien'.$tableau_template[1]=>'http://');
-		$formtemplate->setDefaults($defs);
-
-		$formtemplate->addElement('text', 'url_texte'.$tableau_template[1], BAZ_URL_TEXTE) ;
-		//gestion du champs obligatoire
-		if (($tableau_template[9]==0) && isset($tableau_template[8]) && ($tableau_template[8]==1)) {
-			$formtemplate->addRule('url_lien'.$tableau_template[1], BAZ_URL_LIEN_REQUIS, 'required', '', 'client') ;
-			$formtemplate->addRule('url_texte'.$tableau_template[1], BAZ_URL_TEXTE_REQUIS, 'required', '', 'client') ;
-		}
-	}
-	elseif ( $mode == 'requete' )
-	{
-		// On affine les criteres pour l insertion d une url
-		// il faut que le lien soit saisie, different de http:// ET que le texte du lien soit saisie aussi
-		// et ce afin d eviter d avoir des liens vides
-		if (isset($valeurs_fiche['url_lien'.$tableau_template[1]]) &&
-						$valeurs_fiche['url_lien'.$tableau_template[1]]!='http://'
-						&& isset($valeurs_fiche['url_texte'.$tableau_template[1]]) &&
-						strlen ($valeurs_fiche['url_texte'.$tableau_template[1]]))
-		{
-				formulaire_insertion_texte('url_lien'.$tableau_template[1], $valeurs_fiche['url_lien'.$tableau_template[1]].'***'.$valeurs_fiche['url_texte'.$tableau_template[1]]) ;
-		}
-	}
-	elseif ($mode == 'recherche')
-	{
-
-	}
-	elseif ($mode == 'html')
-	{
-		//afficher les liens pour l'annonce
-		$requete = 'SELECT  bu_url, bu_descriptif_url FROM '.BAZ_PREFIXE.'url WHERE bu_ce_fiche='.$GLOBALS['_BAZAR_']['id_fiche'];
-		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
-		if (DB::isError($resultat)) {
-			die ($resultat->getMessage().$resultat->getDebugInfo()) ;
-		}
-		if ($resultat->numRows()>0) {
-			$res .= '<span class="BAZ_label BAZ_label_'.$GLOBALS['_BAZAR_']['class'].'">'.BAZ_LIEN_INTERNET.':</span>'."\n";
-			$res .= '<span class="BAZ_description BAZ_description_'.$GLOBALS['_BAZAR_']['class'].'">'."\n";
-			$res .= '<ul class="BAZ_liste BAZ_liste_'.$GLOBALS['_BAZAR_']['class'].'">'."\n";
-			while ($ligne1 = $resultat->fetchRow(DB_FETCHMODE_ASSOC)) {
-				$res .= '<li class="BAZ_liste_lien BAZ_liste_lien_'.$GLOBALS['_BAZAR_']['class'].'"><a href="'.$ligne1['bu_url'].'" class="BAZ_lien" target="_blank">'.$ligne1['bu_descriptif_url'].'</a></li>'."\n";
-			}
-			$res .= '</ul></span>'."\n";
-		}
-	}
-}
 
 
 /** lien_internet() - Ajoute un élément de type texte contenant une URL au formulaire
@@ -995,7 +957,11 @@ function lien_internet(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		//recherche des URLs deja entrees dans la base
 		$html_url= '';
 		$option=array('size'=>$tableau_template[3],'maxlength'=>$tableau_template[4], 'id' => $tableau_template[1], 'class' => 'input_texte');
-		$formtemplate->addElement('text', $tableau_template[1], $tableau_template[2], $option)	;
+		$bulledaide = '';
+		if (isset($tableau_template[10]) && $tableau_template[10]!='') {
+			$bulledaide = ' <img class="tooltip_aide" title="'.htmlentities($tableau_template[10]).'" src="tools/bazar/presentation/images/aide.png" width="16" height="16" alt="image aide" />';
+		}
+		$formtemplate->addElement('text', $tableau_template[1], $tableau_template[2].$bulledaide, $option)	;
 		//gestion des valeurs par défaut
 		if (isset($valeurs_fiche[$tableau_template[1]])) $defauts = array( $tableau_template[1] => $valeurs_fiche[$tableau_template[1]] );
 		else $defauts = array( $tableau_template[1] => stripslashes($tableau_template[5]) );
@@ -1011,10 +977,6 @@ function lien_internet(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		if ($valeurs_fiche[$tableau_template[1]]=='http://') $valeurs_fiche[$tableau_template[1]]='';
 		formulaire_insertion_texte($tableau_template[1], $valeurs_fiche[$tableau_template[1]]);
 		return;
-	}
-	elseif ($mode == 'recherche')
-	{
-
 	}
 	elseif ($mode == 'html')
 	{
@@ -1914,6 +1876,9 @@ function listefiches(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: formulaire.fonct.inc.php,v $
+* Revision 1.13  2010/05/11 17:39:49  mrflos
+* commit de passage : nuage tags
+*
 * Revision 1.12  2010/05/03 15:59:45  mrflos
 * Un bazar par prÃ©fixe de table
 *

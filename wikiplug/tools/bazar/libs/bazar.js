@@ -44,18 +44,27 @@ $(document).ready(function () {
 	{
 		$("ul.css-tabs").tabs("> .tab", { onClick: function(){if (divcarto) {	initialize(); }} } );
 	} 
-	else
+	else if ($("ul.css-tabs").size() == 1)
 	{
 		$("ul.css-tabs").tabs("fieldset.tab", { onClick: function(){if (divcarto) {	initialize(); }} } );
 	}
 	
 	
 	
-	//crÃ©ation des div pour jquery tools (tooltips, overlays, etc..)
+	//création des div pour jquery tools (tooltips, overlays, etc..)
     $("body").append("<div id=\"dynatooltip\">&nbsp;</div><div class=\"overlay\" id=\"overlay\"><div class=\"contentWrap\"></div></div><div class=\"simple_overlay\" id=\"gallery\"><a class=\"prev\">Pr&eacute;c&eacute;dent</a><a class=\"next\">Suivant</a><div class=\"info\"></div><img class=\"progress\" src=\"tools/bazar/presentation/images/ajax-loader.gif\" /></div>");
 
     // initialise les tooltips d'aide
-    $("img.tooltip_aide[title]").tooltip('#dynatooltip');
+    //$("img.tooltip_aide[title]").tooltip('#dynatooltip');
+    $("img.tooltip_aide[title]").each(function() {
+    	$(this).tooltip({ 
+			effect: 'fade',
+			fadeOutSpeed: 100,
+			predelay: 0,
+			position: "top center",
+			opacity: 0.7
+    	});
+    });
     
 	//accordeon pour bazarliste
 	$(".accordion").each(function() {
@@ -64,35 +73,37 @@ $(document).ready(function () {
 	});
 
     // initialise les iframe en overlay
-    $("a.ouvrir_overlay[rel]").overlay({
-		expose:			'black',
-		effect:			'apple',
-		oneInstance:	true,
-		closeOnClick:	false,
-		onBeforeLoad: function() {
-			//on transforme le lien avecle handler /iframe, pour le charger dans une fenetre overlay
-			var overlay_encours = this
-			var lien = overlay_encours.getTrigger().attr("href");
-			result = lien.match(/\/iframe/i); 
-			if (!result) { lien = lien.replace(/wiki=([a-z0-9]+)&/ig, 'wiki=$1/iframe&', 'g'); }
-			$("#overlay div.contentWrap").html('<iframe class="wikiframe" width="630" height="480" frameborder="0" src="' + lien + '"></iframe>');
-			//dans la frame, on change le fonctionnement des boutons annuler et sauver, pour retourner comme il faut dans la page de modification principale
-			var myFrame = $('#overlay .wikiframe');
-			myFrame.load(function() { 
-				var contenu_iframe = myFrame.contents();
-				contenu_iframe.find('.bouton_annuler').click(function(event) {
-					event.preventDefault();
-					overlay_encours.close(); 
-					return false;
+    $("a.ouvrir_overlay[rel]").each(function() {
+    	$(this).overlay({
+			expose:			'black',
+			effect:			'apple',
+			oneInstance:	true,
+			closeOnClick:	false,
+			onBeforeLoad: function() {
+				//on transforme le lien avecle handler /iframe, pour le charger dans une fenetre overlay
+				var overlay_encours = this
+				var lien = overlay_encours.getTrigger().attr("href");
+				result = lien.match(/\/iframe/i); 
+				if (!result) { lien = lien.replace(/wiki=([a-z0-9]+)&/ig, 'wiki=$1/iframe&', 'g'); }
+				$("#overlay div.contentWrap").html('<iframe class="wikiframe" width="630" height="480" frameborder="0" src="' + lien + '"></iframe>');
+				//dans la frame, on change le fonctionnement des boutons annuler et sauver, pour retourner comme il faut dans la page de modification principale
+				var myFrame = $('#overlay .wikiframe');
+				myFrame.load(function() { 
+					var contenu_iframe = myFrame.contents();
+					contenu_iframe.find('.bouton_annuler').click(function(event) {
+						event.preventDefault();
+						overlay_encours.close(); 
+						return false;
+					});
+					contenu_iframe.find('input.bouton_sauver').click(function(event) {
+						//event.preventDefault();
+						//return false;
+					});
 				});
-				contenu_iframe.find('input.bouton_sauver').click(function(event) {
-					//event.preventDefault();
-					//return false;
-				});
-			});
-			
-		}		
-	});
+				
+			}		
+		});
+    });
 
 	//liste oui / non conditionnelle
 	$("select[id^='liste12'], select[id^='liste1']").change( function() {
