@@ -21,7 +21,7 @@
 // | along with Foobar; if not, write to the Free Software                                                |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: wiki.php,v 1.7 2010/05/03 15:59:45 mrflos Exp $
+// CVS : $Id: wiki.php,v 1.8 2010/06/02 08:48:51 mrflos Exp $
 /**
 * wiki.php
 *
@@ -32,18 +32,17 @@
 *@author        Florian SCHMITT <florian.schmitt@laposte.net>
 //Autres auteurs :
 *@copyright     outils-reseaux-coop.org 2008
-*@version       $Revision: 1.7 $ $Date: 2010/05/03 15:59:45 $
+*@version       $Revision: 1.8 $ $Date: 2010/06/02 08:48:51 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
 // +------------------------------------------------------------------------------------------------------+
 // |                                            ENTETE du PROGRAMME                                       |
 // +------------------------------------------------------------------------------------------------------+
-//error_reporting(E_ALL);
+error_reporting(E_ALL & ~E_DEPRECATED);
 //chemin relatif d'acces au bazar
 define ('BAZ_CHEMIN', 'tools'.DIRECTORY_SEPARATOR.'bazar'.DIRECTORY_SEPARATOR);
 define ('BAZ_CHEMIN_UPLOAD', 'tools'.DIRECTORY_SEPARATOR.'bazar'.DIRECTORY_SEPARATOR.'upload'.DIRECTORY_SEPARATOR);
-
 
 //bouh! c'est pas propre! c'est a cause de PEAR et de ses includes
 set_include_path(BAZ_CHEMIN.'libs'.DIRECTORY_SEPARATOR.PATH_SEPARATOR.get_include_path());
@@ -70,15 +69,15 @@ $wikireq = preg_replace("/^\//", "", $wikireq);
 // split into page/method, checking wiki name & method name (XSS proof)
 if (preg_match('`^' . '(' . "[A-Za-z0-9]+" . ')/(' . "[A-Za-z0-9_-]" . '*)' . '$`', $wikireq, $matches))
 {
-	list(, $page, $method) = $matches;
+	list(, $GLOBALS['_BAZAR_']['pagewiki'], $method) = $matches;
 }
 elseif (preg_match('`^' . "[A-Za-z0-9]+" . '$`', $wikireq))
 {
-	$page = $wikireq;
+	$GLOBALS['_BAZAR_']['pagewiki'] = $wikireq;
 }
 
 // Variable d'url
-$GLOBALS['_BAZAR_']['url'] = new Net_URL($wakkaConfig['base_url'].$page);
+$GLOBALS['_BAZAR_']['url'] = new Net_URL($wakkaConfig['base_url'].$GLOBALS['_BAZAR_']['pagewiki']);
 
 // Connection a la base de donnee
 $dsn='mysql://'.$wakkaConfig['mysql_user'].':'.$wakkaConfig['mysql_password'].'@'.$wakkaConfig['mysql_host'].'/'.$wakkaConfig['mysql_database'];
@@ -169,7 +168,7 @@ define ('BAZ_VARIABLE_VOIR', 'vue');
 define ('BAZ_VARIABLE_ACTION', 'action');
 
 // Indique les onglets de vues a afficher.
-define ('BAZ_VOIR_AFFICHER', 'mes_fiches,consulter,rss,saisir,formulaire,administrer,droits');
+define ('BAZ_VOIR_AFFICHER', 'mes_fiches,consulter,rss,saisir,formulaire,listes');
 
 // Permet d'indiquer la vue par defaut si la variable vue n'est pas defini
 define ('BAZ_VOIR_DEFAUT', 'consulter');
@@ -178,6 +177,7 @@ define ('BAZ_VOIR_MES_FICHES', 'mes_fiches');
 define ('BAZ_VOIR_S_ABONNER', 'rss');
 define ('BAZ_VOIR_SAISIR', 'saisir');
 define ('BAZ_VOIR_FORMULAIRE', 'formulaire');
+define ('BAZ_VOIR_LISTES','listes');
 define ('BAZ_VOIR_ADMIN', 'administrer');
 define ('BAZ_VOIR_GESTION_DROITS', 'droits');
 
@@ -310,7 +310,7 @@ define ('BAZ_STYLE_CHOIX_CARTE','DROPDOWN_MENU'); // HORIZONTAL_BAR ou DROPDOWN_
 // inclure l'url d'un fichier kml (carte google creee precedemment) a afficher sur la carte
 define ('BAZ_GOOGLE_FOND_KML', '');
 
-//inclure un fichier js spÃ©cifique, pour ajouter des polygones Ã  la carte par exemple
+//inclure un fichier js spécifique, pour ajouter des polygones à la carte par exemple
 define('BAZ_JS_INIT_MAP', '')
 
 ?>

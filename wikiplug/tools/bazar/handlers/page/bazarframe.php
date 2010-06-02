@@ -18,20 +18,57 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-// VÃ©rification de sÃ©curitÃ©
+// Vérification de sécurité
 if (!defined("WIKINI_VERSION"))
 {
 	die ("acc&egrave;s direct interdit");
 }
 
-header('Content-type: text/html; charset=UTF-8');
+//header('Content-type: text/html; charset=UTF-8');
 
 if ($HasAccessRead=$this->HasAccess("read"))
 {
 	if ($this->page)
 	{
+		//javascript pour gerer les liens (ouvrir vers l'extérieur) dans les iframes
+		$scripts_iframe = '<script type="text/javascript">
+				$(document).ready(function () {
+					$("body").css(\'background-color\', \'transparent\').css(\'text-align\', \'left\').css(\'background-image\', \'none\').css(\'padding\',\'15px\');
+					$("a[href^=\'http://\']:not(a[href$=\'/slide_show\'])").click(function() {
+						if (window.location != window.parent.location)
+						{
+							//alert(\'iframe\');
+							if (!($(this).hasClass("bouton_annuler")))
+							{
+								window.open($(this).attr("href"));
+								return false;
+							}
+						}
+						else 
+						{
+							//alert(\'pas iframe\');					
+						}
+					});			
+				});
+				</script>
+		</head>
+		
+		<body>';
+		
+		$head = explode('<body',$this->Header());
+		
+		$head = str_replace('</head>',$scripts_iframe, $head[0]);
+		echo $head;
+		
 		// display page
-		echo utf8_encode($this->Format('{{bazar vue="saisir" voirmenu="0" id_typeannonce="'.$_GET['id_typeannonce'].'"}}') );
+		echo $this->Format('{{bazar'.
+		($_GET['vue'] ? ' vue="'.$_GET['vue'].'"' : '').
+		($_GET['action'] ? ' action="'.$_GET['action'].'"' : '').
+		($_GET['voirmenu'] ? ' voirmenu="'.$_GET['voirmenu'].'"' : ' voirmenu="0"').
+		($_GET['id_typeannonce'] ? ' id_typeannonce="'.$_GET['id_typeannonce'].'"' : '').
+		'"}}');
+		echo '</body>
+		</html>';
 	}
 }
 ?>

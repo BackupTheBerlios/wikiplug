@@ -60,7 +60,9 @@ foreach ($tableau_resultat as $fiche) {
 	$tmp = array();
 	$i++;
 	$tmp['titre'] = stripslashes($fiche[3]);
-	$tmp['contenu'] = baz_voir_fiche(0, $fiche[0]);
+	$tmp['valeurs_fiche'] = baz_valeurs_fiche($fiche[0]);
+	$tmp['contenu'] = baz_voir_fiche(0, $tmp['valeurs_fiche']);
+
 	$GLOBALS['_BAZAR_']['url']->addQueryString('id_fiche', $fiche[0]);
 	if (baz_a_le_droit('saisir_fiche', $fiche[2])) {
 		$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_SAISIR);
@@ -76,7 +78,7 @@ foreach ($tableau_resultat as $fiche) {
 	$tmp['lien_voir'] = '<a class="BAZ_lien_voir" href="'. str_replace('&','&amp;',$GLOBALS['_BAZAR_']['url']->getURL()) .'" title="Voir la fiche"></a>'."\n";
 	$fiches['fiches'][] = $tmp;
 
-	//rÃ©initialisation de l'url
+	//réinitialisation de l'url
 	$GLOBALS['_BAZAR_']['url']->removeQueryString(BAZ_VARIABLE_VOIR);
 	$GLOBALS['_BAZAR_']['url']->removeQueryString(BAZ_VARIABLE_ACTION);
 }

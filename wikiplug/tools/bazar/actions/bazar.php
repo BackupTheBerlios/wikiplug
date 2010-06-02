@@ -21,7 +21,7 @@
 // | along with Foobar; if not, write to the Free Software                                                |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: bazar.php,v 1.8 2010/05/03 15:59:45 mrflos Exp $
+// CVS : $Id: bazar.php,v 1.9 2010/06/02 08:48:51 mrflos Exp $
 /**
 * bazar.php
 *
@@ -31,7 +31,7 @@
 //Auteur original :
 *@author        Florian SCHMITT <florian@outils-reseaux.org>
 *@copyright     Florian SCHMITT 2008
-*@version       $Revision: 1.8 $ $Date: 2010/05/03 15:59:45 $
+*@version       $Revision: 1.9 $ $Date: 2010/06/02 08:48:51 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -90,7 +90,7 @@ else {
 if (isset($_REQUEST['id_fiche'])) {
 	$GLOBALS['_BAZAR_']['id_fiche']=$_REQUEST['id_fiche'];
 	// recuperation du type d'annonce a partir de la fiche
-	$requete = 'SELECT bf_ce_nature FROM '.BAZ_PREFIXE.'fiche, '.BAZ_PREFIXE.'nature WHERE bf_id_fiche='.$GLOBALS['_BAZAR_']['id_fiche'].' AND bf_ce_nature = bn_id_nature' ;
+	$requete = 'SELECT bf_ce_nature FROM '.BAZ_PREFIXE.'fiche, '.BAZ_PREFIXE.'nature WHERE bf_id_fiche="'.$GLOBALS['_BAZAR_']['id_fiche'].'" AND bf_ce_nature = bn_id_nature' ;
 	$resultat = $GLOBALS['_BAZAR_']['db']->query ($requete) ;
 	if (DB::isError($resultat)) {
 		echo $resultat->getMessage().'<br />'.$resultat->getInfoDebug();
@@ -190,6 +190,9 @@ if (isset ($_GET[BAZ_VARIABLE_VOIR])) {
 			case BAZ_VOIR_FORMULAIRE :
 				$res .= baz_gestion_formulaire();
 				break;
+			case BAZ_VOIR_LISTES :
+				$res .= baz_gestion_listes();
+				break;
 			case BAZ_VOIR_ADMIN:
 				if (isset($_GET[BAZ_VARIABLE_ACTION]))
 				{
@@ -213,6 +216,9 @@ echo $res ;
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: bazar.php,v $
+* Revision 1.9  2010/06/02 08:48:51  mrflos
+* commit de transition
+*
 * Revision 1.8  2010/05/03 15:59:45  mrflos
 * Un bazar par préfixe de table
 *

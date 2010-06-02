@@ -135,13 +135,17 @@ background:transparent url(images/delete.gif) no-repeat center left;
 padding: 2px 0 2px 18px;
 }
 
-.BAZ_lien_nouveau, .ajout_fiche {
+.BAZ_lien_nouveau, .ajout_fiche, .ajout_label_liste {
 background:transparent url(images/add.png) no-repeat center left;
 border:0;
 font-weight:700;
 display:block;
 margin:2px 0;
 padding:2px 0 2px 20px;
+}
+.ajout_label_liste {
+display:inline;
+margin:0 0 0 300px;
 }
 
 .groupebouton {
@@ -341,6 +345,9 @@ clear:left;
 width:100%;
 margin:0 0 15px;
 }
+.valeur_liste .formulaire_ligne {
+margin:0;
+}
 
 .formulaire_input {
 width:100%;
@@ -357,6 +364,7 @@ height:100px;
 overflow:auto;
 border:1px solid #999;
 width:300px;
+white-space: normal;
 }
 
 .formulaire_label {
@@ -811,12 +819,12 @@ a.active img {
 .medium.btn, .medium.btn:visited 		{ font-size: 13px; font-weight: bold; line-height: 1; text-shadow: 0 -1px 1px rgba(0,0,0,0.25); }
 .large.btn, .large.btn:visited 			{ font-size: 14px; padding: 8px 14px 9px; }
 
-.green.btn, .green.btn:visited, .green.btn:link, .bouton_sauver, .bouton_sauver:visited { background-color: #91bd09; }
-.green.btn:hover, .green.btn:active, .green.btn:focus, .bouton_sauver:hover				{ background-color: #749a02; }
+.green.btn, .green.btn:visited, .green.btn:link, .bouton_sauver, .bouton_sauver:visited, .bouton_sauver:link { background-color: #91bd09; }
+.green.btn:hover, .green.btn:active, .green.btn:focus, .bouton_sauver:hover, .bouton_sauver.btn:active, .bouton_sauver.btn:focus			{ background-color: #749a02; }
 .blue.btn, .blue.btn:visited, .blue.btn:link		{ background-color: #2daebf; }
 .blue.btn:hover, .blue.btn:active, .blue.btn:focus	{ background-color: #007d9a; }
-.red.btn, .red.btn:visited, .red.btn:link, .bouton_annuler, .bouton_annuler:visited	{ background-color: #e33100; }
-.red.btn:hover, .bouton_annuler:hover, .red.btn:active, .red.btn:focus				{ background-color: #872300; }
+.red.btn, .red.btn:visited, .red.btn:link, .bouton_annuler, .bouton_annuler:visited, .bouton_annuler:link	{ background-color: #e33100; }
+.red.btn:hover, .red.btn:active, .red.btn:focus, .bouton_annuler:hover, .bouton_annuler:active, .bouton_annuler:focus { background-color: #872300; }
 .magenta.btn, .magenta.btn:visited, .magenta.btn:link		{ background-color: #a9014b; }
 .magenta.btn:hover, .magenta.btn:active, .magenta.btn:focus	{ background-color: #630030; }
 .orange.btn, .orange.btn:visited, .orange.btn:link		{ background-color: #ff5c00; }
@@ -890,3 +898,5 @@ h2.titre_accordeon:hover  {
 	background-color: #fc9200; text-decoration: none;
 }
 
+.BAZ_texte {display:inline;} 
+.titre_lien {display:block;font-size:1.4em;}

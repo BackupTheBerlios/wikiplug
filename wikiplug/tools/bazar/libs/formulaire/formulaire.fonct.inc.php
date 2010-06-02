@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: formulaire.fonct.inc.php,v 1.13 2010/05/11 17:39:49 mrflos Exp $
+// CVS : $Id: formulaire.fonct.inc.php,v 1.14 2010/06/02 08:48:51 mrflos Exp $
 /**
 * Formulaire
 *
@@ -27,11 +27,11 @@
 *
 *@package bazar
 //Auteur original :
-*@author        Florian SCHMITT <florian@ecole-et-nature.org>
+*@author        Florian SCHMITT <florian@outils-reseaux.org>
 //Autres auteurs :
 *@author        Aleandre GRANIER <alexandre@tela-botanica.org>
 *@copyright     Tela-Botanica 2000-2004
-*@version       $Revision: 1.13 $ $Date: 2010/05/11 17:39:49 $
+*@version       $Revision: 1.14 $ $Date: 2010/06/02 08:48:51 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -143,12 +143,12 @@ function formulaire_valeurs_template_champs($template) {
 
 function formulaire_insertion_texte($champs, $valeur) {
 	//on supprime les anciennes valeurs
-	$requetesuppression='DELETE FROM '.BAZ_PREFIXE.'fiche_valeur_texte WHERE bfvt_ce_fiche='.$GLOBALS['_BAZAR_']['id_fiche'].' AND bfvt_id_element_form="'.$champs.'"';
+	$requetesuppression='DELETE FROM '.BAZ_PREFIXE.'fiche_valeur_texte WHERE bfvt_ce_fiche="'.$GLOBALS['_BAZAR_']['id_fiche'].'" AND bfvt_id_element_form="'.$champs.'"';
 	$resultat = $GLOBALS['_BAZAR_']['db']->query($requetesuppression) ;
 	//on insere les nouvelles valeurs
 	if ($valeur!='') {
 		$requeteinsertion = 'INSERT INTO '.BAZ_PREFIXE.'fiche_valeur_texte (bfvt_ce_fiche, bfvt_id_element_form, bfvt_texte) VALUES ';
-		$requeteinsertion .= '('.$GLOBALS['_BAZAR_']['id_fiche'].', "'.$champs.'", "'.mysql_escape_string(addslashes($valeur)).'")';
+		$requeteinsertion .= '("'.$GLOBALS['_BAZAR_']['id_fiche'].'", "'.$champs.'", "'.mysql_escape_string(addslashes($valeur)).'")';
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requeteinsertion) ;
 	}
 	if ($champs == 'bf_titre') return $champs.'="'.mysql_escape_string(addslashes($valeur)).'", ';
@@ -177,7 +177,7 @@ function liste(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		{
 			return ($resultat->getMessage().$resultat->getDebugInfo()) ;
 		}
-		$select[0]=CHOISIR;
+		$select[0]=BAZ_CHOISIR;
 		while ($ligne = $resultat->fetchRow())
 		{
 			$select[$ligne[1]] = $ligne[2] ;
@@ -206,8 +206,8 @@ function liste(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 	}
 	elseif ($mode == 'requete')
 	{
-		//on supprime les anciennes valeurs de la table '.BAZ_PREFIXE.'fiche_valeur_liste
-		$requetesuppression='DELETE FROM '.BAZ_PREFIXE.'fiche_valeur_liste WHERE bfvl_ce_fiche='.$GLOBALS['_BAZAR_']['id_fiche'].' AND bfvl_ce_liste="'.$tableau_template[0].$tableau_template[1].$tableau_template[6].'"';
+		//on supprime les anciennes valeurs de la table '.BAZ_PREFIXE.'fiche_valeur_texte
+		$requetesuppression='DELETE FROM '.BAZ_PREFIXE.'fiche_valeur_texte WHERE bfvt_ce_fiche="'.$GLOBALS['_BAZAR_']['id_fiche'].'" AND bfvt_id_element_form="'.$tableau_template[0].$tableau_template[1].$tableau_template[6].'"';
 		//echo 'suppression : '.$requetesuppression.'<br />';
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requetesuppression) ;
 		if (DB::isError($resultat))
@@ -217,8 +217,8 @@ function liste(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		if (isset($valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]]) && ($valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]]!=0))
 		{
 			//on insere les nouvelles valeurs
-			$requeteinsertion='INSERT INTO '.BAZ_PREFIXE.'fiche_valeur_liste (bfvl_ce_fiche, bfvl_ce_liste, bfvl_valeur) VALUES ';
-			$requeteinsertion .= '('.$GLOBALS['_BAZAR_']['id_fiche'].', "'.$tableau_template[0].$tableau_template[1].$tableau_template[6].'", '.$valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]].')';
+			$requeteinsertion='INSERT INTO '.BAZ_PREFIXE.'fiche_valeur_texte (bfvt_ce_fiche, bfvt_id_element_form, bfvt_texte) VALUES ';
+			$requeteinsertion .= '("'.$GLOBALS['_BAZAR_']['id_fiche'].'", "'.$tableau_template[0].$tableau_template[1].$tableau_template[6].'", "'.$valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]].'")';
 			//echo 'insertion : '.$requeteinsertion.'<br />';
 			$resultat = $GLOBALS['_BAZAR_']['db']->query($requeteinsertion) ;
 			if (DB::isError($resultat))
@@ -244,7 +244,7 @@ function liste(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 			{
 				$select[$ligne[1]] = $ligne[2] ;
 			}
-			$select[0]=INDIFFERENT;
+			$select[0] = BAZ_INDIFFERENT;
 			$option = array('id' => $tableau_template[0].$tableau_template[1].$tableau_template[6]);
 			require_once 'HTML/QuickForm/select.php';
 			$select= new HTML_QuickForm_select($tableau_template[0].$tableau_template[1].$tableau_template[6], $tableau_template[2], $select, $option);
@@ -268,7 +268,7 @@ function liste(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 
 			while ($ligne = $resultat->fetchRow()) {
 				if ($i==0) $tab_chkbox=$tableau_template[2] ; else $tab_chkbox='&nbsp;';
-				$checkbox[$i]= & HTML_Quickform::createElement('checkbox', $ligne[1], $tab_chkbox, $ligne[2], $optioncheckbox) ;
+				$checkbox[$i]= & HTML_QuickForm::createElement('checkbox', $ligne[1], $tab_chkbox, $ligne[2], $optioncheckbox) ;
 				$i++;
 			}
 
@@ -285,7 +285,7 @@ function liste(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 	{
 		if ($tableau_template[9]==1 && isset($_REQUEST[$tableau_template[0].$tableau_template[1].$tableau_template[6]]) && $_REQUEST[$tableau_template[0].$tableau_template[1].$tableau_template[6]] != 0)
 		{
-			return ' AND bf_id_fiche IN (SELECT bfvl_ce_fiche FROM '.BAZ_PREFIXE.'fiche_valeur_liste WHERE bfvl_ce_liste="'.$tableau_template[0].$tableau_template[1].$tableau_template[6].'" AND bfvl_valeur='.$_REQUEST[$tableau_template[0].$tableau_template[1].$tableau_template[6]].') ';
+			return ' AND bf_id_fiche IN (SELECT bfvt_ce_fiche FROM '.BAZ_PREFIXE.'fiche_valeur_texte WHERE bfvt_id_element_form="'.$tableau_template[0].$tableau_template[1].$tableau_template[6].'" AND bfvt_texte="'.$_REQUEST[$tableau_template[0].$tableau_template[1].$tableau_template[6]].'") ';
 		}
 	}
 	elseif ($mode == 'html')
@@ -298,9 +298,9 @@ function liste(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 			$resultat->fetchInto($res);
 			if (is_array($res))
 			{
-				$html = '<div class="BAZ_rubrique  BAZ_rubrique_'.$GLOBALS['_BAZAR_']['class'].'">'."\n".
-						'<span class="BAZ_label BAZ_label_'.$GLOBALS['_BAZAR_']['class'].'">'.$tableau_template[2].':</span>'."\n";
-				$html .= '<span class="BAZ_texte BAZ_texte_'.$GLOBALS['_BAZAR_']['class'].'">';
+				$html = '<div class="BAZ_rubrique">'."\n".
+						'<span class="BAZ_label">'.$tableau_template[2].':</span>'."\n";
+				$html .= '<span class="BAZ_texte">';
 				$html .= implode(', ', $res).'</span>'."\n".'</div>'."\n";
 			}
 		}
@@ -330,35 +330,37 @@ function checkbox(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		require_once 'HTML/QuickForm/checkbox.php' ;
 		$i=0;
 		$optioncheckbox = array('class' => 'element_checkbox');
-
+		
 		//valeurs par défauts
-		if (isset($valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]])) $tab = split( ',', $valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]] );
-		else $tab = split( ', ', $tableau_template[5] );
+		if (isset($valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]])) {
+			$tab = split( ',', $valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]] );
+		} else {
+			$tab = split( ', ', $tableau_template[5] );
+		}
 
 		while ($ligne = $resultat->fetchRow()) {
 			if ($i==0) $tab_chkbox=$tableau_template[2] ; else $tab_chkbox='&nbsp;';
-			$checkbox[$i]= & HTML_Quickform::createElement($tableau_template[0], $ligne[1], $tab_chkbox, $ligne[2], $optioncheckbox) ;
 			if (in_array($ligne[1],$tab)) {
-					$defaultValues[$tableau_template[0].$tableau_template[1].$tableau_template[6].'['.$ligne[1].']']=true;
-			} else $defaultValues[$tableau_template[0].$tableau_template[1].$tableau_template[6].'['.$ligne[1].']']=false;
+				$defaultValues[$tableau_template[0].$tableau_template[1].$tableau_template[6].'['.$ligne[1].']'] = true;				
+			} else {
+				$defaultValues[$tableau_template[0].$tableau_template[1].$tableau_template[6].'['.$ligne[1].']'] = false;
+			}
+			//$checkbox[$i]= & HTML_QuickForm::createElement($tableau_template[0], $ligne[1], $tab_chkbox, $ligne[2], $optioncheckbox) ;
+			$checkbox[$i] = $formtemplate->createElement($tableau_template[0], $ligne[1], $tab_chkbox, $ligne[2], $optioncheckbox);
 			$i++;
-		}
-
-		$squelette_checkbox =& $formtemplate->defaultRenderer();
-		$squelette_checkbox->setElementTemplate( '<fieldset class="bazar_fieldset">'."\n".'<legend>{label}'.
-	                                             '<!-- BEGIN required --><span class="symbole_obligatoire">&nbsp;*</span><!-- END required -->'."\n".
-												 '</legend>'."\n".'{element}'."\n".'</fieldset> '."\n"."\n", $tableau_template[0].$tableau_template[1].$tableau_template[6]);
-	  	$squelette_checkbox->setGroupElementTemplate( "\n".'<div class="bazar_checkbox">'."\n".'{element}'."\n".'</div>'."\n", $tableau_template[0].$tableau_template[1].$tableau_template[6]);
+		}		
 		$formtemplate->addGroup($checkbox, $tableau_template[0].$tableau_template[1].$tableau_template[6], $tableau_template[2].$bulledaide, "\n");
 		if (isset($tableau_template[8]) && $tableau_template[8]==1) {
 			$formtemplate->addGroupRule($tableau_template[0].$tableau_template[1].$tableau_template[6], $tableau_template[2].' obligatoire', 'required', null, 1, 'client');
 		}
+		//var_dump($defaultValues);
 		$formtemplate->setDefaults($defaultValues);
+		//$formtemplate->updateAttributes($defaultValues);
 	}
 	elseif ( $mode == 'requete' )
 	{
-		//on supprime les anciennes valeurs de la table '.BAZ_PREFIXE.'fiche_valeur_liste
-		$requetesuppression='DELETE FROM '.BAZ_PREFIXE.'fiche_valeur_liste WHERE bfvl_ce_fiche='.$GLOBALS['_BAZAR_']['id_fiche'].' AND bfvl_ce_liste="'.$tableau_template[0].$tableau_template[1].$tableau_template[6].'"';
+		//on supprime les anciennes valeurs de la table '.BAZ_PREFIXE.'fiche_valeur_texte
+		$requetesuppression='DELETE FROM '.BAZ_PREFIXE.'fiche_valeur_texte WHERE bfvt_ce_fiche="'.$GLOBALS['_BAZAR_']['id_fiche'].'" AND bfvt_id_element_form="'.$tableau_template[0].$tableau_template[1].$tableau_template[6].'"';
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requetesuppression) ;
 		if (DB::isError($resultat))
 		{
@@ -367,13 +369,14 @@ function checkbox(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		if (isset($valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]]) && ($valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]]!=0))
 		{
 			//on insere les nouvelles valeurs
-			$requeteinsertion='INSERT INTO '.BAZ_PREFIXE.'fiche_valeur_liste (bfvl_ce_fiche, bfvl_ce_liste, bfvl_valeur) VALUES ';
+			$requeteinsertion='INSERT INTO '.BAZ_PREFIXE.'fiche_valeur_texte (bfvt_ce_fiche, bfvt_id_element_form, bfvt_texte) VALUES ';
 			//pour les checkbox, les différentes valeurs sont dans un tableau
-			if (is_array($valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]])) {
+			$tab_checkbox = explode(',',$valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]]);
+			if (is_array($tab_checkbox)) {
 				$nb=0;
-				while (list($cle, $val) = each($valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]])) {
+				foreach ($tab_checkbox as $val) {
 					if ($nb>0) $requeteinsertion .= ', ';
-					$requeteinsertion .= '('.$GLOBALS['_BAZAR_']['id_fiche'].', "'.$tableau_template[0].$tableau_template[1].$tableau_template[6].'", '.$cle.') ';
+					$requeteinsertion .= '("'.$GLOBALS['_BAZAR_']['id_fiche'].'", "'.$tableau_template[0].$tableau_template[1].$tableau_template[6].'", "'.$val.'") ';
 					$nb++;
 				}
 			}
@@ -399,7 +402,7 @@ function checkbox(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 
 			while ($ligne = $resultat->fetchRow()) {
 				if ($i==0) $tab_chkbox=$tableau_template[2] ; else $tab_chkbox='&nbsp;';
-				$checkbox[$i]= & HTML_Quickform::createElement($tableau_template[0], $ligne[1], $tab_chkbox, $ligne[2], $optioncheckbox) ;
+				$checkbox[$i]= & HTML_QuickForm::createElement($tableau_template[0], $ligne[1], $tab_chkbox, $ligne[2], $optioncheckbox) ;
 				$i++;
 			}
 
@@ -422,9 +425,9 @@ function checkbox(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 			while ($row =& $resultat->fetchRow()) { $tabres[]=$row[0]; }
 			if (count($tabres)>0)
 			{
-				$html = '<div class="BAZ_rubrique  BAZ_rubrique_'.$GLOBALS['_BAZAR_']['class'].'">'."\n".
-						'<span class="BAZ_label BAZ_label_'.$GLOBALS['_BAZAR_']['class'].'">'.$tableau_template[2].':</span>'."\n";
-				$html .= '<span class="BAZ_texte BAZ_texte_'.$GLOBALS['_BAZAR_']['class'].'">';
+				$html = '<div class="BAZ_rubrique">'."\n".
+						'<span class="BAZ_label">'.$tableau_template[2].':</span>'."\n";
+				$html .= '<span class="BAZ_texte">';
 				$html .= implode(', ', $tabres).'</span>'."\n".'</div>'."\n";
 			}
 		}
@@ -554,17 +557,32 @@ function tags(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 {
 	if ( $mode == 'saisie' )
 	{
+		$tags_javascript = '';
+		//gestion des mots clés déja entrés
+		if (isset($valeurs_fiche[$tableau_template[1]])) {
+			$tags = explode(",", mysql_escape_string($valeurs_fiche[$tableau_template[1]]));
+			if (is_array($tags))
+			{
+				sort($tags);
+				foreach ($tags as $tag) 
+				{
+					$tags_javascript .= 't.add(\''.$tag.'\');'."\n";
+				}
+			}
+		}		
+		
 		$formtag = '<script src="tools/tags/libs/GrowingInput.js" type="text/javascript" charset="utf-8"></script>
 		<script src="tools/tags/libs/tags_suggestions.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
 		$(document).ready(function() {
-			// Autocompletion des mot-cles	
-			var t = new $.TextboxList(\'.microblog_toustags\', {unique: true, plugins: {autocomplete: {}}});
-			t.getContainer().addClass(\'textboxlist-loading\');				
-			$.ajax({url: \''.$GLOBALS['_BAZAR_']['wiki']->href('json',$GLOBALS['_BAZAR_']['wiki']->GetPageTag()).'\', dataType: \'json\', success: function(r){
-				t.plugins[\'autocomplete\'].setValues(r);
-				t.getContainer().removeClass(\'textboxlist-loading\');
-			}});
+			// Autocompletion des mots clés	
+			var t = new $.TextboxList(\'#'.$tableau_template[1].'\', {unique:true, inBetweenEditableBits:false, plugins:{autocomplete: {
+				minLength: 1,
+				queryRemote: true,
+				remote: {url: \''.$GLOBALS['_BAZAR_']['wiki']->href('json',$GLOBALS['_BAZAR_']['pagewiki']).'\'}
+			}}});
+			
+			
 			'.$tags_javascript.'		
 		});
 		</script>';
@@ -575,30 +593,45 @@ function tags(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		if (isset($tableau_template[10]) && $tableau_template[10]!='') $bulledaide = ' <img class="tooltip_aide" title="'.htmlentities($tableau_template[10]).'" src="tools/bazar/presentation/images/aide.png" width="16" height="16" alt="image aide" />';
 		$formtemplate->addElement('text', $tableau_template[1], $tableau_template[2].$bulledaide, $option) ;
 		$formtemplate->addElement('html',$formtag);
-		//gestion des valeurs par défaut
-		if (isset($valeurs_fiche[$tableau_template[1]])) $defauts = array( $tableau_template[1] => $valeurs_fiche[$tableau_template[1]] );
-		else $defauts = array( $tableau_template[1] => stripslashes($tableau_template[5]) );
-		$formtemplate->setDefaults($defauts);
+		
+		//mots clés cachés
+		$formtemplate->addElement('hidden', 'mots_cles_caches', trim($tableau_template[5]));
+		
 		$formtemplate->applyFilter($tableau_template[1], 'addslashes') ;
-		//gestion du champs obligatoire
-		if (($tableau_template[9]==0) && isset($tableau_template[8]) && ($tableau_template[8]==1))
-		{
-			$formtemplate->addRule($tableau_template[1],  $tableau_template[2].' obligatoire', 'required', '', 'client') ;
-		}
 	}
-	elseif ( $mode == 'requete' )
-	{
+	elseif ( $mode == 'requete' ) {
+		//on supprime les tags existants
+		$GLOBALS['_BAZAR_']['wiki']->DeleteTriple($GLOBALS['_BAZAR_']['id_fiche'], 'http://outils-reseaux.org/_vocabulary/tag', NULL, '', '');
+		//on découpe les tags pour les mettre dans un tableau
+		$liste_tags = ($valeurs_fiche['mots_cles_caches'] ? $valeurs_fiche['mots_cles_caches'].',' : '').$valeurs_fiche[$tableau_template[1]];		
+		$tags = explode(",", mysql_escape_string($liste_tags));
+				
+		//on ajoute les tags postés
+		foreach ($tags as $tag) {
+			trim($tag);
+			if ($tag!='') {
+				$GLOBALS['_BAZAR_']['wiki']->InsertTriple($GLOBALS['_BAZAR_']['id_fiche'], 'http://outils-reseaux.org/_vocabulary/tag', $tag, '', '');
+			}			
+		}
+		//on copie tout de meme dans les metadonnées
 		return formulaire_insertion_texte($tableau_template[1], $valeurs_fiche[$tableau_template[1]]);
 	}
-	elseif ($mode == 'html')
-	{
+	elseif ($mode == 'html') {
 		$html = '';
-		if (isset($valeurs_fiche[$tableau_template[1]]) && $valeurs_fiche[$tableau_template[1]]!='')
-		{
-			$html = '<div class="BAZ_rubrique  BAZ_rubrique_'.$GLOBALS['_BAZAR_']['class'].'">'."\n".
-						'<span class="BAZ_label BAZ_label_'.$GLOBALS['_BAZAR_']['class'].'">'.$tableau_template[2].':</span>'."\n";
-			$html .= '<span class="BAZ_texte BAZ_texte_'.$GLOBALS['_BAZAR_']['class'].'"> ';
-			$html .= htmlentities($valeurs_fiche[$tableau_template[1]]).'</span>'."\n".'</div>'."\n";
+		if (isset($valeurs_fiche[$tableau_template[1]]) && $valeurs_fiche[$tableau_template[1]]!='') {
+			$html = '<div class="BAZ_rubrique">'."\n".
+						'<span class="BAZ_label">'.$tableau_template[2].':</span>'."\n";
+			$html .= '<div class="BAZ_texte"> ';
+			$tags = explode(',',htmlentities($valeurs_fiche[$tableau_template[1]]));
+			if (is_array($tags)) {
+				$html .= '<ul class="liste_tags_en_ligne">'."\n";
+				foreach ($tags as $tag) {
+					$html .= '<li class="textboxlist-bit-box">'.$tag.'</li>'."\n";
+				}	
+				$html .= '</ul>'."\n";
+			}
+			
+			$html .= '</div>'."\n".'</div>'."\n";
 		}
 		return $html;
 	}
@@ -621,9 +654,18 @@ function texte(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		$bulledaide = '';
 		if (isset($tableau_template[10]) && $tableau_template[10]!='') $bulledaide = ' <img class="tooltip_aide" title="'.htmlentities($tableau_template[10]).'" src="tools/bazar/presentation/images/aide.png" width="16" height="16" alt="image aide" />';
 		$formtemplate->addElement('text', $tableau_template[1], $tableau_template[2].$bulledaide, $option) ;
-		//gestion des valeurs par défaut
-		if (isset($valeurs_fiche[$tableau_template[1]])) $defauts = array( $tableau_template[1] => $valeurs_fiche[$tableau_template[1]] );
-		else $defauts = array( $tableau_template[1] => stripslashes($tableau_template[5]) );
+		
+		//gestion des valeurs par défaut : d'abord on regarde s'il y a une valeur à modifier,
+		//puis s'il y a une variable passée en GET,
+		//enfin on prend la valeur par défaut du formulaire sinon
+		if (isset($valeurs_fiche[$tableau_template[1]])) {
+			$defauts = array( $tableau_template[1] => $valeurs_fiche[$tableau_template[1]] );
+		}
+		elseif (isset($_GET[$tableau_template[1]])) {
+			$defauts = array( $tableau_template[1] => stripslashes($_GET[$tableau_template[1]]) );
+		} else {
+			$defauts = array( $tableau_template[1] => stripslashes($tableau_template[5]) );
+		}
 		$formtemplate->setDefaults($defauts);
 		$formtemplate->applyFilter($tableau_template[1], 'addslashes') ;
 		//gestion du champs obligatoire
@@ -649,13 +691,13 @@ function texte(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 			if ($tableau_template[1] == 'bf_titre')
 			{
 				// Le titre
-				$html .= '<h1 class="BAZ_fiche_titre BAZ_fiche_titre_'.$GLOBALS['_BAZAR_']['class'].'">'.htmlentities($valeurs_fiche[$tableau_template[1]]).'</h1>'."\n";
+				$html .= '<h1 class="BAZ_fiche_titre">'.htmlentities($valeurs_fiche[$tableau_template[1]]).'</h1>'."\n";
 			}
 			else
 			{
-				$html = '<div class="BAZ_rubrique  BAZ_rubrique_'.$GLOBALS['_BAZAR_']['class'].'">'."\n".
-						'<span class="BAZ_label BAZ_label_'.$GLOBALS['_BAZAR_']['class'].'">'.$tableau_template[2].':</span>'."\n";
-				$html .= '<span class="BAZ_texte BAZ_texte_'.$GLOBALS['_BAZAR_']['class'].'"> ';
+				$html = '<div class="BAZ_rubrique">'."\n".
+						'<span class="BAZ_label">'.$tableau_template[2].':</span>'."\n";
+				$html .= '<span class="BAZ_texte"> ';
 				$html .= htmlentities($valeurs_fiche[$tableau_template[1]]).'</span>'."\n".'</div>'."\n";
 			}
 		}
@@ -888,19 +930,32 @@ function mot_de_passe(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 */
 function textelong(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 {
-	list($type, $identifiant, $label, $nb_colonnes, $nb_lignes, $valeur_par_defaut, , , $obligatoire, $apparait_recherche, $bulle_d_aide) = $tableau_template;
+	list($type, $identifiant, $label, $nb_colonnes, $nb_lignes, $valeur_par_defaut, $longueurmax, $formatage , $obligatoire, $apparait_recherche, $bulle_d_aide) = $tableau_template;
 	if ( $mode == 'saisie' )
 	{
+		$options = array('id' => $identifiant, 'class' => 'input_textarea');
+		if ($longueurmax != '') $options['maxlength'] = $longueurmax;
+		$longueurmax = ($longueurmax ? '<span class="charsRemaining"> ('.$longueurmax.' caract&egrave;res restants)</span>' : '' );
 		$bulledaide = '';
 		if ($bulle_d_aide!='') $bulledaide = ' <img class="tooltip_aide" title="'.htmlentities($bulle_d_aide).'" src="tools/bazar/presentation/images/aide.png" width="16" height="16" alt="image aide" />';
-		$formtexte= new HTML_QuickForm_textarea($identifiant, $label.$bulledaide, array('style'=>'white-space: normal;overflow:visible;', 'id' => $identifiant, 'class' => 'input_textarea'));
+		$formtexte= new HTML_QuickForm_textarea($identifiant, $label.$longueurmax.$bulledaide, $options);
 		$formtexte->setCols($nb_colonnes);
 		$formtexte->setRows($nb_lignes);
 		$formtemplate->addElement($formtexte) ;
-		//gestion des valeurs par défaut
-		if (isset($valeurs_fiche[$identifiant])) $defauts = array( $identifiant => $valeurs_fiche[$identifiant] );
-		else $defauts = array( $identifiant => stripslashes($valeur_par_defaut) );
+		
+		//gestion des valeurs par défaut : d'abord on regarde s'il y a une valeur à modifier,
+		//puis s'il y a une variable passée en GET,
+		//enfin on prend la valeur par défaut du formulaire sinon
+		if (isset($valeurs_fiche[$identifiant])) {
+			$defauts = array( $identifiant => $valeurs_fiche[$identifiant] );
+		}
+		elseif (isset($_GET[$identifiant])) {
+			$defauts = array( $identifiant => stripslashes($_GET[$identifiant]) );
+		} else {
+			$defauts = array( $identifiant => stripslashes($tableau_template[5]) );
+		}
 		$formtemplate->setDefaults($defauts);
+		
 		$formtemplate->applyFilter($identifiant, 'addslashes') ;
 		//gestion du champs obligatoire
 		if (($apparait_recherche==0) && isset($obligatoire) && ($obligatoire==1)) {
@@ -910,11 +965,11 @@ function textelong(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 	elseif ( $mode == 'requete' )
 	{
 		//on supprime les anciennes valeurs
-		$requetesuppression='DELETE FROM '.BAZ_PREFIXE.'fiche_valeur_texte_long WHERE bfvtl_ce_fiche='.$GLOBALS['_BAZAR_']['id_fiche'].' AND bfvtl_id_element_form="'.$identifiant.'"';
+		$requetesuppression='DELETE FROM '.BAZ_PREFIXE.'fiche_valeur_texte_long WHERE bfvtl_ce_fiche="'.$GLOBALS['_BAZAR_']['id_fiche'].'" AND bfvtl_id_element_form="'.$identifiant.'"';
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requetesuppression) ;
 		//on insere les nouvelles valeurs
 		$requeteinsertion = 'INSERT INTO '.BAZ_PREFIXE.'fiche_valeur_texte_long (bfvtl_ce_fiche, bfvtl_id_element_form, bfvtl_texte_long) VALUES ';
-        $requeteinsertion .= '('.$GLOBALS['_BAZAR_']['id_fiche'].', "'.$identifiant.'", "'.addslashes($valeurs_fiche[$identifiant]).'")';
+        $requeteinsertion .= '("'.$GLOBALS['_BAZAR_']['id_fiche'].'", "'.$identifiant.'", "'.addslashes($valeurs_fiche[$identifiant]).'")';
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requeteinsertion) ;
 		return;
 	}
@@ -923,10 +978,19 @@ function textelong(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		$html = '';
 		if (isset($valeurs_fiche[$identifiant]) && $valeurs_fiche[$identifiant]!='')
 		{
-			$html = '<div class="BAZ_rubrique  BAZ_rubrique_'.$GLOBALS['_BAZAR_']['class'].'">'."\n".
-					'<span class="BAZ_label '.$label.'_rubrique">'.$label.':</span>'."\n";
-			$html .= '<span class="BAZ_texte BAZ_texte_'.$GLOBALS['_BAZAR_']['class'].' '.$identifiant.'_description"> ';
-			$html .= nl2br($valeurs_fiche[$identifiant]).'</span>'."\n".'</div>'."\n";
+			$html = '<div class="BAZ_rubrique">'."\n".
+					'<span class="BAZ_label '.$identifiant.'_rubrique">'.$label.':</span>'."\n";
+			$html .= '<span class="BAZ_texte '.$identifiant.'_description"> ';
+			if ($formatage == 'wiki') {
+				$html .= $GLOBALS['_BAZAR_']['wiki']->Format($valeurs_fiche[$identifiant]);
+			}
+			elseif ($formatage == 'nohtml') {
+				$html .= htmlentities($valeurs_fiche[$identifiant]);
+			}
+			else {
+				$html .= nl2br($valeurs_fiche[$identifiant]);
+			}
+			$html .= '</span>'."\n".'</div>'."\n";
 		}
 		return $html;
 	}
@@ -962,10 +1026,19 @@ function lien_internet(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 			$bulledaide = ' <img class="tooltip_aide" title="'.htmlentities($tableau_template[10]).'" src="tools/bazar/presentation/images/aide.png" width="16" height="16" alt="image aide" />';
 		}
 		$formtemplate->addElement('text', $tableau_template[1], $tableau_template[2].$bulledaide, $option)	;
-		//gestion des valeurs par défaut
-		if (isset($valeurs_fiche[$tableau_template[1]])) $defauts = array( $tableau_template[1] => $valeurs_fiche[$tableau_template[1]] );
-		else $defauts = array( $tableau_template[1] => stripslashes($tableau_template[5]) );
+		//gestion des valeurs par défaut : d'abord on regarde s'il y a une valeur à modifier,
+		//puis s'il y a une variable passée en GET,
+		//enfin on prend la valeur par défaut du formulaire sinon
+		if (isset($valeurs_fiche[$tableau_template[1]])) {
+			$defauts = array( $tableau_template[1] => $valeurs_fiche[$tableau_template[1]] );
+		}
+		elseif (isset($_GET[$tableau_template[1]])) {
+			$defauts = array( $tableau_template[1] => stripslashes($_GET[$tableau_template[1]]) );
+		} else {
+			$defauts = array( $tableau_template[1] => stripslashes($tableau_template[5]) );
+		}
 		$formtemplate->setDefaults($defauts);
+		
 		//gestion du champs obligatoire
 		if (($tableau_template[9]==0) && isset($tableau_template[8]) && ($tableau_template[8]==1)) {
 			$formtemplate->addRule($tableau_template[1], URL_LIEN_REQUIS, 'required', '', 'client') ;
@@ -983,9 +1056,9 @@ function lien_internet(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		$html = '';
 		if (isset($valeurs_fiche[$tableau_template[1]]) && $valeurs_fiche[$tableau_template[1]]!='')
 		{
-			$html .= '<div class="BAZ_rubrique  BAZ_rubrique_'.$GLOBALS['_BAZAR_']['class'].'">'."\n".
-					 '<span class="BAZ_label BAZ_label_'.$GLOBALS['_BAZAR_']['class'].'">'.$tableau_template[2].':</span>'."\n";
-			$html .= '<span class="BAZ_texte BAZ_texte_'.$GLOBALS['_BAZAR_']['class'].'">'."\n".
+			$html .= '<div class="BAZ_rubrique">'."\n".
+					 '<span class="BAZ_label">'.$tableau_template[2].':</span>'."\n";
+			$html .= '<span class="BAZ_texte">'."\n".
 					 '<a href="'.$valeurs_fiche[$tableau_template[1]].'" class="BAZ_lien" target="_blank">';
 			$html .= $valeurs_fiche[$tableau_template[1]].'</a></span>'."\n".'</div>'."\n";
 		}
@@ -1051,7 +1124,7 @@ function fichier(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		$html = '';
 		if (isset($valeurs_fiche[$type.$identifiant]) && $valeurs_fiche[$type.$identifiant]!='')
 		{
-			$html = '<div class="BAZ_fichier BAZ_fichier_'.$GLOBALS['_BAZAR_']['class'].'">T&eacute;l&eacute;charger le fichier : <a href="'.BAZ_CHEMIN_UPLOAD.$valeurs_fiche[$type.$identifiant].'">'.$valeurs_fiche[$type.$identifiant].'</a>'."\n";
+			$html = '<div class="BAZ_fichier">T&eacute;l&eacute;charger le fichier : <a href="'.BAZ_CHEMIN_UPLOAD.$valeurs_fiche[$type.$identifiant].'">'.$valeurs_fiche[$type.$identifiant].'</a>'."\n";
 		}
 		if ($html!='') $html .= '</div>'."\n";
 		return $html;
@@ -1127,7 +1200,7 @@ function image(&$formtemplate, $tableau_template, $mode, $valeurs_fiche) {
 			
 			//TODO: la vérification du type de fichier ne marche pas
 			$tabmime = array ('gif' => 'image/gif', 'jpg' => 'image/jpeg', 'png' => 'image/png');
-			$formtemplate->addRule($type.$identifiant, 'Vous devez choisir une fichier de type image gif, jpg ou png', 'mimetype', $tabmime );
+			$formtemplate->addRule($type.$identifiant, 'Vous devez BAZ_CHOISIR une fichier de type image gif, jpg ou png', 'mimetype', $tabmime );
 		}
 	}
 	elseif ( $mode == 'requete' ) {
@@ -1498,7 +1571,7 @@ function listefiche(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		{
 			return ($resultat->getMessage().$resultat->getDebugInfo()) ;
 		}
-		$select[0]=CHOISIR;
+		$select[0]=BAZ_CHOISIR;
 		while ($ligne = $resultat->fetchRow())
 		{
 			$select[$ligne[0]] = $ligne[1] ;
@@ -1513,7 +1586,6 @@ function listefiche(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		{
 			$def = $tableau_template[5];
 		}
-		if (isset($_GET['ce_fiche_liee'])) $def = $_GET['ce_fiche_liee'];
 		require_once 'HTML/QuickForm/select.php';
 		$select= new HTML_QuickForm_select($tableau_template[0].$tableau_template[1].$tableau_template[6], $tableau_template[2].$bulledaide, $select, $option);
 		if ($tableau_template[4] != '') $select->setSize($tableau_template[4]);
@@ -1521,7 +1593,7 @@ function listefiche(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		$select->setValue($def);
 		$formtemplate->addElement($select) ;
 
-		if (isset($tableau_template[8]) && $tableau_template[8]==1)
+		if (isset($tableau_template[8]) && $tableau_template[8]==1 && $resultat->numRows()>0)
 		{
 			$formtemplate->addRule($tableau_template[0].$tableau_template[1].$tableau_template[6], BAZ_CHOISIR_OBLIGATOIRE.' '.$tableau_template[2] , 'nonzero', '', 'client') ;
 			$formtemplate->addRule($tableau_template[0].$tableau_template[1].$tableau_template[6], $tableau_template[2].' obligatoire', 'required', '', 'client') ;
@@ -1529,8 +1601,8 @@ function listefiche(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 	}
 	elseif ($mode == 'requete')
 	{
-		//on supprime les anciennes valeurs de la table '.BAZ_PREFIXE.'fiche_valeur_liste
-		$requetesuppression='DELETE FROM '.BAZ_PREFIXE.'fiche_valeur_liste WHERE bfvl_ce_fiche='.$GLOBALS['_BAZAR_']['id_fiche'].' AND bfvl_ce_liste="'.$tableau_template[0].$tableau_template[1].$tableau_template[6].'"';
+		//on supprime les anciennes valeurs de la table '.BAZ_PREFIXE.'fiche_valeur_texte
+		$requetesuppression='DELETE FROM '.BAZ_PREFIXE.'fiche_valeur_texte WHERE bfvt_ce_fiche="'.$GLOBALS['_BAZAR_']['id_fiche'].'" AND bfvt_id_element_form="'.$tableau_template[0].$tableau_template[1].$tableau_template[6].'"';
 		//echo 'suppression : '.$requetesuppression.'<br />';
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requetesuppression) ;
 		if (DB::isError($resultat))
@@ -1540,9 +1612,8 @@ function listefiche(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		if (isset($valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]]) && ($valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]]!=0))
 		{
 			//on insere les nouvelles valeurs
-			$requeteinsertion='INSERT INTO '.BAZ_PREFIXE.'fiche_valeur_liste (bfvl_ce_fiche, bfvl_ce_liste, bfvl_valeur) VALUES ';
-			$requeteinsertion .= '('.$GLOBALS['_BAZAR_']['id_fiche'].', "'.$tableau_template[0].$tableau_template[1].$tableau_template[6].'", '.$valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]].')';
-			//echo 'insertion : '.$requeteinsertion.'<br />';
+			$requeteinsertion='INSERT INTO '.BAZ_PREFIXE.'fiche_valeur_texte (bfvt_ce_fiche, bfvt_id_element_form, bfvt_texte) VALUES ';
+			$requeteinsertion .= '("'.$GLOBALS['_BAZAR_']['id_fiche'].'", "'.$tableau_template[0].$tableau_template[1].$tableau_template[6].'", "'.$valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]].'")';
 			$resultat = $GLOBALS['_BAZAR_']['db']->query($requeteinsertion) ;
 			if (DB::isError($resultat))
 			{
@@ -1560,7 +1631,7 @@ function listefiche(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 			{
 				return ($resultat->getMessage().$resultat->getDebugInfo()) ;
 			}
-			$select[0]=INDIFFERENT;
+			$select[0] = INDIFFERENT;
 			while ($ligne = $resultat->fetchRow())
 			{
 				$select[$ligne[0]] = $ligne[1] ;
@@ -1579,7 +1650,7 @@ function listefiche(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		$html = '';
 		if (isset($valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]]) && $valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]]!='')
 		{
-			$requete = 'SELECT bf_titre FROM '.BAZ_PREFIXE.'fiche WHERE bf_id_fiche='.$valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]];
+			$requete = 'SELECT bf_titre FROM '.BAZ_PREFIXE.'fiche WHERE bf_id_fiche="'.$valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]].'"';
 			$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 			$resultat->fetchInto($res);
 			if (is_array($res))
@@ -1647,7 +1718,7 @@ function checkboxfiche(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 				$url_checkboxfiche->addQueryString(BAZ_VARIABLE_ACTION, BAZ_VOIR_FICHE);
 				$url_checkboxfiche->addQueryString('id_fiche', $ligne[0] );
 				$url_checkboxfiche->addQueryString('wiki', $_GET['wiki'].'/iframe');
-				$checkbox[$i]= & HTML_Quickform::createElement('checkbox', $ligne[0], $tab_chkbox, '<a class="voir_fiche ouvrir_overlay" rel="#overlay" href="'.str_replace('&','&amp;',$url_checkboxfiche->getURL()).'">'.$ligne[1].'</a>', $optioncheckbox) ;
+				$checkbox[$i]= & HTML_QuickForm::createElement('checkbox', $ligne[0], $tab_chkbox, '<a class="voir_fiche ouvrir_overlay" rel="#overlay" href="'.str_replace('&','&amp;',$url_checkboxfiche->getURL()).'">'.$ligne[1].'</a>', $optioncheckbox) ;
 				$url_checkboxfiche->removeQueryString(BAZ_VARIABLE_VOIR);
 				$url_checkboxfiche->removeQueryString(BAZ_VARIABLE_ACTION);
 				$url_checkboxfiche->removeQueryString('id_fiche');
@@ -1660,11 +1731,6 @@ function checkboxfiche(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 
 			if (is_array($checkbox))
 			{
-				$squelette_checkbox =& $formtemplate->defaultRenderer();
-				$squelette_checkbox->setElementTemplate( '<fieldset class="bazar_fieldset">'."\n".'<legend>{label}'.
-														 '<!-- BEGIN required --><span class="symbole_obligatoire">&nbsp;*</span><!-- END required -->'."\n".
-														 '</legend>'."\n".'{element}'."\n".'</fieldset> '."\n"."\n", $tableau_template[0].$tableau_template[1].$tableau_template[6]);
-				$squelette_checkbox->setGroupElementTemplate( "\n".'<div class="bazar_checkbox">'."\n".'{element}'."\n".'</div>'."\n", $tableau_template[0].$tableau_template[1].$tableau_template[6]);
 				$formtemplate->addGroup($checkbox, $tableau_template[0].$tableau_template[1].$tableau_template[6], $tableau_template[4], "\n");
 				if (isset($tableau_template[8]) && $tableau_template[8]==1) {
 					$formtemplate->addGroupRule($tableau_template[0].$tableau_template[1].$tableau_template[6], $tableau_template[4].' obligatoire', 'required', null, 1, 'client');
@@ -1687,8 +1753,8 @@ function checkboxfiche(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 	}
 	elseif ( $mode == 'requete' )
 	{
-		//on supprime les anciennes valeurs de la table '.BAZ_PREFIXE.'fiche_valeur_liste
-		$requetesuppression='DELETE FROM '.BAZ_PREFIXE.'fiche_valeur_liste WHERE bfvl_ce_fiche='.$GLOBALS['_BAZAR_']['id_fiche'].' AND bfvl_ce_liste="'.$tableau_template[0].$tableau_template[1].$tableau_template[6].'"';
+		//on supprime les anciennes valeurs de la table '.BAZ_PREFIXE.'fiche_valeur_texte
+		$requetesuppression='DELETE FROM '.BAZ_PREFIXE.'fiche_valeur_texte WHERE bfvt_ce_fiche="'.$GLOBALS['_BAZAR_']['id_fiche'].'" AND bfvt_id_element_form="'.$tableau_template[0].$tableau_template[1].$tableau_template[6].'"';
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requetesuppression) ;
 		if (DB::isError($resultat))
 		{
@@ -1697,13 +1763,13 @@ function checkboxfiche(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		if (isset($valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]]) && ($valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]]!=0))
 		{
 			//on insere les nouvelles valeurs
-			$requeteinsertion='INSERT INTO '.BAZ_PREFIXE.'fiche_valeur_liste (bfvl_ce_fiche, bfvl_ce_liste, bfvl_valeur) VALUES ';
+			$requeteinsertion='INSERT INTO '.BAZ_PREFIXE.'fiche_valeur_texte (bfvt_ce_fiche, bfvt_id_element_form, bfvt_texte) VALUES ';
 			//pour les checkbox, les différentes valeurs sont dans un tableau
 			if (is_array($valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]])) {
 				$nb=0;
 				while (list($cle, $val) = each($valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]])) {
 					if ($nb>0) $requeteinsertion .= ', ';
-					$requeteinsertion .= '('.$GLOBALS['_BAZAR_']['id_fiche'].', "'.$tableau_template[0].$tableau_template[1].$tableau_template[6].'", '.$cle.') ';
+					$requeteinsertion .= '("'.$GLOBALS['_BAZAR_']['id_fiche'].'", "'.$tableau_template[0].$tableau_template[1].$tableau_template[6].'", "'.$cle.'") ';
 					$nb++;
 				}
 			}
@@ -1729,7 +1795,7 @@ function checkboxfiche(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 
 			while ($ligne = $resultat->fetchRow()) {
 				if ($i==0) $tab_chkbox=$tableau_template[2] ; else $tab_chkbox='&nbsp;';
-				$checkbox[$i]= & HTML_Quickform::createElement($tableau_template[0], $ligne[1], $tab_chkbox, $ligne[2], $optioncheckbox) ;
+				$checkbox[$i]= & HTML_QuickForm::createElement($tableau_template[0], $ligne[1], $tab_chkbox, $ligne[2], $optioncheckbox) ;
 				$i++;
 			}
 
@@ -1853,7 +1919,7 @@ function listefiches(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 
 			while ($ligne = $resultat->fetchRow()) {
 				if ($i==0) $tab_chkbox=$tableau_template[2] ; else $tab_chkbox='&nbsp;';
-				$checkbox[$i]= & HTML_Quickform::createElement($tableau_template[0], $ligne[1], $tab_chkbox, $ligne[2], $optioncheckbox) ;
+				$checkbox[$i]= & HTML_QuickForm::createElement($tableau_template[0], $ligne[1], $tab_chkbox, $ligne[2], $optioncheckbox) ;
 				$i++;
 			}
 
@@ -1873,9 +1939,30 @@ function listefiches(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 	}
 }
 
+function bookmarklet(&$formtemplate, $tableau_template, $mode, $valeurs_fiche) {
+	$url_bookmarklet = clone($GLOBALS['_BAZAR_']['url']);
+	$url_bookmarklet->removeQueryString('id_fiche');
+	$url_bookmarklet->addQueryString('vue', BAZ_VOIR_SAISIR);
+	$url_bookmarklet->addQueryString('action', BAZ_ACTION_NOUVEAU);
+	$url_bookmarklet->addQueryString('wiki', $GLOBALS['_BAZAR_']['pagewiki'].'/bazarframe');
+	$url_bookmarklet->addQueryString('id_typeannonce', $GLOBALS['_BAZAR_']['id_typeannonce']);
+	$htmlbookmarklet = "<div class=\"BAZ_info\">
+	<a href=\"javascript:var wleft = (screen.width-700)/2; var wtop=(screen.height-530)/2 ;window.open('".str_replace('&', '&amp;', $url_bookmarklet->getUrl())."&amp;bf_titre='+escape(document.title)+'&amp;url='+encodeURIComponent(location.href)+'&amp;description='+escape(document.getSelection()), 'Veille collective', 'height=530,width=700,left='+wleft+',top='+wtop+',toolbar=no,location=no,directories=no,status=no,scrollbars=no,resizable=no,menubar=no');void 0;\">Veille Collective</a> << déplacer ce lien dans votre barre des favoris pour y accéder facilement.</div>";
+	if ($mode == 'html') {
+		//return $htmlbookmarklet;
+	}
+	elseif ($mode == 'saisie') {
+		$formtemplate->addElement('html', $htmlbookmarklet);
+	}
+}
+
+
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: formulaire.fonct.inc.php,v $
+* Revision 1.14  2010/06/02 08:48:51  mrflos
+* commit de transition
+*
 * Revision 1.13  2010/05/11 17:39:49  mrflos
 * commit de passage : nuage tags
 *
