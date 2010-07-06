@@ -6,7 +6,9 @@ if (!defined("WIKINI_VERSION"))
 }
 
 $contenu=$this->LoadPage($this->tag);
-if (($this->GetMethod() == "show") && ($act=preg_match_all ("/".'(\\{\\{contact)'.'(.*?)'.'(\\}\\})'."/is", $contenu["body"], $matches) || $act=preg_match_all ("/".'(\\{\\{abonnement)'.'(.*?)'.'(\\}\\})'."/is", $contenu["body"], $matches) || $act=preg_match_all ("/".'(\\{\\{desabonnement)'.'(.*?)'.'(\\}\\})'."/is", $contenu["body"], $matches) )) {
+if ($act = preg_match_all ("/".'(\\{\\{contact)'.'(.*?)'.'(\\}\\})'."/is", $contenu["body"], $matches) ||
+	$act = preg_match_all ("/".'(\\{\\{abonnement)'.'(.*?)'.'(\\}\\})'."/is", $contenu["body"], $matches) ||
+	$act = preg_match_all ("/".'(\\{\\{desabonnement)'.'(.*?)'.'(\\}\\})'."/is", $contenu["body"], $matches) ) {
 
 	$plugin_output_new=preg_replace ('/<\/head>/',
 	'
