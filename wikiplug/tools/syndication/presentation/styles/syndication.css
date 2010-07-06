@@ -21,20 +21,21 @@ width:100%;
 
 .rss_site_titre {
 text-align:center;
+clear:both;
 }
 
 .boite_syndication a {
 color:#a10a01;
 }
 	 
-.liste_rss_paginee{
+ul.liste_rss_paginee{
 background:none repeat scroll 0 0 transparent;
 overflow:hidden;
 padding:5px;
 position:relative;
 }
 
-.liste_rss_paginee li {
+ul.liste_rss_paginee li.titre_rss {
 background-color:#F4F4F4;
 list-style:none outside none;
 margin:0 10px 10px 12px;
@@ -42,11 +43,11 @@ padding:20px;
 -moz-box-shadow:0 0 6px #111111;
 -webkit-box-shadow:0 0 6px #111111;
 box-shadow:0 0 6px #111111;
-float:left;
 display:block;
+text-align:left;
 }
 
-.liste_rss_paginee, .liste_rss_paginee li {
+ul.liste_rss_paginee, ul.liste_rss_paginee li.titre_rss {
 -moz-border-radius:8px;
 -webkit-border-radius:8px;
 border-radius:8px;
@@ -54,18 +55,20 @@ border-radius:8px;
 
 
 .swControls{
-position:absolute;
-bottom:0;
+position:relative;
 margin:0;
+display:block;
+text-align:center;
+clear:both;
 }
 
 a.swShowPage{
 background-color:#444444;
-float:left;
-height:15px;
+display:inline-block;
+height:17px;
 margin:4px 3px;
-text-indent:-9999px;
-width:15px;
+text-align:center;
+width:18px;
 -moz-border-radius:7px;
 -webkit-border-radius:7px;
 border-radius:7px;

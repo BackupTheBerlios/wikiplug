@@ -9,7 +9,7 @@ $.fn.sweetPages = function(opts){
 	
 	// The plugin works best for unordered lists, althugh ols would do just as well:
 	var ul = this;
-	var li = ul.find('li');
+	var li = ul.find('> li');
 	
 	li.each(function(){
 		// Calculating the height of each li element, and storing it with the data method:
@@ -83,10 +83,10 @@ $.fn.sweetPages = function(opts){
 	hyperLinks.eq(0).addClass('active');
 	
 	// Center the control div:
-	swControls.css({
+	/*swControls.css({
 		'left':'50%',
 		'margin-left':-swControls.width()/2
-	});
+	});*/
 	
 	return this;
 	
@@ -97,7 +97,10 @@ $(document).ready(function(){
 	// Calling the jQuery plugin and splitting the
 	// .liste_rss_paginee UL into pages of 2 LIs each:	
 	$('.liste_rss_paginee').each(function(){
-		$(this).sweetPages({perPage:2});
+		var classes = $(this).attr("class");
+		var exp = new RegExp("[0-9]","g");
+		var nb = classes.match(exp);
+		$(this).sweetPages({perPage:nb});
 		var controls = $(this).find('.swControls').detach();
 		controls.appendTo($(this).parent('.boite_syndication'));
 	});
