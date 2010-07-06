@@ -7,7 +7,6 @@ if (!defined("WIKINI_VERSION"))
         die ("acc&egrave;s direct interdit");
 }
 $wakkaConfig['menu_page'] = 'PageMenu';
-$wakkaConfig['banniere_page'] = 'PageBanniere';
 
 
 // Surcharge  fonction  LoadRecentlyChanged : suppression remplissage cache car affecte le rendu de la navigation.
