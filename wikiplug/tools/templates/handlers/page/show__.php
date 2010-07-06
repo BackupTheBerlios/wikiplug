@@ -49,7 +49,7 @@ if (!$this->config['hide_action_template'])
 		
 		//si le lien de provenance n'est pas un NomWiki, on l'utilise comme titre de la nouvelle page
 		if (!$this->IsWikiName($values[1])) {
-			$replacement .= '<input type="hidden" name="body" value="====='.$values[1].'=====" />';
+			$replacement .= '<input type="hidden" name="body" value="======'.$values[1].'======" />';
 		}
 		
 		//on cache les valeurs du template de provenance, pour avoir le meme graphisme dans la page creee

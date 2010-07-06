@@ -4,7 +4,7 @@ jQuery(document).ready(function() {
 	$("#col_menu > div.div_include > ul > li").each(function(i) {$(this).addClass('menu'+i);});
 	$("a.actif").parent().addClass('liste-active').parents("ul").prev("a").addClass('actif').parent().addClass('liste-active');
 	
-	//pour les menus qui possÃ¨dent des sous menus, on affiche une petite fleche pour indiquer
+	//pour les menus qui possèdent des sous menus, on affiche une petite flèche pour indiquer
 	$("#menu_haut > div.div_include > ul > li:has(ul)").find("a:first").append("<span class=\"fleche_menu_droite fleche_menu_bas\"></span>");
 	$("#col_menu > div.div_include > ul > li:has(ul)").find("a:first").append("<span class=\"fleche_menu_gauche fleche_menu_droit\"></span>");
     $("#menu_haut ul li ul li:has(ul), #col_menu ul li ul li:has(ul)").find("a:first").append("<span class=\"fleche_menu_droite fleche_menu_droit\"></span>");	
@@ -32,4 +32,32 @@ jQuery(document).ready(function() {
 	
 	//deroule le deuxieme niveau pour la PageMenu, si elle contient le lien actif
 	$("#col_menu > div.div_include > ul > li.liste-active:has(ul)").addClass('hover').find('ul:first').slideDown('fast');
+	
+	//barre d'actions	
+	$("body").append('<div id="overlay-action"><div class="contenu-overlay-action"></div></div>');	
+	$(".barre_actions a[title]").tooltip({
+	   offset: [10, 2],
+	   effect: 'slide',
+	   tipClass: 'tooltip_action',
+	   opacity: 1,
+	   delay:300,
+	   predelay:50
+	});
+	$(".barre_actions a[rel], a.voirpage").overlay({
+		mask: '#482E15',
+		effect: 'apple',
+		onBeforeLoad: function() {
+			var wrap = this.getOverlay().find(".contenu-overlay-action");
+			// on charge juste la div de classe "page" pour ne pas afficher les menus et autres contenus
+			wrap.load(this.getTrigger().attr("href")+' .page');
+			$("a.bouton_share[title]").tooltip({
+				   offset: [10, 2],
+				   effect: 'slide',
+				   tipClass: 'tooltip_action',
+				   opacity: 1,
+				   delay:300,
+				   predelay:50
+				});
+		}
+	});
 });

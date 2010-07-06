@@ -145,7 +145,7 @@ a:hover {
 hr { 
 clear:both; 
 color:#FFF; 
-background-color:#0036d7; 
+background-color:#86A01F; 
 height:2px; 
 border:0; 
 width:100%; 
@@ -173,38 +173,37 @@ padding:0;
  
 #conteneur { 
 text-align:left; 
-width:957px; 
-border:1px solid #000; 
+width:980px; 
 color:#000; 
 position:relative; 
 -moz-box-shadow: 3px 3px 4px #666;
 -webkit-box-shadow: 3px 3px 4px #666;
 box-shadow: 3px 3px 4px #666;
 background:#D9D6A0 ; 
-margin:10px auto; 
+margin:15px auto; 
 } 
  
 #pagerapidehaut { 
 color:#FFFFFF;
-float:right;
-margin:9px 10px 0;
+float:left;
+margin:0 0 0 20px;
 padding:0;
 text-align:right;
-width:770px;
+width:780px;
 }
 #pagerapidehaut a {color:#FFF;}
 
 #titre { 
-  width:180px; 
+  width:160px; 
   text-align:center;
 } 
 #conteneur.gauche #titre, #conteneur.milieu #titre {
 float:left;
-margin:0 0 0 15px;
+margin:0 0 0 20px;
 }
 #conteneur.droite #titre { 
   float:right; 
-  margin:0 15px 0 0;
+  margin:0 20px 0 0;
 }
 #titre h1 { 
 border:0; 
@@ -282,7 +281,7 @@ padding:0;
 } 
  
 #header {
-background:#482e15 url(../images/fond_menu_haut.png) repeat-y top left;
+background:#482e15 url(../images/fond_menu_haut.png) repeat top left;
 display:block;
 width:100%;
 }
@@ -297,7 +296,7 @@ height:35px;
 #recherche { 
 float:right; 
 color:#FFF; 
-margin:8px 29px 0 0;
+margin:8px 20px 0 0;
 width:135px;
 } 
  
@@ -327,17 +326,17 @@ font-weight:700;
 font-size:1.1em;
 text-align:left;
 background:transparent;
-width:708px;
+width:760px;
 padding:0;
 z-index:97;  
 } 
 #conteneur.gauche #menu_haut, #conteneur.milieu #menu_haut { 
 float:right; 
-margin:0 29px 0 0;
+margin:0 20px 0 0;
 }
 #conteneur.droite #menu_haut { 
 float:left; 
-margin:0 0 0 29px;
+margin:0 0 0 20px;
 } 
 
 /* liens premier niveau en blanc */
@@ -445,9 +444,9 @@ padding:0;
 #col_menu { 
 color:#000; 
 float:left; 
-width:180px; 
+width:160px; 
 background:transparent; 
-margin:0 0 0 15px; 
+margin:0 0 0 20px; 
 padding:0; 
 }
 #conteneur.gauche #col_menu, #conteneur.milieu #col_menu { 
@@ -550,17 +549,17 @@ padding:0;
 background : #FFF;
 position:relative;
 text-align:justify;
-width:688px;
-margin:0 29px 0 0;
+width:740px;
+margin:0 20px 0 0;
 padding:10px;
 }
 #conteneur.gauche #content,  #conteneur.milieu #content { 
 float:right; 
-margin:0 29px 0 0;
+margin:0 20px 0 0;
 }
 #conteneur.droite #content { 
 float:left;
-margin:0 0 0 29px;
+margin:0 0 0 20px;
 } 
 #conteneur.milieu #content {
 width:509px;
@@ -636,41 +635,23 @@ background:transparent;
  
 .boite_syndication, .boite_nuage {background:#AEA97B;} 
  
-.spacer {clear:both} 
+.spacer, .hr_clear {clear:both; border:none; background:transparent; margin:0; } 
  
 #banniere { 
-width:708px;
+width:760px;
 height: 109px; 
 color: #000; 
-background:transparent url(../images/banniere.jpg) no-repeat  top left; 
+background:transparent url(../images/banniere.jpg) repeat-x  top left; 
 }
 #conteneur.gauche #banniere, #conteneur.milieu #banniere { 
 float:right; 
-margin:0 29px 0 0;
+margin:0 20px 0 0;
 }
 #conteneur.droite #banniere { 
 float:left; 
-margin:0 0 0 29px;
+margin:0 0 0 20px;
 } 
  
-#banniere img { 
-    position:absolute; 
-    top:33px; 
-    right:30px; 
-    z-index:8; 
-    opacity:0.0; 
-} 
- 
-#banniere img.active { 
-    z-index:10; 
-    opacity:1.0; 
-} 
- 
-#banniere img.last-active { 
-    z-index:9; 
-} 
-
-
  /* CSS Contributions wikini */
 
 /* Contribution syndication */
@@ -748,9 +729,11 @@ border:1px solid #666;
 
 /* footer */
 .footer {
-text-align:center; 
-margin:10px auto 0 auto;
-font-size:0.9em; 
+clear:both;
+font-size:0.9em;
+margin:10px auto 0;
+padding:10px 0;
+text-align:center;
 }
 .footer a {
 color:#000;
@@ -759,6 +742,89 @@ color:#000;
 display:inline;
 }
 /* fin footer */
+
+/* barre actions */
+.barre_actions {
+background:#EFEFEF;
+margin:0 20px 0 0;
+padding:0;
+position:relative;
+text-align:left;
+width:760px;
+}
+
+#conteneur.gauche .barre_actions,  #conteneur.milieu .barre_actions {
+float:right;
+clear:right;
+text-align:center;
+}
+
+.barre_actions a {
+display:inline-block;
+margin:0 8px 0 0;
+text-align:center;
+color:#333;
+}
+.lien_modifier {background:url(../../../presentation/images/edit.png) no-repeat left center; padding:4px 4px 4px 20px;}
+.lien_supprimer {background:url(../../../presentation/images/delete.gif) no-repeat left center; padding:4px 4px 4px 20px;}
+.lien_historique {background:url(../../../presentation/images/historique.png) no-repeat left center; padding:4px 4px 4px 20px;}
+.lien_droits {background:url(../../../presentation/images/droits.png) no-repeat left center; padding:4px 4px 4px 20px;}
+.lien_referrer {background:url(../../../presentation/images/referrer.png) no-repeat left center; padding:4px 4px 4px 20px;}
+.lien_share {background:url(../../../presentation/images/share.png) no-repeat left center; padding:4px 4px 4px 20px;}
+.barre_actions a:hover {background-color:#D9D6A0;text-decoration:none;}
+
+.tooltip_action {
+background-color:#AEA97B;
+color:#000;
+font-size:1em;
+font-weight:bold;
+padding:10px;
+-moz-border-radius:5px;-webkit-border-radius:5px;-khtml-border-radius:5px;border-radius:5px;
+-moz-box-shadow: 3px 3px 4px #444;
+-webkit-box-shadow: 3px 3px 4px #444;
+box-shadow: 3px 3px 4px #444;
+}
+
+#overlay-action {
+background:#FFF;
+color:#000;
+width:680px;		
+padding:10px;
+display:none;
+-moz-border-radius:5px;-webkit-border-radius:5px;-khtml-border-radius:5px;border-radius:5px;
+-moz-box-shadow: 3px 3px 24px #222;
+-webkit-box-shadow: 3px 3px 24px #222;
+box-shadow: 3px 3px 24px #222;
+}
+
+div.contenu-overlay-action {
+	max-height:441px;
+	overflow-y:auto;
+}
+
+.bouton_share {
+margin:0 32px 0 0;
+width:64px;
+height:64px;
+display:inline-block;
+}
+
+.bouton_share:hover {
+-moz-box-shadow: 3px 3px 15px #111;
+-webkit-box-shadow: 3px 3px 15px #111;
+box-shadow: 3px 3px 15px #111;
+}
+/* default close button positioned on upper right corner */
+#overlay-action .close {
+	background-image:url(../images/close.png);
+	position:absolute; right:-20px; top:-20px;
+	cursor:pointer;
+	height:35px;
+	width:35px;
+}
+
+
+/* fin barre actions */
 
 
 /* Divers mise en forme */
@@ -769,7 +835,7 @@ display:inline;
 /* Fin divers mise en forme */
 
 /* On cache divers éléments */
-.commentsheader,.hr_clear,#menu_haut ul ul,#col_droite .listeinfo,#col_droite .commentaires,#col_droite .lien_commenter,#col_droite lien_suppr_paget,#col_droite .lien_edit_page { 
+.commentsheader, #menu_haut ul ul,#col_droite .listeinfo,#col_droite .commentaires,#col_droite .lien_commenter,#col_droite lien_suppr_paget,#col_droite .lien_edit_page { 
 display:none; 
 } 
  
