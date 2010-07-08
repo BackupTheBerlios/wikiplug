@@ -64,7 +64,7 @@ if (fopen($url, "r"))
 						flowplayer("a.flvplayer", "tools/attach/players/flowplayer-3.1.5.swf", { 
 						    clip:  { 
 							autoPlay: false, 
-							autoBuffering: true 
+							autoBuffering: false
 						    },
 						    plugins:  { 
 						        controls: {             
