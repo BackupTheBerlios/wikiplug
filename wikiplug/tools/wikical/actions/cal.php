@@ -12,16 +12,15 @@ if (!defined("WIKINI_VERSION"))
 {
 	$url = urldecode($_GET["url"]);
 	$color = urldecode($_GET["color"]);
-	include_once '../lib/ical.php';
+	include_once '../libs/ical.php';
 }
 
 //on est dans wiki
 else {
 	$url = $this->GetParameter("url");
 	$color = $this->GetParameter("color");
-	include_once 'tools/wikical/lib/ical.php';
+	include_once 'tools/wikical/libs/ical.php';
 }
-
 
 
 //Retourne le timestamp du d�but du mois du timestamp renseign�
