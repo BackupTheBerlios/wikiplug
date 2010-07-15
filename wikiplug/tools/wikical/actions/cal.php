@@ -24,25 +24,25 @@ else {
 
 
 
-//Retourne le timestamp du début du mois du timestamp renseigné
+//Retourne le timestamp du dï¿½but du mois du timestamp renseignï¿½
 function getMonthStartTS($in_timeStamp) { 
 	return mktime( 0, 1, 1, date("m", $in_timeStamp), 1, 
 	date("Y", $in_timeStamp)); 					
 }
 
-//Retourne le timestamp de la fin du mois du timestamp renseigné
+//Retourne le timestamp de la fin du mois du timestamp renseignï¿½
 function getMonthEndTS($in_timeStamp) { 
 	return mktime( 23,	59,	59, date("m", $in_timeStamp)+1, 1, 
 					date("Y", $in_timeStamp)); 
 }
  /***************************************************************************
- * Elimine les evenement en dehors de l'intervalle précisé
+ * Elimine les evenement en dehors de l'intervalle prï¿½cisï¿½
  * et range ceux restant par ordre chronologique.
  */
 function filterEvents($in_startTS, $in_endTS, $in_data) {
 	$selectedData = array();
 	
-	//Filtre les évenements
+	//Filtre les ï¿½venements
 	foreach($in_data as $event) {
 		if (($event["DTSTART"]["unixtime"] >= $in_startTS) 
 			&& ($event["DTSTART"]["unixtime"] <= $in_endTS)) {
@@ -50,7 +50,7 @@ function filterEvents($in_startTS, $in_endTS, $in_data) {
 		}
 	}/**/
 	
-	//Range les évenements par ordre chronologique
+	//Range les ï¿½venements par ordre chronologique
 	$size = count($selectedData);
 	do {
 		$changement = false;
@@ -69,7 +69,7 @@ function filterEvents($in_startTS, $in_endTS, $in_data) {
 }
 
 /****************************************************************************
- * Crée le squellete de donnée du calendrier (Vue mensuelle).
+ * Crï¿½e le squellete de donnée du calendrier (Vue mensuelle).
  */
 function makeMonth($in_timestamp, $in_data)
 {
@@ -86,7 +86,7 @@ function makeMonth($in_timestamp, $in_data)
 	$month = array();
 	//Les jours vide de début de mois
 	for($i=0 ; $i<$firstDay ; $i++){
-		$day = array("isToday" => false, "isEvent" => false, "startDayTS" => mktime(0,0,0,0,0,0), "endDayTS" => mktime(0,0,0,0,0,0), "events" => array() );
+		$day = array("isBlank" => true, "isToday" => false, "isEvent" => false, "startDayTS" => mktime(0,0,0,0,0,0), "endDayTS" => mktime(0,0,0,0,0,0), "events" => array() );
 		array_push($month, $day);
 	}
 	//ajouter les jours
@@ -107,9 +107,17 @@ function makeMonth($in_timestamp, $in_data)
 				$isEvent = true;
 			}	
 		}
-		array_push($month, array("isToday" => $isToday, "isEvent" => $isEvent, "startDayTS" => $startDayTS, "endDayTS" => $endDayTS, "events" => $events));
+		array_push($month, array("isBlank" => false, "isToday" => $isToday, "isEvent" => $isEvent, "startDayTS" => $startDayTS, "endDayTS" => $endDayTS, "events" => $events));
 		
 	}
+	//Les jours de fin de mois.
+	if (($nb_jours+$firstDay) % 7 != 0) {
+		for($i=0 ; $i < 7 - (($nb_jours+$firstDay) % 7) ; $i++){
+			$day = array("isBlank" => true, "isToday" => false, "isEvent" => false, "startDayTS" => mktime(0,0,0,0,0,0), "endDayTS" => mktime(0,0,0,0,0,0), "events" => array() );
+			array_push($month, $day);
+		}
+	}
+	
 	return $month;
 }
 
@@ -145,13 +153,13 @@ function printMonthCal($in_data, $in_color="grey", $in_timeStamp, $url) {
 	print("<p class='title'><a href=\"tools/wikical/actions/cal.php?timestamp=".$prev_month.$url_params."\" class=\"cal_prev prev_month\" title=\"Mois pr&eacute;c&eacute;dent\"><<</a>\n"
 		.$monthText.date(" Y")."\n
 		<a href=\"tools/wikical/actions/cal.php?timestamp=".$next_month.$url_params."\" class=\"cal_next next_month\" title=\"Mois suivant\">>></a></p>\n");
-	print("<div class='day day_name'>Lun</div>\n");
-	print("<div class='day day_name'>Mar</div>\n");
-	print("<div class='day day_name'>Mer</div>\n");
-	print("<div class='day day_name'>Jeu</div>\n");
-	print("<div class='day day_name'>Ven</div>\n");
-	print("<div class='day day_name'>Sam</div>\n");
-	print("<div class='day day_name'>Dim</div>\n");
+	print("<div class='day_name'>Lun</div>\n");
+	print("<div class='day_name'>Mar</div>\n");
+	print("<div class='day_name'>Mer</div>\n");
+	print("<div class='day_name'>Jeu</div>\n");
+	print("<div class='day_name'>Ven</div>\n");
+	print("<div class='day_name'>Sam</div>\n");
+	print("<div class='day_name'>Dim</div>\n");
 
 	foreach($in_data as $day) {
 		//Creation du DIV
@@ -162,7 +170,8 @@ function printMonthCal($in_data, $in_color="grey", $in_timeStamp, $url) {
 		else
 			print("<div class='day'>");
 		//Contenu du DIV
-		print(date("d",$day['startDayTS']));
+		if(!$day["isBlank"])
+			print(date("d",$day['startDayTS']));
 
 		//affichage des events
 		if ($day["isEvent"]) {
