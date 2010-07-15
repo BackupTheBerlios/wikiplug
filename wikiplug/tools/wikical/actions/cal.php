@@ -7,12 +7,22 @@
 
   **************************************************************************/
 
+//on appele le fichier de suite
 if (!defined("WIKINI_VERSION"))
 {
-	die ("acc&egrave;s direct interdit");
+	$url = urldecode($_GET["url"]);
+	$color = urldecode($_GET["color"]);
+	include_once '../lib/ical.php';
 }
 
-include_once 'tools/wikical/lib/ical.php';
+//on est dans wiki
+else {
+	$url = $this->GetParameter("url");
+	$color = $this->GetParameter("color");
+	include_once 'tools/wikical/lib/ical.php';
+}
+
+
 
 //Retourne le timestamp du début du mois du timestamp renseigné
 function getMonthStartTS($in_timeStamp) { 
@@ -108,7 +118,7 @@ function makeMonth($in_timestamp, $in_data)
  * Affichage du calendrier (vue mois)
  */
 
-function printMonthCal($in_data, $in_color="grey", $in_timeStamp) {
+function printMonthCal($in_data, $in_color="grey", $in_timeStamp, $url) {
 
 	print("<div class='calendar' style='background-color: ".$in_color.";'>\n");
 	print("<div class='calendar_content'>\n");
@@ -131,9 +141,10 @@ function printMonthCal($in_data, $in_color="grey", $in_timeStamp) {
 
 	$prev_month = mktime( 23, 59, 59, date("m", $in_timeStamp)-1, 1, date("Y", $in_timeStamp));
 	$next_month = mktime( 23, 59, 59, date("m", $in_timeStamp)+1, 1, date("Y", $in_timeStamp));
-	print("<p class='title'><a href=\"".$GLOBALS['wiki']->Href("","","timestamp=".$prev_month)."\" class=\"cal_prev prev_month\" title=\"Mois pr&eacute;c&eacute;dent\"><<</a>\n"
+	$url_params = "&amp;url=".urlencode($url)."&amp;color=".urlencode($in_color);
+	print("<p class='title'><a href=\"tools/wikical/actions/cal.php?timestamp=".$prev_month.$url_params."\" class=\"cal_prev prev_month\" title=\"Mois pr&eacute;c&eacute;dent\"><<</a>\n"
 		.$monthText.date(" Y")."\n
-		<a href=\"".$GLOBALS['wiki']->Href("","","timestamp=".$next_month)."\" class=\"cal_next next_month\" title=\"Mois suivant\">>></a></p>\n");
+		<a href=\"tools/wikical/actions/cal.php?timestamp=".$next_month.$url_params."\" class=\"cal_next next_month\" title=\"Mois suivant\">>></a></p>\n");
 	print("<div class='day day_name'>Lun</div>\n");
 	print("<div class='day day_name'>Mar</div>\n");
 	print("<div class='day day_name'>Mer</div>\n");
@@ -181,9 +192,6 @@ function printMonthCal($in_data, $in_color="grey", $in_timeStamp) {
 	
 }
 
-$url = $this->GetParameter("url");
-$color = $this->GetParameter("color");
-
 $cal = new ical();
 $cal->parse($url);
 $data = $cal->get_event_list();
@@ -200,7 +208,7 @@ $data = filterEvents(getMonthStartTS($daytime), getMonthEndTS($daytime), $data);
 
 $data = makeMonth($daytime, $data);
 
-printMonthCal($data, $color, $daytime);
+printMonthCal($data, $color, $daytime, $url);
 
 
 
