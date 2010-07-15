@@ -23,16 +23,32 @@ else {
 }
 
 
-//Retourne le timestamp du dï¿½but du mois du timestamp renseignï¿½
+//Retourne le timestamp du début du mois du timestamp renseigné
 function getMonthStartTS($in_timeStamp) { 
 	return mktime( 0, 1, 1, date("m", $in_timeStamp), 1, 
 	date("Y", $in_timeStamp)); 					
 }
 
-//Retourne le timestamp de la fin du mois du timestamp renseignï¿½
+//Retourne le timestamp de la fin du mois du timestamp renseigné
 function getMonthEndTS($in_timeStamp) { 
 	return mktime( 23,	59,	59, date("m", $in_timeStamp)+1, 1, 
 					date("Y", $in_timeStamp)); 
+}
+
+function getWeekStartTS($in_timeStamp) { 
+	
+}
+
+function getWeekEndTS($in_timeStamp) { 
+	
+}
+
+function getDayStartTS($in_timeStamp) { 
+
+}
+	
+function getDayEndTS($in_timeStamp) { 
+
 }
  /***************************************************************************
  * Elimine les evenement en dehors de l'intervalle prï¿½cisï¿½
