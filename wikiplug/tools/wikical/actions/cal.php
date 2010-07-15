@@ -26,27 +26,31 @@ else {
 //Retourne le timestamp du début du mois du timestamp renseigné
 function getMonthStartTS($in_timeStamp) { 
 	return mktime( 0, 1, 1, date("m", $in_timeStamp), 1, 
-	date("Y", $in_timeStamp)); 					
+		date("Y", $in_timeStamp)); 					
 }
 
 //Retourne le timestamp de la fin du mois du timestamp renseigné
 function getMonthEndTS($in_timeStamp) { 
-	return mktime( 23,	59,	59, date("m", $in_timeStamp)+1, 1, 
-					date("Y", $in_timeStamp)); 
+	return mktime( 23,	59,	59, date("m", $in_timeStamp)+1, 1,
+		date("Y", $in_timeStamp)); 
 }
 
+//Retourne le timestamp du début de la semaine du timestamp renseigné
 function getWeekStartTS($in_timeStamp) { 
 	
 }
 
+//Retourne le timestamp de la fin de la semaine mois du timestamp renseigné
 function getWeekEndTS($in_timeStamp) { 
 	
 }
 
+//Retourne le timestamp du début du jour du timestamp renseigné
 function getDayStartTS($in_timeStamp) { 
 
 }
-	
+
+//Retourne le timestamp de la fin du jour du timestamp renseigné
 function getDayEndTS($in_timeStamp) { 
 
 }
@@ -162,11 +166,13 @@ function printMonthCal($in_data, $in_color="grey", $in_timeStamp, $url) {
 		case 12: $monthText = "D&eacute;cembre"; break;
 	}
 
-	$prev_month = mktime( 23, 59, 59, date("m", $in_timeStamp)-1, 1, date("Y", $in_timeStamp));
-	$next_month = mktime( 23, 59, 59, date("m", $in_timeStamp)+1, 1, date("Y", $in_timeStamp));
+	$next_month = strtotime('+1 month',$in_timeStamp);
+	$prev_month = strtotime('-1 month',$in_timeStamp);
+	
+
 	$url_params = "&amp;url=".urlencode($url)."&amp;color=".urlencode($in_color);
 	print("<p class='title'><a href=\"tools/wikical/actions/cal.php?timestamp=".$prev_month.$url_params."\" class=\"cal_prev prev_month\" title=\"Mois pr&eacute;c&eacute;dent\"><<</a>\n"
-		.$monthText.date(" Y")."\n
+		.$monthText.date(" Y", $in_timeStamp)."\n
 		<a href=\"tools/wikical/actions/cal.php?timestamp=".$next_month.$url_params."\" class=\"cal_next next_month\" title=\"Mois suivant\">>></a></p>\n");
 	print("<div class='day_name'>Lun</div>\n");
 	print("<div class='day_name'>Mar</div>\n");
