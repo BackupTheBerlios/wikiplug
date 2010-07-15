@@ -55,7 +55,7 @@ function getDayEndTS($in_timeStamp) {
 
 }
  /***************************************************************************
- * Elimine les evenement en dehors de l'intervalle prï¿½cisï¿½
+ * Elimine les evenement en dehors de l'intervalle précisé
  * et range ceux restant par ordre chronologique.
  */
 function filterEvents($in_startTS, $in_endTS, $in_data) {
@@ -69,7 +69,7 @@ function filterEvents($in_startTS, $in_endTS, $in_data) {
 		}
 	}/**/
 	
-	//Range les ï¿½venements par ordre chronologique
+	//Range les évenements par ordre chronologique
 	$size = count($selectedData);
 	do {
 		$changement = false;
@@ -88,7 +88,7 @@ function filterEvents($in_startTS, $in_endTS, $in_data) {
 }
 
 /****************************************************************************
- * Crï¿½e le squellete de donnée du calendrier (Vue mensuelle).
+ * Crée le squelette de donnée du calendrier (Vue mensuelle).
  */
 function makeMonth($in_timestamp, $in_data)
 {
@@ -121,7 +121,7 @@ function makeMonth($in_timestamp, $in_data)
 		$events = array();
 		foreach ($in_data as $event){
 			if (($event["DTSTART"]["unixtime"] >= $startDayTS) && ($event["DTSTART"]["unixtime"] <= $endDayTS)) {
-				$event["SUMMARY"] = utf8_decode($event["SUMMARY"]);
+				$event["SUMMARY"] = htmlentities(utf8_decode($event["SUMMARY"]));
 				array_push($events, $event);
 				$isEvent = true;
 			}	
@@ -214,7 +214,8 @@ function printMonthCal($in_data, $in_color="grey", $in_timeStamp, $url) {
 		$(function() {
 			$(\".next_month, .prev_month\").live('click', function() {
 				var htmlcal = $(this).attr('href') + ' .calendar_content';
-				$(this).parents('.calendar').load(htmlcal);
+				var calheight = $(this).parents('.calendar').height();
+				$(this).parents('.calendar').html('<div style=\"height:'+calheight+'px;background:transparent url(tools/wikical/presentation/images/loading.gif) no-repeat center center;\"></div>').load(htmlcal);
 				return false;
 			});
 		});
