@@ -127,7 +127,6 @@ function makeMonth($in_timestamp, $in_data)
 			if (($event["DTSTART"]["unixtime"] <= $endDayTS) && ($event["DTEND"]["unixtime"] >= $startDayTS)) {
 				$event["SUMMARY"] = htmlentities(utf8_decode($event["SUMMARY"]));
 				if ($event["DTEND"]["unixtime"] != $startDayTS){
-					print ("<br /> ".$event["SUMMARY"]." : ".$event["DTEND"]["unixtime"]." != ".$startDayTS);
 					array_push($events, $event);
 					$isEvent = true;
 				}
