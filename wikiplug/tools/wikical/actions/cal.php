@@ -233,8 +233,7 @@ function printMonthCal($in_data, $in_color="grey", $in_timeStamp, $url) {
 				}		
 				//Evenement sur une journée.
 				elseif (($event["DTEND"]["unixtime"] - $event["DTSTART"]["unixtime"]) == 86400) {
-					print ("<p class='event_info'>Évènement sur la journée.</p>");	
-				
+					print ("<p class='event_info'>&Eacute;v&egrave;nement sur la journ&eacute;e.</p>");	
 				} 
 				//
 				else 
