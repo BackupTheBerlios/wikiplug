@@ -30,6 +30,7 @@ function getDayStartTS($in_timeStamp) {
 function getDayEndTS($in_timeStamp) { 
 
 }
+
  /***************************************************************************
  * Elimine les evenement en dehors de l'intervalle précisé
  * et range ceux restant par ordre chronologique.
@@ -124,6 +125,7 @@ function makeMonth($in_timestamp, $in_data)
 }
 
 
+
 /****************************************************************************
  * Affichage du calendrier (vue mois)
  */
@@ -132,7 +134,7 @@ function printMonthCal($in_timeStamp, $in_data, $params) {
 
 	if (isset($params['color'])) $in_color = $params['color']; else $in_color = 'grey';
 	if (isset($params['url'])) $url = $params['url']; else die('ERREUR action cal : param&ecirc;tre "url" obligatoire!');
-	
+
 	print("<div class='calendar' style='background-color: ".$in_color.";'>\n");
 	print("<div class='calendar_content'>\n");
 
@@ -202,13 +204,25 @@ function printMonthCal($in_timeStamp, $in_data, $params) {
 				//TODO : Gerer toutes les infos
 				//       Ajouter une boucle. 
 				
+				//Evenement sur plusieurs jours.
 				if ( ($event["DTEND"]["unixtime"] - $event["DTSTART"]["unixtime"]) > 86400) {
 					print("<p class='event_info'>Du "
 						.date("d/m/Y", $event["DTSTART"]["unixtime"])
 						." &agrave; ".date("G:i", $event["DTSTART"]["unixtime"])
 						." au ".date("d/m/Y", $event["DTEND"]["unixtime"] )
 						." &agrave; ".date("G:i", $event["DTEND"]["unixtime"])."</p>\n");
-				} else print("<p class='event_info'>De ".date("H:i", $event["DTSTART"]["unixtime"])." &agrave; ".date("H:i", $event["DTEND"]["unixtime"])."</p>\n");
+				}		
+				//Evenement sur une journée.
+				elseif (($event["DTEND"]["unixtime"] - $event["DTSTART"]["unixtime"]) == 86400) {
+					print ("<p class='event_info'>&Eacute;v&egrave;nement sur la journ&eacute;e.</p>");	
+				} 
+				//
+				else 
+					print("<p class='event_info'>De "
+						.date("H:i", $event["DTSTART"]["unixtime"])
+						." &agrave; "
+						.date("H:i", $event["DTEND"]["unixtime"])
+						."</p>\n");
 			}
 			print ("</div>\n");
 		}
@@ -235,6 +249,5 @@ function printMonthCal($in_timeStamp, $in_data, $params) {
 			});
 		});
 		</script>");
-	
 }
 ?>
