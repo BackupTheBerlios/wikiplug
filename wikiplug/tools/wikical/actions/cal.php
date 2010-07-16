@@ -223,13 +223,26 @@ function printMonthCal($in_data, $in_color="grey", $in_timeStamp, $url) {
 				//TODO : Gerer toutes les infos
 				//       Ajouter une boucle. 
 				
+				//Evenement sur plusieurs jours.
 				if ( ($event["DTEND"]["unixtime"] - $event["DTSTART"]["unixtime"]) > 86400) {
 					print("<p class='event_info'>Du "
 						.date("d/m/Y", $event["DTSTART"]["unixtime"])
 						." &agrave; ".date("G:i", $event["DTSTART"]["unixtime"])
 						." au ".date("d/m/Y", $event["DTEND"]["unixtime"] )
 						." &agrave; ".date("G:i", $event["DTEND"]["unixtime"])."</p>\n");
-				} else print("<p class='event_info'>De ".date("H:i", $event["DTSTART"]["unixtime"])." &agrave; ".date("H:i", $event["DTEND"]["unixtime"])."</p>\n");
+				}		
+				//Evenement sur une journée.
+				elseif (($event["DTEND"]["unixtime"] - $event["DTSTART"]["unixtime"]) == 86400) {
+					print ("<p class='event_info'>Évènement sur la journée.</p>");	
+				
+				} 
+				//
+				else 
+					print("<p class='event_info'>De "
+						.date("H:i", $event["DTSTART"]["unixtime"])
+						." &agrave; "
+						.date("H:i", $event["DTEND"]["unixtime"])
+						."</p>\n");
 			}
 			print ("</div>\n");
 		}
