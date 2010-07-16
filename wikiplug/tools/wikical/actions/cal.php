@@ -157,30 +157,45 @@ function printMonthCal($in_data, $in_color="grey", $in_timeStamp, $url) {
 	print("<div class='calendar' style='background-color: ".$in_color.";'>\n");
 	print("<div class='calendar_content'>\n");
 
-	$monthText = "";
-	switch (date("n", $in_timeStamp)) {
-		case 1: $monthText = "Janvier"; break;
-		case 2: $monthText = "F&eacute;vrier"; break;
-		case 3: $monthText = "Mars"; break;
-		case 4: $monthText = "Avril"; break;
-		case 5: $monthText = "Mai"; break;
-		case 6: $monthText = "Juin"; break;
-		case 7: $monthText = "Juillet"; break;
-		case 8: $monthText = "Aout"; break;
-		case 9: $monthText = "Septembre"; break;
-		case 10: $monthText = "Octobre"; break;
-		case 11: $monthText = "Novembre"; break;
-		case 12: $monthText = "D&eacute;cembre"; break;
-	}
-
+	$jourencours = date("j", $in_timeStamp);
+	$moisencours = date("n", $in_timeStamp);
+	$anneeencours = date("Y", $in_timeStamp);
 	$next_month = strtotime('+1 month',$in_timeStamp);
 	$prev_month = strtotime('-1 month',$in_timeStamp);
-	
-
 	$url_params = "&amp;url=".urlencode($url)."&amp;color=".urlencode($in_color);
-	print("<p class='title'><a href=\"tools/wikical/actions/cal.php?timestamp=".$prev_month.$url_params."\" class=\"cal_prev prev_month\" title=\"Mois pr&eacute;c&eacute;dent\"><<</a>\n"
-		.$monthText.date(" Y", $in_timeStamp)."\n
-		<a href=\"tools/wikical/actions/cal.php?timestamp=".$next_month.$url_params."\" class=\"cal_next next_month\" title=\"Mois suivant\">>></a></p>\n");
+	
+	$monthText = "<select name=\"mois\" class=\"select_mois\">\n";
+	$monthText .= '<option value="tools/wikical/actions/cal.php?timestamp='.mktime(0, 0, 0, 1, $jourencours, $anneeencours).$url_params.'"'.($moisencours == 1 ? ' selected="selected"':'').'>Janvier</option>'."\n";
+	$monthText .= '<option value="tools/wikical/actions/cal.php?timestamp='.mktime(0, 0, 0, 2, $jourencours, $anneeencours).$url_params.'"'.($moisencours == 2 ? ' selected="selected"':'').'>F&eacute;vrier</option>'."\n";
+	$monthText .= '<option value="tools/wikical/actions/cal.php?timestamp='.mktime(0, 0, 0, 3, $jourencours, $anneeencours).$url_params.'"'.($moisencours == 3 ? ' selected="selected"':'').'>Mars</option>'."\n";
+	$monthText .= '<option value="tools/wikical/actions/cal.php?timestamp='.mktime(0, 0, 0, 4, $jourencours, $anneeencours).$url_params.'"'.($moisencours == 4 ? ' selected="selected"':'').'>Avril</option>'."\n";
+	$monthText .= '<option value="tools/wikical/actions/cal.php?timestamp='.mktime(0, 0, 0, 5, $jourencours, $anneeencours).$url_params.'"'.($moisencours == 5 ? ' selected="selected"':'').'>Mai</option>'."\n";
+	$monthText .= '<option value="tools/wikical/actions/cal.php?timestamp='.mktime(0, 0, 0, 6, $jourencours, $anneeencours).$url_params.'"'.($moisencours == 6 ? ' selected="selected"':'').'>Juin</option>'."\n";
+	$monthText .= '<option value="tools/wikical/actions/cal.php?timestamp='.mktime(0, 0, 0, 7, $jourencours, $anneeencours).$url_params.'"'.($moisencours == 7 ? ' selected="selected"':'').'>Juillet</option>'."\n";
+	$monthText .= '<option value="tools/wikical/actions/cal.php?timestamp='.mktime(0, 0, 0, 8, $jourencours, $anneeencours).$url_params.'"'.($moisencours == 8 ? ' selected="selected"':'').'>Aout</option>'."\n";
+	$monthText .= '<option value="tools/wikical/actions/cal.php?timestamp='.mktime(0, 0, 0, 9, $jourencours, $anneeencours).$url_params.'"'.($moisencours == 9 ? ' selected="selected"':'').'>Septembre</option>'."\n";
+	$monthText .= '<option value="tools/wikical/actions/cal.php?timestamp='.mktime(0, 0, 0, 10, $jourencours, $anneeencours).$url_params.'"'.($moisencours == 10 ? ' selected="selected"':'').'>Octobre</option>'."\n";
+	$monthText .= '<option value="tools/wikical/actions/cal.php?timestamp='.mktime(0, 0, 0, 11, $jourencours, $anneeencours).$url_params.'"'.($moisencours == 11 ? ' selected="selected"':'').'>Novembre</option>'."\n";
+	$monthText .= '<option value="tools/wikical/actions/cal.php?timestamp='.mktime(0, 0, 0, 12, $jourencours, $anneeencours).$url_params.'"'.($moisencours == 12 ? ' selected="selected"':'').'>D&eacute;cembre</option>'."\n";
+	$monthText .= "</select>\n";
+	
+	$monthText .= "<select name=\"annee\" class=\"select_annee\">\n";
+	$monthText .= '<option value="tools/wikical/actions/cal.php?timestamp='.mktime(0, 0, 0, $moisencours, $jourencours, $anneeencours-4).$url_params.'">'.($anneeencours-4).'</option>'."\n";
+	$monthText .= '<option value="tools/wikical/actions/cal.php?timestamp='.mktime(0, 0, 0, $moisencours, $jourencours, $anneeencours-3).$url_params.'">'.($anneeencours-3).'</option>'."\n";
+	$monthText .= '<option value="tools/wikical/actions/cal.php?timestamp='.mktime(0, 0, 0, $moisencours, $jourencours, $anneeencours-2).$url_params.'">'.($anneeencours-2).'</option>'."\n";
+	$monthText .= '<option value="tools/wikical/actions/cal.php?timestamp='.mktime(0, 0, 0, $moisencours, $jourencours, $anneeencours-1).$url_params.'">'.($anneeencours-1).'</option>'."\n";
+	$monthText .= '<option value="tools/wikical/actions/cal.php?timestamp='.mktime(0, 0, 0, $moisencours, $jourencours, $anneeencours).$url_params.'" selected="selected">'.$anneeencours.'</option>'."\n";
+	$monthText .= '<option value="tools/wikical/actions/cal.php?timestamp='.mktime(0, 0, 0, $moisencours, $jourencours, $anneeencours+1).$url_params.'">'.($anneeencours+1).'</option>'."\n";
+	$monthText .= '<option value="tools/wikical/actions/cal.php?timestamp='.mktime(0, 0, 0, $moisencours, $jourencours, $anneeencours+2).$url_params.'">'.($anneeencours+2).'</option>'."\n";
+	$monthText .= '<option value="tools/wikical/actions/cal.php?timestamp='.mktime(0, 0, 0, $moisencours, $jourencours, $anneeencours+3).$url_params.'">'.($anneeencours+3).'</option>'."\n";
+	$monthText .= '<option value="tools/wikical/actions/cal.php?timestamp='.mktime(0, 0, 0, $moisencours, $jourencours, $anneeencours+4).$url_params.'">'.($anneeencours+4).'</option>'."\n";
+	$monthText .= "</select>\n";
+	
+	print("<p class='title'>\n"
+		.$monthText."\n
+		<a href=\"tools/wikical/actions/cal.php?timestamp=".$prev_month.$url_params."\" class=\"cal_prev prev_month\" title=\"Mois pr&eacute;c&eacute;dent\"><</a>
+		<a href=\"tools/wikical/actions/cal.php?timestamp=".time().$url_params."\" class=\"cal_now today\" title=\"Aujourd'hui\">o</a>
+		<a href=\"tools/wikical/actions/cal.php?timestamp=".$next_month.$url_params."\" class=\"cal_next next_month\" title=\"Mois suivant\">></a></p>\n");
 	print("<div class='day_name'>Lun</div>\n");
 	print("<div class='day_name'>Mar</div>\n");
 	print("<div class='day_name'>Mer</div>\n");
@@ -224,8 +239,17 @@ function printMonthCal($in_data, $in_color="grey", $in_timeStamp, $url) {
 	print("</div>\n");
 	print("<script>
 		$(function() {
-			$(\".next_month, .prev_month\").live('click', function() {
+			//liens pour se déplacer dans le calendrier
+			$(\".next_month, .prev_month, .today\").live('click', function() {
 				var htmlcal = $(this).attr('href') + ' .calendar_content';
+				var calheight = $(this).parents('.calendar').height();
+				$(this).parents('.calendar').html('<div style=\"height:'+calheight+'px;background:transparent url(tools/wikical/presentation/images/loading.gif) no-repeat center center;\"></div>').load(htmlcal);
+				return false;
+			});
+			
+			//listes déroulantes de sélection de date
+			$(\".select_annee, .select_mois\").live('change', function() {
+				var htmlcal = $(this).find(\"option:selected\").val() + ' .calendar_content';
 				var calheight = $(this).parents('.calendar').height();
 				$(this).parents('.calendar').html('<div style=\"height:'+calheight+'px;background:transparent url(tools/wikical/presentation/images/loading.gif) no-repeat center center;\"></div>').load(htmlcal);
 				return false;
