@@ -1,4 +1,4 @@
-.day {
+.day, .day_name {
 	border: solid 1px white;
 	width: 30px;
 	height: 22px;
@@ -8,13 +8,7 @@
 	background: url(../images/blanc.png) repeat;
 }
 .day_name {
-	border: solid 1px white;
-	width: 30px;
-	height: 22px;
-	float: left;
-	padding-top: 8px;
-	font-size: 12px;
-	background: url(../images/blanc.png) repeat;
+	font-weight:bold;
 }
 
 .day.evday {
