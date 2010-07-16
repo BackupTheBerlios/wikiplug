@@ -114,7 +114,7 @@ function printMonthCal($in_timeStamp, $in_data, $params) {
 	if (isset($params['color'])) $in_color = $params['color']; else $in_color = 'grey';
 	if (isset($params['url'])) $url = $params['url']; else die('ERREUR action cal : param&ecirc;tre "url" obligatoire!');
 
-	print("<div class='calendar' style='background-color: ".$in_color.";'>\n");
+	print("<div class='calendar".((isset($params['class'])) ? ' '.$params['class'] : '')."' style='background-color: ".$in_color.";'>\n");
 	print("<div class='calendar_content'>\n");
 
 	$jourencours = date("j", $in_timeStamp);
@@ -122,7 +122,9 @@ function printMonthCal($in_timeStamp, $in_data, $params) {
 	$anneeencours = date("Y", $in_timeStamp);
 	$next_month = strtotime('+1 month',$in_timeStamp);
 	$prev_month = strtotime('-1 month',$in_timeStamp);
-	$url_params = "&amp;url=".urlencode($url)."&amp;color=".urlencode($in_color);
+	$url_params = "&amp;url=".urlencode($url)."&amp;color=".urlencode($in_color)
+					.((isset($params['class'])) ? '&amp;class='.urlencode($params['class']) : '')
+					.((isset($params['link'])) ? '&amp;link='.urlencode($params['link']) : '');
 	
 	$monthText = "<select name=\"mois\" class=\"select_mois\">\n";
 	$monthText .= '<option value="tools/wikical/actions/cal.php?timestamp='.mktime(0, 0, 0, 1, $jourencours, $anneeencours).$url_params.'"'.($moisencours == 1 ? ' selected="selected"':'').'>Janvier</option>'."\n";
@@ -207,7 +209,15 @@ function printMonthCal($in_timeStamp, $in_data, $params) {
 		}
 		print ("</div>\n");
 	}
+	
+	//spacer pour les flottants du dessus
+	print("<div style=\"clear:both\"></div>\n");
+	
+	//ajout du lien vers le fichier ics si besoin
+	if (isset($params['link']) && $params['link']==1) print("<a href=\"".$params['url']."\" class=\"calendar_link\" title=\"lien vers le fichier ICAL\"><img src=\"tools/wikical/presentation/images/icon_ical.gif\" height=\"16\" width=\"16\" alt=\"icone ICAL\" />&nbsp;lien vers calendrier (ics)</a>\n");
+	
 	print("</div>\n");
+	
 	print("</div>\n");
 	print("<script>
 		$(function() {
