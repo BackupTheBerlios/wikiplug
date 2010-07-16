@@ -30,7 +30,7 @@
 	font-size: 110%;
 	font-weight: bold;
 	color: black;
-		
+	background : url(../images/blanc.png) repeat;		
 }
 
 .calendar {
@@ -81,3 +81,27 @@
 .event_info {
 	color: black;
 }
+
+
+/* FORMULAIRE */
+.select_mois {
+	background: transparent;
+	border: solid 1px white;
+}
+
+.select_annee {
+	background: transparent;
+	border: solid 1px white;
+}
+
+.cal_next a {
+	background: transparent;	
+}
+
+.today a {
+	background: transparent;	
+}
+.cal_prev a {
+	background: transparent;	
+}
+
