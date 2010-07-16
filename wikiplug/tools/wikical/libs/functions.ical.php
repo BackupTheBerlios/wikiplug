@@ -155,9 +155,9 @@ function printMonthCal($in_timeStamp, $in_data, $params) {
 	
 	print("<p class='title'>\n"
 		.$monthText."\n
-		<a href=\"tools/wikical/actions/cal.php?timestamp=".$prev_month.$url_params."\" class=\"cal_prev prev_month\" title=\"Mois pr&eacute;c&eacute;dent\"><</a>
-		<a href=\"tools/wikical/actions/cal.php?timestamp=".time().$url_params."\" class=\"cal_now today\" title=\"Aujourd'hui\">o</a>
-		<a href=\"tools/wikical/actions/cal.php?timestamp=".$next_month.$url_params."\" class=\"cal_next next_month\" title=\"Mois suivant\">></a></p>\n");
+		<a href=\"tools/wikical/actions/cal.php?timestamp=".$prev_month.$url_params."\" class=\"cal_prev prev_month\" title=\"Mois pr&eacute;c&eacute;dent\">&lt;</a>
+		<a href=\"tools/wikical/actions/cal.php?timestamp=".time().$url_params."\" class=\"cal_now today\" title=\"Aujourd'hui\">&Omicron;</a>
+		<a href=\"tools/wikical/actions/cal.php?timestamp=".$next_month.$url_params."\" class=\"cal_next next_month\" title=\"Mois suivant\">&gt;</a></p>\n");
 	print("<div class='day_name'>Lun</div>\n");
 	print("<div class='day_name'>Mar</div>\n");
 	print("<div class='day_name'>Mer</div>\n");
@@ -179,7 +179,7 @@ function printMonthCal($in_timeStamp, $in_data, $params) {
 			print(date("d",$day['startDayTS']));
 		//affichage des events
 		if ($day["isEvent"]) {
-			print ("<div id='events'>");
+			print ("<div class='events'>");
 			foreach($day["events"] as $event) {
 				print("<p class='event_title'>".$event["SUMMARY"]."</p>");
 				//TODO : Gerer toutes les infos
@@ -219,7 +219,8 @@ function printMonthCal($in_timeStamp, $in_data, $params) {
 	print("</div>\n");
 	
 	print("</div>\n");
-	print("<script>
+	print("<script type=\"text/javascript\">
+	<!--
 		$(function() {
 			//liens pour se déplacer dans le calendrier
 			$(\".next_month, .prev_month, .today\").live('click', function() {
@@ -237,6 +238,7 @@ function printMonthCal($in_timeStamp, $in_data, $params) {
 				return false;
 			});
 		});
+		// -->
 		</script>");
 }
 ?>
