@@ -44,27 +44,8 @@ function filterEvents($in_startTS, $in_endTS, $in_data) {
 		if (($event["DTSTART"]["unixtime"] <= $in_endTS) 
 			&& ($event["DTEND"]["unixtime"] >= $in_startTS)) {
 				array_push($selectedData, $event);		
-		/*if (($event["DTSTART"]["unixtime"] >= $in_startTS) 
-			&& ($event["DTSTART"]["unixtime"] <= $in_endTS)) {
-			array_push($selectedData, $event);*/
 		}
 	}/**/
-	
-	//Range les évenements par ordre chronologique
-	/*$size = count($selectedData);
-	do {
-		$changement = false;
-		for($i=1;$i<$size;$i++) { 
-			if ($selectedData[$i]["DTSTART"]["unixtime"] 
-				< $selectedData[$i-1]["DTSTART"]["unixtime"]) {
-				$tampon =  $selectedData[$i-1];
-				$selectedData[$i-1] = $selectedData[$i];
-				$selectedData[$i] = $tampon;
-				$changement = true;
-			}		
-		}
-	} while($changement); /*On continue tant qu'il y a des changements.*/
-	
 	return $selectedData;	
 }
 
@@ -79,9 +60,7 @@ function makeMonth($in_timestamp, $in_data)
 		$firstDay = 7;
 	$firstDay--; //<-- premier jour de la semaine = Lundi
 
-	$nb_jours = date("t", mktime( 0, 1, 1, date("m", $in_timestamp)+1, 0, date("Y", $in_timestamp)));
-	
-	
+	$nb_jours = date("t", mktime( 0, 1, 1, date("m", $in_timestamp)+1, 0, date("Y", $in_timestamp)));	
 	
 	$month = array();
 	//Les jours vide de début de mois
