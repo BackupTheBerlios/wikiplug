@@ -60,17 +60,21 @@ function getDayEndTS($in_timeStamp) {
  */
 function filterEvents($in_startTS, $in_endTS, $in_data) {
 	$selectedData = array();
-	
-	//Filtre les ï¿½venements
+	//Filtre les évenements
 	foreach($in_data as $event) {
-		if (($event["DTSTART"]["unixtime"] >= $in_startTS) 
+		//TODO : prendre en compte les évenement sur plusieurs jours/mois/années/millénaires
+		//       decouper les éléments au jour le jour.
+		if (($event["DTSTART"]["unixtime"] <= $in_endTS) 
+			&& ($event["DTEND"]["unixtime"] >= $in_startTS)) {
+				array_push($selectedData, $event);		
+		/*if (($event["DTSTART"]["unixtime"] >= $in_startTS) 
 			&& ($event["DTSTART"]["unixtime"] <= $in_endTS)) {
-			array_push($selectedData, $event);
+			array_push($selectedData, $event);*/
 		}
 	}/**/
 	
 	//Range les évenements par ordre chronologique
-	$size = count($selectedData);
+	/*$size = count($selectedData);
 	do {
 		$changement = false;
 		for($i=1;$i<$size;$i++) { 
@@ -120,11 +124,15 @@ function makeMonth($in_timestamp, $in_data)
 		
 		$events = array();
 		foreach ($in_data as $event){
-			if (($event["DTSTART"]["unixtime"] >= $startDayTS) && ($event["DTSTART"]["unixtime"] <= $endDayTS)) {
+			if (($event["DTSTART"]["unixtime"] <= $endDayTS) && ($event["DTEND"]["unixtime"] >= $startDayTS)) {
 				$event["SUMMARY"] = htmlentities(utf8_decode($event["SUMMARY"]));
-				array_push($events, $event);
-				$isEvent = true;
-			}	
+				if ($event["DTEND"]["unixtime"] != $startDayTS){
+					print ("<br /> ".$event["SUMMARY"]." : ".$event["DTEND"]["unixtime"]." != ".$startDayTS);
+					array_push($events, $event);
+					$isEvent = true;
+				}
+			}
+				
 		}
 		array_push($month, array("isBlank" => false, "isToday" => $isToday, "isEvent" => $isEvent, "startDayTS" => $startDayTS, "endDayTS" => $endDayTS, "events" => $events));
 		
@@ -193,16 +201,21 @@ function printMonthCal($in_data, $in_color="grey", $in_timeStamp, $url) {
 		//Contenu du DIV
 		if(!$day["isBlank"])
 			print(date("d",$day['startDayTS']));
-
 		//affichage des events
 		if ($day["isEvent"]) {
 			print ("<div id='events'>");
 			foreach($day["events"] as $event) {
 				print("<p class='event_title'>".$event["SUMMARY"]."</p>");
 				//TODO : Gerer toutes les infos
-				//       Ajouter une boucle.
+				//       Ajouter une boucle. 
 				
-				print("<p class='event_info'>De ".date("H:i", $event["DTSTART"]["unixtime"])." &agrave; ".date("H:i", $event["DTEND"]["unixtime"])."</p>\n");
+				if ( ($event["DTEND"]["unixtime"] - $event["DTSTART"]["unixtime"]) > 86400) {
+					print("<p class='event_info'>Du "
+						.date("d/m/Y", $event["DTSTART"]["unixtime"])
+						." &agrave; ".date("G:i", $event["DTSTART"]["unixtime"])
+						." au ".date("d/m/Y", $event["DTEND"]["unixtime"] )
+						." &agrave; ".date("G:i", $event["DTEND"]["unixtime"])."</p>\n");
+				} else print("<p class='event_info'>De ".date("H:i", $event["DTSTART"]["unixtime"])." &agrave; ".date("H:i", $event["DTEND"]["unixtime"])."</p>\n");
 			}
 			print ("</div>\n");
 		}
@@ -240,7 +253,5 @@ $data = filterEvents(getMonthStartTS($daytime), getMonthEndTS($daytime), $data);
 $data = makeMonth($daytime, $data);
 
 printMonthCal($data, $color, $daytime, $url);
-
-
 
 ?>
