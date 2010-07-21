@@ -18,6 +18,7 @@ $GLOBALS['_BAZAR_']['url']->removeQueryString(BAZ_VARIABLE_VOIR);
 $liste='';
 $lien_RSS= clone($GLOBALS['_BAZAR_']['url']);
 $lien_RSS->addQueryString('wiki', $GLOBALS['_BAZAR_']['wiki']->minihref('xmlutf8',$this->tag));
+$lien_RSS->addQueryString(BAZ_VARIABLE_VOIR, 'rss');
 $lien_RSS->addQueryString(BAZ_VARIABLE_ACTION, BAZ_VOIR_FLUX_RSS);
 while ($ligne = $resultat->fetchRow(DB_FETCHMODE_ASSOC)) {
 	$lien_RSS->addQueryString('annonce', $ligne['bn_id_nature']);
