@@ -17,7 +17,7 @@ if (DB::isError($resultat)) {
 $GLOBALS['_BAZAR_']['url']->removeQueryString(BAZ_VARIABLE_VOIR);
 $liste='';
 $lien_RSS= clone($GLOBALS['_BAZAR_']['url']);
-$lien_RSS->addQueryString('wiki', $GLOBALS['_BAZAR_']['wiki']->minihref('xmlutf8',$this->tag));
+$lien_RSS->addQueryString('wiki', $this->minihref('xmlutf8',$this->tag));
 $lien_RSS->addQueryString(BAZ_VARIABLE_VOIR, 'rss');
 $lien_RSS->addQueryString(BAZ_VARIABLE_ACTION, BAZ_VOIR_FLUX_RSS);
 while ($ligne = $resultat->fetchRow(DB_FETCHMODE_ASSOC)) {
@@ -30,7 +30,7 @@ $liste = '<link rel="alternate" type="application/rss+xml" title="'.BAZ_FLUX_RSS
 
 //ajout des styles css pour bazar, le calendrier, la google map
 $style = '<link rel="stylesheet" type="text/css" href="tools/bazar/presentation/bazar.css" media="screen" />'."\n";
-$style .= '<script type="text/javascript" src="tools/bazar/libs/jquery.tools.min.js"></script>'."\n";
+//$style .= '<script type="text/javascript" src="tools/bazar/libs/jquery.tools.min.js"></script>'."\n";
 $style .= '<script type="text/javascript" src="tools/bazar/libs/bazar.js"></script>'."\n";
 	
 //on cherche l'action bazar ou l'action bazarcarto dans la page, pour voir s'il faut charger googlemaps

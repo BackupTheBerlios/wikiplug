@@ -21,7 +21,7 @@
 // | along with Foobar; if not, write to the Free Software                                                |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: wiki.php,v 1.8 2010/06/02 08:48:51 mrflos Exp $
+// CVS : $Id: wiki.php,v 1.9 2010/07/22 14:21:10 mrflos Exp $
 /**
 * wiki.php
 *
@@ -32,7 +32,7 @@
 *@author        Florian SCHMITT <florian.schmitt@laposte.net>
 //Autres auteurs :
 *@copyright     outils-reseaux-coop.org 2008
-*@version       $Revision: 1.8 $ $Date: 2010/06/02 08:48:51 $
+*@version       $Revision: 1.9 $ $Date: 2010/07/22 14:21:10 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -61,18 +61,17 @@ define('BAZ_PREFIXE', $wakkaConfig['table_prefix']);
 // |                                            CORPS du PROGRAMME                                        |
 // +------------------------------------------------------------------------------------------------------+
 
-$GLOBALS['_BAZAR_']['wiki'] = new Wiki($wakkaConfig);
 
 $wikireq = $_REQUEST['wiki'];
+
 // remove leading slash
 $wikireq = preg_replace("/^\//", "", $wikireq);
+
 // split into page/method, checking wiki name & method name (XSS proof)
-if (preg_match('`^' . '(' . "[A-Za-z0-9]+" . ')/(' . "[A-Za-z0-9_-]" . '*)' . '$`', $wikireq, $matches))
-{
+if (preg_match('`^' . '(' . "[A-Za-z0-9]+" . ')/(' . "[A-Za-z0-9_-]" . '*)' . '$`', $wikireq, $matches)) {
 	list(, $GLOBALS['_BAZAR_']['pagewiki'], $method) = $matches;
 }
-elseif (preg_match('`^' . "[A-Za-z0-9]+" . '$`', $wikireq))
-{
+elseif (preg_match('`^' . "[A-Za-z0-9]+" . '$`', $wikireq)) {
 	$GLOBALS['_BAZAR_']['pagewiki'] = $wikireq;
 }
 

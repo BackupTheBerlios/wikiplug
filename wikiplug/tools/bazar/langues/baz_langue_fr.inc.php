@@ -21,7 +21,7 @@
 // +------------------------------------------------------------------------------------------------------+
 // CVS : $Id: baz_langue_fr.inc.php,v 1.6 2010/03/04 14:19:04 mrflos Exp $
 /**
-* Fichier de traduction en franï¿½ais de l'application Bazar
+* Fichier de traduction en francais de l'application Bazar
 *
 *@package bazar
 //Auteur original :
@@ -38,7 +38,8 @@ define ('BAZ_FORMULAIRE', 'Formulaires');
 define ('BAZ_LISTES', 'Listes');
 define ('BAZ_NOM_LISTE', 'Nom de la liste');
 define ('BAZ_VALEURS_LISTE', 'Valeurs de la liste');
-define ('BAZ_AJOUTER_LABEL_LISTE', 'Ajouter un nouveau label &agrave; la liste');
+define ('BAZ_AJOUTER_LABEL_LISTE', 'Ajouter une nouvelle valeur &agrave; la liste');
+define ('BAZ_AJOUTER_CHAMPS_FORMULAIRE', 'Ajouter un nouveau champs au formulaire');
 define ('BAZ_MODIFIER_FORMULAIRES', 'Gestion des formulaires');
 define ('BAZ_MODIFIER_LISTES', 'Gestion des listes');
 define ('BAZ_INTRO_MODIFIER_FORMULAIRE', 'Pour &eacute;diter un formulaire, cliquez sur son nom ou sur l\'icone avec le crayon.<br />Pour supprimer un formulaire, cliquez sur l\'icone de la corbeille.<br /> Pour cr&eacute;er un nouveau formulaire, cliquez sur le lien en dessous de cette liste.');
@@ -117,7 +118,7 @@ define ('BAZ_ERREUR_SAISIE', 'Erreur de saisie ') ;
 define ('BAZ_VEUILLEZ_CORRIGER', 'Veuillez corriger') ;
 //define ('BAZ_MODIFIER', 'Modifier') ;
 define ('BAZ_MODIFIER_LA_FICHE', 'Modifier la fiche') ;
-//define ('BAZ_SUPPRIMER', 'Supprimer') ;
+define ('BAZ_SUPPRIMER', 'Supprimer') ;
 //define ('BAZ_SUPPRIMER_IMAGE', 'Supprimer l\'image') ;
 //define ('BAZ_SELECTION', '--S&eacute;lectionnez ici--');
 //define ('BAZ_DROITS_PAR_TYPE', 'Droits par type de fiches:');
@@ -133,8 +134,8 @@ define ('BAZ_CHOIX_TYPE_FICHE', 'Choisissez le type de fiche que vous souhaitez 
 //define ('BAZ_NON_VALIDE', 'Non valide') ;
 //define ('BAZ_VALIDE', 'Valide') ;
 define ('BAZ_VALIDER_LA_FICHE', 'Valider la fiche') ;
-//define ('BAZ_PRECEDENT', 'Pr&eacute;c&eacute;dent') ;
-//define ('BAZ_SUIVANT', 'Suivant') ;
+define ('BAZ_PRECEDENT', 'Pr&eacute;c&eacute;dent') ;
+define ('BAZ_SUIVANT', 'Suivant') ;
 //define ('BAZ_PAS_DE_FICHE_CRIT', 'Pas de fiche correspondant &agrave; vos crit&egrave;res.') ;
 //define ('BAZ_TEXTE_IMG_ALTERNATIF', 'Image de la fiche');
 //define ('BAZ_NUM_FICHE', 'Num&eacute;ro de fiche');
@@ -185,7 +186,7 @@ define ('BAZ_SAISIR_UNE_NOUVELLE_FICHE','Saisir une nouvelle fiche');
 //define ('BAZ_A_ETE_EFFACE', ' a &eacute;t&eacute; effac&eacute;.');
 //define ('BAZ_FICHIER_IMAGE_INEXISTANT', ' inexistant sur le serveur, la base de donn&eacute;es va être actualis&eacute;. Veuillez actualiser votre navigateur.');
 //define ('BAZ_CONFIRMATION_SUPPRESSION_LIEN', 'Etes-vous s&ucirc;r de vouloir supprimer ce lien ?') ;
-//define ('BAZ_CONFIRMATION_SUPPRESSION_FICHIER', 'Etes-vous s&ucirc;r de vouloir supprimer ce fichier ?') ;
+define ('BAZ_CONFIRMATION_SUPPRESSION_FICHIER', 'Etes-vous s&ucirc;r de vouloir supprimer ce fichier ?') ;
 //define ('BAZ_CONFIRMATION_SUPPRESSION_IMAGE', 'Etes-vous s&ucirc;r de vouloir supprimer cette image ?') ;
 //define ('BAZ_VALIDER_PUBLICATION', 'Valider la publication');
 //define ('BAZ_ENTRER_PROJET', 'ENTRER SUR L\'ESPACE DU PROJET');

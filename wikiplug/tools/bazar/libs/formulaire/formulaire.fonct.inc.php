@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: formulaire.fonct.inc.php,v 1.14 2010/06/02 08:48:51 mrflos Exp $
+// CVS : $Id: formulaire.fonct.inc.php,v 1.15 2010/07/22 14:21:10 mrflos Exp $
 /**
 * Formulaire
 *
@@ -31,7 +31,7 @@
 //Autres auteurs :
 *@author        Aleandre GRANIER <alexandre@tela-botanica.org>
 *@copyright     Tela-Botanica 2000-2004
-*@version       $Revision: 1.14 $ $Date: 2010/06/02 08:48:51 $
+*@version       $Revision: 1.15 $ $Date: 2010/07/22 14:21:10 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -353,7 +353,7 @@ function checkbox(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		if (isset($tableau_template[8]) && $tableau_template[8]==1) {
 			$formtemplate->addGroupRule($tableau_template[0].$tableau_template[1].$tableau_template[6], $tableau_template[2].' obligatoire', 'required', null, 1, 'client');
 		}
-		//var_dump($defaultValues);
+
 		$formtemplate->setDefaults($defaultValues);
 		//$formtemplate->updateAttributes($defaultValues);
 	}
@@ -579,7 +579,7 @@ function tags(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 			var t = new $.TextboxList(\'#'.$tableau_template[1].'\', {unique:true, inBetweenEditableBits:false, plugins:{autocomplete: {
 				minLength: 1,
 				queryRemote: true,
-				remote: {url: \''.$GLOBALS['_BAZAR_']['wiki']->href('json',$GLOBALS['_BAZAR_']['pagewiki']).'\'}
+				remote: {url: \''.$GLOBALS['wiki']->href('json',$GLOBALS['_BAZAR_']['pagewiki']).'\'}
 			}}});
 			
 			
@@ -601,7 +601,7 @@ function tags(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 	}
 	elseif ( $mode == 'requete' ) {
 		//on supprime les tags existants
-		$GLOBALS['_BAZAR_']['wiki']->DeleteTriple($GLOBALS['_BAZAR_']['id_fiche'], 'http://outils-reseaux.org/_vocabulary/tag', NULL, '', '');
+		$GLOBALS['wiki']->DeleteTriple($GLOBALS['_BAZAR_']['id_fiche'], 'http://outils-reseaux.org/_vocabulary/tag', NULL, '', '');
 		//on dÈcoupe les tags pour les mettre dans un tableau
 		$liste_tags = ($valeurs_fiche['mots_cles_caches'] ? $valeurs_fiche['mots_cles_caches'].',' : '').$valeurs_fiche[$tableau_template[1]];		
 		$tags = explode(",", mysql_escape_string($liste_tags));
@@ -610,7 +610,7 @@ function tags(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		foreach ($tags as $tag) {
 			trim($tag);
 			if ($tag!='') {
-				$GLOBALS['_BAZAR_']['wiki']->InsertTriple($GLOBALS['_BAZAR_']['id_fiche'], 'http://outils-reseaux.org/_vocabulary/tag', $tag, '', '');
+				$GLOBALS['wiki']->InsertTriple($GLOBALS['_BAZAR_']['id_fiche'], 'http://outils-reseaux.org/_vocabulary/tag', $tag, '', '');
 			}			
 		}
 		//on copie tout de meme dans les metadonnÈes
@@ -738,7 +738,7 @@ function utilisateur_wikini(&$formtemplate, $tableau_template, $mode, $valeurs_f
 			if ($GLOBALS['_BAZAR_']['nomwiki']['name']==$tableau_template[5])
 			{
 				require_once 'HTML/QuickForm/html.php';
-				$formhtml= new HTML_QuickForm_html('<tr>'."\n".'<td>&nbsp;</td>'."\n".'<td style="text-align:left;"><a href="'.$GLOBALS['_BAZAR_']['wiki']->href('','ChangePassword','').'" target="_blank">Changer son mot de passe</a></td>'."\n".'</tr>'."\n");
+				$formhtml= new HTML_QuickForm_html('<tr>'."\n".'<td>&nbsp;</td>'."\n".'<td style="text-align:left;"><a href="'.$GLOBALS['wiki']->href('','ChangePassword','').'" target="_blank">Changer son mot de passe</a></td>'."\n".'</tr>'."\n");
 				$formtemplate->addElement($formhtml) ;
 			}
 		}
@@ -755,11 +755,11 @@ function utilisateur_wikini(&$formtemplate, $tableau_template, $mode, $valeurs_f
 	elseif ( $mode == 'requete' )
 	{
 		//si bf_nom_wikini n'existe pas, on insÈre un nouvel utilisateur wikini
-		$resultat = $GLOBALS['_BAZAR_']['db']->query('SELECT name FROM '.$GLOBALS['_BAZAR_']['wiki']->config["table_prefix"].'users WHERE name="'.$valeurs_fiche['nomwiki'].'"');
+		$resultat = $GLOBALS['_BAZAR_']['db']->query('SELECT name FROM '.$GLOBALS['wiki']->config["table_prefix"].'users WHERE name="'.$valeurs_fiche['nomwiki'].'"');
 		if ($resultat->numRows()==0)
 		{
 			$nomwiki = baz_nextWiki(genere_nom_wiki($valeurs_fiche['bf_titre']));
-			$requeteinsertionuserwikini = 'INSERT INTO '.$GLOBALS['_BAZAR_']['wiki']->config["table_prefix"]."users SET ".
+			$requeteinsertionuserwikini = 'INSERT INTO '.$GLOBALS['wiki']->config["table_prefix"]."users SET ".
 					"signuptime = now(), ".
 					"name = '".mysql_escape_string($nomwiki)."', ".
 					"email = '".mysql_escape_string($valeurs_fiche['bf_mail'])."', ".
@@ -770,15 +770,15 @@ function utilisateur_wikini(&$formtemplate, $tableau_template, $mode, $valeurs_f
 			}
 			return 'bf_nom_wikini="'.mysql_escape_string($nomwiki).'", ' ;
 			//envoi mail nouveau mot de passe
-			$lien = str_replace("/wakka.php?wiki=","",$GLOBALS['_BAZAR_']['wiki']->config["base_url"]);
-			$objetmail = '['.str_replace("http://","",$lien).'] Vos nouveaux identifiants sur le site '.$GLOBALS['_BAZAR_']['wiki']->config["wakka_name"];
+			$lien = str_replace("/wakka.php?wiki=","",$GLOBALS['wiki']->config["base_url"]);
+			$objetmail = '['.str_replace("http://","",$lien).'] Vos nouveaux identifiants sur le site '.$GLOBALS['wiki']->config["wakka_name"];
 			$messagemail = "Bonjour!\n\nVotre inscription sur le site a ÈtÈ finalisÈe, dorÈnavant vous pouvez vous identifier avec les informations suivantes :\n\nVotre identifiant NomWiki : ".$nomwiki."\nVotre mot de passe : ". $valeurs_fiche['mot_de_passe_wikini'] . "\n\nA trËs bientÙt !\n\nSylvie Vernet, webmestre";
 			$headers =   'From: '.BAZ_ADRESSE_MAIL_ADMIN . "\r\n" .
 			     'Reply-To: '.BAZ_ADRESSE_MAIL_ADMIN . "\r\n" .
 			     'X-Mailer: PHP/' . phpversion();
 			mail($valeurs_fiche['bf_mail'], remove_accents($objetmail), $messagemail, $headers);
 		} elseif (isset($valeurs_fiche['mot_de_passe_wikini'])) {
-			$requetemodificationuserwikini = 'UPDATE '.$GLOBALS['_BAZAR_']['wiki']->config["table_prefix"]."users SET ".
+			$requetemodificationuserwikini = 'UPDATE '.$GLOBALS['wiki']->config["table_prefix"]."users SET ".
 					"email = '".mysql_escape_string($valeurs_fiche['bf_mail'])."', ".
 					"password = md5('".mysql_escape_string($valeurs_fiche['mot_de_passe_wikini'])."') WHERE name=\"".$valeurs_fiche['bf_nom_wikini']."\"";
 			$resultat = $GLOBALS['_BAZAR_']['db']->query($requetemodificationuserwikini) ;
@@ -786,8 +786,8 @@ function utilisateur_wikini(&$formtemplate, $tableau_template, $mode, $valeurs_f
 				die ($resultat->getMessage().$resultat->getDebugInfo()) ;
 			}
 			//envoi mail nouveau mot de passe
-			$lien = str_replace("/wakka.php?wiki=","",$GLOBALS['_BAZAR_']['wiki']->config["base_url"]);
-			$objetmail = '['.str_replace("http://","",$lien).'] Vos nouveaux identifiants sur le site '.$GLOBALS['_BAZAR_']['wiki']->config["wakka_name"];
+			$lien = str_replace("/wakka.php?wiki=","",$GLOBALS['wiki']->config["base_url"]);
+			$objetmail = '['.str_replace("http://","",$lien).'] Vos nouveaux identifiants sur le site '.$GLOBALS['wiki']->config["wakka_name"];
 			$messagemail = "Bonjour!\n\nVotre inscription sur le site a ÈtÈ modifiÈe, dorÈnavant vous pouvez vous identifier avec les informations suivantes :\n\nVotre identifiant NomWiki : ".$nomwiki."\nVotre mot de passe : ". $valeurs_fiche['mot_de_passe_wikini'] . "\n\nA trËs bientÙt !\n\nSylvie Vernet, webmestre";
 			$headers =   'From: '.BAZ_ADRESSE_MAIL_ADMIN . "\r\n" .
 			     'Reply-To: '.BAZ_ADRESSE_MAIL_ADMIN . "\r\n" .
@@ -853,9 +853,18 @@ function champs_mail(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 	{
 		$option=array('size'=>$tableau_template[3],'maxlength'=>$tableau_template[4], 'id' => $tableau_template[1], 'class' => 'input_texte');
 		$formtemplate->addElement('text', $tableau_template[1], $tableau_template[2], $option) ;
-		//gestion des valeurs par defaut
-		$defs=array($tableau_template[1]=>$tableau_template[5]);
-		$formtemplate->setDefaults($defs);
+		//gestion des valeurs par dÈfaut : d'abord on regarde s'il y a une valeur ‡ modifier,
+		//puis s'il y a une variable passÈe en GET,
+		//enfin on prend la valeur par dÈfaut du formulaire sinon
+		if (isset($valeurs_fiche[$tableau_template[1]])) {
+			$defauts = array( $tableau_template[1] => $valeurs_fiche[$tableau_template[1]] );
+		}
+		elseif (isset($_GET[$tableau_template[1]])) {
+			$defauts = array( $tableau_template[1] => stripslashes($_GET[$tableau_template[1]]) );
+		} else {
+			$defauts = array( $tableau_template[1] => stripslashes($tableau_template[5]) );
+		}
+		$formtemplate->setDefaults($defauts);
 		$formtemplate->applyFilter($tableau_template[1], 'addslashes') ;
 		//$formtemplate->addRule($tableau_template[1],  $tableau_template[2].' obligatoire', 'required', '', 'client') ;
 		$formtemplate->addRule($tableau_template[1], 'Format de l\'adresse mail incorrect', 'email', '', 'client') ;
@@ -965,10 +974,10 @@ function textelong(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 	elseif ( $mode == 'requete' )
 	{
 		//on supprime les anciennes valeurs
-		$requetesuppression='DELETE FROM '.BAZ_PREFIXE.'fiche_valeur_texte_long WHERE bfvtl_ce_fiche="'.$GLOBALS['_BAZAR_']['id_fiche'].'" AND bfvtl_id_element_form="'.$identifiant.'"';
+		$requetesuppression = 'DELETE FROM '.BAZ_PREFIXE.'triples WHERE property="'.$identifiant.'" resource="'.$GLOBALS['_BAZAR_']['id_fiche'].'"';
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requetesuppression) ;
 		//on insere les nouvelles valeurs
-		$requeteinsertion = 'INSERT INTO '.BAZ_PREFIXE.'fiche_valeur_texte_long (bfvtl_ce_fiche, bfvtl_id_element_form, bfvtl_texte_long) VALUES ';
+		$requeteinsertion = 'INSERT INTO '.BAZ_PREFIXE.'triples (resource, property, value) VALUES ';
         $requeteinsertion .= '("'.$GLOBALS['_BAZAR_']['id_fiche'].'", "'.$identifiant.'", "'.addslashes($valeurs_fiche[$identifiant]).'")';
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requeteinsertion) ;
 		return;
@@ -982,7 +991,9 @@ function textelong(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 					'<span class="BAZ_label '.$identifiant.'_rubrique">'.$label.':</span>'."\n";
 			$html .= '<span class="BAZ_texte '.$identifiant.'_description"> ';
 			if ($formatage == 'wiki') {
-				$html .= $GLOBALS['_BAZAR_']['wiki']->Format($valeurs_fiche[$identifiant]);
+				//echo $GLOBALS['wiki']->Format($valeurs_fiche[$identifiant]);
+				$html .= $GLOBALS['wiki']->Format($valeurs_fiche[$identifiant]);
+				//$html .= $valeurs_fiche[$identifiant];
 			}
 			elseif ($formatage == 'nohtml') {
 				$html .= htmlentities($valeurs_fiche[$identifiant]);
@@ -1866,7 +1877,7 @@ function listefiches(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 {
 	if (!isset($tableau_template[1])) 
 	{
-		return $GLOBALS['_BAZAR_']['wiki']->Format('//Erreur sur listefiches : pas d\'identifiant de type de fiche passÈ...//');
+		return $GLOBALS['wiki']->Format('//Erreur sur listefiches : pas d\'identifiant de type de fiche passÈ...//');
 	}
 	if (isset($tableau_template[2]) && $tableau_template[2] != '' ) 
 	{
@@ -1888,7 +1899,7 @@ function listefiches(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 	if (isset($valeurs_fiche['bf_id_fiche']) && $mode == 'saisie' )
 	{
 		$actionbazarliste = '{{bazarliste idtypeannonce="'.$tableau_template[1].'" query="'.$query.'" ordre="'.$ordre.'"}}';
-		$html = $GLOBALS['_BAZAR_']['wiki']->Format($actionbazarliste);	
+		$html = $GLOBALS['wiki']->Format($actionbazarliste);	
 		//ajout lien nouvelle saisie
 		$url_checkboxfiche = clone($GLOBALS['_BAZAR_']['url']);
 		$url_checkboxfiche->removeQueryString('id_fiche');
@@ -1934,7 +1945,7 @@ function listefiches(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 	elseif ($mode == 'html')
 	{
 		$actionbazarliste = '{{bazarliste idtypeannonce="'.$tableau_template[1].'" query="'.$query.'" ordre="'.$ordre.'"}}';
-		$html = $GLOBALS['_BAZAR_']['wiki']->Format($actionbazarliste);
+		$html = $GLOBALS['wiki']->Format($actionbazarliste);
 		return $html;
 	}
 }
@@ -1960,6 +1971,9 @@ function bookmarklet(&$formtemplate, $tableau_template, $mode, $valeurs_fiche) {
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: formulaire.fonct.inc.php,v $
+* Revision 1.15  2010/07/22 14:21:10  mrflos
+* corrections de bugs et d√©but d'int√©gration du gestionnaire des formulaires
+*
 * Revision 1.14  2010/06/02 08:48:51  mrflos
 * commit de transition
 *

@@ -1,4 +1,22 @@
 $(document).ready(function () {
+	//antispam javascript
+	$("input[name=antispam]").val('1');
+	
+	
+	$(".ajout_champs_formulaire").overlay({
+		expose:			'black',
+		effect:			'apple',
+		oneInstance:	true,
+		closeOnClick:	false,
+		onBeforeLoad: function() {$('#champs_formulaire .titre_overlay').html('Ajouter un nouveau champs au formulaire');}
+	});
+	
+	$('a.bouton_annuler_formulaire').click(function() { 
+		$(".ajout_champs_formulaire").overlay().close(); 
+		return false;
+	});
+	
+	
 	//carto google
 	var divcarto = document.getElementById("map" )
 	if (divcarto) {	initialize(); }
@@ -20,7 +38,7 @@ $(document).ready(function () {
 		//nb de tabs par fiche
 		var nbtotal = $(this).children("fieldset.tab").size() - 1;
 		
-		//on ajoute le nom des tabs Ã  partir de la legende du fieldset
+		//on ajoute le nom des tabs à partir de la legende du fieldset
 		$(this).children("fieldset.tab:first").before("<ul class='css-tabs'></ul>");
 		$(this).children("fieldset.tab").each(function(i) {
 			$(this).addClass("tab" + i)
@@ -130,7 +148,7 @@ $(document).ready(function () {
 	});
 
 	//on enleve la fonction doubleclic dans le cas d'une page contenant bazar
-	$("div[ondblclick]").removeAttr("ondblclick");
+	$("#formulaire").parents("div[ondblclick]").removeAttr("ondblclick");
 
 	//affichage tooltip des evenements dans le calendrier
 	$('.date_avec_evenements').each(function () {
@@ -204,7 +222,7 @@ $(document).ready(function () {
 		imagespourgalerie.overlay({ target:'#gallery', expose:'#f1f1f1' }).gallery({ speed:500 });
 	}
 	
-//============bidouille pour que les widgets en flash restent en dessous des Ã©lÃ©ments en survol===========
+//============bidouille pour que les widgets en flash restent en dessous des éléments en survol===========
 	$("object").append('<param value="opaque" name="wmode">');$("embed").attr('wmode','opaque');
 
 });
@@ -273,27 +291,35 @@ jQuery.fn.limitMaxlength = function(options){
 	  
 	  //pour la gestion des listes, on peut rajouter dynamiquement des champs
 	  $('.ajout_label_liste').live('click', function() {addFormField();return false;});
-	  $('.suppression_label_liste').live('click', function() {removeFormField('#'+$(this).parent('.formulaire_ligne').attr('id'));return false;});
+	  $('.suppression_label_liste').live('click', function() {removeFormField('#'+$(this).parent('.liste_ligne').attr('id'));return false;});
 	});
 
+
+/*****************************************************************************************************/	
+//déplacement des listes
+/*****************************************************************************************************/
 	function addFormField() {
 		var nb = $("#formulaire .valeur_liste input.input_texte[name^='label']").length + 1;
-		$("#formulaire .ajout_label_liste").before("<div class=\"formulaire_ligne\" id=\"row"+nb+"\"><a href='#' class=\"BAZ_lien_supprimer suppression_label_liste\"></a><input type=\"text\" name=\"id"+nb+"\" class=\"input_id\" /><input type=\"text\" name=\"label"+nb+"\" class=\"input_texte\" /></div>");
-		$("#formulaire input.input_texte[name='label"+nb+"']").focus();
+		$("#formulaire .valeur_liste").append('<li class="liste_ligne" id="row'+nb+'">'+
+				'<img src="tools/bazar/presentation/images/arrow.png" alt="D&eacute;placer" width="16" height="16" class="handle" />'+
+				'<input type="text" name="label['+nb+']" class="input_texte" />' +
+				'<a href="#" class="BAZ_lien_supprimer suppression_label_liste"></a>'+
+				'</li>');
+		$("#formulaire input.input_texte[name='label["+nb+"]']").focus();
 	}
 
 	function removeFormField(id) {
 		var nb = $("#formulaire .valeur_liste input.input_texte[name^='label']").length;
 		if (nb > 1) {
+			var nom = 'a_effacer_' + $(id).find("input:hidden").attr('name');
+			$(id).find("input:hidden").attr('name', nom).appendTo("#formulaire");
 			$(id).remove();
 			$("#formulaire .valeur_liste input.input_texte[name^='label']").each(function(i) {
-				$(this).attr('name', 'label'+(i+1))
-					.prev('.input_id').attr('name', 'id'+(i+1))
-					.parent('.formulaire_ligne').attr('id', 'row'+(i+1));
+				$(this).attr('name', 'label['+(i+1)+']').
+				parent('.liste_ligne').attr('id', 'row'+(i+1)).
+				find("input:hidden").attr('name', 'ancienlabel['+(i+1)+']');
 			});
 		} else {
 			alert('Le dernier élément ne peut être supprimé.');
 		}
 	}
-
-	

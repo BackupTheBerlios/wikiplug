@@ -304,7 +304,7 @@ function mes_fiches() {
 	
 	//test si l'on est identifié pour voir les fiches
 	if ( baz_a_le_droit('voir_mes_fiches') ) {
-		$nomwiki = $GLOBALS['_BAZAR_']['wiki']->getUser();
+		$nomwiki = $GLOBALS['wiki']->getUser();
 		// requete pour voir si l'utilisateur a des fiches a son nom, classees par date de MAJ et nature d'annonce
 		$requete = 'SELECT * FROM '.BAZ_PREFIXE.'fiche, '.BAZ_PREFIXE.'nature WHERE bf_ce_utilisateur="'. $nomwiki['name'].
 		           '" AND bn_id_nature=bf_ce_nature ';
@@ -624,6 +624,9 @@ function baz_formulaire($mode, $url = '', $valeurs = '') {
 	//Traduction de champs requis
 	$formtemplate->setRequiredNote(BAZ_CHAMPS_REQUIS) ;
 	$formtemplate->setJsWarnings(BAZ_ERREUR_SAISIE,BAZ_VEUILLEZ_CORRIGER);
+	
+	//antispam
+	$formtemplate->addElement('hidden', 'antispam', 0);
 
 	//------------------------------------------------------------------------------------------------
 	//AFFICHAGE DU FORMULAIRE GENERAL DE CHOIX DU TYPE D'ANNONCE
@@ -721,7 +724,7 @@ function baz_formulaire($mode, $url = '', $valeurs = '') {
 	//------------------------------------------------------------------------------------------------
 	//CAS DE L'INSCRIPTION D'UNE ANNONCE
 	//------------------------------------------------------------------------------------------------
-	if ($mode == BAZ_ACTION_NOUVEAU_V) {
+	if ($mode == BAZ_ACTION_NOUVEAU_V && $_POST['antispam']==1) {
 		if ($formtemplate->validate()) {
 			$formtemplate->process('baz_insertion', false) ;
 			// Redirection vers mes_fiches pour eviter la revalidation du formulaire
@@ -735,7 +738,7 @@ function baz_formulaire($mode, $url = '', $valeurs = '') {
 	//------------------------------------------------------------------------------------------------
 	//CAS DE LA MODIFICATION D'UNE ANNONCE (VALIDATION ET MAJ)
 	//------------------------------------------------------------------------------------------------
-	if ($mode == BAZ_ACTION_MODIFIER_V) {
+	if ($mode == BAZ_ACTION_MODIFIER_V && $_POST['antispam']==1) {
 		if ($formtemplate->validate() && baz_a_le_droit( 'saisie_fiche', $_POST['bf_ce_utilisateur'] ) ) {
 			$formtemplate->process('baz_mise_a_jour', false) ;
 			// Redirection vers mes_fiches pour eviter la revalidation du formulaire
@@ -864,7 +867,7 @@ function baz_requete_bazar_fiche($valeur) {
 	//on encode en utf-8 pour réussir à encoder en json
 	$valeur = array_map("utf8_encode", $valeur);
 	//on sauve les valeurs d'une fiche dans une PageWiki, pour garder l'historique
-	$GLOBALS["_BAZAR_"]["wiki"]->SavePage($GLOBALS['_BAZAR_']['id_fiche'], json_encode($valeur));
+	$GLOBALS["wiki"]->SavePage($GLOBALS['_BAZAR_']['id_fiche'], json_encode($valeur));
 	
 	return $requete;
 }
@@ -893,13 +896,13 @@ function baz_insertion($valeur) {
 		}
 		
 		//on cree un triple pour spécifier que la page wiki créée est une fiche bazar
-		$GLOBALS["_BAZAR_"]["wiki"]->InsertTriple($GLOBALS['_BAZAR_']['id_fiche'], 'http://outils-reseaux.org/_vocabulary/type', 'fiche_bazar', '', '');
+		$GLOBALS["wiki"]->InsertTriple($GLOBALS['_BAZAR_']['id_fiche'], 'http://outils-reseaux.org/_vocabulary/type', 'fiche_bazar', '', '');
 	
 		// Envoie d un mail aux administrateurs
 		if (BAZ_ENVOI_MAIL_ADMIN) {
 			include_once('Mail.php');
 			include_once('Mail/mime.php');
-			$lien = str_replace("/wakka.php?wiki=","",$GLOBALS['_BAZAR_']['wiki']->config["base_url"]);
+			$lien = str_replace("/wakka.php?wiki=","",$GLOBALS['wiki']->config["base_url"]);
 			$sujet = remove_accents('['.str_replace("http://","",$lien).'] nouvelle fiche ajoutee : '.$valeur['bf_titre']);
 			$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_CONSULTER);
 			$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_ACTION, BAZ_VOIR_FICHE);
@@ -930,12 +933,12 @@ function baz_insertion($valeur) {
 			$mail =& Mail::factory('mail');
 
 			//on va chercher les admins
-			$requeteadmins = 'SELECT value FROM '.$GLOBALS['_BAZAR_']['wiki']->config["table_prefix"].'triples WHERE resource="ThisWikiGroup:admins" AND property="http://www.wikini.net/_vocabulary/acls" LIMIT 1';
+			$requeteadmins = 'SELECT value FROM '.$GLOBALS['wiki']->config["table_prefix"].'triples WHERE resource="ThisWikiGroup:admins" AND property="http://www.wikini.net/_vocabulary/acls" LIMIT 1';
 			$resultatadmins = $GLOBALS['_BAZAR_']['db']->query($requeteadmins);
 			$ligne = $resultatadmins->fetchRow(DB_FETCHMODE_ASSOC);
 			$tabadmin = explode("\n", $ligne['value']);
 			foreach ($tabadmin  as $line) {
-				$admin = $GLOBALS['_BAZAR_']['wiki']->LoadUser(trim($line));
+				$admin = $GLOBALS['wiki']->LoadUser(trim($line));
 				$mail->send($admin['email'], $hdrs, $body);
 			}
 		}
@@ -971,7 +974,7 @@ function baz_mise_a_jour($valeur) {
 		if (BAZ_ENVOI_MAIL_ADMIN) {
 			include_once('Mail.php');
 			include_once('Mail/mime.php');
-			$lien = str_replace("/wakka.php?wiki=","",$GLOBALS['_BAZAR_']['wiki']->config["base_url"]);
+			$lien = str_replace("/wakka.php?wiki=","",$GLOBALS['wiki']->config["base_url"]);
 			$sujet = remove_accents('['.str_replace("http://","",$lien).'] fiche modifiee : '.$valeur['bf_titre']);
 			$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_CONSULTER);
 			$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_ACTION, BAZ_VOIR_FICHE);
@@ -1002,12 +1005,12 @@ function baz_mise_a_jour($valeur) {
 			$mail =& Mail::factory('mail');
 
 			//on va chercher les admins
-			$requeteadmins = 'SELECT value FROM '.$GLOBALS['_BAZAR_']['wiki']->config["table_prefix"].'triples WHERE resource="ThisWikiGroup:admins" AND property="http://www.wikini.net/_vocabulary/acls" LIMIT 1';
+			$requeteadmins = 'SELECT value FROM '.$GLOBALS['wiki']->config["table_prefix"].'triples WHERE resource="ThisWikiGroup:admins" AND property="http://www.wikini.net/_vocabulary/acls" LIMIT 1';
 			$resultatadmins = $GLOBALS['_BAZAR_']['db']->query($requeteadmins);
 			$ligne = $resultatadmins->fetchRow(DB_FETCHMODE_ASSOC);
 			$tabadmin = explode("\n", $ligne['value']);
 			foreach ($tabadmin  as $line) {
-				$admin = $GLOBALS['_BAZAR_']['wiki']->LoadUser(trim($line));
+				$admin = $GLOBALS['wiki']->LoadUser(trim($line));
 				$mail->send($admin['email'], $hdrs, $body);
 			}
 		}
@@ -1031,7 +1034,7 @@ function baz_suppression($idfiche) {
 		}
 
 		//suppression des valeurs des champs texte long
-		$requete = 'DELETE FROM '.BAZ_PREFIXE.'fiche_valeur_texte_long WHERE bfvtl_ce_fiche = "'.$idfiche.'"';
+		$requete = 'DELETE FROM '.BAZ_PREFIXE.'triples WHERE resource = "'.$idfiche.'"';
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 		if (DB::isError($resultat)) {
 			return ('Echec de la requete<br />'.$resultat->getMessage().'<br />'.$resultat->getDebugInfo().'<br />'."\n") ;
@@ -1047,7 +1050,7 @@ function baz_suppression($idfiche) {
 		}
 		
 		//on supprime les pages wiki crées
-		$GLOBALS['_BAZAR_']['wiki']->DeleteOrphanedPage($idfiche);		
+		$GLOBALS['wiki']->DeleteOrphanedPage($idfiche);		
 
 		//on nettoie l'url, on retourne à la consultation des fiches
 		$GLOBALS['_BAZAR_']['url']->addQueryString ('message', 'delete_ok') ;
@@ -1110,7 +1113,7 @@ function baz_liste_rss() {
 
 	// Nettoyage de l url
 	$lien_RSS=$GLOBALS['_BAZAR_']['url'];
-	$lien_RSS->addQueryString('wiki', $GLOBALS['_BAZAR_']['wiki']->minihref('xmlutf8',$_GET['wiki']));
+	$lien_RSS->addQueryString('wiki', $GLOBALS['wiki']->minihref('xmlutf8',$_GET['wiki']));
 	$lien_RSS->addQueryString(BAZ_VARIABLE_ACTION, BAZ_VOIR_FLUX_RSS);
 	$liste='';
 	while ($ligne = $resultat->fetchRow(DB_FETCHMODE_ASSOC)) {
@@ -1132,7 +1135,7 @@ function baz_liste_rss() {
 *
 *   @return  Object    le code HTML
 */
-function baz_formulaire_des_formulaires($mode) {
+function baz_formulaire_des_formulaires($mode, $valeursformulaire = '') {
 	$GLOBALS['_BAZAR_']['url']->addQueryString('action_formulaire', $mode);
 	
 	//contruction du squelette du formulaire
@@ -1158,10 +1161,89 @@ function baz_formulaire_des_formulaires($mode) {
 	$formtemplate->addElement('text', 'bn_type_fiche', BAZ_CATEGORIE_FORMULAIRE, array('class' => 'input_texte'));
 	$formtemplate->addElement('textarea', 'bn_description', BAZ_DESCRIPTION, array('class' => 'input_textarea', 'cols' => "20", 'rows'=> "3"));
 	$formtemplate->addElement('textarea', 'bn_condition', BAZ_CONDITION, array('class' => 'input_textarea', 'cols' => "20", 'rows'=> "3"));
-	//$formtemplate->addElement('checkbox', 'bn_commentaire', BAZ_AUTORISER_COMMENTAIRE);
-	//$formtemplate->addElement('checkbox', 'bn_appropriation', BAZ_AUTORISER_APPROPRIATION);
 	$formtemplate->addElement('text', 'bn_label_class', BAZ_NOM_CLASSE_CSS, array('class' => 'input_texte'));
-	$formtemplate->addElement('textarea', 'bn_template', BAZ_TEMPLATE, array('class' => 'input_textarea', 'style' => 'width:100%;height:500px;font-size:.8em;', 'cols' => "20", 'rows'=> "3"));
+	$formtemplate->addElement('textarea', 'bn_template', BAZ_TEMPLATE, array('class' => 'input_textarea', 'style' => 'width:100%;height:100px;font-size:.8em;', 'cols' => "20", 'rows'=> "3"));
+	
+	$html_valeurs_listes =  '<div class="formulaire_ligne">'."\n".	
+							'<ul class="valeur_formulaire">'."\n";
+	if (is_array($valeursformulaire)) {
+		$i = 0;
+		foreach($valeursformulaire as $ligneliste) {
+			$i++;
+			$html_valeurs_listes .= 
+								'<li class="liste_ligne" id="row'.$i.'">'.
+								'<img src="tools/bazar/presentation/images/arrow.png" alt="D&eacute;placer" width="16" height="16" class="handle" />'.
+								'<input type="text" name="label['.$i.']" value="'.htmlspecialchars($ligneliste).'" class="input_texte" />'.
+								'<input type="hidden" name="ancienlabel['.$i.']" value="'.htmlspecialchars($ligneliste).'" class="input_texte" />'.
+								'<a href="#" class="BAZ_lien_supprimer suppression_label_liste"></a>'.
+								'</li>'."\n";
+		}
+	} else {
+		$html_valeurs_listes .= '<li class="liste_ligne" id="row1">'.
+								'<div class="formulaire_ligne">
+									<div class="formulaire_label">
+										<img src="tools/bazar/presentation/images/arrow.png" alt="D&eacute;placer" width="16" height="16" class="handle" />Titre
+									 </div>
+									<div class="formulaire_input"> 
+										<input type="text" value="" name="titre" class="input_texte" /><a href="#" class="BAZ_lien_modifier modifier_formulaire" rel="#overlay"></a>
+									</div>
+								</div>'.
+								'</li>'."\n";
+	}
+						
+	$html_valeurs_listes .= '</ul><a href="#" class="ajout_champs_formulaire" title="'.BAZ_AJOUTER_CHAMPS_FORMULAIRE.'" rel="#champs_formulaire">'.BAZ_AJOUTER_CHAMPS_FORMULAIRE.'</a>'."\n".
+							'</div>'."\n".
+							'<div id="champs_formulaire">
+								<h2 class="titre_overlay"></h2>
+								<div class="formulaire_ligne">
+									<div class="formulaire_label">
+										Type de champs
+									 </div>
+									<div class="formulaire_input"> 
+										<select name="type_champs" id="type_champs">
+											<option value="0">Choisir...</option>
+											<option value="texte">texte</option>
+											<option value="textelong">texte long</option>
+											<option value="liste">liste d&eacute;roulante</option>
+											<option value="checkbox">case &agrave; cocher</option>
+											<option value="champs_mail">adresse mail</option>
+											<option value="lien_internet">lien internet</option>
+											<option value="date">date</option>
+											<option value="tags">mot cl&eacute;s</option>
+											<option value="fichier">fichier</option>
+											<option value="image">image</option>
+											<option value="mot_de_passe">mot de passe</option>								
+											<option value="champs_cache">champs cach&eacute;</option>
+											<option value="carte_google">carte google</option>
+											<option value="bookmarklet">bookmarklet</option>
+											<option value="utilisateur_wikini">utilisateur yeswiki</option>
+										</select>
+									</div>
+								</div>
+								<div class="groupebouton">
+									<a href="#" name="annuler" class="btn bouton_annuler bouton_annuler_formulaire">Annuler</a>&nbsp;
+									<input type="submit" value="Valider" name="valider" class="btn bouton_sauver">
+								</div>
+							</div>'."\n".
+							'<div class="spacer"></div>'."\n".
+							'<script type="text/javascript" src="tools/bazar/libs/jquery-ui-1.8.2.custom.min.js"></script>
+							<script type="text/javascript">
+							  $(document).ready(function() {
+							    $(".valeur_formulaire").sortable({
+							      handle : \'.handle\',
+							      update : function () {
+									$("#formulaire .valeur_formulaire input.input_texte[name^=\'label\']").each(function(i) {
+										$(this).attr(\'name\', \'label[\'+(i+1)+\']\').
+										parent(\'.liste_ligne\').attr(\'id\', \'row\'+(i+1)).
+										find("input:hidden").attr(\'name\', \'ancienlabel[\'+(i+1)+\']\');
+									});
+							      }
+							    });
+							});
+							</script>'."\n";
+	$formtemplate->addElement('html', $html_valeurs_listes);
+	
+	
 	//champs obligatoires
 	$formtemplate->addRule('bn_label_nature', BAZ_CHAMPS_REQUIS.' : '.BAZ_FORMULAIRE, 'required', '', 'client');
 	$formtemplate->addRule('bn_template', BAZ_CHAMPS_REQUIS.' : '.BAZ_TEMPLATE, 'required', '', 'client');
@@ -1177,7 +1259,7 @@ function baz_formulaire_des_formulaires($mode) {
 *
 *   @return  Object    le code HTML
 */
-function baz_formulaire_des_listes($mode) {
+function baz_formulaire_des_listes($mode, $valeursliste = '') {
 	$GLOBALS['_BAZAR_']['url']->addQueryString('action_listes', $mode);
 	
 	//contruction du squelette du formulaire
@@ -1202,11 +1284,47 @@ function baz_formulaire_des_listes($mode) {
 	if (isset($_GET['idliste'])) $formtemplate->addElement('hidden', 'NomWiki', $_GET['idliste']);
 	$formtemplate->addElement('text', 'titre_liste', BAZ_NOM_LISTE, array('class' => 'input_texte'));
 	$formtemplate->addRule('titre_liste', BAZ_CHAMPS_REQUIS.' : '.BAZ_NOM_LISTE, 'required', '', 'client');
-	$html_valeurs_listes =  '<fieldset class="valeur_liste bazar_fieldset">'."\n".
-							'<legend>'.BAZ_VALEURS_LISTE.'</legend>'."\n".
-							'<div class="formulaire_ligne" id="row1"><a href="#" class="BAZ_lien_supprimer suppression_label_liste"></a><input type="text" name="id1" class="input_id" /><input type="text" name="label1" class="input_texte" /></div>'."\n".
-							'<a href="#" class="ajout_label_liste" title="'.BAZ_AJOUTER_LABEL_LISTE.'">'.BAZ_AJOUTER_LABEL_LISTE.'</a>'."\n".
-							'</fieldset>'."\n";
+	$html_valeurs_listes =  '<div class="formulaire_ligne">'."\n".
+							'<div class="formulaire_label">'.BAZ_VALEURS_LISTE.'</div>'."\n".
+							'<ul class="valeur_liste formulaire_input">'."\n";
+	if (is_array($valeursliste)) {
+		$i = 0;
+		foreach($valeursliste as $ligneliste) {
+			$i++;
+			$html_valeurs_listes .= 
+								'<li class="liste_ligne" id="row'.$i.'">'.
+								'<img src="tools/bazar/presentation/images/arrow.png" alt="D&eacute;placer" width="16" height="16" class="handle" />'.
+								'<input type="text" name="label['.$i.']" value="'.htmlspecialchars($ligneliste).'" class="input_texte" />'.
+								'<input type="hidden" name="ancienlabel['.$i.']" value="'.htmlspecialchars($ligneliste).'" class="input_texte" />'.
+								'<a href="#" class="BAZ_lien_supprimer suppression_label_liste"></a>'.
+								'</li>'."\n";
+		}
+	} else {
+		$html_valeurs_listes .= '<li class="liste_ligne" id="row1">'.
+								'<img src="tools/bazar/presentation/images/arrow.png" alt="D&eacute;placer" width="16" height="16" class="handle" />'.
+								'<input type="text" name="label[1]" class="input_texte" />'.
+								'<a href="#" class="BAZ_lien_supprimer suppression_label_liste"></a>'.
+								'</li>'."\n";
+	}
+						
+	$html_valeurs_listes .= '</ul><a href="#" class="ajout_label_liste" title="'.BAZ_AJOUTER_LABEL_LISTE.'">'.BAZ_AJOUTER_LABEL_LISTE.'</a>'."\n".
+							'</div>'."\n".
+							'<div class="spacer"></div>'."\n".
+							'<script type="text/javascript" src="tools/bazar/libs/jquery-ui-1.8.2.custom.min.js"></script>
+							<script type="text/javascript">
+							  $(document).ready(function() {
+							    $(".valeur_liste").sortable({
+							      handle : \'.handle\',
+							      update : function () {
+									$("#formulaire .valeur_liste input.input_texte[name^=\'label\']").each(function(i) {
+										$(this).attr(\'name\', \'label[\'+(i+1)+\']\').
+										parent(\'.liste_ligne\').attr(\'id\', \'row\'+(i+1)).
+										find("input:hidden").attr(\'name\', \'ancienlabel[\'+(i+1)+\']\');
+									});
+							      }
+							    });
+							});
+							</script>'."\n";
 	$formtemplate->addElement('html', $html_valeurs_listes);
 	// Nettoyage de l'url avant les return
 	$GLOBALS['_BAZAR_']['url']->removeQueryString(BAZ_VARIABLE_ACTION);
@@ -1351,11 +1469,11 @@ function baz_gestion_listes() {
 	// il y a un formulaire a modifier
 	if (isset($_GET['action_listes']) && $_GET['action_listes']=='modif') {
 		//recuperation des informations de la liste
-		$page = $GLOBALS["_BAZAR_"]["wiki"]->LoadPage($_GET['idliste']);
+		$page = $GLOBALS["wiki"]->LoadPage($_GET['idliste']);
 		$ligne = json_decode( $page['body'], true);
-		$ligne = array_map('utf8_decode', $ligne);
-		$formulaire=baz_formulaire_des_listes('modif_v');
-		$formulaire->setDefaults($ligne);
+		$valeursliste = array_map('utf8_decode', $ligne['label']);
+		$formulaire = baz_formulaire_des_listes('modif_v', $valeursliste);		
+		$formulaire->setDefaults(array("titre_liste" => utf8_decode($ligne['titre_liste'])));
 		$res .= $formulaire->toHTML();
 
 	//il y a une nouvelle liste a saisir
@@ -1366,33 +1484,65 @@ function baz_gestion_listes() {
 	//il y a des donnees pour ajouter une nouvelle liste
 	} elseif (isset($_GET['action_listes']) && $_GET['action_listes']=='new_v') {
 		unset($_POST["valider"]);
-		$_POST['NomWiki'] = genere_nom_wiki($_POST['titre_liste']);			
-		//on encode en utf-8 pour réussir à encoder en json
-		$valeur = array_map("utf8_encode", $_POST);
+		$nomwikiliste = genere_nom_wiki($_POST['titre_liste']);
+		//on supprime les valeurs vides et on encode en utf-8 pour réussir à encoder en json
+		$i = 1;
+		$valeur["label"] = array();
+		foreach ($_POST["label"] as $label) {
+			if ($label!=NULL || $label!='') {
+				$valeur["label"][$i] = $label;
+				$i++;
+			}
+		}
+		$valeur["label"] = array_map("utf8_encode", $valeur["label"]);
+		$valeur["titre_liste"] = utf8_encode($_POST["titre_liste"]);
+		
 		//on sauve les valeurs d'une liste dans une PageWiki, pour garder l'historique
-		$GLOBALS["_BAZAR_"]["wiki"]->SavePage($valeur['NomWiki'], json_encode($valeur));
+		$GLOBALS["wiki"]->SavePage($nomwikiliste, json_encode($valeur));
 		//on cree un triple pour spécifier que la page wiki créée est une liste
-		$GLOBALS["_BAZAR_"]["wiki"]->InsertTriple($valeur['NomWiki'], 'http://outils-reseaux.org/_vocabulary/type', 'liste', '', '');
+		$GLOBALS["wiki"]->InsertTriple($nomwikiliste, 'http://outils-reseaux.org/_vocabulary/type', 'liste', '', '');
 	
 		$res .= '<div class="BAZ_info">'.BAZ_NOUVELLE_LISTE_ENREGISTREE.'</div>'."\n";
 
 	//il y a des donnees pour modifier une liste
 	} elseif (isset($_GET['action_listes']) && $_GET['action_listes']=='modif_v' && baz_a_le_droit('saisie_liste') ) {
 		unset($_POST["valider"]);
-		var_dump($_POST);
-		//on encode en utf-8 pour réussir à encoder en json
-		$valeur = array_map("utf8_encode", $_POST);
+		//on supprime les valeurs vides et on encode en utf-8 pour réussir à encoder en json
+		$i = 1;
+		$valeur["label"] = array();
+		foreach ($_POST["label"] as $label) {
+			if ($label!=NULL || $label!='') {
+				$valeur["label"][$i] = $label;
+				$i++;
+			}
+		}
+		$valeur["label"] = array_map("utf8_encode", $valeur["label"]);
+		$valeur["titre_liste"] = utf8_encode($_POST["titre_liste"]);
+
+		//on vérifie si les valeurs des listes ont changées afin de garder de l'intégrité de la base des fiches
+		foreach ($_POST["ancienlabel"] as $key => $value) {
+			//si la valeur de la liste a été changée, on répercute les changements pour les fiches contenant cette valeur
+			if ( isset($_POST["label"][$key]) && $value != $_POST["label"][$key] ) {
+				//TODO: fonction baz_modifier_metas_liste($_POST['NomWiki'], $value, $_POST['label'][$key]);
+			}		
+		}
+		
+		//on supprime les valeurs des listes supprimées des fiches possédants ces valeurs
+		foreach ($_POST["a_effacer_ancienlabel"] as $key => $value) {
+			//TODO: fonction baz_effacer_metas_liste($_POST['NomWiki'], $value);
+		}
+			
 		//on sauve les valeurs d'une liste dans une PageWiki, pour garder l'historique
-		$GLOBALS["_BAZAR_"]["wiki"]->SavePage($valeur['NomWiki'], json_encode($valeur));
+		$GLOBALS["wiki"]->SavePage($_POST['NomWiki'], json_encode($valeur));
 	
 		$res .= '<div class="BAZ_info">'.BAZ_LISTE_MODIFIEE.'</div>'."\n";
 
 	// il y a un id de liste à supprimer
 	} elseif (isset($_GET['action_listes']) && $_GET['action_listes']=='delete' && baz_a_le_droit('saisie_liste')) {
-		$GLOBALS["_BAZAR_"]["wiki"]->DeleteOrphanedPage($_GET['idliste']);
+		$GLOBALS["wiki"]->DeleteOrphanedPage($_GET['idliste']);
 		$sql = 'DELETE FROM ' . BAZ_PREFIXE . 'triples '
 			. 'WHERE resource = "' . addslashes($_GET['idliste']) . '" ';
-		$GLOBALS["_BAZAR_"]["wiki"]->Query($sql);
+		$GLOBALS["wiki"]->Query($sql);
 		
 		$res .= '<div class="BAZ_info">'.BAZ_LISTES_SUPPRIMEES.'</div>'."\n";
 	}
@@ -1402,16 +1552,17 @@ function baz_gestion_listes() {
 		$res .= '<div class="BAZ_info">'.BAZ_INTRO_MODIFIER_LISTE.'</div>'."\n";
 
 		//requete pour obtenir l'id et le label des types d'annonces
-		$requete = 'SELECT resource FROM '.BAZ_PREFIXE.'triples WHERE property="http://outils-reseaux.org/_vocabulary/type" AND value="liste"';
+		$requete = 'SELECT resource FROM '.BAZ_PREFIXE.'triples WHERE property="http://outils-reseaux.org/_vocabulary/type" AND value="liste" ORDER BY resource';
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 		if (DB::isError($resultat)) {
 			return ($resultat->getMessage().$resultat->getDebugInfo()) ;
 		}
 		$liste = '';
 		while ($ligne = $resultat->fetchRow(DB_FETCHMODE_ASSOC)) {
-			/*$valeurs_liste = json_decode($ligne['value'], true);
-			foreach ($valeurs_lise as $valeur) {
-			}*/
+			$page = $GLOBALS["wiki"]->LoadPage( $ligne['resource']);
+			$valliste = json_decode( $page['body'], true);
+			$valeursliste = array_map('utf8_decode', $valliste['label']);
+
 			$lien_formulaire = clone($GLOBALS['_BAZAR_']['url']);
 			$liste .= '<li>';
 			$lien_formulaire->addQueryString('action_listes', 'delete');
@@ -1421,17 +1572,29 @@ function baz_gestion_listes() {
 			}
 			$lien_formulaire->removeQueryString('action_listes');
 			$lien_formulaire->addQueryString('action_listes', 'modif');
-			if (baz_a_le_droit('saisie_liste'))  {
-				$liste .= '<a class="BAZ_lien_modifier" href="'.str_replace('&','&amp;',$lien_formulaire->getURL()).'">'.$ligne['resource'].'</a>'."\n";
+			$elements_liste = '';
+			foreach ($valeursliste as $val) { 
+				$elements_liste .= '<option>'.$val.'</option>';
+			}
+			if ($elements_liste != '') {
+				$affichage_liste = '&nbsp;- '.BAZ_VALEURS_LISTE.' :&nbsp;<select id="liste_'.$ligne['resource'].'">'."\n".
+				'<option>'.BAZ_CHOISIR.'</option>'."\n".
+				$elements_liste."\n".
+				'</select>'."\n";
 			} else {
-				$liste .= $ligne['resource']."\n";
+				$affichage_liste = '';
+			}
+			if (baz_a_le_droit('saisie_liste'))  {
+				$liste .= '<a class="BAZ_lien_modifier" href="'.str_replace('&','&amp;',$lien_formulaire->getURL()).'">'.utf8_decode($valliste['titre_liste']).'</a>'.$affichage_liste."\n";
+			} else {
+				$liste .= utf8_decode($valliste['titre_liste']).$affichage_liste."\n";
 			}
 			$lien_formulaire->removeQueryString('action_listes');
 			$lien_formulaire->removeQueryString('idliste');
 
 			$liste .='</li>'."\n";
 		}
-		if ($liste!='') $res .= '<ul class="liste_listes">'.$liste.'</ul>'."\n";
+		if ($liste!='') $res .= '<ul class="BAZ_liste">'.$liste.'</ul>'."\n";
 
 		//ajout du lien pour creer un nouveau formulaire
 		if (baz_a_le_droit('saisie_liste')) {
@@ -1463,14 +1626,14 @@ function baz_valeurs_fiche($idfiche = '') {
 		$valeurs_fiche = $resultat->fetchRow(DB_FETCHMODE_ASSOC) ;
 		
 		//metadonnees textelong
-		$requete = 'SELECT bfvtl_id_element_form, bfvtl_texte_long FROM '.BAZ_PREFIXE.'fiche_valeur_texte_long WHERE bfvtl_ce_fiche="'.$idfiche.'"';
+		$requete = 'SELECT property, value FROM '.BAZ_PREFIXE.'triples WHERE resource = "'.$idfiche.'"';
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 		if (DB::isError($resultat)) {
 			die ($resultat->getMessage().'<br />'.$resultat->getDebugInfo()) ;
 		}
 		$valeurs_meta_textelong = array();
 		while ($ligne = $resultat->fetchRow(DB_FETCHMODE_ASSOC)) {
-			$valeurs_meta_textelong[$ligne['bfvtl_id_element_form']] = stripslashes($ligne['bfvtl_texte_long']);
+			$valeurs_meta_textelong[$ligne['property']] = stripslashes($ligne['value']);
 		}
 		$valeurs_fiche = array_merge($valeurs_fiche, $valeurs_meta_textelong);
 		
@@ -1716,10 +1879,10 @@ function baz_voir_fiche($danslappli, $idfiche) {
 */
 function baz_a_le_droit( $demande = 'saisie_fiche', $id = '' ) {
     //cas d'une personne identifiée
-    $nomwiki = $GLOBALS['_BAZAR_']['wiki']->getUser();
+    $nomwiki = $GLOBALS['wiki']->getUser();
     if (is_array($nomwiki)) {
 		//l'administrateur peut tout faire
-		if ($GLOBALS['_BAZAR_']['wiki']->UserIsInGroup('admins')) {
+		if ($GLOBALS['wiki']->UserIsInGroup('admins')) {
 			return true;
 		}
 		else {
@@ -1785,7 +1948,7 @@ function genere_nom_wiki($nom, $occurence=1)
 	}
 
  	// sinon retour du nom formaté
-	if (!is_array($GLOBALS['_BAZAR_']['wiki']->LoadPageById($final))) {
+	if (!is_array($GLOBALS['wiki']->LoadPageById($final))) {
 		return $final;
 	} else {
 		$occurence++;
@@ -1925,7 +2088,7 @@ function gen_RSS($typeannonce='', $nbitem='', $emetteur='', $valide=1, $requeteS
 			$xml .= "\r\n      ";
 			$xml .= XML_Util::createStartElement ('item');
 			$xml .= "\r\n        ";
-			$xml .= XML_Util::createTag('title', null, encoder_en_utf8(html_entity_decode($ligne['bf_titre'])));
+			$xml .= XML_Util::createTag('title', null, encoder_en_utf8(html_entity_decode(stripslashes($ligne['bf_titre']))));
 			$xml .= "\r\n        ";
 			$lien=$GLOBALS['_BAZAR_']['url'];
 			$lien->addQueryString(BAZ_VARIABLE_ACTION, BAZ_VOIR_FICHE);
@@ -2138,7 +2301,7 @@ function baz_rechercher($typeannonce='toutes',$categorienature='toutes') {
 	}
 
 	//teste si le user est admin, dans ce cas, il peut voir les fiches perimees
-	if ($GLOBALS['_BAZAR_']['wiki']->UserIsAdmin()) {
+	if ($GLOBALS['wiki']->UserIsAdmin()) {
 			//$valide_select[0] = BAZ_FICHES_PERIMEES;
 			//$valide_select[1] = BAZ_FICHES_PAS_PERIMEES;
 			//$valide_select[2] = BAZ_TOUTES_LES_DATES;
@@ -2252,17 +2415,13 @@ function baz_requete_recherche_fiches($tableau = '', $tri = '', $id_typeannonce 
 	}
 	
 	//on parcourt le tableau post pour agrémenter la requete les valeurs passées dans les champs liste et checkbox du moteur de recherche
-	if ($tableau == '') 
-	{
+	if ($tableau == '') {
 		$tableau = array();
 		reset($_POST);
-		while (list($nom, $val) = each($_POST)) 
-		{		
+		while (list($nom, $val) = each($_POST)) {		
 			if ($nom != 'recherche_mots_cles' && $nom != 'rechercher' && $nom != 'personnes' && $nom != 'recherche_effectuee' &&
-			    $nom != 'id_typeannonce' && $val != 0)
-			{			
-				if (is_array($val))
-				{
+			    $nom != 'id_typeannonce' && $val != 0) {			
+				if (is_array($val)) {
 					$val = implode(',', array_keys($val));
 				}
 				$tableau[$nom] = $val;
@@ -2272,8 +2431,7 @@ function baz_requete_recherche_fiches($tableau = '', $tri = '', $id_typeannonce 
 	
 	$requeteWhereListe = '';
 	reset($tableau);
-	while (list($nom, $val) = each($tableau)) 
-	{		
+	while (list($nom, $val) = each($tableau)) {		
 			$requeteWhereListe .= ' AND bf_id_fiche IN (SELECT bfvt_ce_fiche FROM '.BAZ_PREFIXE.'fiche_valeur_texte WHERE bfvt_id_element_form="'.$nom.'" AND bfvt_texte IN ('.$val.')) ';
 	}
 	
@@ -2282,28 +2440,37 @@ function baz_requete_recherche_fiches($tableau = '', $tri = '', $id_typeannonce 
 	}
 
 	//preparation de la requete pour trouver les mots cles
-	if ( $_REQUEST['recherche_mots_cles']!='' && $_REQUEST['recherche_mots_cles']!=BAZ_MOT_CLE ) {
+	if ( isset($_REQUEST['recherche_mots_cles']) && $_REQUEST['recherche_mots_cles'] != BAZ_MOT_CLE ) {
 		//decoupage des mots cles
 		$recherche = split(' ', $_REQUEST['recherche_mots_cles']) ;
 		$nbmots=count($recherche);
 		$requeteSQL='';
 		for ($i=0; $i<$nbmots; $i++) {
 			if ($i>0) $requeteSQL.=' OR ';
-			$requeteSQL.=' bf_id_fiche IN ( SELECT bfvt_ce_fiche FROM '.BAZ_PREFIXE.'fiche_valeur_texte WHERE bfvt_texte LIKE "%'.$recherche[$i].'%" ) OR bf_id_fiche IN ( SELECT bfvtl_ce_fiche FROM '.BAZ_PREFIXE.'fiche_valeur_texte_long WHERE bfvtl_texte_long LIKE "%'.$recherche[$i].'%" ) ';
+			$requeteSQL.=' bf_id_fiche IN ( SELECT bfvt_ce_fiche FROM '.BAZ_PREFIXE.'fiche_valeur_texte WHERE bfvt_texte LIKE "%'.$recherche[$i].'%" ) OR bf_id_fiche IN ( SELECT resource FROM '.BAZ_PREFIXE.'triples WHERE value LIKE "%'.$recherche[$i].'%" ) ';
 			
 		}
 	}
+	
 	if (!isset($_REQUEST['nature'])) {
-		if (!isset ($id_typeannonce)) $typedefiches = $tableau_typeannonces;
-		else $typedefiches = $id_typeannonce;
-	} else {
+		if (!isset($id_typeannonce)) {
+			$typedefiches = $tableau_typeannonces;
+		}
+		else {
+			$typedefiches = $id_typeannonce;
+		}
+	} 
+	else {
 		$typedefiches = $_REQUEST['nature'] ;
 		if ($typedefiches == 'toutes') $typedefiches = $tableau_typeannonces ;
 	}
-	if ($typeannonce!='toutes') $typedefiches=$typeannonce;
 	
-	if (isset($_REQUEST['valides'])) {$valides=$_REQUEST['valides'];}
-	else {$valides=1;}
+	if (isset($_REQUEST['valides'])) {
+		$valides = $_REQUEST['valides'];
+	}
+	else {
+		$valides = 1;
+	}
 	
 	//generation de la liste de flux a afficher
 	if (!isset($_REQUEST['personnes'])) $_REQUEST['personnes']='tous';
@@ -2322,16 +2489,25 @@ function baz_requete_recherche_fiches($tableau = '', $tri = '', $id_typeannonce 
             	$requete .= ' AND (bf_date_debut_validite_fiche<=NOW() or bf_date_debut_validite_fiche="0000-00-00") AND (bf_date_fin_validite_fiche>=NOW() or bf_date_fin_validite_fiche="0000-00-00") ';
 			}
 	}
-	if ($emetteur!='' && $emetteur!='tous') {
-		$requete .= ' AND bf_ce_utilisateur='.$emetteur;		
+	
+	if ( isset($_POST['emetteur']) && $_POST['emetteur'] != 'tous' ) {
+		$requete .= ' AND bf_ce_utilisateur='.$_POST['emetteur'];		
 	}
+	
 	if ($requeteSQL!='') {
 		$requete .= ' AND ('.$requeteSQL.')';
 	}
-	if ($tri == 'alphabetique') $requete .= ' ORDER BY bf_titre ASC';
-	else $requete .= ' ORDER BY  bf_date_debut_validite_fiche DESC, bf_date_fin_validite_fiche DESC, bf_date_maj_fiche DESC';
+	
+	if ($tri == 'alphabetique') {
+		$requete .= ' ORDER BY bf_titre ASC';
+	}
+	else {
+		$requete .= ' ORDER BY  bf_date_debut_validite_fiche DESC, bf_date_fin_validite_fiche DESC, bf_date_maj_fiche DESC';
+	}
 
-	if ($nbitem!='') {$requete .= ' LIMIT 0,'.$nbitem;}
+	if ( isset($_POST['nbitem']) ) {
+		$requete .= ' LIMIT 0,'.$_POST['nbitem'];
+	}
 	
 	//echo '<textarea style="width:100%;height:100px;">'.$requete.'</textarea>';
 	return $GLOBALS['_BAZAR_']['db']->getAll($requete);
@@ -2537,359 +2713,5 @@ function afficher_flux_rss() {
 	}
 	echo html_entity_decode(gen_RSS($annonce, $nbitem, $emetteur, $valide, $requeteSQL, '', $requeteWhere, $categorie_nature));
 }
-
-
-
-/* +--Fin du code ----------------------------------------------------------------------------------------+
-*
-* $Log: bazar.fonct.php,v $
-* Revision 1.10  2010/03/04 14:19:03  mrflos
-* nouvelle version bazar
-*
-* Revision 1.9  2009/10/14 10:14:02  ddelon
-* menage chemin
-*
-* Revision 1.8  2009/09/09 15:36:37  mrflos
-* maj css
-* ajout de la google api v3
-* possibilitÃ© d'insÃ©rer des utilisateurs wikini par bazar
-* installation automatique du fichier sql avec type d'annonces par dÃ©faut
-*
-* Revision 1.7  2009/08/01 17:01:58  mrflos
-* nouvelle action bazarcalendrier, correction bug typeannonce, validitÃ© html amÃ©liorÃ©e
-*
-* Revision 1.6  2008/09/09 12:46:42  mrflos
-* sÃ©curitÃ©: seuls les identifies peuvent supprimer une fiche ou un type de fiche
-*
-* Revision 1.5  2008/08/28 14:49:52  mrflos
-* amÃ©lioration des performances de bazar : google map pas chargÃ©e systematiquement
-* correction bug flux rss
-* correction bug calendrier
-*
-* Revision 1.4  2008/08/28 12:23:39  mrflos
-* amÃ©rioration de la gestion des categories de fiches
-*
-* Revision 1.3  2008/08/27 13:18:57  mrflos
-* maj gÃ©nÃ©rale
-*
-* Revision 1.2  2008/07/29 17:32:25  mrflos
-* maj gÃ©nÃ©rale
-*
-* Revision 1.1  2008/07/07 18:00:39  mrflos
-* maj carto plus calendrier
-*
-* Revision 1.2  2008/03/06 00:15:40  mrflos
-* correction des bugs bazar, ajout de fichiers d'images
-*
-* Revision 1.1  2008/02/18 09:12:47  mrflos
-* Premiere release de 3 extensions en version alpha (bugs nombreux!) des plugins bazar, e2gallery, et templates
-*
-* Revision 1.74.2.7  2008-01-29 14:35:22  alexandre_tb
-* suppression de l identification pour l abonnement au fluxRSS
-*
-* Revision 1.74.2.6  2008-01-29 09:55:07  alexandre_tb
-* suppression de l identification pour l abonnement au fluxRSS
-*
-* Revision 1.74.2.5  2008-01-29 09:35:36  alexandre_tb
-* remplacement des variables action par une constante
-* Utilisation d un redirection pour eviter que les formulaires soient valides 2 fois
-* simplification de la suppression d un lien associe a une liste
-*
-* Revision 1.74.2.4  2008-01-11 14:10:12  alexandre_tb
-* Remplacement de la variable action ecrite en dur par la constante BAZ_VARIABLE_ACTION
-*
-* Revision 1.74.2.3  2007-12-14 09:55:05  alexandre_tb
-* suppression de style dans le formulaire
-*
-* Revision 1.74.2.2  2007-12-06 15:36:07  alexandre_tb
-* appel de la fonction GEN_AttributsBody dans le composant carte_google
-*
-* Revision 1.74.2.1  2007-12-04 09:00:08  alexandre_tb
-* corrections importantes sur baz_s_inscrire, simplification de l'application qui ne fonctionnait pas.
-*
-* Revision 1.74  2007-10-25 09:41:31  alexandre_tb
-* mise en place de variable de session pour eviter que les formulaires soit valider 2 fois, pour les url, fichiers et image
-*
-* Revision 1.73  2007-10-24 13:27:00  alexandre_tb
-* bug : double saisie d url
-* suppression de warning sur variable
-*
-* Revision 1.72  2007-10-22 10:09:21  florian
-* correction template
-*
-* Revision 1.71  2007-10-22 09:18:39  alexandre_tb
-* prise en compte de la langue dans les requetes sur '.BAZ_PREFIXE.'nature
-*
-* Revision 1.70  2007-10-10 13:26:36  alexandre_tb
-* utilisation de la classe Administrateur_bazar a la place de niveau_droit
-* suppression de fonction niveau_droit
-*
-* Revision 1.69  2007-09-18 07:39:42  alexandre_tb
-* correction d un bug lors d une insertion
-*
-* Revision 1.68  2007-08-27 12:31:31  alexandre_tb
-* mise en place de modele
-*
-* Revision 1.67  2007-07-04 10:01:30  alexandre_tb
-* mise en place de divers templates :
-*  - mail pour admin (sujet et corps)
-*  - modele carte_google
-* ajout de lignes dans '.BAZ_PREFIXE.'template
-*
-* Revision 1.66  2007-06-25 12:15:06  alexandre_tb
-* merge from narmer
-*
-* Revision 1.65  2007-06-25 08:31:17  alexandre_tb
-* utilisation de la bibliotheque generale api/formulaire/formulaire.fonct.inc.php a la place de bazar.fonct.formulaire.php
-*
-* Revision 1.64  2007-06-04 15:25:39  alexandre_tb
-* ajout de la carto google
-*
-* Revision 1.63  2007/04/11 08:30:12  neiluj
-* remise en Ã©tat du CVS...
-*
-* Revision 1.57.2.12  2007/03/16 14:49:24  alexandre_tb
-* si la date de debut d evenement est superieure a la date de fin alors on met
-* la meme date dans les deux champs (coherence)
-*
-* Revision 1.57.2.11  2007/03/07 17:40:57  jp_milcent
-* Ajout d'id sur les colonnes et gestion par les CSS des styles du tableau des abonnements.
-*
-* Revision 1.57.2.10  2007/03/07 17:20:19  jp_milcent
-* Ajout du nettoyage systï¿½matique des URLs.
-*
-* Revision 1.57.2.9  2007/03/06 16:23:24  jp_milcent
-* Nettoyage de l'url pour la gestion des droits.
-*
-* Revision 1.57.2.8  2007/03/05 14:33:44  jp_milcent
-* Suppression de l'appel ï¿½ Mes_Fiches dans la fonction baz_formulaire
-*
-* Revision 1.57.2.7  2007/03/05 10:28:03  alexandre_tb
-* correction d un commentaire
-*
-* Revision 1.57.2.6  2007/02/15 13:42:16  jp_milcent
-* Utilisation de IN ï¿½ la place du = dans les requï¿½tes traitant les catï¿½gories de fiches.
-* Permet d'utiliser la syntaxe 1,2,3 dans la configuration de categorie_nature.
-*
-* Revision 1.57.2.5  2007/02/12 16:16:31  alexandre_tb
-* suppression du style clear:both dans les attribut du formulaire d identification
-*
-* Revision 1.57.2.4  2007/02/01 16:19:30  alexandre_tb
-* correction erreur de requete sur insertion '.BAZ_PREFIXE.'fiche
-*
-* Revision 1.57.2.3  2007/02/01 16:11:05  alexandre_tb
-* correction erreur de requete sur insertion '.BAZ_PREFIXE.'fiche
-*
-* Revision 1.57.2.2  2007/01/22 16:05:39  alexandre_tb
-* insertion de la date du jour dans bf_date_debut_validite_fiche quand il n'y a pas ce champs dans le formulaire (ï¿½vite le 0000-00-00)
-*
-* Revision 1.57.2.1  2006/12/13 13:23:03  alexandre_tb
-* Remplacement de l appel d une constante par un appel direct. -> warning
-*
-* Revision 1.58  2006/12/13 13:20:16  alexandre_tb
-* Remplacement de l appel d une constante par un appel direct. -> warning
-*
-* Revision 1.57  2006/10/05 08:53:50  florian
-* amelioration moteur de recherche, correction de bugs
-*
-* Revision 1.56  2006/09/28 15:41:36  alexandre_tb
-* Le formulaire pour se logguer dans l'action saisir reste sur l'action saisir aprï¿½s
-*
-* Revision 1.55  2006/09/21 14:19:39  florian
-* amÃ©lioration des fonctions liÃ©s au wikini
-*
-* Revision 1.54  2006/09/14 15:11:23  alexandre_tb
-* suppression temporaire de la gestion des wikinis
-*
-* Revision 1.53  2006/07/25 13:24:44  florian
-* correction bug image
-*
-* Revision 1.52  2006/07/25 13:05:00  alexandre_tb
-* Remplacement d un die par un echo
-*
-* Revision 1.51  2006/07/18 14:17:32  alexandre_tb
-* Ajout d'un formulaire d identification
-*
-* Revision 1.50  2006/06/21 08:37:59  alexandre_tb
-* Correction de bug, d'un appel constant (....) qui ne fonctionnais plus.
-*
-* Revision 1.49  2006/06/02 09:29:07  florian
-* debut d'integration de wikini
-*
-* Revision 1.48  2006/05/19 13:54:11  florian
-* stabilisation du moteur de recherche, corrections bugs, lien recherche avancee
-*
-* Revision 1.47  2006/04/28 12:46:14  florian
-* integration des liens vers annuaire
-*
-* Revision 1.46  2006/03/29 13:04:35  alexandre_tb
-* utilisation de la classe Administrateur_bazar
-*
-* Revision 1.45  2006/03/24 09:28:02  alexandre_tb
-* utilisation de la variable globale $GLOBALS['_BAZAR_']['categorie_nature']
-*
-* Revision 1.44  2006/03/14 17:10:21  florian
-* ajout des fonctions de syndication, changement du moteur de recherche
-*
-* Revision 1.43  2006/03/02 20:36:52  florian
-* les entrees du formulaire de saisir ne sont plus dans les constantes mias dans des tables qui gerent le multilinguisme.
-*
-* Revision 1.42  2006/03/01 16:23:22  florian
-* modifs textes fr et correction bug "undefined index"
-*
-* Revision 1.41  2006/03/01 16:05:51  florian
-* ajout des fichiers joints
-*
-* Revision 1.40  2006/02/06 09:33:00  alexandre_tb
-* correction de bug
-*
-* Revision 1.39  2006/01/30 17:25:38  alexandre_tb
-* correction de bugs
-*
-* Revision 1.38  2006/01/30 10:27:04  florian
-* - ajout des entrÃ©es de formulaire fichier, url, et image
-* - correction bug d'affichage du mode de saisie
-*
-* Revision 1.37  2006/01/24 14:11:11  alexandre_tb
-* correction de bug sur l'ajout d'une image et d'un fichier
-*
-* Revision 1.36  2006/01/19 17:42:11  florian
-* ajout des cases Ã  cocher prÃ©-cochÃ©es pour les maj
-*
-* Revision 1.35  2006/01/18 11:06:51  florian
-* correction erreur saisie date
-*
-* Revision 1.34  2006/01/18 10:53:28  florian
-* corrections bugs affichage fiche
-*
-* Revision 1.33  2006/01/18 10:07:34  florian
-* recodage de l'insertion et de la maj des donnÃ©es relatives aux listes et checkbox dans des formulaires
-*
-* Revision 1.32  2006/01/18 10:03:36  florian
-* recodage de l'insertion et de la maj des donnÃ©es relatives aux listes et checkbox dans des formulaires
-*
-* Revision 1.31  2006/01/17 10:07:08  alexandre_tb
-* en cours
-*
-* Revision 1.30  2006/01/16 09:42:57  alexandre_tb
-* en cours
-*
-* Revision 1.29  2006/01/13 14:12:51  florian
-* utilisation des temlates dans la table '.BAZ_PREFIXE.'nature
-*
-* Revision 1.28  2006/01/05 16:28:24  alexandre_tb
-* prise en chage des checkbox, reste la mise ï¿½ jour ï¿½ gï¿½rer
-*
-* Revision 1.27  2006/01/04 15:30:56  alexandre_tb
-* mise en forme du code
-*
-* Revision 1.26  2006/01/03 10:19:31  florian
-* Mise Ã  jour pour accepter des parametres dans papyrus: faire apparaitre ou non le menu, afficher qu'un type de fiches, dÃ©finir l'action par dÃ©faut...
-*
-* Revision 1.25  2005/12/20 14:49:35  ddelon
-* Fusion Head vers Livraison
-*
-* Revision 1.24  2005/12/16 15:44:40  alexandre_tb
-* ajout de l'option restreindre dï¿½pï¿½t
-*
-* Revision 1.23  2005/12/01 17:03:34  florian
-* changement des chemins pour appli Pear
-*
-* Revision 1.22  2005/12/01 16:05:41  florian
-* changement des chemins pour appli Pear
-*
-* Revision 1.21  2005/12/01 15:31:30  florian
-* correction bug modifs et saisies
-*
-* Revision 1.20  2005/11/30 13:58:45  florian
-* ajouts graphisme (logos, boutons), changement structure SQL '.BAZ_PREFIXE.'fiche
-*
-* Revision 1.19  2005/11/24 16:17:13  florian
-* corrections bugs, ajout des cases Ã  cocher
-*
-* Revision 1.18  2005/11/18 16:03:23  florian
-* correction bug html entites
-*
-* Revision 1.17  2005/11/17 18:48:02  florian
-* corrections bugs + amÃ©lioration de l'application d'inscription
-*
-* Revision 1.16  2005/11/07 17:30:36  florian
-* ajout controle sur les listes pour la saisie
-*
-* Revision 1.15  2005/11/07 17:05:45  florian
-* amÃ©lioration validation conditions de saisie, ajout des rÃ¨gles spÃ©cifiques de saisie des formulaires
-*
-* Revision 1.14  2005/11/07 08:48:02  florian
-* correction pb guillemets pour saisie et modif de fiche
-*
-* Revision 1.13  2005/10/21 16:15:04  florian
-* mise a jour appropriation
-*
-* Revision 1.11  2005/10/12 17:20:33  ddelon
-* Reorganisation calendrier + applette
-*
-* Revision 1.10  2005/10/12 15:14:06  florian
-* amÃ©lioration de l'interface de bazar, de maniÃ¨re a simplifier les consultations, et Ã  harmoniser par rapport aux Ressources
-*
-* Revision 1.9  2005/10/10 16:22:52  alexandre_tb
-* Correction de bug. Lorsqu'on revient en arriï¿½re aprï¿½s avoir validï¿½ un formulaire.
-*
-* Revision 1.8  2005/09/30 13:50:07  alexandre_tb
-* correction bug date parution ressource
-*
-* Revision 1.7  2005/09/30 13:15:58  ddelon
-* compatibilitï¿½ php5
-*
-* Revision 1.6  2005/09/30 13:00:05  ddelon
-* Fiche bazar generique
-*
-* Revision 1.5  2005/09/30 12:22:54  florian
-* Ajouts commentaires pour fiche, modifications graphiques, maj SQL
-*
-* Revision 1.3  2005/07/21 19:03:12  florian
-* nouveautÃ©s bazar: templates fiches, correction de bugs, ...
-*
-* Revision 1.1.1.1  2005/02/17 18:05:11  florian
-* Import initial de Bazar
-*
-* Revision 1.1.1.1  2005/02/17 11:09:50  florian
-* Import initial
-*
-* Revision 1.1.1.1  2005/02/16 18:06:35  florian
-* import de la nouvelle version
-*
-* Revision 1.10  2004/07/08 17:25:25  florian
-* ajout commentaires + petits debuggages
-*
-* Revision 1.8  2004/07/07 14:30:19  florian
-* dï¿½buggage RSS
-*
-* Revision 1.7  2004/07/06 16:22:01  florian
-* dï¿½buggage modification + MAJ flux RSS
-*
-* Revision 1.6  2004/07/06 09:28:26  florian
-* changement interface de modification
-*
-* Revision 1.5  2004/07/05 15:10:23  florian
-* changement interface de saisie
-*
-* Revision 1.4  2004/07/02 14:51:14  florian
-* ajouts divers pour faire fonctionner l'insertion de fiches
-*
-* Revision 1.3  2004/07/01 16:37:42  florian
-* ajout de fonctions pour les templates
-*
-* Revision 1.2  2004/07/01 13:00:13  florian
-* modif Florian
-*
-* Revision 1.1  2004/06/23 09:58:32  alex
-* version initiale
-*
-* Revision 1.1  2004/06/18 09:00:37  alex
-* version initiale
-*
-*
-* +-- Fin du code ----------------------------------------------------------------------------------------+
-*/
 
 ?>

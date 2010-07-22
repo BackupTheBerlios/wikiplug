@@ -135,7 +135,7 @@ background:transparent url(images/delete.gif) no-repeat center left;
 padding: 2px 0 2px 18px;
 }
 
-.BAZ_lien_nouveau, .ajout_fiche, .ajout_label_liste {
+.BAZ_lien_nouveau, .ajout_fiche, .ajout_label_liste, .ajout_champs_formulaire {
 background:transparent url(images/add.png) no-repeat center left;
 border:0;
 font-weight:700;
@@ -144,8 +144,9 @@ margin:2px 0;
 padding:2px 0 2px 20px;
 }
 .ajout_label_liste {
-display:inline;
-margin:0 0 0 300px;
+clear:both;
+display:block;
+margin:0 0 0 290px;
 }
 
 .groupebouton {
@@ -704,7 +705,7 @@ a.active img {
 }
 
 /* close button positioned on upper right corner */
-.simple_overlay .close {
+.simple_overlay .close, .close{
 	background-image:url(images/overlay_close.png);
 	position:absolute;
 	right:-15px;
@@ -900,3 +901,30 @@ h2.titre_accordeon:hover  {
 
 .BAZ_texte {display:inline;} 
 .titre_lien {display:block;font-size:1.4em;}
+.valeur_liste {width:350px;float:left;}
+.liste_ligne {}
+ul.valeur_liste, ul.valeur_formulaire { padding:0; margin:0;}
+ul.valeur_liste li, ul.valeur_formulaire li {list-style-type:none; padding:0; margin:3px 0;}
+.handle {cursor: move;}
+.valeur_formulaire .handle {left:20px;position:absolute;}
+.valeur_formulaire .formulaire_ligne {background:#EAEAEA; border:1px solid #CCC; padding:5px 0;}
+#champs_formulaire {
+	
+	/* must be initially hidden */
+	display:none;
+	
+	/* place overlay on top of other elements */
+	z-index:10000;
+	
+	/* styling */
+	background-color:#FFF;
+	
+	width:675px;	
+	min-height:200px;
+	border:1px solid #666;
+	padding:20px;
+	
+	/* CSS3 styling for latest browsers */
+	-moz-box-shadow:0 0 90px 5px #000;
+	-webkit-box-shadow: 0 0 90px #000;	
+}

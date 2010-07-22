@@ -1,9 +1,10 @@
 <?php
 /*
-xml.php
+raw.php
 
-Copyright 2003  David DELON
+Copyright 2002  David DELON
 Copyright 2003  Eric FELDSTEIN
+Copyright 2003  Charles NEPOTE
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
@@ -25,17 +26,19 @@ if (!defined("WIKINI_VERSION"))
 	die ("acc&egrave;s direct interdit");
 }
 
-header('Content-type: text/xml; charset=UTF-8');
-
-if ($HasAccessRead=$this->HasAccess("read"))
+if ($this->HasAccess("read"))
 {
-// TODO : Return an empty xml ?
-// TODO : Return an error read (noaccess) xml ?
-	if ($this->page)
+	if (!$this->page)
 	{
-		// display page
-		echo $this->Format('{{bazar}}') ;
+		return;
+	}
+	else
+	{
+		echo '<div class="page">'."\n".utf8_encode($this->Format($this->page["body"]))."\n".'</div>'."\n";
 	}
 }
+else
+{
+	return;
+}
 ?>
-
