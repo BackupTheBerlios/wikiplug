@@ -120,6 +120,7 @@ if (!defined("WIKINI_VERSION"))
 if (!class_exists('attach')){
 	include('tools/attach/actions/attach.class.php');
 }
+
 $att = new attach($this);
 $att->doAttach();
 unset($att);

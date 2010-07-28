@@ -61,14 +61,14 @@ if (fopen($url, "r"))
 					</a>'."\n";         
 		$output .= '<script type="text/javascript" src="tools/attach/players/flowplayer-3.1.4.min.js"></script> 
 					<script>
-						flowplayer("a.flvplayer", "tools/attach/players/flowplayer-3.1.5.swf", { 
+						flowplayer("a.flvplayer", "tools/attach/players/flowplayer-3.2.2.swf", { 
 						    clip:  { 
 							autoPlay: false, 
 							autoBuffering: false
 						    },
 						    plugins:  { 
 						        controls: {             
-								url: \'tools/attach/players/flowplayer.controls-3.1.5.swf\', 
+								url: \'tools/attach/players/flowplayer.controls-3.2.1.swf\', 
 								autoHide: \'always\', 
 								 
 								// which buttons are visible and which are not? 
