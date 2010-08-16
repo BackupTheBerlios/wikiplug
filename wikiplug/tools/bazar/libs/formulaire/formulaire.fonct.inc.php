@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: formulaire.fonct.inc.php,v 1.15 2010/07/22 14:21:10 mrflos Exp $
+// CVS : $Id: formulaire.fonct.inc.php,v 1.16 2010/08/16 13:49:24 mrflos Exp $
 /**
 * Formulaire
 *
@@ -31,7 +31,7 @@
 //Autres auteurs :
 *@author        Aleandre GRANIER <alexandre@tela-botanica.org>
 *@copyright     Tela-Botanica 2000-2004
-*@version       $Revision: 1.15 $ $Date: 2010/07/22 14:21:10 $
+*@version       $Revision: 1.16 $ $Date: 2010/08/16 13:49:24 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -210,10 +210,6 @@ function liste(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		$requetesuppression='DELETE FROM '.BAZ_PREFIXE.'fiche_valeur_texte WHERE bfvt_ce_fiche="'.$GLOBALS['_BAZAR_']['id_fiche'].'" AND bfvt_id_element_form="'.$tableau_template[0].$tableau_template[1].$tableau_template[6].'"';
 		//echo 'suppression : '.$requetesuppression.'<br />';
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requetesuppression) ;
-		if (DB::isError($resultat))
-		{
-				die ($resultat->getMessage().$resultat->getDebugInfo()) ;
-		}
 		if (isset($valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]]) && ($valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]]!=0))
 		{
 			//on insere les nouvelles valeurs
@@ -223,7 +219,7 @@ function liste(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 			$resultat = $GLOBALS['_BAZAR_']['db']->query($requeteinsertion) ;
 			if (DB::isError($resultat))
 			{
-				die ($resultat->getMessage().$resultat->getDebugInfo()) ;
+				echo ($resultat->getMessage().$resultat->getDebugInfo()) ;
 			}
 		}
 	}
@@ -260,7 +256,7 @@ function liste(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 						' AND blv_ce_i18n like "'.$GLOBALS['_BAZAR_']['langue'].'%" ORDER BY blv_label';
 			$resultat = & $GLOBALS['_BAZAR_']['db'] -> query($requete) ;
 			if (DB::isError ($resultat)) {
-				die ($resultat->getMessage().$resultat->getDebugInfo()) ;
+				echo ($resultat->getMessage().$resultat->getDebugInfo()) ;
 			}
 			require_once 'HTML/QuickForm/checkbox.php' ;
 			$i=0;
@@ -325,7 +321,7 @@ function checkbox(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 				' AND blv_ce_i18n like "'.$GLOBALS['_BAZAR_']['langue'].'%" ORDER BY blv_label';
 		$resultat = & $GLOBALS['_BAZAR_']['db'] -> query($requete) ;
 		if (DB::isError ($resultat)) {
-			die ($resultat->getMessage().$resultat->getDebugInfo()) ;
+			echo ($resultat->getMessage().$resultat->getDebugInfo()) ;
 		}
 		require_once 'HTML/QuickForm/checkbox.php' ;
 		$i=0;
@@ -364,7 +360,7 @@ function checkbox(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requetesuppression) ;
 		if (DB::isError($resultat))
 		{
-				die ($resultat->getMessage().$resultat->getDebugInfo()) ;
+				echo ($resultat->getMessage().$resultat->getDebugInfo()) ;
 		}
 		if (isset($valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]]) && ($valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]]!=0))
 		{
@@ -382,7 +378,7 @@ function checkbox(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 			}
 			$resultat = $GLOBALS['_BAZAR_']['db']->query($requeteinsertion) ;
 			if (DB::isError($resultat)) {
-				die ($resultat->getMessage().$resultat->getDebugInfo()) ;
+				echo ($resultat->getMessage().$resultat->getDebugInfo()) ;
 			}
 		}
 	}
@@ -394,7 +390,7 @@ function checkbox(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 						' AND blv_ce_i18n like "'.$GLOBALS['_BAZAR_']['langue'].'%" ORDER BY blv_label';
 			$resultat = & $GLOBALS['_BAZAR_']['db'] -> query($requete) ;
 			if (DB::isError ($resultat)) {
-				die ($resultat->getMessage().$resultat->getDebugInfo()) ;
+				echo ($resultat->getMessage().$resultat->getDebugInfo()) ;
 			}
 			require_once 'HTML/QuickForm/checkbox.php' ;
 			$i=0;
@@ -766,7 +762,7 @@ function utilisateur_wikini(&$formtemplate, $tableau_template, $mode, $valeurs_f
 					"password = md5('".mysql_escape_string($valeurs_fiche['mot_de_passe_wikini'])."')";
 			$resultat = $GLOBALS['_BAZAR_']['db']->query($requeteinsertionuserwikini) ;
 			if (DB::isError($resultat)) {
-				die ($resultat->getMessage().$resultat->getDebugInfo()) ;
+				echo ($resultat->getMessage().$resultat->getDebugInfo()) ;
 			}
 			return 'bf_nom_wikini="'.mysql_escape_string($nomwiki).'", ' ;
 			//envoi mail nouveau mot de passe
@@ -783,7 +779,7 @@ function utilisateur_wikini(&$formtemplate, $tableau_template, $mode, $valeurs_f
 					"password = md5('".mysql_escape_string($valeurs_fiche['mot_de_passe_wikini'])."') WHERE name=\"".$valeurs_fiche['bf_nom_wikini']."\"";
 			$resultat = $GLOBALS['_BAZAR_']['db']->query($requetemodificationuserwikini) ;
 			if (DB::isError($resultat)) {
-				die ($resultat->getMessage().$resultat->getDebugInfo()) ;
+				echo ($resultat->getMessage().$resultat->getDebugInfo()) ;
 			}
 			//envoi mail nouveau mot de passe
 			$lien = str_replace("/wakka.php?wiki=","",$GLOBALS['wiki']->config["base_url"]);
@@ -1618,7 +1614,7 @@ function listefiche(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requetesuppression) ;
 		if (DB::isError($resultat))
 		{
-				die ($resultat->getMessage().$resultat->getDebugInfo()) ;
+				echo ($resultat->getMessage().$resultat->getDebugInfo()) ;
 		}
 		if (isset($valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]]) && ($valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]]!=0))
 		{
@@ -1628,7 +1624,7 @@ function listefiche(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 			$resultat = $GLOBALS['_BAZAR_']['db']->query($requeteinsertion) ;
 			if (DB::isError($resultat))
 			{
-				die ($resultat->getMessage().$resultat->getDebugInfo()) ;
+				echo ($resultat->getMessage().$resultat->getDebugInfo()) ;
 			}
 		}
 	}
@@ -1769,7 +1765,7 @@ function checkboxfiche(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requetesuppression) ;
 		if (DB::isError($resultat))
 		{
-				die ($resultat->getMessage().$resultat->getDebugInfo()) ;
+				echo ($resultat->getMessage().$resultat->getDebugInfo()) ;
 		}
 		if (isset($valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]]) && ($valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]]!=0))
 		{
@@ -1786,7 +1782,7 @@ function checkboxfiche(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 			}
 			$resultat = $GLOBALS['_BAZAR_']['db']->query($requeteinsertion) ;
 			if (DB::isError($resultat)) {
-				die ($resultat->getMessage().$resultat->getDebugInfo()) ;
+				echo ($resultat->getMessage().$resultat->getDebugInfo()) ;
 			}
 		}
 	}
@@ -1798,7 +1794,7 @@ function checkboxfiche(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 						' AND blv_ce_i18n like "'.$GLOBALS['_BAZAR_']['langue'].'%" ORDER BY blv_label';
 			$resultat = & $GLOBALS['_BAZAR_']['db'] -> query($requete) ;
 			if (DB::isError ($resultat)) {
-				die ($resultat->getMessage().$resultat->getDebugInfo()) ;
+				echo ($resultat->getMessage().$resultat->getDebugInfo()) ;
 			}
 			require_once 'HTML/QuickForm/checkbox.php' ;
 			$i=0;
@@ -1922,7 +1918,7 @@ function listefiches(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 						' AND blv_ce_i18n like "'.$GLOBALS['_BAZAR_']['langue'].'%" ORDER BY blv_label';
 			$resultat = & $GLOBALS['_BAZAR_']['db'] -> query($requete) ;
 			if (DB::isError ($resultat)) {
-				die ($resultat->getMessage().$resultat->getDebugInfo()) ;
+				echo ($resultat->getMessage().$resultat->getDebugInfo()) ;
 			}
 			require_once 'HTML/QuickForm/checkbox.php' ;
 			$i=0;
@@ -1971,7 +1967,10 @@ function bookmarklet(&$formtemplate, $tableau_template, $mode, $valeurs_fiche) {
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: formulaire.fonct.inc.php,v $
-* Revision 1.15  2010/07/22 14:21:10  mrflos
+* Revision 1.16  2010/08/16 13:49:24  mrflos
+* ajout de constante de langues en francais, correction bug mineurs
+*
+* Revision 1.15  2010-07-22 14:21:10  mrflos
 * corrections de bugs et début d'intégration du gestionnaire des formulaires
 *
 * Revision 1.14  2010/06/02 08:48:51  mrflos

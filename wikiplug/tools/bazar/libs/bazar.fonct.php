@@ -126,7 +126,7 @@ function fiches_a_valider() {
 	$requete .= 'ORDER BY bf_date_maj_fiche DESC' ;
 	$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 	if (DB::isError($resultat)) {
-		die ('Echec de la requete<br />'.$resultat->getMessage().'<br />'.$resultat->getDebugInfo()) ;
+		echo ('Echec de la requete<br />'.$resultat->getMessage().'<br />'.$resultat->getDebugInfo()) ;
 	}
 	if ($resultat->numRows() != 0) {
 		$tableAttr = array('id' => 'table_bazar') ;
@@ -218,7 +218,7 @@ function fiches_a_valider() {
 	$requete .= 'ORDER BY bf_date_maj_fiche DESC' ;
 	$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 	if (DB::isError($resultat)) {
-		die ('Echec de la requete<br />'.$resultat->getMessage().'<br />'.$resultat->getDebugInfo()) ;
+		echo ('Echec de la requete<br />'.$resultat->getMessage().'<br />'.$resultat->getDebugInfo()) ;
 	}
 	if ($resultat->numRows() != 0) {
 		$tableAttr = array('class' => 'table_bazar') ;
@@ -314,7 +314,7 @@ function mes_fiches() {
 
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 		if (DB::isError($resultat)) {
-			die ('Echec de la requete<br />'.$resultat->getMessage().'<br />'.$resultat->getDebugInfo()) ;
+			echo ('Echec de la requete<br />'.$resultat->getMessage().'<br />'.$resultat->getDebugInfo()) ;
 		}
 		if ($resultat->numRows() != 0) {
 			$tableAttr = array('class' => 'table_bazar', 'summary' => 'Tableau des fiches d\'une personne') ;
@@ -417,7 +417,7 @@ function baz_gestion_droits() {
 				   ' AND bd_id_nature_offre='.$_GET['idtypeannonce'];
 			$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 			if (DB::isError($resultat)) {
-				die ($resultat->getMessage().$resultat->getDebugInfo()) ;
+				echo ($resultat->getMessage().$resultat->getDebugInfo()) ;
 			}
 		}
 		//CAS DU SUPER ADMIN: On efface tous les droits de la personne en general
@@ -425,28 +425,28 @@ function baz_gestion_droits() {
 			$requete = 'DELETE FROM '.BAZ_PREFIXE.'droits WHERE bd_id_utilisateur='.$_GET['pers'];
 			$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 			if (DB::isError($resultat)) {
-				die ($resultat->getMessage().$resultat->getDebugInfo()) ;
+				echo ($resultat->getMessage().$resultat->getDebugInfo()) ;
 			}
 		}
 		if ($_GET['droits']=='superadmin') {
 			$requete = 'INSERT INTO '.BAZ_PREFIXE.'droits VALUES ('.$_GET['pers'].',0,0)';
 			$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 			if (DB::isError($resultat)) {
-				die ($resultat->getMessage().$resultat->getDebugInfo()) ;
+				echo ($resultat->getMessage().$resultat->getDebugInfo()) ;
 			}
 		}
 		elseif ($_GET['droits']=='redacteur') {
 			$requete = 'INSERT INTO '.BAZ_PREFIXE.'droits VALUES ('.$_GET['pers'].','.$_GET['idtypeannonce'].',1)';
 			$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 			if (DB::isError($resultat)) {
-				die ($resultat->getMessage().$resultat->getDebugInfo()) ;
+				echo ($resultat->getMessage().$resultat->getDebugInfo()) ;
 			}
 		}
 		elseif ($_GET['droits']=='admin') {
 			$requete = 'INSERT INTO '.BAZ_PREFIXE.'droits VALUES ('.$_GET['pers'].','.$_GET['idtypeannonce'].',2)';
 			$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 			if (DB::isError($resultat)) {
-				die ($resultat->getMessage().$resultat->getDebugInfo()) ;
+				echo ($resultat->getMessage().$resultat->getDebugInfo()) ;
 			}
 		}
 	}
@@ -493,7 +493,7 @@ function baz_gestion_droits() {
 			if (isset($GLOBALS['_BAZAR_']['langue'])) $requete .= ' where bn_ce_i18n like "'.$GLOBALS['_BAZAR_']['langue'].'%"';
 			$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 			if (DB::isError($resultat)) {
-				die ($resultat->getMessage().$resultat->getDebugInfo()) ;
+				echo ($resultat->getMessage().$resultat->getDebugInfo()) ;
 			}
 			$res.='<br /><b>'.BAZ_DROITS_PAR_TYPE.'</b><br /><br />';
 
@@ -967,7 +967,7 @@ function baz_mise_a_jour($valeur) {
 	$requete.= ' WHERE bf_id_fiche="'.$GLOBALS['_BAZAR_']['id_fiche'].'"';
 	$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 	if (DB::isError($resultat)) {
-		die ($resultat->getMessage().$resultat->getDebugInfo()) ;
+		echo ($resultat->getMessage().$resultat->getDebugInfo()) ;
 	}
 	
 	// Envoie d un mail aux administrateurs
@@ -1034,7 +1034,7 @@ function baz_suppression($idfiche) {
 		}
 
 		//suppression des valeurs des champs texte long
-		$requete = 'DELETE FROM '.BAZ_PREFIXE.'triples WHERE resource = "'.$idfiche.'"';
+		$requete = 'DELETE FROM '.$GLOBALS['wiki']->config["table_prefix"].'triples WHERE resource = "'.$idfiche.'"';
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 		if (DB::isError($resultat)) {
 			return ('Echec de la requete<br />'.$resultat->getMessage().'<br />'.$resultat->getDebugInfo().'<br />'."\n") ;
@@ -1046,7 +1046,7 @@ function baz_suppression($idfiche) {
 		$requete = 'DELETE FROM '.BAZ_PREFIXE.'fiche WHERE bf_id_fiche = "'.$idfiche.'"';
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 		if (DB::isError($resultat)) {
-			die ('Echec de la requete<br />'.$resultat->getMessage().'<br />'.$resultat->getDebugInfo().'<br />'."\n") ;
+			echo ('Echec de la requete<br />'.$resultat->getMessage().'<br />'.$resultat->getDebugInfo().'<br />'."\n") ;
 		}
 		
 		//on supprime les pages wiki crées
@@ -1088,7 +1088,7 @@ function publier_fiche($valid) {
 		// ====================Mise a jour de la table '.BAZ_PREFIXE.'fiche====================
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 		if (DB::isError($resultat)) {
-			die ($resultat->getMessage().$resultat->getDebugInfo()) ;
+			echo ($resultat->getMessage().$resultat->getDebugInfo()) ;
 		}
 		unset ($resultat) ;
 		//TODO envoie mail annonceur
@@ -1540,7 +1540,7 @@ function baz_gestion_listes() {
 	// il y a un id de liste à supprimer
 	} elseif (isset($_GET['action_listes']) && $_GET['action_listes']=='delete' && baz_a_le_droit('saisie_liste')) {
 		$GLOBALS["wiki"]->DeleteOrphanedPage($_GET['idliste']);
-		$sql = 'DELETE FROM ' . BAZ_PREFIXE . 'triples '
+		$sql = 'DELETE FROM ' . $GLOBALS['wiki']->config["table_prefix"] . 'triples '
 			. 'WHERE resource = "' . addslashes($_GET['idliste']) . '" ';
 		$GLOBALS["wiki"]->Query($sql);
 		
@@ -1552,7 +1552,7 @@ function baz_gestion_listes() {
 		$res .= '<div class="BAZ_info">'.BAZ_INTRO_MODIFIER_LISTE.'</div>'."\n";
 
 		//requete pour obtenir l'id et le label des types d'annonces
-		$requete = 'SELECT resource FROM '.BAZ_PREFIXE.'triples WHERE property="http://outils-reseaux.org/_vocabulary/type" AND value="liste" ORDER BY resource';
+		$requete = 'SELECT resource FROM '.$GLOBALS['wiki']->config['table_prefix'].'triples WHERE property="http://outils-reseaux.org/_vocabulary/type" AND value="liste" ORDER BY resource';
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 		if (DB::isError($resultat)) {
 			return ($resultat->getMessage().$resultat->getDebugInfo()) ;
@@ -1621,15 +1621,15 @@ function baz_valeurs_fiche($idfiche = '') {
 		$requete = 'SELECT * FROM '.BAZ_PREFIXE.'fiche WHERE bf_id_fiche="'.$idfiche.'"';
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 		if (DB::isError($resultat)) {
-			die ($resultat->getMessage().'<br />'.$resultat->getDebugInfo()) ;
+			echo ($resultat->getMessage().'<br />'.$resultat->getDebugInfo()) ;
 		}
 		$valeurs_fiche = $resultat->fetchRow(DB_FETCHMODE_ASSOC) ;
 		
 		//metadonnees textelong
-		$requete = 'SELECT property, value FROM '.BAZ_PREFIXE.'triples WHERE resource = "'.$idfiche.'"';
+		$requete = 'SELECT property, value FROM '.$GLOBALS['wiki']->config["table_prefix"].'triples WHERE resource = "'.$idfiche.'"';
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 		if (DB::isError($resultat)) {
-			die ($resultat->getMessage().'<br />'.$resultat->getDebugInfo()) ;
+			echo ($resultat->getMessage().'<br />'.$resultat->getDebugInfo()) ;
 		}
 		$valeurs_meta_textelong = array();
 		while ($ligne = $resultat->fetchRow(DB_FETCHMODE_ASSOC)) {
@@ -1641,7 +1641,7 @@ function baz_valeurs_fiche($idfiche = '') {
 		$requete = 'SELECT bfvt_id_element_form, bfvt_texte FROM '.BAZ_PREFIXE.'fiche_valeur_texte WHERE bfvt_ce_fiche="'.$idfiche.'"';
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 		if (DB::isError($resultat)) {
-			die ($resultat->getMessage().'<br />'.$resultat->getDebugInfo()) ;
+			echo ($resultat->getMessage().'<br />'.$resultat->getDebugInfo()) ;
 		}
 		$valeurs_meta_texte = array();
 		while ($ligne = $resultat->fetchRow(DB_FETCHMODE_ASSOC)) {
@@ -1678,7 +1678,7 @@ function baz_valeurs_type_de_fiche($idtypefiche) {
 	}
 	$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 	if (DB::isError($resultat)) {
-		die ($resultat->getMessage().$resultat->getDebugInfo()) ;
+		echo ($resultat->getMessage().$resultat->getDebugInfo()) ;
 	}
 	$ligne = $resultat->fetchRow(DB_FETCHMODE_ASSOC);
 	return $ligne;
@@ -1697,7 +1697,7 @@ function baz_nextId($table, $colonne_identifiant, $bdd) {
 	$requete = 'SELECT MAX('.$colonne_identifiant.') AS maxi FROM '.$table;
 	$resultat = $bdd->query($requete) ;
 	if (DB::isError($resultat)) {
-		die (__FILE__ . __LINE__ . $resultat->getMessage() . $requete);
+		echo (__FILE__ . __LINE__ . $resultat->getMessage() . $requete);
 		return $bdd->raiseError($resultat) ;
 	}
 
@@ -2012,7 +2012,7 @@ function gen_RSS($typeannonce='', $nbitem='', $emetteur='', $valide=1, $requeteS
 						BAZ_ANNUAIRE.' WHERE '.BAZ_CHAMPS_ID.'='.$emetteur;
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requetenom) ;
 		if (DB::isError($resultat)) {
-			die ($resultat->getMessage().$resultat->getDebugInfo()) ;
+			echo ($resultat->getMessage().$resultat->getDebugInfo()) ;
 		}
 		$ligne = $resultat->fetchRow(DB_FETCHMODE_ASSOC);
 		$nomflux .= ' ('.$ligne[BAZ_CHAMPS_NOM].' '.$ligne[BAZ_CHAMPS_PRENOM].')';
@@ -2034,7 +2034,7 @@ function gen_RSS($typeannonce='', $nbitem='', $emetteur='', $valide=1, $requeteS
 	$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 	//echo $requete;
 	if (DB::isError($resultat)) {
-		die ($resultat->getMessage().$resultat->getDebugInfo()) ;
+		echo ($resultat->getMessage().$resultat->getDebugInfo()) ;
 	}
 
 	require_once 'XML/Util.php' ;
@@ -2289,7 +2289,7 @@ function baz_rechercher($typeannonce='toutes',$categorienature='toutes') {
 	    $requete .= 'ORDER BY '.BAZ_CHAMPS_NOM.' ASC';
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 		if (DB::isError($resultat)) {
-			die ($resultat->getMessage().$resultat->getDebugInfo()) ;
+			echo ($resultat->getMessage().$resultat->getDebugInfo()) ;
 		}
 		$personnes_select['tous']=BAZ_TOUS_LES_EMETTEURS;
 		while ($ligne = $resultat->fetchRow(DB_FETCHMODE_ASSOC)) {
@@ -2447,7 +2447,7 @@ function baz_requete_recherche_fiches($tableau = '', $tri = '', $id_typeannonce 
 		$requeteSQL='';
 		for ($i=0; $i<$nbmots; $i++) {
 			if ($i>0) $requeteSQL.=' OR ';
-			$requeteSQL.=' bf_id_fiche IN ( SELECT bfvt_ce_fiche FROM '.BAZ_PREFIXE.'fiche_valeur_texte WHERE bfvt_texte LIKE "%'.$recherche[$i].'%" ) OR bf_id_fiche IN ( SELECT resource FROM '.BAZ_PREFIXE.'triples WHERE value LIKE "%'.$recherche[$i].'%" ) ';
+			$requeteSQL.=' bf_id_fiche IN ( SELECT bfvt_ce_fiche FROM '.BAZ_PREFIXE.'fiche_valeur_texte WHERE bfvt_texte LIKE "%'.$recherche[$i].'%" ) OR bf_id_fiche IN ( SELECT resource FROM '.$GLOBALS['wiki']->config["table_prefix"].'triples WHERE value LIKE "%'.$recherche[$i].'%" ) ';
 			
 		}
 	}

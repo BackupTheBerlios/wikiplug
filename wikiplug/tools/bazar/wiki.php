@@ -21,7 +21,7 @@
 // | along with Foobar; if not, write to the Free Software                                                |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: wiki.php,v 1.9 2010/07/22 14:21:10 mrflos Exp $
+// CVS : $Id: wiki.php,v 1.10 2010/08/16 13:49:24 mrflos Exp $
 /**
 * wiki.php
 *
@@ -32,7 +32,7 @@
 *@author        Florian SCHMITT <florian.schmitt@laposte.net>
 //Autres auteurs :
 *@copyright     outils-reseaux-coop.org 2008
-*@version       $Revision: 1.9 $ $Date: 2010/07/22 14:21:10 $
+*@version       $Revision: 1.10 $ $Date: 2010/08/16 13:49:24 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -134,8 +134,7 @@ if ($resultat->numRows() == 0) {
             }
             echo '<div class="BAZ_info">La base de donn&eacute;es de bazar vient d\'&ecirc;tre ajout&eacute;e,</div>'."\n";
         } else {
-            echo '<div class="BAZ_error">Fichier sql introuvable.</div>'."\n";
-            die;
+            die ('<div class="BAZ_error">Fichier sql introuvable.</div>'."\n");
         }
 
 }
