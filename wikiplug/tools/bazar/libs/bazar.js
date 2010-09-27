@@ -217,9 +217,9 @@ $(document).ready(function () {
 	});
 
 //=====================galerie d'images===================================================================
-	var imagespourgalerie = $("a.triggerimage");
+	var imagespourgalerie = $("a.triggerimage img[rel]");
 	if (imagespourgalerie.length > 0) {	
-		imagespourgalerie.overlay({ target:'#gallery', expose:'#f1f1f1' }).gallery({ speed:500 });
+		imagespourgalerie.overlay({ expose:'#f1f1f1', effect: 'apple' });
 	}
 	
 //============bidouille pour que les widgets en flash restent en dessous des éléments en survol===========

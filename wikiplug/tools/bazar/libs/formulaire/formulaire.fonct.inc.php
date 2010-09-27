@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: formulaire.fonct.inc.php,v 1.16 2010/08/16 13:49:24 mrflos Exp $
+// CVS : $Id: formulaire.fonct.inc.php,v 1.17 2010/09/27 17:54:58 mrflos Exp $
 /**
 * Formulaire
 *
@@ -31,7 +31,7 @@
 //Autres auteurs :
 *@author        Aleandre GRANIER <alexandre@tela-botanica.org>
 *@copyright     Tela-Botanica 2000-2004
-*@version       $Revision: 1.16 $ $Date: 2010/08/16 13:49:24 $
+*@version       $Revision: 1.17 $ $Date: 2010/09/27 17:54:58 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -70,16 +70,23 @@ function afficher_image($nom_image, $label, $class, $largeur_vignette, $hauteur_
 				$adr_img = redimensionner_image(BAZ_CHEMIN_UPLOAD.$nom_image, 'cache/image_'.$nom_image, $largeur_image, $hauteur_image);
 			}
 			//on renvoit l'image en vignette, avec quand on clique, l'image redimensionnée
-			
+			$nomidimg = str_replace('.','', $nom_image);
 			return  '<a class="triggerimage'.' '.$class.'" title="'.$label.'" href="cache/image_'.$nom_image.'">'."\n".
-					'<img alt="'.$nom_image.'"'.' src="cache/vignette_'.$nom_image.'" width="'.$width.'" height="'.$height.'" />'."\n".
-					'</a>'."\n";
+					'<img alt="'.$nom_image.'"'.' src="cache/vignette_'.$nom_image.'" rel="#'.$nomidimg.'" width="'.$width.'" height="'.$height.'" />'."\n".
+					'</a>'."\n".
+					'<div class="apple_overlay" id="'.$nomidimg.'">
+						<img src="cache/image_'.$nom_image.'" alt="image '.$nom_image.' pour overlay" />
+					</div>'	;
 		}
 		else {
 			//on renvoit l'image en vignette, avec quand on clique, l'image originale
+			$nomidimg = str_replace('.','', $nom_image);
 			return  '<a class="triggerimage'.' '.$class.'" title="'.$label.'" href="'.BAZ_CHEMIN_UPLOAD.$nom_image.'">'."\n".
-					'<img alt="'.$nom_image.'"'.' src="cache/vignette_'.$nom_image.'" width="'.$width.'" height="'.$height.'" />'."\n".
-					'</a>'."\n";
+					'<img alt="'.$nom_image.'"'.' src="cache/vignette_'.$nom_image.'" rel="'.$nomidimg.'" width="'.$width.'" height="'.$height.'" />'."\n".
+					'</a>'."\n".
+					'<div class="apple_overlay" id="'.$nomidimg.'">
+						<img src="cache/image_'.$nom_image.'" alt="image '.$nom_image.' pour overlay" />
+					</div>'	;
 		}
 	}
 	//pas de vignette, mais faut il redimensionner l'image?
@@ -1193,7 +1200,7 @@ function image(&$formtemplate, $tableau_template, $mode, $valeurs_fiche) {
 			else {
 				echo '<div class="BAZ_error">'.BAZ_FICHIER.$valeurs_fiche[$type.$identifiant].BAZ_FICHIER_IMAGE_INEXISTANT.'</div>'."\n";
 				//on efface une entrée de la base de données dont le fichier n'existe pas
-				$requetesuppression='DELETE FROM '.BAZ_PREFIXE.'fiche_valeur_texte WHERE bfvt_ce_fiche='.$GLOBALS['_BAZAR_']['id_fiche'].' AND bfvt_id_element_form="'.$type.$identifiant.'" AND bfvt_texte="'.$valeurs_fiche[$type.$identifiant].'" LIMIT 1';
+				$requetesuppression='DELETE FROM '.BAZ_PREFIXE.'fiche_valeur_texte WHERE bfvt_ce_fiche="'.$GLOBALS['_BAZAR_']['id_fiche'].'" AND bfvt_id_element_form="'.$type.$identifiant.'" AND bfvt_texte="'.$valeurs_fiche[$type.$identifiant].'" LIMIT 1';
 				$resultat = $GLOBALS['_BAZAR_']['db']->query($requetesuppression) ;
 			}
 		} 
@@ -1214,7 +1221,7 @@ function image(&$formtemplate, $tableau_template, $mode, $valeurs_fiche) {
 			if (isset($_FILES[$type.$identifiant]['name']) && $_FILES[$type.$identifiant]['name']!='') {
 				//dans le cas d'une modification, on vérifie l'existance d'une image précédente, que l'on supprime et remplace
 				if (isset($GLOBALS['_BAZAR_']['id_fiche'])) {
-					$requete_nom_ancienne_image = 'SELECT bfvt_texte FROM '.BAZ_PREFIXE.'fiche_valeur_texte WHERE bfvt_ce_fiche='.$GLOBALS['_BAZAR_']['id_fiche'].' AND bfvt_id_element_form="'.$type.$identifiant.'"';
+					$requete_nom_ancienne_image = 'SELECT bfvt_texte FROM '.BAZ_PREFIXE.'fiche_valeur_texte WHERE bfvt_ce_fiche="'.$GLOBALS['_BAZAR_']['id_fiche'].'" AND bfvt_id_element_form="'.$type.$identifiant.'"';
 					$resultat = $GLOBALS['_BAZAR_']['db']->query($requete_nom_ancienne_image) ;
 					$ligne = $resultat->fetchRow(DB_FETCHMODE_ASSOC);
 					$ancienne_image = $ligne['bfvt_texte'];
@@ -1967,7 +1974,10 @@ function bookmarklet(&$formtemplate, $tableau_template, $mode, $valeurs_fiche) {
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: formulaire.fonct.inc.php,v $
-* Revision 1.16  2010/08/16 13:49:24  mrflos
+* Revision 1.17  2010/09/27 17:54:58  mrflos
+* amÃ©lioration de la gestion des images
+*
+* Revision 1.16  2010-08-16 13:49:24  mrflos
 * ajout de constante de langues en francais, correction bug mineurs
 *
 * Revision 1.15  2010-07-22 14:21:10  mrflos
