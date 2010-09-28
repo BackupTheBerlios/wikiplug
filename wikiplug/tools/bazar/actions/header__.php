@@ -30,8 +30,8 @@ $liste = '<link rel="alternate" type="application/rss+xml" title="'.BAZ_FLUX_RSS
 
 //ajout des styles css pour bazar, le calendrier, la google map
 $style = '<link rel="stylesheet" type="text/css" href="tools/bazar/presentation/bazar.css" media="screen" />'."\n";
-//$style .= '<script type="text/javascript" src="tools/bazar/libs/jquery.tools.min.js"></script>'."\n";
-$style .= '<script type="text/javascript" src="tools/bazar/libs/bazar.js"></script>'."\n";
+
+$javascript = '<script type="text/javascript" src="tools/bazar/libs/bazar.js"></script>'."\n";
 	
 //on cherche l'action bazar ou l'action bazarcarto dans la page, pour voir s'il faut charger googlemaps
 if (isset($_POST["submit"]) && $_POST["submit"] == html_entity_decode('Aper&ccedil;u')) {
@@ -42,11 +42,12 @@ if (($this->GetMethod() == "show") && $act=preg_match_all ("/".'(\\{\\{bazar)'.'
 	if (isset($_GET[BAZ_VARIABLE_ACTION])&&($_GET[BAZ_VARIABLE_ACTION]==BAZ_ACTION_MODIFIER||$_GET[BAZ_VARIABLE_ACTION]==BAZ_ACTION_NOUVEAU||$_GET[BAZ_VARIABLE_ACTION]==BAZ_DEPOSER_ANNONCE)
 		||$act=preg_match_all ("/".'(\\{\\{bazarcarto)'.'(.*?)'.'(\\}\\})'."/is", $contenu["body"], $matches))
 	{
-		$style .= '<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>'."\n";
-		$style .= '<script type="text/javascript" src="http://www.google.com/jsapi"></script>'."\n";
+		$javascript .= '<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>'."\n";
+		$javascript .= '<script type="text/javascript" src="http://www.google.com/jsapi"></script>'."\n";
 	}
 }
 
 if ($this->GetMethod() == "show" || $this->GetMethod() == "bazarframe" || $this->GetMethod() == "edit") {
-	$plugin_output_new=preg_replace ('/<\/head>/', $liste.$style."\n".'</head>', $plugin_output_new);	
+	$plugin_output_new = preg_replace ('/<\/head>/', $liste.$style."\n".'</head>', $plugin_output_new);	
+	$plugin_output_new = preg_replace ('/<\/body>/', $javascript."\n".'</body>', $plugin_output_new);	
 }

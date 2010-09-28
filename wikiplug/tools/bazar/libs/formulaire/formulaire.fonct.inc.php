@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: formulaire.fonct.inc.php,v 1.17 2010/09/27 17:54:58 mrflos Exp $
+// CVS : $Id: formulaire.fonct.inc.php,v 1.18 2010/09/28 14:08:51 mrflos Exp $
 /**
 * Formulaire
 *
@@ -31,7 +31,7 @@
 //Autres auteurs :
 *@author        Aleandre GRANIER <alexandre@tela-botanica.org>
 *@copyright     Tela-Botanica 2000-2004
-*@version       $Revision: 1.17 $ $Date: 2010/09/27 17:54:58 $
+*@version       $Revision: 1.18 $ $Date: 2010/09/28 14:08:51 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -75,7 +75,7 @@ function afficher_image($nom_image, $label, $class, $largeur_vignette, $hauteur_
 					'<img alt="'.$nom_image.'"'.' src="cache/vignette_'.$nom_image.'" rel="#'.$nomidimg.'" width="'.$width.'" height="'.$height.'" />'."\n".
 					'</a>'."\n".
 					'<div class="apple_overlay" id="'.$nomidimg.'">
-						<img src="cache/image_'.$nom_image.'" alt="image '.$nom_image.' pour overlay" />
+						<img src="cache/image_'.$nom_image.'" alt="image '.$nom_image.' pour overlay" width="'.$largeur_image.'" height="'.$hauteur_image.'" />
 					</div>'	;
 		}
 		else {
@@ -85,7 +85,7 @@ function afficher_image($nom_image, $label, $class, $largeur_vignette, $hauteur_
 					'<img alt="'.$nom_image.'"'.' src="cache/vignette_'.$nom_image.'" rel="'.$nomidimg.'" width="'.$width.'" height="'.$height.'" />'."\n".
 					'</a>'."\n".
 					'<div class="apple_overlay" id="'.$nomidimg.'">
-						<img src="cache/image_'.$nom_image.'" alt="image '.$nom_image.' pour overlay" />
+						<img src="cache/image_'.$nom_image.'" alt="image '.$nom_image.' pour overlay" width="'.$largeur_image.'" height="'.$hauteur_image.'" />
 					</div>'	;
 		}
 	}
@@ -1974,7 +1974,10 @@ function bookmarklet(&$formtemplate, $tableau_template, $mode, $valeurs_fiche) {
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: formulaire.fonct.inc.php,v $
-* Revision 1.17  2010/09/27 17:54:58  mrflos
+* Revision 1.18  2010/09/28 14:08:51  mrflos
+* corrections bugs mineurs, déplacement javascript en bas de page
+*
+* Revision 1.17  2010-09-27 17:54:58  mrflos
 * amélioration de la gestion des images
 *
 * Revision 1.16  2010-08-16 13:49:24  mrflos
