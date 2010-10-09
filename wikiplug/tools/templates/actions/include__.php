@@ -1,5 +1,4 @@
 <?php
-
 if (!defined("WIKINI_VERSION"))
 {
             die ("acc&egrave;s direct interdit");
@@ -23,6 +22,20 @@ if (!function_exists('str_replace_once'))
 	}
 } 
 
+if (!function_exists('str_ireplacement')) { // str_ireplace est php5 seulement 
+  function str_ireplacement($search,$replace,$subject){
+    $token = chr(1);
+    $haystack = strtolower($subject);
+    $needle = strtolower($search);
+    while (($pos=strpos($haystack,$needle))!==FALSE){
+      $subject = substr_replace($subject,$token,$pos,strlen($search));
+      $haystack = substr_replace($haystack,$token,$pos,strlen($search));
+    }
+    $subject = str_replace($token,$replace,$subject);
+    return $subject;
+  }
+}
+
 //fonction recursive pour detecter un nomwiki deja present 
 if (!function_exists('nomwikidouble')) 
 {
@@ -43,6 +56,7 @@ if (isset($this->config['hide_action_template']) && !$this->config['hide_action_
 	$pattern = '/<span class="missingpage">(.*)<\/span><a href="'.str_replace(array('/','?'), array('\/','\?'),$this->config['base_url']).'(.*)\/edit">\?<\/a>/U';
 	preg_match_all($pattern, $plugin_output_new, $matches, PREG_SET_ORDER);
 	$nomswiki = array();
+
 	foreach ($matches as $values) 
 	{
 		$valuedep=$values[2];
@@ -68,14 +82,13 @@ if (isset($this->config['hide_action_template']) && !$this->config['hide_action_
 
 if (!empty($clear) && $clear=='non') $texteclear='';
 else $texteclear = '<div style="clear:both;display:block;"></div>'."\n";
-
 if (!$incPage = $this->LoadPage($incPageName))
 {
 	$plugin_output_new = '<a style="background:transparent url(tools/templates/presentation/images/crayon.png) no-repeat left center;padding-left:12px;" href="'.$this->href('edit', $incPageName).'">Editer '.$incPageName.'</a>';
 } 
 
 if (!empty($actif)&&$actif=="1") {
-    $plugin_output_new=str_ireplace('<a href="'.$this->config["base_url"].$this->tag.'"','<a class="actif" href="'.$this->config["base_url"].$this->tag.'"', $plugin_output_new);
+    $plugin_output_new=str_ireplacement('<a href="'.$this->config["base_url"].$this->tag.'"','<a class="actif" href="'.$this->config["base_url"].$this->tag.'"', $plugin_output_new);
 }
 
 $plugin_output_new = '<div class="div_include"'.$actiondblclic.'>'."\n".$plugin_output_new."\n".$texteclear
