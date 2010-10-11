@@ -1,43 +1,20 @@
-<a href="#" class="signin"><span>S'identifier</span></a>
-<fieldset id="signin_menu">
-    <form class="formulaire_identification" method="post" id="signin" action="<?= $urldepart; ?>">
-      <input type="hidden" name="action" value="login" />
-	  <input type="hidden" name="urldepart" value="<?= $urldepart; ?>" />
-	  <p>
-      <label for="name">NomWiki</label>
-      <input id="name" name="name" value="<?php if($name) : ?><?= htmlspecialchars($name) ?><?php endif; ?>" class="input_iden" title="NomWiki" tabindex="4" type="text" />
-      </p>
-      <p>
-        <label for="password">Mot de passe</label>
-        <input id="password" name="password" value="" class="input_iden" title="password" tabindex="5" type="password" />
-      </p>
-      <p class="remember">        
-        <input type="hidden" name="remember" value="0" /><input tabindex="7" type="checkbox" id="remember" name="remember" value="1" />
-        <label for="remember">Se souvenir de moi</label>
-      </p>
-      <input id="signin_submit" class="bouton_iden" value="S'identifier" tabindex="6" type="submit" />
-      <p class="pas-membre">Pas encore membre?<br /><a href="<?= $urllogin; ?>" id="s-enregistrer">S'enregistrer</a> </p>
-    </form>
-</fieldset>
-<script type="text/javascript">
-	$(document).ready(function() {
-
-		$(".signin").click(function(e) {          
-			e.preventDefault();
-			$("fieldset#signin_menu").toggle();
-			$(".signin").toggleClass("menu-open");
-			return false;
-		});
-		
-		$("fieldset#signin_menu").mouseup(function() {
-			return false
-		});
-		$(document).mouseup(function(e) {
-			if($(e.target).parent("a.signin").length==0) {
-				$(".signin").removeClass("menu-open");
-				$("fieldset#signin_menu").hide();
-			}
-		});			
-		
-	});
-</script>
+<a rel="#signin" class="link_login"><img src="tools/templates/presentation/images/user-icon10-black.gif" height="10" width="8" style="margin:2px 5px 0 0" alt="user" /><span>Se connecter</span></a>
+<a href="<?= $urllogin; ?>" class="link_signup">S'inscrire</a>
+<form class="formulaire_identification yeswiki-overlay grid_4" method="post" id="signin" style="display:none;" action="<?= $urldepart; ?>">
+	<h2 class="titre-connexion">Connexion au site</h2><br />
+	<input type="hidden" name="action" value="login" />
+	<input type="hidden" name="urldepart" value="<?= $urldepart; ?>" />
+	<label for="name">NomWiki</label>
+	<input id="name" name="name" size="16" value="<?php if($name) : ?><?= htmlspecialchars($name) ?><?php endif; ?>" class="input_iden" title="NomWiki" tabindex="4" type="text" /><br />
+	<label for="password">Mot de passe</label>
+	<input id="password" name="password" size="16" value="" class="input_iden" title="password" tabindex="5" type="password" />
+	<p class="remember">        
+		<input type="hidden" name="remember" value="0" /><input tabindex="6" type="checkbox" id="remember" name="remember" value="1" />
+		<label for="remember">Se souvenir de moi</label>
+	</p>
+    <input id="signin_submit" class="bouton_iden" value="Se connecter" tabindex="7" type="submit" />
+    <br /><br /><em>Ou utiliser</em><br />
+    <label for="openid_identifier">OpenID</label>
+	<input type="text" name="openid_identifier" size="18" tabindex="8"/>
+	<input class="bouton_iden" value="Go" tabindex="9" type="submit" />
+</form>

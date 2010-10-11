@@ -46,9 +46,10 @@ if (empty($urllogin)) {
 
 $pageacceuil = $this->GetParameter("pageaccueil");
 if (empty($pageacceuil)) {
-	//$urllogin=$this->href("", "ParametresUtilisateur", "");
 	$pageacceuil=$this->href("");
 }
+
+$class = $this->GetParameter("class");
 
 if (!isset($_REQUEST["action"])) $_REQUEST["action"] = '';
 if ($_REQUEST["action"] == "logout")
@@ -59,9 +60,31 @@ if ($_REQUEST["action"] == "logout")
 }
 
 if ($_REQUEST["action"] == "login")
-{
+{	
+	//gestion par l'openid
+	require_once 'tools/login/libs/openid.php';
+	try {
+		if(!isset($_GET['openid_mode'])) {
+			if(isset($_POST['openid_identifier'])) {
+				$openid = new LightOpenID;
+				$openid->identity = $_POST['openid_identifier'];
+				$openid->returnUrl = 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'&action=login';
+				header('Location: ' . $openid->authUrl());
+			}
+		} elseif($_GET['openid_mode'] == 'cancel') {
+			echo 'User has canceled authentication!';
+		} else {
+			$openid = new LightOpenID;
+			$openid->returnUrl = 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'&action=login';
+			echo 'User ' . ($openid->validate() ? $openid->identity . ' has ' : 'has not ') . 'logged in.';
+			//var_dump($openid);
+		}
+	} catch(ErrorException $e) {
+		echo $e->getMessage();
+	}
+	
 	// if user name already exists, check password
-	if ($existingUser = $this->LoadUser($_POST["name"]))
+	if (isset($_POST["name"]) && $existingUser = $this->LoadUser($_POST["name"]))
 	{
 		// check password
 		if ($existingUser["password"] == md5($_POST["password"]))
@@ -85,7 +108,7 @@ if ($_REQUEST["action"] == "login")
 if ($user = $this->GetUser())
 {
 	// user is logged in; display config form
-	include_once('tools/login/libs/squelettephp.class.php');
+	if (!class_exists('SquelettePhp')) include_once('tools/login/libs/squelettephp.class.php');
 	$template_formulaire = $this->GetParameter("templateiden");
 	if (empty($template_formulaire) || !file_exists('tools/login/presentation/'.$template_formulaire) ) $template_formulaire="iden_default.tpl.html";
 	$squel = new SquelettePhp('tools/login/presentation/'.$template_formulaire);
@@ -99,7 +122,7 @@ if ($user = $this->GetUser())
 		$PageMenuUser .= $this->Format("{{include page=\"PageMenuUser\"}}");
 	} else $PageMenuUser .= '';
 	$squel->set(array("nomwiki"=>$user["name"], "urldepart"=>"http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], "urllogin"=>$urllogin,  "PageMenuUser"=>$PageMenuUser));
-	echo $squel->analyser();
+	echo (empty($class)) ? $squel->analyser() : '<div class="'.$class.'">'.$squel->analyser().'</div>' ;
 }
 else
 {
@@ -114,6 +137,6 @@ else
 	if (empty($template_formulaire) || !file_exists('tools/login/presentation/'.$template_formulaire) ) $template_formulaire="form_default.tpl.html";
 	$squel = new SquelettePhp('tools/login/presentation/'.$template_formulaire);
 	$squel->set(array("error"=>isset($error)?$error:'', "urllogin"=>$urllogin, "urldepart"=>"http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'] , "name"=>isset($_POST["name"])?$_POST["name"]:''));
-	echo $squel->analyser();
+	echo (empty($class)) ? $squel->analyser() : '<div class="'.$class.'">'.$squel->analyser().'</div>' ;
 }
 ?>
