@@ -16,14 +16,14 @@
 // | Author: Chuck Hagenbuch <chuck@horde.org>                            |
 // +----------------------------------------------------------------------+
 //
-// $Id: mock.php,v 1.1 2009/09/21 14:54:47 mrflos Exp $
+// $Id: mock.php,v 1.2 2010/10/19 15:59:16 mrflos Exp $
 //
 
 /**
  * Mock implementation of the PEAR Mail:: interface for testing.
  * @access public
  * @package Mail
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 class Mail_mock extends Mail {
 
