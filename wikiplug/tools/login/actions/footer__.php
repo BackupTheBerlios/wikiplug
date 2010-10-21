@@ -7,7 +7,7 @@ if (!defined("WIKINI_VERSION"))
 
 $javascript = '<script type="text/javascript">
 	$(document).ready(function() {
-		$(".link_login").overlay({mask: \'#999\', effect: \'apple\'});
+		$(".link_login").overlay({mask: \'#999\'});
 	});
 </script>'."\n";
 

@@ -1,10 +1,6 @@
 <?php
 /*
-usersettings.php
-Copyright (c) 2002, Hendrik Mans <hendrik@mans.de>
-Copyright 2002, 2008 David DELON
-Copyright 2002, 2003 Charles NEPOTE
-Copyright 2002  Patrick PAUL
+login.php
 Copyright 2010  Florian SCHMITT
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
@@ -30,113 +26,117 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-//Lecture des parametres de l'action
-$titre = $this->GetParameter("titre");
-if (empty($titre)) {
-	$titre='Identifiez-vous ici :';
+// Lecture des parametres de l'action
+$signupurl = $this->GetParameter('signupurl');
+// si pas de pas d'url d'inscription renseignée, on utilise ParametresUtilisateur
+if (empty($signupurl)) {
+	$signupurl = $this->href("", "ParametresUtilisateur", "");
 }
 
-$urllogin = $this->GetParameter("url");
-if (empty($urllogin)) {
-	$urllogin=$this->href("", "ParametresUtilisateur", "");
-} elseif ($urllogin == 'pagecourante')
-{
-	$urllogin=$this->href();
+$homepage = $this->GetParameter("homepage");
+// si pas d'url de page d'accueil renseignée, on retourne sur la page courante
+if (empty($homepage)) {
+	$homepage = 'http'.((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'
+    || $_SERVER['SERVER_PORT'] == 443) ? 's' : '').'://'.
+		(($_SERVER['SERVER_PORT']!='80') ? $_SERVER['HTTP_HOST'].':'.$_SERVER['SERVER_PORT'].$_SERVER['SCRIPT_NAME'] : 
+		$_SERVER['HTTP_HOST'].$_SERVER['SCRIPT_NAME']).
+		(($_SERVER['QUERY_STRING']>' ') ? '?'.$_SERVER['QUERY_STRING'] : '');
+		
+	//si l'url de sortie contient le passage de parametres de déconnexion, on l'efface
+	if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "logout") {
+		$homepage = str_replace('&action=logout', '', $homepage);
+	}
 }
 
-$pageacceuil = $this->GetParameter("pageaccueil");
-if (empty($pageacceuil)) {
-	$pageacceuil=$this->href("");
+$exitpage = $this->GetParameter("exitpage");
+// si pas d'url de page de sortie renseignée, on retourne sur la page courante
+if (empty($exitpage)) {
+	$exitpage = 'http'.((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'
+    || $_SERVER['SERVER_PORT'] == 443) ? 's' : '').'://'.
+		(($_SERVER['SERVER_PORT']!='80') ? $_SERVER['HTTP_HOST'].':'.$_SERVER['SERVER_PORT'].$_SERVER['SCRIPT_NAME'] : 
+		$_SERVER['HTTP_HOST'].$_SERVER['SCRIPT_NAME']).
+		(($_SERVER['QUERY_STRING']>' ') ? '?'.$_SERVER['QUERY_STRING'] : '');
+		
+	//si l'url de sortie contient le passage de parametres de déconnexion, on l'efface
+	if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "logout") {
+		$exitpage = str_replace('&action=logout', '', $exitpage);
+	}
 }
 
 $class = $this->GetParameter("class");
 
-if (!isset($_REQUEST["action"])) $_REQUEST["action"] = '';
-if ($_REQUEST["action"] == "logout")
-{
-	$this->LogoutUser();
-	$this->SetMessage("Vous &ecirc;tes maintenant d&eacute;connect&eacute; !");
-	$this->Redirect($this->href());
+$template = $this->GetParameter("template");
+if (empty($template) || !file_exists('tools/login/presentation/templates/'.$template) ) {
+	$template="default.tpl.html";
 }
 
-if ($_REQUEST["action"] == "login")
-{	
-	//gestion par l'openid
-	require_once 'tools/login/libs/openid.php';
-	try {
-		if(!isset($_GET['openid_mode'])) {
-			if(isset($_POST['openid_identifier'])) {
-				$openid = new LightOpenID;
-				$openid->identity = $_POST['openid_identifier'];
-				$openid->returnUrl = 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'&action=login';
-				header('Location: ' . $openid->authUrl());
-			}
-		} elseif($_GET['openid_mode'] == 'cancel') {
-			echo 'User has canceled authentication!';
-		} else {
-			$openid = new LightOpenID;
-			$openid->returnUrl = 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'&action=login';
-			echo 'User ' . ($openid->validate() ? $openid->identity . ' has ' : 'has not ') . 'logged in.';
-			//var_dump($openid);
-		}
-	} catch(ErrorException $e) {
-		echo $e->getMessage();
-	}
-	
-	// if user name already exists, check password
-	if (isset($_POST["name"]) && $existingUser = $this->LoadUser($_POST["name"]))
-	{
-		// check password
-		if ($existingUser["password"] == md5($_POST["password"]))
-		{
+$error = '';
+$PageMenuUser = '';
+
+// on initialise la valeur vide si elle n'existe pas
+if (!isset($_REQUEST["action"])) $_REQUEST["action"] = '';
+
+// cas de la déconnexion
+if ($_REQUEST["action"] == "logout") {
+	$this->LogoutUser();
+	$this->SetMessage("Vous &ecirc;tes maintenant d&eacute;connect&eacute; !");
+	$this->Redirect($exitpage);
+}
+
+// cas de l'identification
+if ($_REQUEST["action"] == "login") {	
+	// si l'utilisateur existe, on vérifie son mot de passe
+	if (isset($_POST["name"]) && $existingUser = $this->LoadUser($_POST["name"])) {
+		// Si le mot de passe est bon, on créée le cookie et on redirige sur la bonne page
+		if ($existingUser["password"] == md5($_POST["password"])) {
 			$this->SetUser($existingUser, $_POST["remember"]);
-			if (!empty($pageacceuil))
-			{
-				if ( $pageacceuil=='utilisateur' && $this->LoadPage($_POST["name"]) ) $this->Redirect($this->href('', $_POST["name"], ''));
-				elseif ( $pageacceuil == 'pagecourante') $this->Redirect($_POST['urldepart']);
-				else $this->Redirect($pageacceuil);
+			// si l'on veut utiliser la page d'accueil correspondant au nom d'utilisateur
+			if ( $homepage=='user' && $this->LoadPage($_POST["name"]) ) {
+				$this->Redirect($this->href('', $_POST["name"], ''));
 			}
-			else $this->Redirect($this->href('', '', 'action=checklogged', false));
+			// on va sur la page servant de homepage sinon
+			else {
+				$this->Redirect($homepage);
+			}			
 		}
-		else
-		{
+		// on affiche une erreur sinon
+		else {
 			$error = "Mauvais mot de passe&nbsp;!";
 		}
 	}
 }
 
-if ($user = $this->GetUser())
-{
-	// user is logged in; display config form
-	if (!class_exists('SquelettePhp')) include_once('tools/login/libs/squelettephp.class.php');
-	$template_formulaire = $this->GetParameter("templateiden");
-	if (empty($template_formulaire) || !file_exists('tools/login/presentation/'.$template_formulaire) ) $template_formulaire="iden_default.tpl.html";
-	$squel = new SquelettePhp('tools/login/presentation/'.$template_formulaire);
-	$PageMenuUser = '';
-	if ( $pageacceuil=='utilisateur' ) 
-	{
+// cas d'une personne connectée déjà
+if ($user = $this->GetUser()) {
+	$connected = true;
+	if ( $homepage=='user' ) {
 		$PageMenuUser .= '<a class="lien_espace_perso" href="'.$this->href('', $user["name"], '').'" title="Voir mon espace personnel">Mon espace personnel</a><br />';
 	}
-	if ($this->LoadPage("PageMenuUser")!=null) 
-	{ 
+	if ($this->LoadPage("PageMenuUser")) { 
 		$PageMenuUser .= $this->Format("{{include page=\"PageMenuUser\"}}");
-	} else $PageMenuUser .= '';
-	$squel->set(array("nomwiki"=>$user["name"], "urldepart"=>"http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], "urllogin"=>$urllogin,  "PageMenuUser"=>$PageMenuUser));
-	echo (empty($class)) ? $squel->analyser() : '<div class="'.$class.'">'.$squel->analyser().'</div>' ;
+	}
 }
-else
-{
-	// user is not logged in	
-	if ($_REQUEST['action'] == 'checklogged')
-	{
+// cas d'une personne non connectée
+else {
+	$connected = false;
+	// si l'authentification passe mais la session n'est pas créée, on a un problème de cookie	
+	if ($_REQUEST['action'] == 'checklogged') {
 		$error = 'Vous devez accepter les cookies pour pouvoir vous connecter.';
 	}
-
-	include_once('tools/login/libs/squelettephp.class.php');
-	$template_formulaire = $this->GetParameter("templateform");
-	if (empty($template_formulaire) || !file_exists('tools/login/presentation/'.$template_formulaire) ) $template_formulaire="form_default.tpl.html";
-	$squel = new SquelettePhp('tools/login/presentation/'.$template_formulaire);
-	$squel->set(array("error"=>isset($error)?$error:'', "urllogin"=>$urllogin, "urldepart"=>"http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'] , "name"=>isset($_POST["name"])?$_POST["name"]:''));
-	echo (empty($class)) ? $squel->analyser() : '<div class="'.$class.'">'.$squel->analyser().'</div>' ;
 }
+
+//on affiche le template
+if (!class_exists('SquelettePhp')) include_once('tools/login/libs/squelettephp.class.php');
+$squel = new SquelettePhp('tools/login/presentation/templates/'.$template);
+$squel->set(array(
+	"connected" => $connected,
+	"user" => ((isset($user["name"])) ? $user["name"] : ((isset($_POST["name"])) ? $_POST["name"] : '' )), 
+	"homepage" => $homepage, 
+	"signupurl" => $signupurl, 
+	"PageMenuUser" => $PageMenuUser,
+	"error" => $error
+));
+$output = (!empty($class)) ? '<div class="'.$class.'">'."\n".$squel->analyser()."\n".'</div>' : $squel->analyser() ;
+
+echo $output;
 ?>

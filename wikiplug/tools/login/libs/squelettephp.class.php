@@ -3,7 +3,7 @@
 // Source : http://www.massassi.com/php/articles/template_engines/
 
 class SquelettePhp {
-    private $vars; // Contient toutes les variables Ã  insÃ©rer dans le squelette
+    private $vars; // Contient toutes les variables à insérer dans le squelette
 
     /**
     * Constructeur
@@ -37,11 +37,11 @@ class SquelettePhp {
     public function analyser($fichier = null)
     {
         if(!$fichier) $fichier = $this->fichier;
-        extract($this->vars);          // Extrait les variables et les ajoutes Ã  l'espace de noms local
-        ob_start();                    // DÃ©marre le buffer
+        extract($this->vars);          // Extrait les variables et les ajoutes à l'espace de noms local
+        ob_start();                    // Démarre le buffer
         include($fichier);             // Inclusion du fichier
-        $contenu = ob_get_contents();  // RÃ©cupÃ©rer le  contenu du buffer
-        ob_end_clean();                // ArrÃªte et dÃ©truit le buffer
+        $contenu = ob_get_contents();  // Récupérer le  contenu du buffer
+        ob_end_clean();                // Arrête et détruit le buffer
         return $contenu;               // Retourne le contenu
     }
 }
