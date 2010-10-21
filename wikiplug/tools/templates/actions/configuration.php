@@ -11,6 +11,7 @@ if (!empty($param)) {
 	  	case 'root_page':
 	  	case 'wakka_name':
 	  	case 'base_url':
+	  	case 'navigation_links':
 	  	case 'meta_keywords':
 	  	case 'meta_description':
 	  	case 'favorite_theme':

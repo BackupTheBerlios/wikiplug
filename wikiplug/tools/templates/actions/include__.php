@@ -4,6 +4,8 @@ if (!defined("WIKINI_VERSION"))
             die ("acc&egrave;s direct interdit");
 }
 
+if (!$class) $plugin_output_new = '<div class="include">'."\n".$plugin_output_new."\n".'</div>' ;
+
 if (!empty($dblclic) && $dblclic=="1" && $this->HasAccess("write", $incPageName)) {
 	$actiondblclic = ' ondblclick="document.location=\''.$this->Href("edit", $incPageName).'\';"';
 }
@@ -82,16 +84,21 @@ if (isset($this->config['hide_action_template']) && !$this->config['hide_action_
 
 if (!empty($clear) && $clear=='non') $texteclear='';
 else $texteclear = '<div style="clear:both;display:block;"></div>'."\n";
+
 if (!$incPage = $this->LoadPage($incPageName))
 {
 	$plugin_output_new = '<a style="background:transparent url(tools/templates/presentation/images/crayon.png) no-repeat left center;padding-left:12px;" href="'.$this->href('edit', $incPageName).'">Editer '.$incPageName.'</a>';
 } 
 
+//si le lien correspond à l'url, on rajoute une classe "actif"
 if (!empty($actif)&&$actif=="1") {
     $plugin_output_new=str_ireplacement('<a href="'.$this->config["base_url"].$this->tag.'"','<a class="actif" href="'.$this->config["base_url"].$this->tag.'"', $plugin_output_new);
 }
 
-$plugin_output_new = '<div class="div_include"'.$actiondblclic.'>'."\n".$plugin_output_new."\n".$texteclear
-.'</div>'."\n";
+//rajoute le javascript pour le double clic
+$plugin_output_new = str_replace('<div class="include', '<div'.$actiondblclic.' class="include div_include', $plugin_output_new);
+$plugin_output_new = str_replace('include_', '', $plugin_output_new);
+$plugin_output_new =  (!empty($clear) && $clear=='yes') ? $plugin_output_new.'<div style="clear:both;display:block;"></div>'."\n" : $plugin_output_new;
+
 
 ?>

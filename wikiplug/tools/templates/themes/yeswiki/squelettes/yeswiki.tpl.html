@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="fr" class="no-js">
+<head>
+  <meta charset="iso-8859-1">
+  <!--[if IE]><![endif]-->
+
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>{{titrepage}}</title>{{metarobots}}  
+  <meta name="author" content="">
+  <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0;">  
+  <meta name="keywords" content="{{configuration param="meta_keywords"}}" />
+  <meta name="description" content="{{configuration param="meta_description"}}" />
+  <link rel="alternate" type="application/rss+xml" title="Flux RSS des derniers changements du wikini" href="{{configuration param="base_url"}}DerniersChangementsRSS/xml" />
+  <link rel="shortcut icon" type="image/x-icon" href="tools/templates/themes/yeswiki/images/favicon.ico">
+  <link rel="apple-touch-icon" href="tools/templates/themes/yeswiki/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="tools/templates/themes/yeswiki/images/favicon.png" />
+  <link rel="stylesheet" href="tools/templates/themes/yeswiki/styles/yeswiki.css?v=1">
+  <link rel="stylesheet" media="handheld" href="tools/templates/themes/yeswiki/styles/handheld/handheld.css?v=1">
+  <script src="tools/templates/themes/yeswiki/javascripts/modernizr-1.5.min.js"></script>
+</head>
+
+<!--[if lt IE 7 ]> <body {{parambody}} class="ie6"> <![endif]-->
+<!--[if IE 7 ]>    <body {{parambody}} class="ie7"> <![endif]-->
+<!--[if IE 8 ]>    <body {{parambody}} class="ie8"> <![endif]-->
+<!--[if IE 9 ]>    <body {{parambody}} class="ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <body {{parambody}}> <!--<![endif]-->
+
+  <div id="container" class="container_12">
+    <header>
+   		{{include page="PageRapideHaut" class="grid_12 arrondisbas" doubleclic="1" actif="1"}}
+    	{{include page="PageHeader" class="grid_12" doubleclic="1"}}
+        <div class="clear"></div>
+    </header><!-- fin header -->
+    <nav id="topnav">
+        {{include page="PageMenuHaut" class="grid_9" doubleclic="1"}}
+        <div id="searchbar" class="right grid_3">
+			{{moteurrecherche}}
+		</div><!-- fin div searchbar -->
+		<div class="clear"></div>
+    </nav><!-- fin nav -->
+     
+    <div id="main" {{doubleclic}}>
+		{WIKINI_PAGE}
+		{{barreredaction}}
+    </div><!-- fin div main -->
+    
+    <footer>
+		{{include page="PageFooter"  doubleclic="1"}}
+		<div class="clear"></div>
+    </footer><!-- fin footer -->
+  </div> <!-- end of #container -->
+  
+  <script src="http://cdn.jquerytools.org/1.2.5/full/jquery.tools.min.js"></script>
+  <script>!window.jQuery && document.write('<script src="tools/templates/themes/yeswiki/javascripts/jquery.tools.1.2.5.min.js"><\/script>')</script>
+  <script src="tools/templates/themes/yeswiki/javascripts/specifique-squelette-yeswiki.js?v=1"></script>
+  <!--[if lt IE 7 ]>
+    <script src="js/dd_belatedpng.js?v=1"></script>
+  <![endif]-->
+  
+</body>
+</html>

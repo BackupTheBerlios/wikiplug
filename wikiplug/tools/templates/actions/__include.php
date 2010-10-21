@@ -9,5 +9,6 @@ $dblclic = $this->GetParameter('doubleclic');
 $actif = $this->GetParameter('actif');
 $pageincluded = $this->GetParameter('page');
 $clear = $this->GetParameter('clear');
+$class = $this->GetParameter('class');
 
 ?>

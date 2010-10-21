@@ -14,16 +14,16 @@ if (!defined("WIKINI_VERSION"))
 define('FORCER_TEMPLATE_PAR_DEFAUT', (isset($wakkaConfig['hide_action_template'])) ? $wakkaConfig['hide_action_template'] : false);
 
 //Theme par défaut
-define ('THEME_PAR_DEFAUT', (isset($wakkaConfig['favorite_theme'])) ? $wakkaConfig['favorite_theme'] : 'generique');
+define ('THEME_PAR_DEFAUT', (isset($wakkaConfig['favorite_theme'])) ? $wakkaConfig['favorite_theme'] : 'yeswiki');
 
 //Style par défaut
-define ('CSS_PAR_DEFAUT', (isset($wakkaConfig['favorite_style'])) ? $wakkaConfig['favorite_style'] : 'marron.css');
+define ('CSS_PAR_DEFAUT', (isset($wakkaConfig['favorite_style'])) ? $wakkaConfig['favorite_style'] : 'yeswiki.css');
 
 //squelette par défaut
-define ('SQUELETTE_PAR_DEFAUT', (isset($wakkaConfig['favorite_squelette'])) ? $wakkaConfig['favorite_squelette'] : '2colonnesgauche.tpl.html');
+define ('SQUELETTE_PAR_DEFAUT', (isset($wakkaConfig['favorite_squelette'])) ? $wakkaConfig['favorite_squelette'] : 'yeswiki.tpl.html');
 
 //pour que seul le propriétaire et l'admin puissent changer de theme
-define ('SEUL_ADMIN_ET_PROPRIO_CHANGENT_THEME', true);
+define ('SEUL_ADMIN_ET_PROPRIO_CHANGENT_THEME', false);
 
 // Desactivation de l'extension template si l'extension navigation est presente et active. 
 if (isset($plugins_list['navigation'])) 
@@ -174,11 +174,11 @@ if  (isset($vars["squelette"]) && $vars["squelette"]!="") {
 //=======Test existence du template, on utilise le template par defaut sinon=======================================================
 if (!file_exists('tools/templates/themes/'.$wakkaConfig['favorite_theme'].'/squelettes/'.$wakkaConfig['favorite_squelette'])
 	|| !file_exists('tools/templates/themes/'.$wakkaConfig['favorite_theme'].'/styles/'.$wakkaConfig['favorite_style'])) {
-	if (file_exists('tools/templates/themes/default/squelettes/default.tpl.html')
-		&& file_exists('tools/templates/themes/default/styles/default.css')) {
-		$wakkaConfig['favorite_theme']='default';
-		$wakkaConfig['favorite_style']='default.css';
-		$wakkaConfig['favorite_squelette']='default.tpl.html';
+	if (file_exists('tools/templates/themes/outils-reseaux/squelettes/projet.tpl.html')
+		&& file_exists('tools/templates/themes/outils-reseaux/styles/outils-reseaux.css')) {
+		$wakkaConfig['favorite_theme']='outils-reseaux';
+		$wakkaConfig['favorite_style']='outils-reseaux.css';
+		$wakkaConfig['favorite_squelette']='projet.tpl.html';
 		echo 'Certains (ou tous les) fichiers du template '.$wakkaConfig['favorite_theme'].' ont disparu (tools/templates/themes/'.$wakkaConfig['favorite_theme'].'/squelettes/'.$wakkaConfig['favorite_squelette'].' et/ou tools/templates/themes/'.$wakkaConfig['favorite_theme'].'/styles/'.$wakkaConfig['favorite_style'].').<br />Le template par d&eacute;faut est donc utilis&eacute;.';
 } else {
 		exit('Les fichiers du template par d&eacute;faut ont disparu, l\'utilisation des templates est impossible.<br />Veuillez r&eacute;installer le tools template ou contacter l\'administrateur du site.');
