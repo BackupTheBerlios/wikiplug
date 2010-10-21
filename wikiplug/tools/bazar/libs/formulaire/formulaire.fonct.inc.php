@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: formulaire.fonct.inc.php,v 1.18 2010/09/28 14:08:51 mrflos Exp $
+// CVS : $Id: formulaire.fonct.inc.php,v 1.19 2010/10/21 12:33:00 mrflos Exp $
 /**
 * Formulaire
 *
@@ -31,7 +31,7 @@
 //Autres auteurs :
 *@author        Aleandre GRANIER <alexandre@tela-botanica.org>
 *@copyright     Tela-Botanica 2000-2004
-*@version       $Revision: 1.18 $ $Date: 2010/09/28 14:08:51 $
+*@version       $Revision: 1.19 $ $Date: 2010/10/21 12:33:00 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -869,8 +869,7 @@ function champs_mail(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		}
 		$formtemplate->setDefaults($defauts);
 		$formtemplate->applyFilter($tableau_template[1], 'addslashes') ;
-		//$formtemplate->addRule($tableau_template[1],  $tableau_template[2].' obligatoire', 'required', '', 'client') ;
-		$formtemplate->addRule($tableau_template[1], 'Format de l\'adresse mail incorrect', 'email', '', 'client') ;
+		$formtemplate->addRule($tableau_template[1], 'Format de l\'adresse mail incorrect', 'emailorblank', '', 'client') ;
 		//gestion du champs obligatoire
 		if (($tableau_template[9]==0) && isset($tableau_template[8]) && ($tableau_template[8]==1)) {
 			$formtemplate->addRule($tableau_template[1],  $tableau_template[2].' obligatoire', 'required', '', 'client') ;
@@ -1296,6 +1295,58 @@ function labelhtml(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 	elseif ($mode == 'html')
 	{
 		return $texte_fiche."\n";
+	}
+}
+
+/** titre() - Action qui camouffle le titre et le gÈnÈre ‡ partir d'autres champs au formulaire
+*
+* @param    mixed   L'objet QuickForm du formulaire
+* @param    mixed   Le tableau des valeurs des diffÈrentes option pour le texte HTML
+* @param    string  Type d'action pour le formulaire : saisie, modification, vue,... saisie par dÈfaut
+* @return   void
+*/
+function titre(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
+{
+	list($type, $template) = $tableau_template;
+
+	if ( $mode == 'saisie' )
+	{
+		$formtemplate->addElement('hidden', 'bf_titre', $template, array ('id' => 'bf_titre')) ;
+	}
+	elseif ( $mode == 'requete' )
+	{
+		preg_match_all  ('#{{(.*)}}#U'  , $_POST['bf_titre']  , $matches);
+		$tab = array();
+		foreach ($matches[1] as $var) {
+			if (isset($_POST[$var])) {
+				//pour une listefiche ou une checkboxfiche on cherche le titre de la fiche
+				if ( preg_match('#^listefiche#',$var)!=false || preg_match('#^checkboxfiche#',$var)!=false ) {
+					$req = 'SELECT bf_titre FROM `'.BAZ_PREFIXE.'fiche` WHERE bf_id_fiche='.$_POST[$var];
+					$resultat = $GLOBALS['_BAZAR_']['db']->query($req) ;
+					$label = $resultat->fetchRow();
+					$_POST['bf_titre'] = str_replace('{{'.$var.'}}', ($label[0]!=null) ? $label[0] : '', $_POST['bf_titre']);
+				}			
+				//sinon on prend le label de la liste
+				else {
+					//on rÈcupËre le premier chiffre (l'identifiant de la liste)
+					preg_match_all('/[0-9]{1,4}/', $var, $matches);			
+					$req = 'SELECT blv_label FROM '.BAZ_PREFIXE.'liste_valeurs WHERE blv_ce_liste='.$matches[0][0].' AND blv_valeur='.$_POST[$var].' AND blv_ce_i18n="fr-FR"';
+					$resultat = $GLOBALS['_BAZAR_']['db']->query($req) ;
+					$label = $resultat->fetchRow();
+					$_POST['bf_titre'] = str_replace('{{'.$var.'}}', ($label[0]!=null) ? $label[0] : '', $_POST['bf_titre']);
+				}			
+			}
+		}
+		return formulaire_insertion_texte('bf_titre', $_POST['bf_titre']);
+	}
+	elseif ($mode == 'html')
+	{
+		// Le titre
+		return '<h1 class="BAZ_fiche_titre">'.htmlentities($valeurs_fiche['bf_titre']).'</h1>'."\n";
+	}
+	elseif ($mode == 'formulaire_recherche')
+	{
+		return;
 	}
 }
 
@@ -1974,7 +2025,12 @@ function bookmarklet(&$formtemplate, $tableau_template, $mode, $valeurs_fiche) {
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: formulaire.fonct.inc.php,v $
-* Revision 1.18  2010/09/28 14:08:51  mrflos
+* Revision 1.19  2010/10/21 12:33:00  mrflos
+* fonctions d'import / export cvs
+* corrections de bugs mineurs
+* corrections du bug qui supprime toutes les pages wiki!
+*
+* Revision 1.18  2010-09-28 14:08:51  mrflos
 * corrections bugs mineurs, d√©placement javascript en bas de page
 *
 * Revision 1.17  2010-09-27 17:54:58  mrflos

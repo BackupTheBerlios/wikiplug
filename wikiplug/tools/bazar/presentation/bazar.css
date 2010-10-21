@@ -87,20 +87,26 @@ padding:3px;
 margin:10px 0;
 }
 .BAZ_info {
-background:#fff url(images/info.png) no-repeat 3px center;
-border:1px solid #39c;
-color:#39c;
+background:#FBF9EE url(images/info.png) no-repeat 3px center;
+border:1px solid #FCEFA1;
+color:#444;
 font-size:0.9em;
 margin:10px 0 5px;
 padding:7px 7px 6px 36px;
+-moz-border-radius:4px;
+-webkit-border-radius:4px;
+border-radius:4px;
 }
 .BAZ_error {
-background:#fff url(images/error.png) no-repeat 3px center;
+background:#FEF1EC url(images/error.png) no-repeat 3px center;
 border:1px solid #CD0A0A;
 color:#CD0A0A;
 font-size:0.9em;
 margin:10px 0 5px;
 padding:7px 7px 6px 36px;
+-moz-border-radius:4px;
+-webkit-border-radius:4px;
+border-radius:4px;
 }
 
 .BAZ_actions_fiche li {

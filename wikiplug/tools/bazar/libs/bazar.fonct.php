@@ -846,17 +846,7 @@ function baz_requete_bazar_fiche($valeur) {
 		}
 	}
 		
-	$requete = NULL;
-	//l'annonce est directement publiee pour les admins
-	if (!BAZ_SANS_AUTH) $utilisateur = new Administrateur_bazar($GLOBALS['AUTH']);
-	if (!BAZ_SANS_AUTH && ( $utilisateur->isAdmin( $GLOBALS['_BAZAR_']['id_typeannonce']) ||
-		$utilisateur->isSuperAdmin() ) ) {
-		$requete.='bf_statut_fiche=1, ';
-	}
-	//sinon on met la constante du fichier de configuration
-	else {
-		$requete.='bf_statut_fiche="'.BAZ_ETAT_VALIDATION.'", ';
-	}
+	$requete = 'bf_statut_fiche="'.BAZ_ETAT_VALIDATION.'", ';
 	$tableau=formulaire_valeurs_template_champs($GLOBALS['_BAZAR_']['template']);
 	for ($i=0; $i<count($tableau); $i++) {
 		$requete .= $tableau[$i][0]($formtemplate, $tableau[$i], 'requete', $valeur);
@@ -903,7 +893,7 @@ function baz_insertion($valeur) {
 			include_once('Mail.php');
 			include_once('Mail/mime.php');
 			$lien = str_replace("/wakka.php?wiki=","",$GLOBALS['wiki']->config["base_url"]);
-			$sujet = remove_accents('['.str_replace("http://","",$lien).'] nouvelle fiche ajoutee : '.$valeur['bf_titre']);
+			$sujet = remove_accents('['.str_replace("http://","",$lien).'] nouvelle fiche ajoutee : '.$_POST['bf_titre']);
 			$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_CONSULTER);
 			$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_ACTION, BAZ_VOIR_FICHE);
 			$GLOBALS['_BAZAR_']['url']->addQueryString('id_fiche', $GLOBALS['_BAZAR_']['id_fiche']) ;
@@ -975,7 +965,7 @@ function baz_mise_a_jour($valeur) {
 			include_once('Mail.php');
 			include_once('Mail/mime.php');
 			$lien = str_replace("/wakka.php?wiki=","",$GLOBALS['wiki']->config["base_url"]);
-			$sujet = remove_accents('['.str_replace("http://","",$lien).'] fiche modifiee : '.$valeur['bf_titre']);
+			$sujet = remove_accents('['.str_replace("http://","",$lien).'] fiche modifiee : '.$_POST['bf_titre']);
 			$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_CONSULTER);
 			$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_ACTION, BAZ_VOIR_FICHE);
 			$GLOBALS['_BAZAR_']['url']->addQueryString('id_fiche', $GLOBALS['_BAZAR_']['id_fiche']) ;
@@ -1024,46 +1014,47 @@ function baz_mise_a_jour($valeur) {
 * @return   void
 */
 function baz_suppression($idfiche) {
-	$valeur = baz_valeurs_fiche($idfiche);
-	if ( baz_a_le_droit( 'saisie_fiche', $valeur['bf_ce_utilisateur'] ) ) {
-		//suppression des valeurs des champs texte, checkbox et liste
-		$requete = 'DELETE FROM '.BAZ_PREFIXE.'fiche_valeur_texte WHERE bfvt_ce_fiche = "'.$idfiche.'"';
-		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
-		if (DB::isError($resultat)) {
-			return ('Echec de la requete<br />'.$resultat->getMessage().'<br />'.$resultat->getDebugInfo().'<br />'."\n") ;
+	if ($idfiche != '') {
+		$valeur = baz_valeurs_fiche($idfiche);
+		if ( baz_a_le_droit( 'saisie_fiche', $valeur['bf_ce_utilisateur'] ) ) {
+			//suppression des valeurs des champs texte, checkbox et liste
+			$requete = 'DELETE FROM '.BAZ_PREFIXE.'fiche_valeur_texte WHERE bfvt_ce_fiche = "'.$idfiche.'"';
+			$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
+			if (DB::isError($resultat)) {
+				return ('Echec de la requete<br />'.$resultat->getMessage().'<br />'.$resultat->getDebugInfo().'<br />'."\n") ;
+			}
+	
+			//suppression des valeurs des champs texte long
+			$requete = 'DELETE FROM '.$GLOBALS['wiki']->config["table_prefix"].'triples WHERE resource = "'.$idfiche.'"';
+			$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
+			if (DB::isError($resultat)) {
+				return ('Echec de la requete<br />'.$resultat->getMessage().'<br />'.$resultat->getDebugInfo().'<br />'."\n") ;
+			}
+			
+			//TODO:suppression des fichiers et images associées
+	
+			//suppression de la fiche dans '.BAZ_PREFIXE.'fiche
+			$requete = 'DELETE FROM '.BAZ_PREFIXE.'fiche WHERE bf_id_fiche = "'.$idfiche.'"';
+			$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
+			if (DB::isError($resultat)) {
+				echo ('Echec de la requete<br />'.$resultat->getMessage().'<br />'.$resultat->getDebugInfo().'<br />'."\n") ;
+			}
+			
+			//on supprime les pages wiki crées
+			$GLOBALS['wiki']->DeleteOrphanedPage($idfiche);		
+	
+			//on nettoie l'url, on retourne à la consultation des fiches
+			$GLOBALS['_BAZAR_']['url']->addQueryString ('message', 'delete_ok') ;
+			$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_CONSULTER);
+			$GLOBALS['_BAZAR_']['url']->removeQueryString (BAZ_VARIABLE_VOIR) ;
+			$GLOBALS['_BAZAR_']['url']->removeQueryString ('id_fiche') ;
+			header ('Location: '.$GLOBALS['_BAZAR_']['url']->getURL()) ;
+			exit;
 		}
-
-		//suppression des valeurs des champs texte long
-		$requete = 'DELETE FROM '.$GLOBALS['wiki']->config["table_prefix"].'triples WHERE resource = "'.$idfiche.'"';
-		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
-		if (DB::isError($resultat)) {
-			return ('Echec de la requete<br />'.$resultat->getMessage().'<br />'.$resultat->getDebugInfo().'<br />'."\n") ;
+		else {
+			echo '<div class="BAZ_error">'.BAZ_PAS_DROIT_SUPPRIMER.'</div>'."\n";
 		}
-		
-		//TODO:suppression des fichiers et images associées
-
-		//suppression de la fiche dans '.BAZ_PREFIXE.'fiche
-		$requete = 'DELETE FROM '.BAZ_PREFIXE.'fiche WHERE bf_id_fiche = "'.$idfiche.'"';
-		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
-		if (DB::isError($resultat)) {
-			echo ('Echec de la requete<br />'.$resultat->getMessage().'<br />'.$resultat->getDebugInfo().'<br />'."\n") ;
-		}
-		
-		//on supprime les pages wiki crées
-		$GLOBALS['wiki']->DeleteOrphanedPage($idfiche);		
-
-		//on nettoie l'url, on retourne à la consultation des fiches
-		$GLOBALS['_BAZAR_']['url']->addQueryString ('message', 'delete_ok') ;
-		$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_CONSULTER);
-		$GLOBALS['_BAZAR_']['url']->removeQueryString (BAZ_VARIABLE_VOIR) ;
-		$GLOBALS['_BAZAR_']['url']->removeQueryString ('id_fiche') ;
-		header ('Location: '.$GLOBALS['_BAZAR_']['url']->getURL()) ;
-		exit;
 	}
-	else {
-		echo '<div class="BAZ_error">'.BAZ_PAS_DROIT_SUPPRIMER.'</div>'."\n";
-	}
-
 	return ;
 }
 
@@ -2417,14 +2408,17 @@ function baz_requete_recherche_fiches($tableau = '', $tri = '', $id_typeannonce 
 	//on parcourt le tableau post pour agrémenter la requete les valeurs passées dans les champs liste et checkbox du moteur de recherche
 	if ($tableau == '') {
 		$tableau = array();
-		reset($_POST);
-		while (list($nom, $val) = each($_POST)) {		
-			if ($nom != 'recherche_mots_cles' && $nom != 'rechercher' && $nom != 'personnes' && $nom != 'recherche_effectuee' &&
-			    $nom != 'id_typeannonce' && $val != 0) {			
-				if (is_array($val)) {
-					$val = implode(',', array_keys($val));
+		//si l'on est passé par le mot de recherche, on transforme les spécifications de recherche sur les liste et checkbox 
+		if (isset($_POST['rechercher'])) {
+			reset($_POST);
+			while (list($nom, $val) = each($_POST)) {		
+				if ($nom != 'recherche_mots_cles' && $nom != 'rechercher' && $nom != 'personnes' && $nom != 'recherche_effectuee' &&
+				    $nom != 'id_typeannonce' && $val != 0) {			
+					if (is_array($val)) {
+						$val = implode(',', array_keys($val));
+					}
+					$tableau[$nom] = $val;
 				}
-				$tableau[$nom] = $val;
 			}
 		}
 	}
@@ -2432,9 +2426,9 @@ function baz_requete_recherche_fiches($tableau = '', $tri = '', $id_typeannonce 
 	$requeteWhereListe = '';
 	reset($tableau);
 	while (list($nom, $val) = each($tableau)) {		
-			$requeteWhereListe .= ' AND bf_id_fiche IN (SELECT bfvt_ce_fiche FROM '.BAZ_PREFIXE.'fiche_valeur_texte WHERE bfvt_id_element_form="'.$nom.'" AND bfvt_texte IN ('.$val.')) ';
+		$requeteWhereListe .= ' AND bf_id_fiche IN (SELECT bfvt_ce_fiche FROM '.BAZ_PREFIXE.'fiche_valeur_texte WHERE bfvt_id_element_form="'.$nom.'" AND bfvt_texte IN ('.$val.')) ';
 	}
-	
+		
 	if ($id_typeannonce!='toutes') {
 		$requeteWhere .= ' AND bf_ce_nature="'.$id_typeannonce.'" '.$requeteWhereListe;
 	}
