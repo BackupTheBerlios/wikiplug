@@ -91,7 +91,7 @@ else {
 	//on affiche le formulaire d'indentification sinon
 	else {
 		$output .= '<div class="info_box">Le handler /mail est r&eacute;serv&eacute; au groupe des administrateurs. Si vous faites parti ce groupe, veuillez vous identifier.</div>';
-		$output .= $this->Format('{{login}}');
+		$output .= $this->Format('{{login templateform="form_minimal.tpl.html"}}');
 	}
 	
 	//affichage à l'écran
