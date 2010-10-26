@@ -580,7 +580,7 @@ function baz_formulaire($mode, $url = '', $valeurs = '') {
 		$lien_formulaire = $GLOBALS['_BAZAR_']['url'];
 		$lien_formulaire->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_SAISIR);
 		//Definir le lien du formulaire en fonction du mode de formulaire choisi
-		if ($mode == BAZ_DEPOSER_ANNONCE) {
+		if ($mode == BAZ_CHOISIR_TYPE_FICHE) {
 			$lien_formulaire->addQueryString(BAZ_VARIABLE_ACTION, BAZ_ACTION_NOUVEAU);
 		}
 		if ($mode == BAZ_ACTION_NOUVEAU) {
@@ -631,7 +631,7 @@ function baz_formulaire($mode, $url = '', $valeurs = '') {
 	//------------------------------------------------------------------------------------------------
 	//AFFICHAGE DU FORMULAIRE GENERAL DE CHOIX DU TYPE D'ANNONCE
 	//------------------------------------------------------------------------------------------------
-	if ($mode == BAZ_DEPOSER_ANNONCE) {
+	if ($mode == BAZ_CHOISIR_TYPE_FICHE) {
 		if (isset($GLOBALS['_BAZAR_']['id_typeannonce']) && $GLOBALS['_BAZAR_']['id_typeannonce'] != 'toutes') {
 			$mode = BAZ_ACTION_NOUVEAU ;
 		} else {

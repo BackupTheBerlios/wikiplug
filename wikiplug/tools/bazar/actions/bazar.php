@@ -21,7 +21,7 @@
 // | along with Foobar; if not, write to the Free Software                                                |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: bazar.php,v 1.10 2010/10/26 10:42:11 mrflos Exp $
+// CVS : $Id: bazar.php,v 1.11 2010/10/26 14:18:41 ddelon Exp $
 /**
 * bazar.php
 *
@@ -31,7 +31,7 @@
 //Auteur original :
 *@author        Florian SCHMITT <florian@outils-reseaux.org>
 *@copyright     Florian SCHMITT 2008
-*@version       $Revision: 1.10 $ $Date: 2010/10/26 10:42:11 $
+*@version       $Revision: 1.11 $ $Date: 2010/10/26 14:18:41 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -59,7 +59,7 @@ elseif (!isset($_GET[BAZ_VARIABLE_VOIR])) {
 	$_GET[BAZ_VARIABLE_VOIR]=BAZ_VOIR_CONSULTER;
 }
 
-//ordre d'affichage des fiches : chronologique ou alphabétique
+//ordre d'affichage des fiches : chronologique ou alphabï¿½tique
 $GLOBALS['_BAZAR_']['tri'] = $this->GetParameter('tri');
 if (empty($GLOBALS['_BAZAR_']['tri'])) {
 	$GLOBALS['_BAZAR_']['tri']='chronologique';
@@ -182,7 +182,7 @@ if (isset ($_GET[BAZ_VARIABLE_VOIR])) {
 				}
 				else
 				{
-					$_GET[BAZ_VARIABLE_ACTION] = BAZ_DEPOSER_ANNONCE;
+					$_GET[BAZ_VARIABLE_ACTION] = BAZ_CHOISIR_TYPE_FICHE;
 					$res .= baz_formulaire($_GET[BAZ_VARIABLE_ACTION]);
 				}
 				break;
@@ -215,7 +215,10 @@ echo $res ;
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: bazar.php,v $
-* Revision 1.10  2010/10/26 10:42:11  mrflos
+* Revision 1.11  2010/10/26 14:18:41  ddelon
+* Remaniement des constantes
+*
+* Revision 1.10  2010-10-26 10:42:11  mrflos
 * snapshot avant coding party
 *
 * Revision 1.9  2010-06-02 08:48:51  mrflos
