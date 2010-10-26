@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: formulaire.fonct.inc.php,v 1.20 2010/10/26 10:42:11 mrflos Exp $
+// CVS : $Id: formulaire.fonct.inc.php,v 1.21 2010/10/26 13:09:30 mrflos Exp $
 /**
 * Formulaire
 *
@@ -31,7 +31,7 @@
 //Autres auteurs :
 *@author        Aleandre GRANIER <alexandre@tela-botanica.org>
 *@copyright     Tela-Botanica 2000-2004
-*@version       $Revision: 1.20 $ $Date: 2010/10/26 10:42:11 $
+*@version       $Revision: 1.21 $ $Date: 2010/10/26 13:09:30 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -351,7 +351,12 @@ function checkbox(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 			//$checkbox[$i]= & HTML_QuickForm::createElement($tableau_template[0], $ligne[1], $tab_chkbox, $ligne[2], $optioncheckbox) ;
 			$checkbox[$i] = $formtemplate->createElement($tableau_template[0], $ligne[1], $tab_chkbox, $ligne[2], $optioncheckbox);
 			$i++;
-		}		
+		}	
+		$squelette_checkbox =& $formtemplate->defaultRenderer();
+		$squelette_checkbox->setElementTemplate( '<fieldset class="bazar_fieldset">'."\n".'<legend>{label}'.
+												'<!-- BEGIN required --><span class="symbole_obligatoire">&nbsp;*</span><!-- END required -->'."\n".
+												'</legend>'."\n".'{element}'."\n".'</fieldset> '."\n"."\n", $tableau_template[0].$tableau_template[1].$tableau_template[6]);
+		$squelette_checkbox->setGroupElementTemplate( "\n".'<div class="bazar_checkbox">'."\n".'{element}'."\n".'</div>'."\n", $tableau_template[0].$tableau_template[1].$tableau_template[6]);
 		$formtemplate->addGroup($checkbox, $tableau_template[0].$tableau_template[1].$tableau_template[6], $tableau_template[2].$bulledaide, "\n");
 		if (isset($tableau_template[8]) && $tableau_template[8]==1) {
 			$formtemplate->addGroupRule($tableau_template[0].$tableau_template[1].$tableau_template[6], $tableau_template[2].' obligatoire', 'required', null, 1, 'client');
@@ -484,19 +489,8 @@ function listedatedeb(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 	elseif ( $mode == 'requete' )
 	{
 		// On construit la date selon le format YYYY-mm-dd
-		$date = $valeurs_fiche[$tableau_template[1]]['Y'].'-'.$valeurs_fiche[$tableau_template[1]]['m'].'-'.$valeurs_fiche[$tableau_template[1]]['d'] ;
-
-		// si la date de fin evenement est anterieure a la date de debut, on met la date de debut
-		// pour eviter les incoherence
-
-		if ($tableau_template[1] == 'bf_date_fin_evenement' &&
-				mktime(0,0,0, $valeurs_fiche['bf_date_debut_evenement']['m'], $valeurs_fiche['bf_date_debut_evenement']['d'], $valeurs_fiche['bf_date_debut_evenement']['Y']) >
-				mktime(0,0,0, $valeurs_fiche['bf_date_fin_evenement']['m'], $valeurs_fiche['bf_date_fin_evenement']['d'], $valeurs_fiche['bf_date_fin_evenement']['Y'])) {
-			$val = $valeurs_fiche['bf_date_debut_evenement']['Y'].'-'.$valeurs_fiche['bf_date_debut_evenement']['m'].'-'.$valeurs_fiche['bf_date_debut_evenement']['d'] ;
-		} else {
-			$val = $valeurs_fiche[$tableau_template[1]]['Y'].'-'.$valeurs_fiche[$tableau_template[1]]['m'].'-'.$valeurs_fiche[$tableau_template[1]]['d'] ;
-		}
-		formulaire_insertion_texte($tableau_template[1], $val);
+		$date = $_POST[$tableau_template[1]]['Y'].'-'.$_POST[$tableau_template[1]]['m'].'-'.$_POST[$tableau_template[1]]['d'] ;
+		formulaire_insertion_texte($tableau_template[1], $date);				
 		return;
 	}
 	elseif ($mode == 'recherche')
@@ -505,33 +499,9 @@ function listedatedeb(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 	}
 	elseif ($mode == 'html')
 	{
-		$res='';
-		$val=$tableau_template[1];
-		if (!in_array($val, array ('bf_date_debut_validite_fiche', 'bf_date_fin_validite_fiche'))) {
-			if ($valeurs_fiche[$val] != '' && $valeurs_fiche[$val] != '0000-00-00') {
-				// Petit test pour afficher la date de debut et de fin d evenement
-				if ($val == 'bf_date_debut_evenement' || $val == 'bf_date_fin_evenement') {
-					if ($valeurs_fiche['bf_date_debut_evenement'] == $valeurs_fiche['bf_date_fin_evenement']) {
-						//if ($val == 'bf_date_debut_evenement') continue;
-						$res .= '<div class="BAZ_rubrique BAZ_rubrique_'.$GLOBALS['_BAZAR_']['class'].'">'."\n".'<span class="BAZ_label" id="'.$tableau_template[1].'_rubrique">'.BAZ_LE.':</span>'."\n";
-						$res .= '<span class="BAZ_texte BAZ_texte_'.$GLOBALS['_BAZAR_']['class'].'" id="'.$tableau_template[1].'_description"> '.strftime('%d.%m.%Y',strtotime($valeurs_fiche['bf_date_debut_evenement'])).'</span>'."\n".'</div>'."\n";
-					} else {
-
-						if ($val == 'bf_date_debut_evenement') {
-							$res .= '<div class="BAZ_rubrique BAZ_rubrique_'.$GLOBALS['_BAZAR_']['class'].'">'."\n".'<span class="BAZ_label" id="'.$tableau_template[1].'_rubrique">';
-							$res .= BAZ_DU;
-							$res .= '</span>'."\n".'<span class="BAZ_texte BAZ_texte_'.$GLOBALS['_BAZAR_']['class'].' '.$tableau_template[1].'_description"> '.strftime('%d.%m.%Y',strtotime($valeurs_fiche[$val])).'</span>'."\n";
-						} else {
-							$res .= '<span class="BAZ_label" id="'.$tableau_template[1].'_rubrique">'.BAZ_AU;
-							$res .= '</span>'."\n".'<span class="BAZ_texte BAZ_texte_'.$GLOBALS['_BAZAR_']['class'].' '.$tableau_template[1].'_description"> '.strftime('%d.%m.%Y',strtotime($valeurs_fiche[$val])).'</span>'."\n".'</div>'."\n";
-						}
-					}
-				}
-
-				$res .= '<div class="BAZ_rubrique BAZ_rubrique_'.$GLOBALS['_BAZAR_']['class'].'">'."\n".'<span class="BAZ_label '.$tableau_template[1].'_rubrique">'.$tableau_template[2].':</span>'."\n";
-				$res .= '<span class="BAZ_texte BAZ_texte_'.$GLOBALS['_BAZAR_']['class'].' '.$tableau_template[1].'_description"> '.strftime('%d.%m.%Y',strtotime($valeurs_fiche[$val])).'</span>'."\n".'</div>'."\n";
-			}
-		}
+		$res = '<h1>'.$tableau_template[1].' - '.$valeurs_fiche[$tableau_template[1]].'</h1><div class="BAZ_rubrique  BAZ_rubrique_'.$GLOBALS['_BAZAR_']['class'].'">'."\n".
+					'<span class="BAZ_label BAZ_label_'.$GLOBALS['_BAZAR_']['class'].'">'.$tableau_template[2].':</span>'."\n";
+		$res .= '<span class="BAZ_texte BAZ_texte_'.$GLOBALS['_BAZAR_']['class'].'">'.strftime('%d.%m.%Y',strtotime($valeurs_fiche[$tableau_template[1]])).'</span>'."\n".'</div>'."\n";
 		return $res;
 	}
 }
@@ -2025,7 +1995,10 @@ function bookmarklet(&$formtemplate, $tableau_template, $mode, $valeurs_fiche) {
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: formulaire.fonct.inc.php,v $
-* Revision 1.20  2010/10/26 10:42:11  mrflos
+* Revision 1.21  2010/10/26 13:09:30  mrflos
+* snapshot avant coding party
+*
+* Revision 1.20  2010-10-26 10:42:11  mrflos
 * snapshot avant coding party
 *
 * Revision 1.19  2010-10-21 12:33:00  mrflos

@@ -1,6 +1,6 @@
 <?php
 /*
-selecteur.php
+template.php
 Code original de ce fichier : Florian SCHMITT
 Copyright (c) 2007, Florian SCHMITT <florian.schmitt@laposte.net>
 All rights reserved.

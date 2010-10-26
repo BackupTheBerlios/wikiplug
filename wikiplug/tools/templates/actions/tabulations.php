@@ -4,7 +4,7 @@ if (!defined("WIKINI_VERSION"))
         die ("acc&egrave;s direct interdit");
 }
 
-//on rÃ©cupÃ¨re les tabulations globales stockÃ©es
+//on récupère les tabulations globales stockées
 $tabs_globales = explode("\n", $this->GetTripleValue('tab_globale', 'http://outils-reseaux.org/_vocabulary/tabs', '', ''));
 
 echo '<ul>'."\n";

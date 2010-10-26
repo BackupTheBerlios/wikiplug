@@ -53,6 +53,8 @@ if ($this->HasAccess("write")) {
 	'<a href="'.$this->href("referrers").'" title="Cliquez pour voir les URLs faisant r&eacute;f&eacute;rence &agrave; cette page.">'."\n".
 	'R&eacute;f&eacute;rences</a> :: '."\n".
 	"<a href=\"".$this->href("plugin")."\">Extensions</a>\n".
+	" :: <a class=\"link_mail\" rel=\"#overlay-link\" href=\"".$this->href("mail")."\" title=\"Envoyer le contenu de la page par mail.\">Envoyer mail</a>\n".
+	" :: <a class=\"link_share\" rel=\"#overlay-link\" href=\"".$this->href("share")."\" title=\"Voir les possibilit&eacute;s de partage de cette page.\">Partager</a>\n".
 	'</div>'."\n";
 	
 	echo $wikini_barre_bas;	

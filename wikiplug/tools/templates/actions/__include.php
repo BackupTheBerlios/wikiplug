@@ -10,5 +10,8 @@ $actif = $this->GetParameter('actif');
 $pageincluded = $this->GetParameter('page');
 $clear = $this->GetParameter('clear');
 $class = $this->GetParameter('class');
+if (empty($class)) {
+	$class = 'include';
+}
 
 ?>

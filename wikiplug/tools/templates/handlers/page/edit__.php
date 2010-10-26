@@ -16,11 +16,10 @@ $plugin_output_new = str_replace("<script type=\"text/javascript\">\n".
 				
 if (!isset($this->config['hide_action_template']) or (isset($this->config['hide_action_template']) && !$this->config['hide_action_template'])) { 
 	$selecteur = '';
-	if ($this->HasAccess("write") && $this->HasAccess("read") && 
-	(!SEUL_ADMIN_ET_PROPRIO_CHANGENT_THEME || 
-	(SEUL_ADMIN_ET_PROPRIO_CHANGENT_THEME && ($this->UserIsAdmin() || $this->UserIsOwner())))) {
+	if ($this->HasAccess("write") && $this->HasAccess("read") && (!SEUL_ADMIN_ET_PROPRIO_CHANGENT_THEME || 
+		(SEUL_ADMIN_ET_PROPRIO_CHANGENT_THEME && ($this->UserIsAdmin() || $this->UserIsOwner())))) {
 		// Edition
-		if (!isset($_POST["submit"]) or (isset($_POST["submit"]) && $_POST["submit"] != html_entity_decode('Aper&ccedil;u') && $_POST["submit"] != 'Sauver')) {
+		if (!isset($_POST["submit"]) || (isset($_POST["submit"]) && $_POST["submit"] != html_entity_decode('Aper&ccedil;u') && $_POST["submit"] != 'Sauver')) {
 			$selecteur .= 'Th&egrave;me: <select name="theme" onchange="changeVal(this.value)">'."\n";
 		    foreach(array_keys($this->config['templates']) as $key => $value) {
 		            if($value !== $this->config['favorite_theme']) {
@@ -101,14 +100,14 @@ if (!isset($this->config['hide_action_template']) or (isset($this->config['hide_
 			//--></script>';
 		}
 	} 
-	//quand le changement des valeurs du template est cachÃ©, il faut stocker les valeurs dÃ©ja entrÃ©es pour ne pas retourner au template par dÃ©faut
+	//quand le changement des valeurs du template est caché, il faut stocker les valeurs déja entrées pour ne pas retourner au template par défaut
 	elseif (SEUL_ADMIN_ET_PROPRIO_CHANGENT_THEME) {
 		$selecteur .= '<input type="hidden" name="theme" value="'.$this->config['favorite_theme'].'" />'."\n";
 		$selecteur .= '<input type="hidden" name="squelette" value="'.$this->config['favorite_squelette'].'" />'."\n";
 		$selecteur .= '<input type="hidden" name="style" value="'.$this->config['favorite_style'].'" />'."\n";
 	}
 	//on ajoute la selection des styles
-	$plugin_output_new=preg_replace ('/\<input name=\"submit\" type=\"submit\" value=\"Sauver\"/',
+	$plugin_output_new = preg_replace ('/\<input name=\"submit\" type=\"submit\" value=\"Sauver\"/',
 	$selecteur.'<input name="submit" type="submit" value="Sauver"', $plugin_output_new);
 }
 

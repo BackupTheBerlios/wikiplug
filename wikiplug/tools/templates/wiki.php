@@ -1,9 +1,5 @@
 <?php
-
-// Partie publique
-
-if (!defined("WIKINI_VERSION"))
-{
+if (!defined("WIKINI_VERSION")) {
 	die ("acc&egrave;s direct interdit");
 }
 
@@ -26,12 +22,10 @@ define ('SQUELETTE_PAR_DEFAUT', (isset($wakkaConfig['favorite_squelette'])) ? $w
 define ('SEUL_ADMIN_ET_PROPRIO_CHANGENT_THEME', false);
 
 // Desactivation de l'extension template si l'extension navigation est presente et active. 
-if (isset($plugins_list['navigation'])) 
-{
+if (isset($plugins_list['navigation'])) {
 	unset($k);	
 	return;
 }
-
 
 //on cherche tous les dossiers du repertoire themes et des sous dossier styles et squelettes, et on les range dans le tableau $wakkaConfig['templates']
 $repertoire = 'tools'.DIRECTORY_SEPARATOR.'templates'.DIRECTORY_SEPARATOR.'themes';
@@ -57,10 +51,10 @@ closedir($dir);
 if (is_array($wakkaConfig)) ksort($wakkaConfig['templates']);
 
 
-//si POST
+//si le theme est passé en paramètre, on l'utilise
 //=======Changer de theme=================================================================================================
-if (isset($_POST['theme'])  && array_key_exists($_POST['theme'], $wakkaConfig['templates'])) {
-	$wakkaConfig['favorite_theme'] = $_POST['theme'];
+if (isset($_REQUEST['theme'])  && array_key_exists($_REQUEST['theme'], $wakkaConfig['templates'])) {
+	$wakkaConfig['favorite_theme'] = $_REQUEST['theme'];
 }
 else {
 	$wakkaConfig['favorite_theme'] = THEME_PAR_DEFAUT;
@@ -68,16 +62,16 @@ else {
 
 //=======Changer de style=====================================================================================================
 $styles['none']='pas de style';
-if (isset($_POST['style']) && array_key_exists($_POST['style'], $wakkaConfig['templates'][$wakkaConfig['favorite_theme']]['style'])) {
-	$wakkaConfig['favorite_style'] = $_POST['style'];
+if (isset($_REQUEST['style']) && array_key_exists($_REQUEST['style'], $wakkaConfig['templates'][$wakkaConfig['favorite_theme']]['style'])) {
+	$wakkaConfig['favorite_style'] = $_REQUEST['style'];
 }
 else {
 	$wakkaConfig['favorite_style'] = CSS_PAR_DEFAUT;
 }
 
 //=======Changer de squelette=================================================================================================    
-if(isset($_POST['squelette']) && array_key_exists($_POST['squelette'], $wakkaConfig['templates'][$wakkaConfig['favorite_theme']]['squelette'])) {
-	$wakkaConfig['favorite_squelette'] = $_POST['squelette'];
+if(isset($_REQUEST['squelette']) && array_key_exists($_REQUEST['squelette'], $wakkaConfig['templates'][$wakkaConfig['favorite_theme']]['squelette'])) {
+	$wakkaConfig['favorite_squelette'] = $_REQUEST['squelette'];
 }
 else {
 	$wakkaConfig['favorite_squelette'] = SQUELETTE_PAR_DEFAUT;
@@ -127,16 +121,14 @@ $wikiClassesContent [] = '
 ';	
 
 
-//on cherche l'action template dans la page, qui definit le graphisme a utiliser
-if (isset($_POST["submit"]) && $_POST["submit"] == html_entity_decode('Aper&ccedil;u')) 
-{
+//on cherche l'action template dans la page, qui definit le graphisme a utiliser, dans le cas d'un aperçu
+if (isset($_POST["submit"]) && $_POST["submit"] == html_entity_decode('Aper&ccedil;u')) {
 	$contenu["body"] = $_POST["body"].'{{template theme="'.$_POST["theme"].'" squelette="'.$_POST["squelette"].'" style="'.$_POST["style"].'"}}';	
 	$_POST["body"] = $_POST["body"].'{{template theme="'.$_POST["theme"].'" squelette="'.$_POST["squelette"].'" style="'.$_POST["style"].'"}}';
 } 
 
-else 
-{
-	$contenu=$wiki->LoadPage($page);
+else {
+	$contenu = $wiki->LoadPage($page);
 }
 
 
@@ -174,11 +166,11 @@ if  (isset($vars["squelette"]) && $vars["squelette"]!="") {
 //=======Test existence du template, on utilise le template par defaut sinon=======================================================
 if (!file_exists('tools/templates/themes/'.$wakkaConfig['favorite_theme'].'/squelettes/'.$wakkaConfig['favorite_squelette'])
 	|| !file_exists('tools/templates/themes/'.$wakkaConfig['favorite_theme'].'/styles/'.$wakkaConfig['favorite_style'])) {
-	if (file_exists('tools/templates/themes/outils-reseaux/squelettes/projet.tpl.html')
-		&& file_exists('tools/templates/themes/outils-reseaux/styles/outils-reseaux.css')) {
-		$wakkaConfig['favorite_theme']='outils-reseaux';
-		$wakkaConfig['favorite_style']='outils-reseaux.css';
-		$wakkaConfig['favorite_squelette']='projet.tpl.html';
+	if (file_exists('tools/templates/themes/yeswiki/squelettes/yeswiki.tpl.html')
+		&& file_exists('tools/templates/themes/yeswiki/styles/yeswiki.css')) {
+		$wakkaConfig['favorite_theme']='yeswiki';
+		$wakkaConfig['favorite_style']='yeswiki.css';
+		$wakkaConfig['favorite_squelette']='yeswiki.tpl.html';
 		echo 'Certains (ou tous les) fichiers du template '.$wakkaConfig['favorite_theme'].' ont disparu (tools/templates/themes/'.$wakkaConfig['favorite_theme'].'/squelettes/'.$wakkaConfig['favorite_squelette'].' et/ou tools/templates/themes/'.$wakkaConfig['favorite_theme'].'/styles/'.$wakkaConfig['favorite_style'].').<br />Le template par d&eacute;faut est donc utilis&eacute;.';
 } else {
 		exit('Les fichiers du template par d&eacute;faut ont disparu, l\'utilisation des templates est impossible.<br />Veuillez r&eacute;installer le tools template ou contacter l\'administrateur du site.');
