@@ -6,7 +6,7 @@
 *@package Bazar
 //Auteur original :
 *@author        Florian SCHMITT <florian@outils-reseaux.org>
-*@version       $Revision: 1.6 $ $Date: 2010/05/03 08:36:15 $
+*@version       $Revision: 1.7 $ $Date: 2010/10/26 14:30:09 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -14,6 +14,11 @@
 // +------------------------------------------------------------------------------------------------------+
 // |                                            ENTETE du PROGRAMME                                       |
 // +------------------------------------------------------------------------------------------------------+
+
+if (!defined("WIKINI_VERSION")) {
+        die ("acc&egrave;s direct interdit");
+}
+
 
 //récupération des paramètres wikini
 $categorie_nature = $this->GetParameter("categorienature");

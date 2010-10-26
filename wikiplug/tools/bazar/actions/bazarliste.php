@@ -15,7 +15,13 @@
 // |                                            ENTETE du PROGRAMME                                       |
 // +------------------------------------------------------------------------------------------------------+
 
+
+if (!defined("WIKINI_VERSION")) {
+        die ("acc&egrave;s direct interdit");
+}
+
 //récupération des paramètres wikini
+
 $categorie_nature = $this->GetParameter("categorienature");
 if (empty($categorie_nature)) {	
 	$categorie_nature = 'toutes';

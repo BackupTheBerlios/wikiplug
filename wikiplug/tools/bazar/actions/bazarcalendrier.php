@@ -7,9 +7,15 @@
 //Auteur original :
 *@author        David DELON <david.delon@clapas.net>
 *@author        Florian SCHMITT <florian.schmitt@laposte.net>
-*@version       $Revision: 1.4 $ $Date: 2010/05/03 08:36:15 $
+*@version       $Revision: 1.5 $ $Date: 2010/10/26 14:30:09 $
 // +------------------------------------------------------------------------------------------------------+
 */
+
+if (!defined("WIKINI_VERSION")) {
+        die ("acc&egrave;s direct interdit");
+}
+
+
 //récupération des paramètres wikini
 $categorie_nature = $this->GetParameter("categorienature");
 if (!empty($categorie_nature)) {
