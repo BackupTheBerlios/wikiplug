@@ -21,7 +21,7 @@
 // | along with Foobar; if not, write to the Free Software                                                |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: wiki.php,v 1.10 2010/08/16 13:49:24 mrflos Exp $
+// CVS : $Id: wiki.php,v 1.11 2010/10/26 14:13:01 ddelon Exp $
 /**
 * wiki.php
 *
@@ -32,17 +32,27 @@
 *@author        Florian SCHMITT <florian.schmitt@laposte.net>
 //Autres auteurs :
 *@copyright     outils-reseaux-coop.org 2008
-*@version       $Revision: 1.10 $ $Date: 2010/08/16 13:49:24 $
+*@version       $Revision: 1.11 $ $Date: 2010/10/26 14:13:01 $
 // +------------------------------------------------------------------------------------------------------+
 */
+
+if (!defined("WIKINI_VERSION"))
+{
+        die ("acc&egrave;s direct interdit");
+}
+
 
 // +------------------------------------------------------------------------------------------------------+
 // |                                            ENTETE du PROGRAMME                                       |
 // +------------------------------------------------------------------------------------------------------+
+
+
 error_reporting(E_ALL & ~E_DEPRECATED);
+
+
 //chemin relatif d'acces au bazar
 define ('BAZ_CHEMIN', 'tools'.DIRECTORY_SEPARATOR.'bazar'.DIRECTORY_SEPARATOR);
-define ('BAZ_CHEMIN_UPLOAD', 'tools'.DIRECTORY_SEPARATOR.'bazar'.DIRECTORY_SEPARATOR.'upload'.DIRECTORY_SEPARATOR);
+define ('BAZ_CHEMIN_UPLOAD', 'files'.DIRECTORY_SEPARATOR);
 
 //bouh! c'est pas propre! c'est a cause de PEAR et de ses includes
 set_include_path(BAZ_CHEMIN.'libs'.DIRECTORY_SEPARATOR.PATH_SEPARATOR.get_include_path());
@@ -85,7 +95,8 @@ if (DB::isError($GLOBALS['_BAZAR_']['db'])) {
 	echo $GLOBALS['_BAZAR_']['db']->getMessage();
 }
 
-//test de l'existance des tables de bazar
+//test de l'existance des tables de bazar et installation si absentes.
+
 $req = 'SHOW TABLES FROM '.$wakkaConfig['mysql_database'].' LIKE "'.BAZ_PREFIXE.'fiche%"';
 $resultat = $GLOBALS['_BAZAR_']['db']->query ($req);
 if ($resultat->numRows() == 0) {
@@ -143,23 +154,6 @@ if ($resultat->numRows() == 0) {
 // +------------------------------------------------------------------------------------------------------+
 // |                             LES CONSTANTES DES ACTIONS DE BAZAR                                      |
 // +------------------------------------------------------------------------------------------------------+
-define ('BAZ_MOTEUR_RECHERCHE', 'recherche') ;
-define ('BAZ_ACTION_VOIR_VOS_ANNONCES', 'vos_fiches');
-define ('BAZ_DEPOSER_ANNONCE', 'choisir_type_fiche') ;
-define ('BAZ_ANNONCES_A_VALIDER', 'voir_validation') ;
-define ('BAZ_GERER_DROITS', 'droits') ;
-define ('BAZ_ADMINISTRER_ANNONCES', 'voir_admin_fiches') ;
-define ('BAZ_MODIFIER_FICHE', 'modif_fiches') ;
-define ('BAZ_VOIR_FICHE', 'voir_fiche') ;
-define ('BAZ_ACTION_NOUVEAU', 'saisir_fiche') ;
-define ('BAZ_ACTION_NOUVEAU_V', 'sauver_fiche') ;
-define ('BAZ_ACTION_MODIFIER', 'modif_fiche') ;
-define ('BAZ_ACTION_MODIFIER_V', 'modif_sauver_fiche') ;
-define ('BAZ_ACTION_SUPPRESSION', 'supprimer') ;
-define ('BAZ_ACTION_PUBLIER', 'publier') ;
-define ('BAZ_ACTION_PAS_PUBLIER', 'pas_publier') ;
-define ('BAZ_LISTE_RSS', 'rss');
-define ('BAZ_VOIR_FLUX_RSS', 'affiche_rss');
 
 // Constante des noms des variables
 define ('BAZ_VARIABLE_VOIR', 'vue');
@@ -169,8 +163,11 @@ define ('BAZ_VARIABLE_ACTION', 'action');
 define ('BAZ_VOIR_AFFICHER', 'mes_fiches,consulter,rss,saisir,formulaire,listes');
 
 // Permet d'indiquer la vue par defaut si la variable vue n'est pas defini
-define ('BAZ_VOIR_DEFAUT', 'consulter');
-define ('BAZ_VOIR_CONSULTER', 'consulter');
+
+// Premier niveau d'action : pour toutes les fiches
+
+define ('BAZ_VOIR_DEFAUT', 'consulter'); // Recherche 
+define ('BAZ_VOIR_CONSULTER', 'consulter'); // Recherche
 define ('BAZ_VOIR_MES_FICHES', 'mes_fiches');
 define ('BAZ_VOIR_S_ABONNER', 'rss');
 define ('BAZ_VOIR_SAISIR', 'saisir');
@@ -179,8 +176,24 @@ define ('BAZ_VOIR_LISTES','listes');
 define ('BAZ_VOIR_ADMIN', 'administrer');
 define ('BAZ_VOIR_GESTION_DROITS', 'droits');
 
-// Constante pour se passer d'identification
-//define ('BAZ_SANS_AUTH', true);
+
+// Second : actions du choix de premier niveau.
+
+define ('BAZ_MOTEUR_RECHERCHE', 'recherche') ;
+define ('BAZ_CHOISIR_TYPE_FICHE', 'choisir_type_fiche') ; // 
+define ('BAZ_GERER_DROITS', 'droits') ;
+define ('BAZ_MODIFIER_FICHE', 'modif_fiches') ; // Modifier le formulaire de creation des fiches
+define ('BAZ_VOIR_FICHE', 'voir_fiche') ;
+define ('BAZ_ACTION_NOUVEAU', 'saisir_fiche') ;
+define ('BAZ_ACTION_NOUVEAU_V', 'sauver_fiche') ;  // Creation apres validation
+define ('BAZ_ACTION_MODIFIER', 'modif_fiche') ;
+define ('BAZ_ACTION_MODIFIER_V', 'modif_sauver_fiche') ; // Modification apres validation
+define ('BAZ_ACTION_SUPPRESSION', 'supprimer') ;
+define ('BAZ_ACTION_PUBLIER', 'publier') ; // Valider la fiche
+define ('BAZ_ACTION_PAS_PUBLIER', 'pas_publier') ; // Invalider la fiche
+define ('BAZ_LISTE_RSS', 'rss'); // Tous les flux  depend de s'abonner
+define ('BAZ_VOIR_FLUX_RSS', 'affiche_rss'); // Un flux
+
 
 // Constante pour l'envoi automatique de mail aux admins
 define ('BAZ_ENVOI_MAIL_ADMIN', false);
@@ -190,13 +203,16 @@ define ('BAZ_ADRESSE_MAIL_ADMIN', 'accueil@outils-reseaux.org');
 //==================================== LES FLUX RSS==================================
 // Constantes liees aux flux RSS
 //==================================================================================
-define('BAZ_RSS_NOMSITE', $wakkaConfig['wakka_name']);    //Nom du site indique dans les flux rss
-define('BAZ_RSS_ADRESSESITE', $wakkaConfig['base_url']);   //Adresse Internet du site indique dans les flux rss
-define('BAZ_RSS_DESCRIPTIONSITE', $wakkaConfig['meta_description']);    //Description du site indiquee dans les flux rss
-define('BAZ_RSS_LOGOSITE','http://outils-reseaux.org/tools/templates/themes/outils-reseaux/images/Puce-titre.gif');     //Logo du site indique dans les flux rss
-define('BAZ_RSS_MANAGINGEDITOR', 'accueil@outils-reseaux.org (association Outils-Reseaux)') ;     //Managing editor du site
-define('BAZ_RSS_WEBMASTER', 'accueil@outils-reseaux.org (association Outils-Reseaux)') ;     //Mail Webmaster du site
-define('BAZ_RSS_CATEGORIE', 'Economie Sociale et Solidaire'); //categorie du flux RSS
+
+//Logo du site indique dans les flux rss
+define('BAZ_RSS_LOGOSITE', (isset($wakkaConfig['baz_rss_logosite'])) ? $wakkaConfig['baz_rss_logosite'] : 'http://outils-reseaux.org/tools/templates/themes/outils-reseaux/images/Puce-titre.gif');
+//Managing editor du site
+define('BAZ_RSS_MANAGINGEDITOR', (isset($wakkaConfig['baz_rss_managingeditor'])) ? $wakkaConfig['baz_rss_managingeditor'] : 'http://outils-reseaux.org/tools/templates/themes/outils-reseaux/images/Puce-titre.gif');
+//Mail Webmaster du site
+define('BAZ_RSS_WEBMASTER', (isset($wakkaConfig['baz_rss_webmaster'])) ? $wakkaConfig['baz_rss_webmaster'] : 'accueil@outils-reseaux.org (association Outils-Reseaux)');
+//categorie du flux RSS
+define('BAZ_RSS_CATEGORIE', (isset($wakkaConfig['baz_rss_categorie'])) ? $wakkaConfig['baz_rss_categorie'] : 'Economie Sociale et Solidaire');
+
 
 
 //==================================== PARAMETRAGE =================================
@@ -236,6 +252,8 @@ define('BAZ_FICHE_REDACTEUR_MAIL', true);// true ou false
 $GLOBALS['_BAZAR_']['langue'] = 'fr-FR';
 define ('BAZ_LANGUE_PAR_DEFAUT', 'fr') ; //Indique un code langue par defaut
 define ('BAZ_VAR_URL_LANGUE', 'lang') ; //Nom de la variable GET qui sera passee dans l'URL (Laisser vide pour les sites monolingues)
+
+
 //code pour l'inclusion des langues NE PAS MODIFIER
 if (BAZ_VAR_URL_LANGUE != '' && isset (${BAZ_VAR_URL_LANGUE})) {
     include_once BAZ_CHEMIN.'langues'.DIRECTORY_SEPARATOR.'baz_langue_'.${BAZ_VAR_URL_LANGUE}.'.inc.php';
@@ -253,33 +271,25 @@ define ('BAZ_DELTA', 12);		// Le nombre de page a afficher avant le 'next';
 // Mettre a false pour avoir un lien afficher la recherche avancee
 define ('BAZ_MOTEUR_RECHERCHE_AVANCEE', true);
 
-/** Reglage de l'utilisation ou non des templates */
-// Mettre a true pour afficher les pages incluses dans la base '.BAZ_PREFIXE.'template, a false sinon
-define ('BAZ_UTILISE_TEMPLATE', false);
-
-/** Mettre a 0 pour le pas proposer de filtre dans le moteur de recherche */
+/** Mettre a 0 pour ne pas proposer de filtre dans le moteur de recherche */
 define ('BAZ_AFFICHER_FILTRE_MOTEUR', true);
-
-// Mettre ici le type d'annonce qui va s'afficher dans les calendriers.
-// Il est possible d'indiquer plusieurs identifiant de nature de fiche  (bn_id_nature) en sï¿½parant les nombre par des
-// virgules : '1,2,3'
-define ('BAZ_NUM_ANNONCE_CALENDRIER', 3);
-define ('BAZ_SQUELETTE_DEFAUT', 'baz_cal.tpl.html');
-
 
 //=========================== PARAMETRAGE GOOGLE MAP API ===========================
 // parametres pour la carto google
 //==================================================================================
 
 // coordonnees du centre de la carte
-define ('BAZ_GOOGLE_CENTRE_LAT', '43.60426186809618');
-define ('BAZ_GOOGLE_CENTRE_LON', '3.438720703125');
+define('BAZ_GOOGLE_CENTRE_LAT', (isset($wakkaConfig['baz_google_centre_lat'])) ? $wakkaConfig['baz_google_centre_lat'] : '43.60426186809618');
+define('BAZ_GOOGLE_CENTRE_LON', (isset($wakkaConfig['baz_google_centre_lon'])) ? $wakkaConfig['baz_google_centre_lon'] : '3.438720703125');
 
-// niveau de zoom
-define ('BAZ_GOOGLE_ALTITUDE', '8'); // de 1 (plus eloigne) a 15 (plus proche)
+
+// niveau de zoom : de 1 (plus eloigne) a 15 (plus proche)
+define('BAZ_GOOGLE_ALTITUDE', (isset($wakkaConfig['baz_google_altitude'])) ? $wakkaConfig['baz_google_altitude'] : '8');
 
 // type de carto google
-define ('BAZ_TYPE_CARTO', 'TERRAIN'); //ROADMAP ou SATELLITE ou HYBRID ou TERRAIN
+
+//ROADMAP ou SATELLITE ou HYBRID ou TERRAIN
+define('BAZ_TYPE_CARTO', (isset($wakkaConfig['baz_type_carto'])) ? $wakkaConfig['baz_type_carto'] : 'TERRAIN');
 
 // taille de la carte a l'ecran
 define ('BAZ_GOOGLE_IMAGE_LARGEUR', '100%');  // valeur de l'attribut css width de la carte
@@ -308,7 +318,7 @@ define ('BAZ_STYLE_CHOIX_CARTE','DROPDOWN_MENU'); // HORIZONTAL_BAR ou DROPDOWN_
 // inclure l'url d'un fichier kml (carte google creee precedemment) a afficher sur la carte
 define ('BAZ_GOOGLE_FOND_KML', '');
 
-//inclure un fichier js spécifique, pour ajouter des polygones à la carte par exemple
+//inclure un fichier js specifique, pour ajouter des polygones a la carte par exemple
 define('BAZ_JS_INIT_MAP', '')
 
 ?>
