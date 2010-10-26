@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: formulaire.fonct.inc.php,v 1.21 2010/10/26 13:09:30 mrflos Exp $
+// CVS : $Id: formulaire.fonct.inc.php,v 1.22 2010/10/26 13:59:59 mrflos Exp $
 /**
 * Formulaire
 *
@@ -31,7 +31,7 @@
 //Autres auteurs :
 *@author        Aleandre GRANIER <alexandre@tela-botanica.org>
 *@copyright     Tela-Botanica 2000-2004
-*@version       $Revision: 1.21 $ $Date: 2010/10/26 13:09:30 $
+*@version       $Revision: 1.22 $ $Date: 2010/10/26 13:59:59 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -499,8 +499,8 @@ function listedatedeb(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 	}
 	elseif ($mode == 'html')
 	{
-		$res = '<h1>'.$tableau_template[1].' - '.$valeurs_fiche[$tableau_template[1]].'</h1><div class="BAZ_rubrique  BAZ_rubrique_'.$GLOBALS['_BAZAR_']['class'].'">'."\n".
-					'<span class="BAZ_label BAZ_label_'.$GLOBALS['_BAZAR_']['class'].'">'.$tableau_template[2].':</span>'."\n";
+		$res = '<div class="BAZ_rubrique  BAZ_rubrique_'.$GLOBALS['_BAZAR_']['class'].'">'."\n".
+				'<span class="BAZ_label BAZ_label_'.$GLOBALS['_BAZAR_']['class'].'">'.$tableau_template[2].':</span>'."\n";
 		$res .= '<span class="BAZ_texte BAZ_texte_'.$GLOBALS['_BAZAR_']['class'].'">'.strftime('%d.%m.%Y',strtotime($valeurs_fiche[$tableau_template[1]])).'</span>'."\n".'</div>'."\n";
 		return $res;
 	}
@@ -515,7 +515,7 @@ function listedatedeb(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 */
 function listedatefin(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 {
-	listedatedeb($formtemplate, $tableau_template , $mode, $valeurs_fiche);
+	return listedatedeb($formtemplate, $tableau_template , $mode, $valeurs_fiche);
 }
 
 /** tags() - Ajoute un élément de type mot clés (tags)
@@ -1995,7 +1995,10 @@ function bookmarklet(&$formtemplate, $tableau_template, $mode, $valeurs_fiche) {
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: formulaire.fonct.inc.php,v $
-* Revision 1.21  2010/10/26 13:09:30  mrflos
+* Revision 1.22  2010/10/26 13:59:59  mrflos
+* correction date
+*
+* Revision 1.21  2010-10-26 13:09:30  mrflos
 * snapshot avant coding party
 *
 * Revision 1.20  2010-10-26 10:42:11  mrflos
