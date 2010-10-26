@@ -869,6 +869,8 @@ function baz_requete_bazar_fiche($valeur) {
 * @return   void
 */
 function baz_insertion($valeur) {
+	//on teste au moins l'existence du titre car sans titre ca peut bugguer sérieusement
+	if (isset($valeur['bf_titre'])) {
         // ===========  Insertion d'une nouvelle fiche ===================
         // l'identifiant (sous forme de NomWiki) est généré à partir du titre    
         $GLOBALS['_BAZAR_']['id_fiche'] = genere_nom_wiki($valeur['bf_titre']);
@@ -941,6 +943,9 @@ function baz_insertion($valeur) {
 		header ('Location: '.$GLOBALS['_BAZAR_']['url']->getURL()) ;
 		exit;
 		return ;
+	}
+	// sinon on met un message d'erreur
+	else die('<div class="error_box">'.BAZ_FICHE_NON_SAUVEE_PAS_DE_TITRE.'</div>');
 }
 
 
@@ -1909,41 +1914,58 @@ function baz_a_le_droit( $demande = 'saisie_fiche', $id = '' ) {
     
 }
 
-
-function remove_accents( $string )
-{
+/** remove_accents() Renvoie une chaine de caractères avec les accents en moins
+*
+*   @param  string  chaine de caractères avec de potentiels accents à enlever
+*
+*   return  string	chaine de caractères, sans accents
+*/
+function remove_accents( $string ) {
     $string = htmlentities($string);
     return preg_replace("/&([a-z])[a-z]+;/i","$1",$string);
 }
 
-function genere_nom_wiki($nom, $occurence=1)
-{	
-	//les noms wiki ne doivent pas dépasser les 50 caracteres, on coupe à 48, histoire de pouvoir ajouter un chiffre derrière si nom wiki déja existant
-	//plus traitement des accents
-	//plus on met des majuscules au début de chaque mot et on fait sauter les espaces
-	$temp = explode(" ", ucwords(strtolower(remove_accents(substr($nom, 0, 47)))));
 
-	$final='';
-	foreach($temp as $mot)
-	{
-		//on vire d'éventuels autres caractères spéciaux
-		$final .= ereg_replace("[^a-zA-Z0-9]","",trim($mot));
-	}
-
-	//on verifie qu'il y a au moins 2 majuscules, sinon on en rajoute une à la fin
-	$var = ereg_replace('[^A-Z]','',$final);
-	if (strlen($var)<2)
-	{
-		$last = ucfirst(substr($final, strlen($final) - 1));
-		$final = substr($final, 0, -1).$last;
-	}
-
- 	// sinon retour du nom formaté
-	if (!is_array($GLOBALS['wiki']->LoadPageById($final))) {
-		return $final;
+/** genere_nom_wiki() Prends une chaine de caracteres, et la tranforme en NomWiki unique, en la limitant à 50 caractères et en mettant 2 majuscules
+*	Si le NomWiki existe déjà, on propose récursivement NomWiki2, NomWiki3, etc.. 
+*
+*   @param  string  chaine de caractères avec de potentiels accents à enlever
+*   @param	integer	nombre d'itération pour la fonction récursive (1 par défaut)
+*   
+*
+*   return  string	chaine de caractères, en NomWiki unique
+*/
+function genere_nom_wiki($nom, $occurence = 1) {	
+	// si la fonction est appelée pour la première fois, on nettoie le nom passé en paramètre
+	if ($occurence == 1) {
+		// les noms wiki ne doivent pas dépasser les 50 caracteres, on coupe à 48, histoire de pouvoir ajouter un chiffre derrière si nom wiki déja existant
+		// plus traitement des accents
+		// plus on met des majuscules au début de chaque mot et on fait sauter les espaces
+		$temp = explode(" ", ucwords(strtolower(remove_accents(substr($nom, 0, 47)))));
+		$nom = '';
+		foreach($temp as $mot) {
+			// on vire d'éventuels autres caractères spéciaux
+			$nom .= ereg_replace("[^a-zA-Z0-9]","",trim($mot));
+		}
+	
+		// on verifie qu'il y a au moins 2 majuscules, sinon on en rajoute une à la fin
+		$var = ereg_replace('[^A-Z]','',$nom);
+		if (strlen($var)<2)	{
+			$last = ucfirst(substr($nom, strlen($nom) - 1));
+			$nom = substr($nom, 0, -1).$last;
+		}
 	} else {
+		$nom = $nom.$occurence;
+	}
+
+ 	// on vérifie que la page n'existe pas déja : si c'est le cas on le retourne
+	if (!is_array($GLOBALS['wiki']->LoadPage($nom))) {
+		return $nom;
+	}
+	// sinon, on rappele récursivement la fonction jusqu'à ce que le nom aille bien
+	else {
 		$occurence++;
-		return genere_nom_wiki($final, $occurence);
+		return genere_nom_wiki($nom, $occurence);
 	}
 	
 }

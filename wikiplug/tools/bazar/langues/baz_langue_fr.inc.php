@@ -71,6 +71,7 @@ define ('BAZ_FICHE_ENREGISTREE', 'La fiche a bien &eacute;t&eacute; enregistr&ea
 define ('BAZ_RECHERCHE_AVANCEE', 'Recherche avanc&eacute;e');
 define ('BAZ_RECHERCHER_2POINTS', 'Rechercher : ');
 define ('BAZ_TOUS_TYPES_FICHES', 'Tous types de fiches');
+define ('BAZ_FICHE_NON_SAUVEE_PAS_DE_TITRE', 'La fiche n\'a pas pu &ecirc;tre sauv&eacute;e car elle ne poss&egrave; pas de titre.');
 //define ('BAZ_TOUS_LES_EMETTEURS', 'Tous les emetteurs');
 //define ('BAZ_ENTRER_VOS_CRITERES_DE_RECHERCHE','Pr&eacute;cisez vos crit&egrave;res de recherche et appuyez sur le bouton "Rechercher" pour consulter les fiches.');
 //define ('BAZ_MODIFIE_RSS','Modifi&eacute;: ' );

@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: formulaire.fonct.inc.php,v 1.19 2010/10/21 12:33:00 mrflos Exp $
+// CVS : $Id: formulaire.fonct.inc.php,v 1.20 2010/10/26 10:42:11 mrflos Exp $
 /**
 * Formulaire
 *
@@ -31,7 +31,7 @@
 //Autres auteurs :
 *@author        Aleandre GRANIER <alexandre@tela-botanica.org>
 *@copyright     Tela-Botanica 2000-2004
-*@version       $Revision: 1.19 $ $Date: 2010/10/21 12:33:00 $
+*@version       $Revision: 1.20 $ $Date: 2010/10/26 10:42:11 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -1321,7 +1321,7 @@ function titre(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 			if (isset($_POST[$var])) {
 				//pour une listefiche ou une checkboxfiche on cherche le titre de la fiche
 				if ( preg_match('#^listefiche#',$var)!=false || preg_match('#^checkboxfiche#',$var)!=false ) {
-					$req = 'SELECT bf_titre FROM `'.BAZ_PREFIXE.'fiche` WHERE bf_id_fiche='.$_POST[$var];
+					$req = 'SELECT bf_titre FROM `'.BAZ_PREFIXE.'fiche` WHERE bf_id_fiche="'.$_POST[$var].'"';
 					$resultat = $GLOBALS['_BAZAR_']['db']->query($req) ;
 					$label = $resultat->fetchRow();
 					$_POST['bf_titre'] = str_replace('{{'.$var.'}}', ($label[0]!=null) ? $label[0] : '', $_POST['bf_titre']);
@@ -2025,7 +2025,10 @@ function bookmarklet(&$formtemplate, $tableau_template, $mode, $valeurs_fiche) {
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: formulaire.fonct.inc.php,v $
-* Revision 1.19  2010/10/21 12:33:00  mrflos
+* Revision 1.20  2010/10/26 10:42:11  mrflos
+* snapshot avant coding party
+*
+* Revision 1.19  2010-10-21 12:33:00  mrflos
 * fonctions d'import / export cvs
 * corrections de bugs mineurs
 * corrections du bug qui supprime toutes les pages wiki!

@@ -246,24 +246,6 @@ font-size:1em;
 padding:0;
 }
 
-.left {
-float:left;
-margin:0 10px 10px 0;
-}
-
-.right {
-float:right;
-margin:0 0 10px 10px;
-}
-
-.center {
-clear:both;
-display:block;
-width:100%;
-text-align:center;
-margin:10px auto;
-}
-
 .BAZ_description {
 font-size:1.1em;
 text-align:justify;

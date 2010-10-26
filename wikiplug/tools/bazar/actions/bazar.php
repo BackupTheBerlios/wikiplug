@@ -21,7 +21,7 @@
 // | along with Foobar; if not, write to the Free Software                                                |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: bazar.php,v 1.9 2010/06/02 08:48:51 mrflos Exp $
+// CVS : $Id: bazar.php,v 1.10 2010/10/26 10:42:11 mrflos Exp $
 /**
 * bazar.php
 *
@@ -31,7 +31,7 @@
 //Auteur original :
 *@author        Florian SCHMITT <florian@outils-reseaux.org>
 *@copyright     Florian SCHMITT 2008
-*@version       $Revision: 1.9 $ $Date: 2010/06/02 08:48:51 $
+*@version       $Revision: 1.10 $ $Date: 2010/10/26 10:42:11 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -40,8 +40,7 @@
 // +------------------------------------------------------------------------------------------------------+
 
 
-if (!defined("WIKINI_VERSION"))
-{
+if (!defined("WIKINI_VERSION")) {
         die ("acc&egrave;s direct interdit");
 }
 
@@ -216,7 +215,10 @@ echo $res ;
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: bazar.php,v $
-* Revision 1.9  2010/06/02 08:48:51  mrflos
+* Revision 1.10  2010/10/26 10:42:11  mrflos
+* snapshot avant coding party
+*
+* Revision 1.9  2010-06-02 08:48:51  mrflos
 * commit de transition
 *
 * Revision 1.8  2010/05/03 15:59:45  mrflos
