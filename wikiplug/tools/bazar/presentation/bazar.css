@@ -165,12 +165,7 @@ margin:10px auto 0;
 }
 
 div.overlay {
-background-image:url(images/overlay/white.png);
-height:500px;
 display:none;
-width:640px;
-padding:43px;
-text-align:left;
 }
 
 div.overlay div.close {
@@ -183,13 +178,12 @@ height:35px;
 width:35px;
 }
 
-#overlay {
-background:url(images/white_overlay_transparent.png) no-repeat top left;
-}
-
 div.contentWrap {
-height:495px;
-overflow-y:auto;
+text-align:center;
+background:#FFF;
+padding:10px;
+-moz-box-shadow:2px 2px 20px rgba(100, 100, 100, 0.75);
+-moz-border-radius:10px;
 }
 
 .btn_adresse,.btn_client {
@@ -821,12 +815,12 @@ a.active img {
 .yellow.btn, .yellow.btn:visited, .yellow.btn:link, #BAZ_menu .onglet_actif a	{ background-color: #ffb515; }
 .yellow.btn:hover, .yellow.btn:active, .yellow.btn:focus, #BAZ_menu a:hover		{ background-color: #fc9200; }
 	
-a.prev, button.prev,input.prev {
+a.prev-tab, button.prev,input.prev {
 clear:left;
 float:left;
 }
 
-a.next, button.next,input.next {
+a.next-tab, button.next,input.next {
 clear:right;
 float:right;
 }
@@ -891,9 +885,15 @@ h2.titre_accordeon:hover  {
 .titre_lien {display:block;font-size:1.4em;}
 .valeur_liste {width:350px;float:left;}
 .liste_ligne {}
+.input_liste_id {display:inline; margin:0 2px; width:40px;}
+.input_liste_label {display:inline; margin:0; width:250px;}
 ul.valeur_liste, ul.valeur_formulaire { padding:0; margin:0;}
 ul.valeur_liste li, ul.valeur_formulaire li {list-style-type:none; padding:0; margin:3px 0;}
-.handle {cursor: move;}
+.handle {
+background:url("images/arrow.png") no-repeat left center transparent;
+cursor:move;
+padding:2px 0 2px 18px;
+}
 .valeur_formulaire .handle {left:20px;position:absolute;}
 .valeur_formulaire .formulaire_ligne {background:#EAEAEA; border:1px solid #CCC; padding:5px 0;}
 #champs_formulaire {
@@ -918,3 +918,5 @@ ul.valeur_liste li, ul.valeur_formulaire li {list-style-type:none; padding:0; ma
 }
 
 .apple_overlay {display:none;}
+
+.link-csv-file {background:url(images/csv-file.png) no-repeat left center; display:block; font-size:20px; padding:5px 0 5px 35px; margin:10px 0;}

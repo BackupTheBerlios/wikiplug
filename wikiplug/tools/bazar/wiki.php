@@ -21,7 +21,7 @@
 // | along with Foobar; if not, write to the Free Software                                                |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: wiki.php,v 1.11 2010/10/26 14:13:01 ddelon Exp $
+// CVS : $Id: wiki.php,v 1.12 2010/12/01 17:01:38 mrflos Exp $
 /**
 * wiki.php
 *
@@ -32,7 +32,7 @@
 *@author        Florian SCHMITT <florian.schmitt@laposte.net>
 //Autres auteurs :
 *@copyright     outils-reseaux-coop.org 2008
-*@version       $Revision: 1.11 $ $Date: 2010/10/26 14:13:01 $
+*@version       $Revision: 1.12 $ $Date: 2010/12/01 17:01:38 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -96,7 +96,6 @@ if (DB::isError($GLOBALS['_BAZAR_']['db'])) {
 }
 
 //test de l'existance des tables de bazar et installation si absentes.
-
 $req = 'SHOW TABLES FROM '.$wakkaConfig['mysql_database'].' LIKE "'.BAZ_PREFIXE.'fiche%"';
 $resultat = $GLOBALS['_BAZAR_']['db']->query ($req);
 if ($resultat->numRows() == 0) {
@@ -143,7 +142,7 @@ if ($resultat->numRows() == 0) {
                     //}
                 }
             }
-            echo '<div class="BAZ_info">La base de donn&eacute;es de bazar vient d\'&ecirc;tre ajout&eacute;e,</div>'."\n";
+            echo '<div class="info_box">La base de donn&eacute;es de bazar vient d\'&ecirc;tre ajout&eacute;e,</div>'."\n";
         } else {
             die ('<div class="BAZ_error">Fichier sql introuvable.</div>'."\n");
         }
@@ -160,7 +159,7 @@ define ('BAZ_VARIABLE_VOIR', 'vue');
 define ('BAZ_VARIABLE_ACTION', 'action');
 
 // Indique les onglets de vues a afficher.
-define ('BAZ_VOIR_AFFICHER', 'mes_fiches,consulter,rss,saisir,formulaire,listes');
+define ('BAZ_VOIR_AFFICHER', 'mes_fiches,consulter,rss,saisir,formulaire,listes,importer,exporter');
 
 // Permet d'indiquer la vue par defaut si la variable vue n'est pas defini
 
@@ -175,6 +174,9 @@ define ('BAZ_VOIR_FORMULAIRE', 'formulaire');
 define ('BAZ_VOIR_LISTES','listes');
 define ('BAZ_VOIR_ADMIN', 'administrer');
 define ('BAZ_VOIR_GESTION_DROITS', 'droits');
+define ('BAZ_VOIR_IMPORTER', 'importer');
+define ('BAZ_VOIR_EXPORTER', 'exporter');
+
 
 
 // Second : actions du choix de premier niveau.
@@ -203,6 +205,10 @@ define ('BAZ_ADRESSE_MAIL_ADMIN', 'accueil@outils-reseaux.org');
 //==================================== LES FLUX RSS==================================
 // Constantes liees aux flux RSS
 //==================================================================================
+define('BAZ_RSS_NOMSITE', $wakkaConfig['wakka_name']);    //Nom du site indique dans les flux rss
+define('BAZ_RSS_ADRESSESITE', $wakkaConfig['base_url']);   //Adresse Internet du site indique dans les flux rss
+define('BAZ_RSS_DESCRIPTIONSITE', $wakkaConfig['meta_description']);    //Description du site indiquee dans les flux rss
+define('BAZ_NB_ENTREES_FLUX_RSS', 20); //nombre maximum d'articles présents dans le flux rss
 
 //Logo du site indique dans les flux rss
 define('BAZ_RSS_LOGOSITE', (isset($wakkaConfig['baz_rss_logosite'])) ? $wakkaConfig['baz_rss_logosite'] : 'http://outils-reseaux.org/tools/templates/themes/outils-reseaux/images/Puce-titre.gif');
@@ -212,8 +218,6 @@ define('BAZ_RSS_MANAGINGEDITOR', (isset($wakkaConfig['baz_rss_managingeditor']))
 define('BAZ_RSS_WEBMASTER', (isset($wakkaConfig['baz_rss_webmaster'])) ? $wakkaConfig['baz_rss_webmaster'] : 'accueil@outils-reseaux.org (association Outils-Reseaux)');
 //categorie du flux RSS
 define('BAZ_RSS_CATEGORIE', (isset($wakkaConfig['baz_rss_categorie'])) ? $wakkaConfig['baz_rss_categorie'] : 'Economie Sociale et Solidaire');
-
-
 
 //==================================== PARAMETRAGE =================================
 // Pour regler certaines fonctionnalites de l'application

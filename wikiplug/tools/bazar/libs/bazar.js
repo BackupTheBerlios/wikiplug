@@ -1,3 +1,21 @@
+/**
+ * jQuery.ScrollTo - Easy element scrolling using jQuery.
+ * Copyright (c) 2007-2009 Ariel Flesler - aflesler(at)gmail(dot)com | http://flesler.blogspot.com
+ * Dual licensed under MIT and GPL.
+ * Date: 5/25/2009
+ * @author Ariel Flesler
+ * @version 1.4.2
+ *
+ * http://flesler.blogspot.com/2007/10/jqueryscrollto.html
+ */
+;(function(d){var k=d.scrollTo=function(a,i,e){d(window).scrollTo(a,i,e)};k.defaults={axis:'xy',duration:parseFloat(d.fn.jquery)>=1.3?0:1};k.window=function(a){return d(window)._scrollable()};d.fn._scrollable=function(){return this.map(function(){var a=this,i=!a.nodeName||d.inArray(a.nodeName.toLowerCase(),['iframe','#document','html','body'])!=-1;if(!i)return a;var e=(a.contentWindow||a).document||a.ownerDocument||a;return d.browser.safari||e.compatMode=='BackCompat'?e.body:e.documentElement})};d.fn.scrollTo=function(n,j,b){if(typeof j=='object'){b=j;j=0}if(typeof b=='function')b={onAfter:b};if(n=='max')n=9e9;b=d.extend({},k.defaults,b);j=j||b.speed||b.duration;b.queue=b.queue&&b.axis.length>1;if(b.queue)j/=2;b.offset=p(b.offset);b.over=p(b.over);return this._scrollable().each(function(){var q=this,r=d(q),f=n,s,g={},u=r.is('html,body');switch(typeof f){case'number':case'string':if(/^([+-]=)?\d+(\.\d+)?(px|%)?$/.test(f)){f=p(f);break}f=d(f,this);case'object':if(f.is||f.style)s=(f=d(f)).offset()}d.each(b.axis.split(''),function(a,i){var e=i=='x'?'Left':'Top',h=e.toLowerCase(),c='scroll'+e,l=q[c],m=k.max(q,i);if(s){g[c]=s[h]+(u?0:l-r.offset()[h]);if(b.margin){g[c]-=parseInt(f.css('margin'+e))||0;g[c]-=parseInt(f.css('border'+e+'Width'))||0}g[c]+=b.offset[h]||0;if(b.over[h])g[c]+=f[i=='x'?'width':'height']()*b.over[h]}else{var o=f[h];g[c]=o.slice&&o.slice(-1)=='%'?parseFloat(o)/100*m:o}if(/^\d+$/.test(g[c]))g[c]=g[c]<=0?0:Math.min(g[c],m);if(!a&&b.queue){if(l!=g[c])t(b.onAfterFirst);delete g[c]}});t(b.onAfter);function t(a){r.animate(g,j,b.easing,a&&function(){a.call(this,n,b)})}}).end()};k.max=function(a,i){var e=i=='x'?'Width':'Height',h='scroll'+e;if(!d(a).is('html,body'))return a[h]-d(a)[e.toLowerCase()]();var c='client'+e,l=a.ownerDocument.documentElement,m=a.ownerDocument.body;return Math.max(l[h],m[h])-Math.min(l[c],m[c])};function p(a){return typeof a=='object'?a:{top:a,left:a}}})(jQuery);
+
+
+/** 
+ * 
+ * javascript and query tools for Bazar
+ * 
+ * */
 $(document).ready(function () {
 	//antispam javascript
 	$("input[name=antispam]").val('1');
@@ -44,15 +62,15 @@ $(document).ready(function () {
 			$(this).addClass("tab" + i)
 			if (i==0)
 			{
-				$(this).append('<a class="btn next" onClick=\'$(this).parents("fieldset.tab").prevAll("ul.css-tabs").tabs('+i+').next();\'>Suivant &raquo;</a>');
+				$(this).append('<a class="btn next-tab">Suivant &raquo;</a>');
 			}
 			else if (i==nbtotal)
 			{
-				$(this).append('<a class="btn prev" onClick=\'$(this).parents("fieldset.tab").prevAll("ul.css-tabs").tabs('+i+').prev();\'>&laquo; Pr&eacute;c&eacute;dent</a>');
+				$(this).append('<a class="btn prev-tab">&laquo; Pr&eacute;c&eacute;dent</a>');
 			}
 			else
 			{
-				$(this).append('<a class="btn prev" onClick=\'$(this).parents("fieldset.tab").prevAll("ul.css-tabs").tabs('+i+').prev();\'>&laquo; Pr&eacute;c&eacute;dent</a><a class="btn next" onClick=\'$(this).parents("fieldset.tab").prevAll("ul.css-tabs").tabs('+i+').next();\'>Suivant &raquo;</a>');
+				$(this).append('<a class="btn prev-tab">&laquo; Pr&eacute;c&eacute;dent</a><a class="btn next-tab">Suivant &raquo;</a>');
 			}
 			$(this).prevAll('ul.css-tabs').append("<li class='liste" + i + "'><a href=\"#\">"+$(this).find('legend:first').hide().html()+"</a></li>");
 		});
@@ -66,14 +84,22 @@ $(document).ready(function () {
 	{
 		$("ul.css-tabs").tabs("fieldset.tab", { onClick: function(){if (divcarto) {	initialize(); }} } );
 	}
-	
-	
-	
-	//création des div pour jquery tools (tooltips, overlays, etc..)
-    $("body").append("<div id=\"dynatooltip\">&nbsp;</div><div class=\"overlay\" id=\"overlay\"><div class=\"contentWrap\"></div></div><div class=\"simple_overlay\" id=\"gallery\"><a class=\"prev\">Pr&eacute;c&eacute;dent</a><a class=\"next\">Suivant</a><div class=\"info\"></div><img class=\"progress\" src=\"tools/bazar/presentation/images/ajax-loader.gif\" /></div>");
+	var api = $("ul.css-tabs").data("tabs");
+	// "next tab" button
+	$("a.next-tab").live('click',function() {
+		api.next();
+		$('ul.css-tabs').scrollTo();
+		return false;
+	});
 
+	// "previous tab" button
+	$("a.prev-tab").live('click',function() {
+		api.prev();
+		$('ul.css-tabs').scrollTo();
+		return false;
+	});
+	
     // initialise les tooltips d'aide
-    //$("img.tooltip_aide[title]").tooltip('#dynatooltip');
     $("img.tooltip_aide[title]").each(function() {
     	$(this).tooltip({ 
 			effect: 'fade',
@@ -217,10 +243,38 @@ $(document).ready(function () {
 	});
 
 //=====================galerie d'images===================================================================
-	var imagespourgalerie = $("a.triggerimage img[rel]");
+/*	var imagespourgalerie = $("div.triggerimage img[rel]");
 	if (imagespourgalerie.length > 0) {	
 		imagespourgalerie.overlay({ expose:'#f1f1f1', effect: 'apple' });
-	}
+	}*/
+	
+	//création des overlay pour les images
+    $("body").append("<div class=\"overlay\" id=\"overlay_bazar\"><div class=\"contentWrap\"></div></div>");
+
+	$('a.triggerimage[rel="#overlay_bazar"]').overlay({
+		mask:'#999', effect: 'apple',
+		onBeforeLoad: function() {
+
+			// grab wrapper element inside content
+			var wrap = this.getOverlay().find('.contentWrap');
+
+			// load the page specified in the trigger
+			wrap.html('<img src='+this.getTrigger().attr("href")+' alt="image" />');
+		}
+
+	});
+
+	//permet de gerer des affichages conditionnels, en fonction de balises div
+	$("select[id^='liste']").change( function() {
+		var id = $(this).attr('id');
+		id = id.replace("liste", ""); 
+		$("div[id^='"+id+"']").hide();
+		$("div[id='"+id+'_'+$(this).val()+"']").show();
+	});
+
+	
+	
+	
 	
 //============bidouille pour que les widgets en flash restent en dessous des éléments en survol===========
 	$("object").append('<param value="opaque" name="wmode">');$("embed").attr('wmode','opaque');
@@ -299,22 +353,23 @@ jQuery.fn.limitMaxlength = function(options){
 //déplacement des listes
 /*****************************************************************************************************/
 	function addFormField() {
-		var nb = $("#formulaire .valeur_liste input.input_texte[name^='label']").length + 1;
+		var nb = $("#formulaire .valeur_liste input.input_liste_label[name^='label']").length + 1;
 		$("#formulaire .valeur_liste").append('<li class="liste_ligne" id="row'+nb+'">'+
-				'<img src="tools/bazar/presentation/images/arrow.png" alt="D&eacute;placer" width="16" height="16" class="handle" />'+
-				'<input type="text" name="label['+nb+']" class="input_texte" />' +
+				'<a href="#" title="D&eacute;placer l\'&eacute;l&eacute;me,t" class="handle"></a>'+
+				'<input type="text" name="id['+nb+']" class="input_liste_id" />' +
+				'<input type="text" name="label['+nb+']" class="input_liste_label" />' +
 				'<a href="#" class="BAZ_lien_supprimer suppression_label_liste"></a>'+
 				'</li>');
-		$("#formulaire input.input_texte[name='label["+nb+"]']").focus();
+		$("#formulaire input.input_liste_id[name='id["+nb+"]']").focus();
 	}
 
 	function removeFormField(id) {
-		var nb = $("#formulaire .valeur_liste input.input_texte[name^='label']").length;
+		var nb = $("#formulaire .valeur_liste input.input_liste_label[name^='label']").length;
 		if (nb > 1) {
 			var nom = 'a_effacer_' + $(id).find("input:hidden").attr('name');
 			$(id).find("input:hidden").attr('name', nom).appendTo("#formulaire");
 			$(id).remove();
-			$("#formulaire .valeur_liste input.input_texte[name^='label']").each(function(i) {
+			$("#formulaire .valeur_liste input.input_liste_label[name^='label']").each(function(i) {
 				$(this).attr('name', 'label['+(i+1)+']').
 				parent('.liste_ligne').attr('id', 'row'+(i+1)).
 				find("input:hidden").attr('name', 'ancienlabel['+(i+1)+']');

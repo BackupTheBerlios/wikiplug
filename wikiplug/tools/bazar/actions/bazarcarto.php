@@ -6,7 +6,7 @@
 *@package Bazar
 //Auteur original :
 *@author        Florian SCHMITT <florian@outils-reseaux.org>
-*@version       $Revision: 1.7 $ $Date: 2010/10/26 14:30:09 $
+*@version       $Revision: 1.8 $ $Date: 2010/12/01 17:01:38 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -59,13 +59,14 @@ $tab_points_carto = array();
 
 foreach ($tableau_resultat as $fiche)
 {
-	$chaine = baz_valeurs_fiche($fiche[0]);
-	$tab=explode('|', $chaine['carte_google']);
+	$valeurs_fiche = json_decode($fiche[0], true);
+	$valeurs_fiche = array_map('utf8_decode', $valeurs_fiche);
+	$tab = explode('|', $valeurs_fiche['carte_google']);
 	if (count($tab)>1 && $tab[0]!='' && $tab[1]!='') {
 		$tab_points_carto[]= '{
-				"title": "'.addslashes($chaine['bf_titre']).'",
+				"title": "'.addslashes($valeurs_fiche['bf_titre']).'",
 				"description": \'<div class="BAZ_cadre_map">'.
-				preg_replace("(\r\n|\n|\r|)", '', addslashes('<ul class="css-tabs"></ul>'.baz_voir_fiche(0, $fiche[0]))).'\',
+				preg_replace("(\r\n|\n|\r|)", '', addslashes('<ul class="css-tabs"></ul>'.baz_voir_fiche(0, $valeurs_fiche))).'\',
 				"lat": '.$tab[0].',
 				"lng": '.$tab[1].'
 		}';
@@ -75,7 +76,10 @@ foreach ($tableau_resultat as $fiche)
 $points_carto = implode(',',$tab_points_carto);
 
 echo '<div id="map" style="width: '.BAZ_GOOGLE_IMAGE_LARGEUR.'; height: '.BAZ_GOOGLE_IMAGE_HAUTEUR.'"></div>'."\n".'<ul id="markers"></ul>'."\n";
-echo '<script type="text/javascript">
+echo '<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+	<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+
+	<script type="text/javascript">
 	//variable pour la carte google
 	var map;
 	

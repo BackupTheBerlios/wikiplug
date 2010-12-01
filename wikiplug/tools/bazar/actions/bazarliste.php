@@ -20,7 +20,7 @@ if (!defined("WIKINI_VERSION")) {
         die ("acc&egrave;s direct interdit");
 }
 
-//r√©cup√©ration des param√®tres wikini
+//rÈcupÈration des paramËtres wikini
 
 $categorie_nature = $this->GetParameter("categorienature");
 if (empty($categorie_nature)) {	
@@ -42,7 +42,7 @@ if (empty($template)) {
 	$template = 'liste_accordeon.tpl.html';
 }
 
-//on r√©cup√®re les param√®tres pour une requ√™te sp√©cifique
+//on rÈcupËre les paramËtres pour une requÍte spÈcifique
 $query = $this->GetParameter("query");
 if (!empty($query)) {
 	$tabquery = array();
@@ -92,12 +92,5 @@ include_once('tools/bazar/libs/squelettephp.class.php');
 $squelcomment = new SquelettePhp('tools/bazar/presentation/squelettes/'.$template);
 $squelcomment->set($fiches);
 echo $squelcomment->analyser();
-
-
-
-//on ajoute le javascript de l'accordeon, s'il y a des r√©sultats
-//if ($res!='') {
-//	echo '<div class="accordion">'.$res.'</div>';
-//}
 
 ?>
