@@ -11,7 +11,6 @@ $pageincluded = $this->GetParameter('page');
 $clear = $this->GetParameter('clear');
 $class = $this->GetParameter('class');
 if (empty($class)) {
-	$class = 'include';
+    $this->parameter['class']='include';
 }
-
 ?>
