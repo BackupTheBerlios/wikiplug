@@ -6,7 +6,7 @@
 *@package Bazar
 //Auteur original :
 *@author        Florian SCHMITT <florian@outils-reseaux.org>
-*@version       $Revision: 1.8 $ $Date: 2010/12/01 17:01:38 $
+*@version       $Revision: 1.9 $ $Date: 2010/12/07 15:54:27 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -66,7 +66,7 @@ foreach ($tableau_resultat as $fiche)
 		$tab_points_carto[]= '{
 				"title": "'.addslashes($valeurs_fiche['bf_titre']).'",
 				"description": \'<div class="BAZ_cadre_map">'.
-				preg_replace("(\r\n|\n|\r|)", '', addslashes('<ul class="css-tabs"></ul>'.baz_voir_fiche(0, $valeurs_fiche))).'\',
+				preg_replace("(\r\n|\n|\r|)", '', addslashes('<ul class="css-tabs"></ul>'.baz_voir_fiche(1, $valeurs_fiche))).'\',
 				"lat": '.$tab[0].',
 				"lng": '.$tab[1].'
 		}';
