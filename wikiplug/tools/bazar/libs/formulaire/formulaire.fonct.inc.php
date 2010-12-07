@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: formulaire.fonct.inc.php,v 1.23 2010/12/01 17:01:38 mrflos Exp $
+// CVS : $Id: formulaire.fonct.inc.php,v 1.24 2010/12/07 14:46:27 mrflos Exp $
 /**
 * Formulaire
 *
@@ -31,7 +31,7 @@
 //Autres auteurs :
 *@author        Aleandre GRANIER <alexandre@tela-botanica.org>
 *@copyright     Tela-Botanica 2000-2004
-*@version       $Revision: 1.23 $ $Date: 2010/12/01 17:01:38 $
+*@version       $Revision: 1.24 $ $Date: 2010/12/07 14:46:27 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -253,7 +253,7 @@ function liste(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 			if (isset($valliste["label"][$valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]]]))
 			{
 				$html = '<div class="BAZ_rubrique">'."\n".
-						'<span class="BAZ_label">'.$tableau_template[2].':</span>'."\n".
+						'<span class="BAZ_label">'.$tableau_template[2].'&nbsp;:</span>'."\n".
 						'<span class="BAZ_texte">'."\n".
 						$valliste["label"][$valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]]]."\n".
 						'</span>'."\n".
@@ -366,7 +366,7 @@ function checkbox(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 			 
 			{
 				$html = '<div class="BAZ_rubrique">'."\n".
-						'<span class="BAZ_label">'.$tableau_template[2].':</span>'."\n".
+						'<span class="BAZ_label">'.$tableau_template[2].'&nbsp;:</span>'."\n".
 						'<span class="BAZ_texte">'."\n".
 						$labels_result."\n".
 						'</span>'."\n".
@@ -433,7 +433,7 @@ function jour(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 	elseif ($mode == 'html')
 	{
 		$res = '<div class="BAZ_rubrique  BAZ_rubrique_'.$GLOBALS['_BAZAR_']['class'].'">'."\n".
-				'<span class="BAZ_label BAZ_label_'.$GLOBALS['_BAZAR_']['class'].'">'.$tableau_template[2].':</span>'."\n";
+				'<span class="BAZ_label BAZ_label_'.$GLOBALS['_BAZAR_']['class'].'">'.$tableau_template[2].'&nbsp;:</span>'."\n";
 		$res .= '<span class="BAZ_texte BAZ_texte_'.$GLOBALS['_BAZAR_']['class'].'">'.strftime('%d.%m.%Y',strtotime($valeurs_fiche[$tableau_template[1]])).'</span>'."\n".'</div>'."\n";
 		return $res;
 	}
@@ -530,7 +530,7 @@ function tags(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		$html = '';
 		if (isset($valeurs_fiche[$tableau_template[1]]) && $valeurs_fiche[$tableau_template[1]]!='') {
 			$html = '<div class="BAZ_rubrique">'."\n".
-						'<span class="BAZ_label">'.$tableau_template[2].':</span>'."\n";
+						'<span class="BAZ_label">'.$tableau_template[2].'&nbsp;:</span>'."\n";
 			$html .= '<div class="BAZ_texte"> ';
 			$tags = explode(',',htmlentities($valeurs_fiche[$tableau_template[1]]));
 			if (is_array($tags)) {
@@ -606,7 +606,7 @@ function texte(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 			else
 			{
 				$html = '<div class="BAZ_rubrique">'."\n".
-						'<span class="BAZ_label">'.$tableau_template[2].':</span>'."\n";
+						'<span class="BAZ_label">'.$tableau_template[2].'&nbsp;:</span>'."\n";
 				$html .= '<span class="BAZ_texte"> ';
 				$html .= htmlentities($valeurs_fiche[$tableau_template[1]]).'</span>'."\n".'</div>'."\n";
 			}
@@ -614,7 +614,7 @@ function texte(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		//else
 		//{
 		//	$html = '<div class="BAZ_rubrique  BAZ_rubrique_'.$GLOBALS['_BAZAR_']['class'].'">'."\n".
-		//				'<span class="BAZ_label '.$tableau_template[2].'_rubrique">'.$tableau_template[2].':</span>'."\n";
+		//				'<span class="BAZ_label '.$tableau_template[2].'_rubrique">'.$tableau_template[2].'&nbsp;:</span>'."\n";
 		//	$html .= '<span class="BAZ_texte BAZ_texte_'.$GLOBALS['_BAZAR_']['class'].' '.$tableau_template[2].'_description"> ';
 		//	$html .= NON_RENSEIGNE.'</span>'."\n".'</div>'."\n";
 		//}
@@ -800,7 +800,7 @@ function champs_mail(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		if (isset($valeurs_fiche[$tableau_template[1]]) && $valeurs_fiche[$tableau_template[1]]!='')
 		{
 			$html = '<div class="BAZ_rubrique  BAZ_rubrique_'.$GLOBALS['_BAZAR_']['class'].'">'."\n".
-					'<span class="BAZ_label BAZ_label_'.$GLOBALS['_BAZAR_']['class'].'">'.$tableau_template[2].':</span>'."\n";
+					'<span class="BAZ_label BAZ_label_'.$GLOBALS['_BAZAR_']['class'].'">'.$tableau_template[2].'&nbsp;:</span>'."\n";
 			$html .= '<span class="BAZ_texte BAZ_texte_'.$GLOBALS['_BAZAR_']['class'].'"><a href="mailto:'.$valeurs_fiche[$tableau_template[1]].'" class="BAZ_lien_mail">';
 			$html .= $valeurs_fiche[$tableau_template[1]].'</a></span>'."\n".'</div>'."\n";
 		}
@@ -892,7 +892,7 @@ function textelong(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		if (isset($valeurs_fiche[$identifiant]) && $valeurs_fiche[$identifiant]!='')
 		{
 			$html = '<div class="BAZ_rubrique">'."\n".
-					'<span class="BAZ_label '.$identifiant.'_rubrique">'.$label.':</span>'."\n";
+					'<span class="BAZ_label '.$identifiant.'_rubrique">'.$label.'&nbsp;:</span>'."\n";
 			$html .= '<span class="BAZ_texte '.$identifiant.'_description"> ';
 			if ($formatage == 'wiki') {
 				$html .= $GLOBALS['wiki']->Format($valeurs_fiche[$identifiant]);
@@ -969,7 +969,7 @@ function lien_internet(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		if (isset($valeurs_fiche[$tableau_template[1]]) && $valeurs_fiche[$tableau_template[1]]!='')
 		{
 			$html .= '<div class="BAZ_rubrique">'."\n".
-					 '<span class="BAZ_label">'.$tableau_template[2].':</span>'."\n";
+					 '<span class="BAZ_label">'.$tableau_template[2].'&nbsp;:</span>'."\n";
 			$html .= '<span class="BAZ_texte">'."\n".
 					 '<a href="'.$valeurs_fiche[$tableau_template[1]].'" class="BAZ_lien" target="_blank">';
 			$html .= $valeurs_fiche[$tableau_template[1]].'</a></span>'."\n".'</div>'."\n";
@@ -1530,7 +1530,8 @@ function listefiche(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 	if ($mode=='saisie') {
 		$bulledaide = '';
 		if (isset($tableau_template[10]) && $tableau_template[10]!='') $bulledaide = ' <img class="tooltip_aide" title="'.htmlentities($tableau_template[10]).'" src="tools/bazar/presentation/images/aide.png" width="16" height="16" alt="image aide" />';
-		$tab_result = baz_requete_recherche_fiches('', $tri = 'alphabetique', $tableau_template[1], '');
+		$val_type = baz_valeurs_type_de_fiche($tableau_template[1]);
+		$tab_result = baz_requete_recherche_fiches('', 'alphabetique', $tableau_template[1], $val_type["bn_type_fiche"]);
 		$select[0] = BAZ_CHOISIR;
 		foreach ($tab_result as $fiche) {
 			$valeurs_fiche = json_decode($fiche[0], true);
@@ -1541,7 +1542,7 @@ function listefiche(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		$option = array('id' => $tableau_template[0].$tableau_template[1].$tableau_template[6]);
 		if (isset($valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]]) && $valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]]!='')
 		{
-			$def =	$valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]];
+			$def = $valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]];
 		}
 		else
 		{
@@ -1595,7 +1596,7 @@ function listefiche(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 				$html = baz_voir_fiche(0, $valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]]);
 			} else {
 				$html = '<div class="BAZ_rubrique  BAZ_rubrique_'.$GLOBALS['_BAZAR_']['class'].'">'."\n".
-						'<span class="BAZ_label '.$tableau_template[2].'_rubrique">'.$tableau_template[2].':</span>'."\n";
+						'<span class="BAZ_label '.$tableau_template[2].'_rubrique">'.$tableau_template[2].'&nbsp;:</span>'."\n";
 				$html .= '<span class="BAZ_texte BAZ_texte_'.$GLOBALS['_BAZAR_']['class'].' '.$tableau_template[2].'_description">';
 				$url_voirfiche = clone($GLOBALS['_BAZAR_']['url']);
 				$url_voirfiche->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_CONSULTER);
@@ -1899,7 +1900,10 @@ function bookmarklet(&$formtemplate, $tableau_template, $mode, $valeurs_fiche) {
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: formulaire.fonct.inc.php,v $
-* Revision 1.23  2010/12/01 17:01:38  mrflos
+* Revision 1.24  2010/12/07 14:46:27  mrflos
+* correction bug
+*
+* Revision 1.23  2010-12-01 17:01:38  mrflos
 * amélioration de l'intégration dans wiki :
 * les listes sont maintenant des PageWiki
 * les fiches sont aussi des PageWiki

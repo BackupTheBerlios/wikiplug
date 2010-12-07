@@ -174,7 +174,7 @@ $(document).ready(function () {
 	});
 
 	//on enleve la fonction doubleclic dans le cas d'une page contenant bazar
-	$("#formulaire").parents("div[ondblclick]").removeAttr("ondblclick");
+	$("#formulaire, #map").parents("div[ondblclick]").removeAttr("ondblclick");
 
 	//affichage tooltip des evenements dans le calendrier
 	$('.date_avec_evenements').each(function () {
@@ -249,14 +249,14 @@ $(document).ready(function () {
 	}*/
 	
 	//création des overlay pour les images
-    $("body").append("<div class=\"overlay\" id=\"overlay_bazar\"><div class=\"contentWrap\"></div></div>");
+    $("body").append("<div class=\"overlay\" id=\"overlay_bazar\"><div class=\"contentWrap_bazar\"></div></div>");
 
 	$('a.triggerimage[rel="#overlay_bazar"]').overlay({
 		mask:'#999', effect: 'apple',
 		onBeforeLoad: function() {
 
 			// grab wrapper element inside content
-			var wrap = this.getOverlay().find('.contentWrap');
+			var wrap = this.getOverlay().find('.contentWrap_bazar');
 
 			// load the page specified in the trigger
 			wrap.html('<img src='+this.getTrigger().attr("href")+' alt="image" />');
@@ -271,14 +271,9 @@ $(document).ready(function () {
 		$("div[id^='"+id+"']").hide();
 		$("div[id='"+id+'_'+$(this).val()+"']").show();
 	});
-
-	
-	
-	
 	
 //============bidouille pour que les widgets en flash restent en dessous des éléments en survol===========
 	$("object").append('<param value="opaque" name="wmode">');$("embed").attr('wmode','opaque');
-
 });
 
 //fonction pour faire des polygones

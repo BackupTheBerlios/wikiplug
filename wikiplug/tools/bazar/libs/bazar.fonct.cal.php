@@ -71,7 +71,7 @@ function GestionAffichageCalendrier($type = 'calendrier') {
 	$retour = '<div class="'.$type.'">';
 
 	$url = $GLOBALS['_BAZAR_']['url'] ;
-	$db =& $GLOBALS['_BAZAR_']['db'] ;
+	$db = &$GLOBALS['_BAZAR_']['db'] ;
 	
 	// Nettoyage de l'url de la query string
 	$chaine_url = $url->getQueryString();
@@ -162,27 +162,44 @@ function GestionAffichageCalendrier($type = 'calendrier') {
 	if (!isset($_GET['id_fiche']) && ( $type == 'calendrier' || $type == 'calendrierjquery' || $type == 'calendrierjquerymini' )) {
 		// Recherche evenement de la periode selectionnée 
 		$ts_jour_fin_mois = $month->nextMonth('timestamp');
-		$ts_jour_debut_mois = $month->thisMonth('timestamp');; 
-	    $requete_evenements = 	"SELECT DISTINCT bf_id_fiche, bf_titre, bf_lieu_evenement, DAY(bf_date_debut_evenement) AS bf_jour_debut_evenement, bf_date_debut_evenement, bf_date_fin_evenement, bf_description ".
-								"FROM '.BAZ_PREFIXE.'fiche, '.BAZ_PREFIXE.'nature ".
-								"WHERE bf_date_debut_evenement < '".date('Y-m-d', $ts_jour_fin_mois)."' ".
-								"AND bf_date_fin_evenement >= '".date('Y-m-d', $ts_jour_debut_mois)."' ".
-								"AND bf_ce_nature = bn_id_nature ";
-		if ($GLOBALS['_BAZAR_']['categorie_nature'] != 'toutes') $requete_evenements .= 'AND bf_categorie_fiche="'.$GLOBALS['_BAZAR_']['categorie_nature'].'" ' ;
-		if ($GLOBALS['_BAZAR_']['id_typeannonce'] != 'toutes') $requete_evenements .= 'AND bf_ce_nature="'.$GLOBALS['_BAZAR_']['id_typeannonce'].'" ' ;
-		$requete_evenements .= 	"AND bf_statut_fiche = 1 ".
-								"ORDER BY bf_jour_debut_evenement";
+		$ts_jour_debut_mois = $month->thisMonth('timestamp');
 		
-	   	$resultat_evenement = $db->query($requete_evenements);
+		//on recherche toutes les fiches puis on trie sur ceux qui possede une date
+		$tableau_resultat = baz_requete_recherche_fiches('', 'chronologique', $GLOBALS['_BAZAR_']['id_typeannonce'], $GLOBALS['_BAZAR_']['categorie_nature']);
+		$tab_fiches = array();
+		foreach ($tableau_resultat as $fiche) {
+			$valeurs_fiche = json_decode($fiche[0], true);
+			$valeurs_fiche = array_map('utf8_decode', $valeurs_fiche);
+			//echo $valeurs_fiche['bf_titre'].' du '.$valeurs_fiche['bf_date_debut_evenement'].' au '.$valeurs_fiche['bf_date_fin_evenement'].'<br />';
+			//echo 'date fin mois : '.date('Y-n-j', $ts_jour_fin_mois).'<br />';
+			//echo 'date debut mois : '.date('Y-n-j', $ts_jour_debut_mois).'<br />';
+			
+			if (isset($valeurs_fiche['bf_date_debut_evenement'])) {
+				$dateArr = explode("-", $valeurs_fiche['bf_date_debut_evenement']);
+				$date1Int = mktime(0,0,0,$dateArr[1],$dateArr[2],$dateArr[0]);
+			} else $date1Int = NULL;
+			
+			if (isset($valeurs_fiche['bf_date_fin_evenement'])) {
+				$dateArr = explode("-", $valeurs_fiche['bf_date_fin_evenement']);
+				$date2Int = mktime(0,0,0,$dateArr[1],$dateArr[2],$dateArr[0]);
+			} else $date2Int = NULL;
+			
+			//echo ($date1Int < $ts_jour_fin_mois).' = ($date1Int < $ts_jour_fin_mois)';
+			//echo ($date2Int >= $ts_jour_debut_mois).' = ($date2Int >= $ts_jour_debut_mois)';
+			if ($date1Int && $date2Int) {
+				$tab_fiches[] = $valeurs_fiche;
+			}
+		}
+
 
 		$selection = array();
 		$evenements = array();
 		$annee = date('Y', $curStamp);
 		$mois = date('m', $curStamp);
 		$tablo_jours = array();
-	    while ($ligne_evenements = $resultat_evenement->fetchRow(DB_FETCHMODE_OBJECT)) {
-			list($annee_debut, $mois_debut, $jour_debut) = explode('-', $ligne_evenements->bf_date_debut_evenement);
-			list($annee_fin, $mois_fin, $jour_fin) = explode('-', $ligne_evenements->bf_date_fin_evenement);
+	    foreach ($tab_fiches as $val_fiche) {
+			list($annee_debut, $mois_debut, $jour_debut) = explode('-', $val_fiche['bf_date_debut_evenement']);
+			list($annee_fin, $mois_fin, $jour_fin) = explode('-', $val_fiche['bf_date_fin_evenement']);
 			
 			$Calendrier = new Calendar($annee_debut, $mois_debut, $jour_debut);
 			$ts_jour_suivant = $Calendrier->thisDay('timestamp');
@@ -197,7 +214,7 @@ function GestionAffichageCalendrier($type = 'calendrier') {
 								$tablo_jours[$cle_j]['Calendar_Day'] = new Calendar_Day(date('Y', $ts_jour_suivant),date('m', $ts_jour_suivant), date('d', $ts_jour_suivant));
 								$tablo_jours[$cle_j]['Diary_Event'] = new DiaryEvent($tablo_jours[$cle_j]['Calendar_Day']);
 							}
-							$tablo_jours[$cle_j]['Diary_Event']->setEntry($ligne_evenements);
+							$tablo_jours[$cle_j]['Diary_Event']->setEntry($val_fiche['bf_titre']);
 							
 							$ts_jour_suivant = $Calendrier->nextDay('timestamp');
 							//echo "ici$ts_jour_suivant-";
@@ -208,6 +225,7 @@ function GestionAffichageCalendrier($type = 'calendrier') {
 						}				
 	    	}
 		}
+		
 		// Add the decorator to the selection
 		foreach ($tablo_jours as $jour) {
 			$selection[] = $jour['Diary_Event'];				

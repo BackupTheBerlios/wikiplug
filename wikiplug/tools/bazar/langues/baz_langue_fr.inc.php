@@ -151,4 +151,37 @@ define ('BAZ_INDIFFERENT', 'Indiff&eacute;rent');
 define ('BAZ_TELECHARGER_FICHIER_EXPORT_CSV', 'Télécharger le fichier d\'export au format csv');
 define ('BAZ_MOT_DE_PASSE', 'Mot de passe');
 define ('BAZ_VERIFICATION', 'v&eacute;rification');
+
+//================ Calendrier Bazar =======================================
+define ('BAZ_AFFICHE_TITRES_COMPLETS', 'Afficher les titres complets des &eacute;v&eacute;nements');
+define ('BAZ_TRONQUER_TITRES', 'Tronquer les titres des &eacute;v&eacute;nements');
+define ('BAZ_CALENDRIER','Calendrier');
+define ('BAZ_LUNDI','Lundi');
+define ('BAZ_MARDI','Mardi');
+define ('BAZ_MERCREDI','Mercredi');
+define ('BAZ_JEUDI','Jeudi');
+define ('BAZ_VENDREDI','Vendredi');
+define ('BAZ_SAMEDI','Samedi');
+define ('BAZ_DIMANCHE','Dimanche');
+
+define ('BAZ_LUNDI_COURT','Lun');
+define ('BAZ_MARDI_COURT','Mar');
+define ('BAZ_MERCREDI_COURT','Mer');
+define ('BAZ_JEUDI_COURT','Jeu');
+define ('BAZ_VENDREDI_COURT','Ven');
+define ('BAZ_SAMEDI_COURT','Sam');
+define ('BAZ_DIMANCHE_COURT','Dim');
+
+define ('BAZ_JANVIER','Janvier');
+define ('BAZ_FEVRIER','F&eacute;vrier');
+define ('BAZ_MARS','Mars');
+define ('BAZ_AVRIL','Avril');
+define ('BAZ_MAI','Mai');
+define ('BAZ_JUIN','Juin');
+define ('BAZ_JUILLET','Juillet');
+define ('BAZ_AOUT','Ao&uacute;t');
+define ('BAZ_SEPTEMBRE','Septembre');
+define ('BAZ_OCTOBRE','Octobre');
+define ('BAZ_NOVEMBRE','Novembre');
+define ('BAZ_DECEMBRE','D&eacute;cembre');
 ?>

@@ -27,10 +27,10 @@
 *
 *@package bazar
 //Auteur original :
-*@author        Alexandre Granier <alexandre@tela-botanica.org>
 *@author        Florian Schmitt <florian@outils-reseaux.org>
+*@author        Alexandre Granier <alexandre@tela-botanica.org>
 //Autres auteurs :
-*@copyright     Tela-Botanica 2000-2004
+*@copyright     Outils-Réseaux 2000-2010
 *@version       $Revision: 1.10 $ $Date: 2010/03/04 14:19:03 $
 // +------------------------------------------------------------------------------------------------------+
 */
@@ -44,11 +44,11 @@ require_once BAZ_CHEMIN.'libs'.DIRECTORY_SEPARATOR.'HTML/QuickForm/textarea.php'
 require_once BAZ_CHEMIN.'libs'.DIRECTORY_SEPARATOR.'HTML/Table.php' ;
 require_once BAZ_CHEMIN.'libs'.DIRECTORY_SEPARATOR.'formulaire/formulaire.fonct.inc.php';
 
-/** afficher_menu () - Prépare les boutons du menu de bazar et renvoie le html
+/** baz_afficher_menu() - Prépare les boutons du menu de bazar et renvoie le html
 *
 * @return   string  HTML
 */
-function afficher_menu() {
+function baz_afficher_menu() {
 	$res = '<div id="BAZ_menu">'."\n".'<ul>'."\n";
 	// Gestion de la vue par defaut
 	if (!isset($_GET[BAZ_VARIABLE_VOIR])) {
@@ -103,9 +103,25 @@ function afficher_menu() {
 		$res .= '><a href="'.str_replace('&','&amp;',$GLOBALS['_BAZAR_']['url']->getURL()).'" class="btn">'.BAZ_LISTES.'</a></li>'."\n" ;
 	}
 	
+	//partie import
+	if (strstr(BAZ_VOIR_AFFICHER, strval(BAZ_VOIR_IMPORTER))) {
+		$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_IMPORTER);
+		$res .= '<li id="menu_import"';
+		if (isset($_GET[BAZ_VARIABLE_VOIR]) && $_GET[BAZ_VARIABLE_VOIR]==BAZ_VOIR_IMPORTER) $res .=' class="onglet_actif" ';
+		$res .= '><a href="'.str_replace('&','&amp;',$GLOBALS['_BAZAR_']['url']->getURL()).'" class="btn">'.BAZ_IMPORTER.'</a></li>'."\n" ;
+	}
+	
+	//partie export
+	if (strstr(BAZ_VOIR_AFFICHER, strval(BAZ_VOIR_EXPORTER))) {
+		$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_EXPORTER);
+		$res .= '<li id="menu_export"';
+		if (isset($_GET[BAZ_VARIABLE_VOIR]) && $_GET[BAZ_VARIABLE_VOIR]==BAZ_VOIR_EXPORTER) $res .=' class="onglet_actif" ';
+		$res .= '><a href="'.str_replace('&','&amp;',$GLOBALS['_BAZAR_']['url']->getURL()).'" class="btn">'.BAZ_EXPORTER.'</a></li>'."\n" ;
+	}
+	
 	// Au final, on place dans l url, l action courante
 	if (isset($_GET[BAZ_VARIABLE_VOIR])) $GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_VOIR, $_GET[BAZ_VARIABLE_VOIR]);
-	$res.= '</ul>'."\n".'<div style="display:block;clear:left"></div>'."\n".'</div>'."\n";
+	$res.= '</ul>'."\n".'<div class="clear"></div>'."\n".'</div>'."\n";
 	return $res;
 }
 
@@ -245,8 +261,8 @@ function fiches_a_valider() {
 			$lien_voir->addQueryString('typeannonce', $ligne['bn_id_nature']);
 
 			// Nettoyage de l'url
-			// NOTE (jpm - 23 mai 2007): pour ï¿½tre compatible avec PHP5 il faut utiliser tjrs $GLOBALS['_BAZAR_']['url'] car en php4 on
-			// copie bien une variable mais pas en php5, cela reste une rï¿½fï¿½rence...
+			// NOTE (jpm - 23 mai 2007): pour être compatible avec PHP5 il faut utiliser tjrs $GLOBALS['_BAZAR_']['url'] car en php4 on
+			// copie bien une variable mais pas en php5, cela reste une référence...
 			$GLOBALS['_BAZAR_']['url']->removeQueryString(BAZ_VARIABLE_ACTION);
 			$GLOBALS['_BAZAR_']['url']->removeQueryString('id_fiche');
 			$GLOBALS['_BAZAR_']['url']->removeQueryString('typeannonce');
@@ -295,80 +311,20 @@ function fiches_a_valider() {
 }
 
 
-/** mes_fiches () - Renvoie les fiches bazar d'un utilisateur
+/** baz_afficher_liste_fiches_utilisateur () - Affiche la liste des fiches bazar d'un utilisateur
 *
 * @return   string  HTML
 */
-function mes_fiches() {
-	$res= '<h2 class="titre_mes_fiches">'.BAZ_VOS_FICHES.'</h2><br />'."\n";
+function baz_afficher_liste_fiches_utilisateur() {
+	$res = '<h2 class="titre_mes_fiches">'.BAZ_VOS_FICHES.'</h2>'."\n";
 	
 	//test si l'on est identifié pour voir les fiches
 	if ( baz_a_le_droit('voir_mes_fiches') ) {
 		$nomwiki = $GLOBALS['wiki']->getUser();
-		// requete pour voir si l'utilisateur a des fiches a son nom, classees par date de MAJ et nature d'annonce
-		$requete = 'SELECT * FROM '.BAZ_PREFIXE.'fiche, '.BAZ_PREFIXE.'nature WHERE bf_ce_utilisateur="'. $nomwiki['name'].
-		           '" AND bn_id_nature=bf_ce_nature ';
-		if ($GLOBALS['_BAZAR_']['categorie_nature']!='toutes') $requete .= ' AND bn_type_fiche = "'.$GLOBALS['_BAZAR_']['categorie_nature'].'" ';
-		if (isset($GLOBALS['_BAZAR_']['langue'])) $requete .= ' AND bn_ce_i18n like "'.$GLOBALS['_BAZAR_']['langue'].'%" ';
-		$requete .= ' ORDER BY bf_ce_nature ASC, bf_titre';
-
-		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
-		if (DB::isError($resultat)) {
-			echo ('Echec de la requete<br />'.$resultat->getMessage().'<br />'.$resultat->getDebugInfo()) ;
-		}
-		if ($resultat->numRows() != 0) {
-			$tableAttr = array('class' => 'table_bazar', 'summary' => 'Tableau des fiches d\'une personne') ;
-			$table = new HTML_Table($tableAttr) ;
-			$entete = array (BAZ_TYPE_FICHE, BAZ_TITREANNONCE,  BAZ_ETATPUBLICATION, BAZ_MODIFIER, BAZ_SUPPRIMER) ;
-			$table->addRow($entete) ;
-			$table->setRowType (0, "th") ;
-
-		// On affiche une ligne par proposition
-		while ($ligne = $resultat->fetchRow (DB_FETCHMODE_ASSOC)) {
-			if ($ligne['bf_statut_fiche']==1) $publiee=BAZ_PUBLIEE;
-			elseif ($ligne['bf_statut_fiche']==0) $publiee=BAZ_ENCOURSDEVALIDATION;
-			else $publiee=BAZ_REJETEE;
-
-			$lien_voir = clone($GLOBALS['_BAZAR_']['url']);
-			$lien_voir->addQueryString(BAZ_VARIABLE_ACTION, BAZ_VOIR_FICHE);
-			$lien_voir->addQueryString('id_fiche', $ligne['bf_id_fiche']);
-			$lien_voir->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_CONSULTER);
-			$lien_voir_url=str_replace('&','&amp;',$lien_voir->getURL());
-
-			$lien_modifier = clone($GLOBALS['_BAZAR_']['url']);
-			$lien_modifier->addQueryString(BAZ_VARIABLE_ACTION, BAZ_ACTION_MODIFIER);
-			$lien_modifier->addQueryString('id_fiche', $ligne['bf_id_fiche']);
-			$lien_modifier->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_SAISIR);
-			$lien_modifier_url=str_replace('&','&amp;',$lien_modifier->getURL());
-
-			$lien_supprimer = clone($GLOBALS['_BAZAR_']['url']);
-			$lien_supprimer->addQueryString(BAZ_VARIABLE_ACTION, BAZ_ACTION_SUPPRESSION);
-			$lien_supprimer->addQueryString('id_fiche', $ligne['bf_id_fiche']);
-			$lien_supprimer->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_SAISIR);
-			$lien_supprimer_url=str_replace('&','&amp;',$lien_supprimer->getURL());
-
-			$table->addRow (array(
-					$ligne['bn_label_nature']."\n", // col 1: type annonce
-			        '<a href="'.$lien_voir_url.'" class="BAZ_lien_voir">'.$ligne['bf_titre'].'</a>'."\n", // col 2 : le nom
-					$publiee."\n", // col 3 : publiee ou non
-					'<a href="'.$lien_modifier_url.'" class="BAZ_lien_modifier">'.BAZ_MODIFIER.'</a>'."\n", // col 4 : modifier
-					'<a href="'.$lien_supprimer_url.'" class="BAZ_lien_supprimer" onclick="javascript:return '.
-					'confirm(\''.BAZ_CONFIRMATION_SUPPRESSION.'\');" >'.BAZ_SUPPRIMER.'</a>'."\n")) ; // col 5 : supprimer
-		}
-		$table->altRowAttributes(1, array("class" => "ligne_impaire"), array("class" => "ligne_paire"));
-		$table->updateColAttributes(1, array("align" => "left"));
-		$table->updateColAttributes(2, array("align" => "center"));
-		$table->updateColAttributes(3, array("align" => "center"));
-		$table->updateColAttributes(4, array("align" => "center"));
-		$res .= $table->toHTML() ;
-		}
-	    else {
-	    	$res .= '<div class="BAZ_info">'.BAZ_PAS_DE_FICHE.'</div>'."\n" ;
-	    }
-	}
-	else  {
-		$res .= '<div class="BAZ_info">'.BAZ_IDENTIFIEZ_VOUS_POUR_VOIR_VOS_FICHES.'</div>'."\n";
-
+		$tableau_dernieres_fiches = baz_requete_recherche_fiches('', '', $GLOBALS['_BAZAR_']['id_typeannonce'], $GLOBALS['_BAZAR_']['categorie_nature'], 1, $nomwiki["name"], 10);
+        $res .= baz_afficher_liste_resultat($tableau_dernieres_fiches, false);
+	} else  {
+		$res .= '<div class="info_box">'.BAZ_IDENTIFIEZ_VOUS_POUR_VOIR_VOS_FICHES.'</div>'."\n";
 	}
 	$GLOBALS['_BAZAR_']['url']->removeQueryString(BAZ_VARIABLE_ACTION);
 	$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_SAISIR);
@@ -377,6 +333,188 @@ function mes_fiches() {
 	$GLOBALS['_BAZAR_']['url']->removeQueryString(BAZ_VARIABLE_ACTION);
 	$GLOBALS['_BAZAR_']['url']->removeQueryString(BAZ_VARIABLE_VOIR);
 	return $res;
+}
+
+/**
+ * 
+ * interface de choix des fiches à importer
+ */
+function baz_afficher_formulaire_import() {
+		
+	$output = '<h2 class="title_import">Import CSV</h2>'."\n";
+	
+	if (!isset($categorienature)) $categorienature = 'toutes';
+	$id_type_fiche = (isset($_POST['id_type_fiche'])) ? $_POST['id_type_fiche'] : '';
+	
+	//On choisit un type de fiches pour parser le csv en conséquence
+	//requete pour obtenir l'id et le label des types d'annonces
+	$requete = 'SELECT bn_id_nature, bn_label_nature, bn_template FROM '.BAZ_PREFIXE.'nature WHERE';
+	($categorienature!='toutes') ? $requete .= ' bn_type_fiche="'.$categorienature.'"' : $requete .= ' 1';
+	(isset($GLOBALS['_BAZAR_']['langue'])) ? $requete .= ' AND bn_ce_i18n like "'.$GLOBALS['_BAZAR_']['langue'].'%" ' : $requete .= '';
+	$requete .= ' ORDER BY bn_label_nature ASC';
+	$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
+		
+	$output .= '<form method="post" action="'.$GLOBALS['_BAZAR_']["url"]->getUrl().'" enctype="multipart/form-data">'."\n";
+	
+	//s'il y a plus d'un choix possible, on propose 
+	if ($resultat->numRows()>=1) {
+		$output .= '<div class="formulaire_ligne">'."\n".'<div class="formulaire_label">'."\n".
+					BAZ_TYPE_FICHE.' :</div>'."\n".'<div class="formulaire_input">';
+		$output .= '<select name="id_type_fiche" onchange="javascript:this.form.submit();">'."\n";
+		while ($ligne = $resultat->fetchRow(DB_FETCHMODE_ASSOC)) {
+			$output .= '<option value="'.$ligne['bn_id_nature'].'"'.(($id_type_fiche == $ligne['bn_id_nature']) ? ' selected="selected"' : '').'>'.$ligne['bn_label_nature'].'</option>'."\n";
+		}
+		$output .= '</select>'."\n".'</div>'."\n".'</div>'."\n";
+	}		
+	//sinon c'est vide
+	else {
+		$output .= BAZ_PAS_DE_FORMULAIRES_TROUVES."\n";
+	}
+	
+	if ($id_type_fiche != '') {
+		$val_formulaire = baz_valeurs_type_de_fiche($id_type_fiche);
+		$output .= '<div class="formulaire_ligne">'."\n".'<div class="formulaire_label">'."\n".
+				BAZ_FICHIER_CSV_A_IMPORTER.' :</div>'."\n".'<div class="formulaire_input">';
+		$output .= '<input type="file" name="fileimport" id="idfileimport" /><input name="submit_file" type="submit" value="'.BAZ_IMPORTER_CE_FICHIER.'" />'."\n".'</div>'."\n".'</div>'."\n";
+		$output .= '<div class="info_box">'."\n".BAZ_ENCODAGE_CSV."\n".'</div>'."\n";
+		
+		//on parcourt le template du type de fiche pour fabriquer un csv pour l'exemple
+		$tableau = formulaire_valeurs_template_champs($val_formulaire['bn_template']);
+		$csv = ''; $nb=0;
+		foreach ($tableau as $ligne) {
+			if ($ligne[0] != 'labelhtml') {
+				$csv .= '"'.str_replace('"','""',$ligne[2]).((isset($ligne[9]) && $ligne[9]==1) ? ' *' : '').'", ';
+				$nb++;
+			}
+		}
+		$csv = substr(trim($csv),0,-1)."\r\n";	
+		for ($i=1; $i<4; $i++) {
+			for ($j=1; $j<($nb+1); $j++) {
+				$csv .= '"ligne '.$i.' - champ '.$j.'", ';
+			}
+			$csv = substr(trim($csv),0,-1)."\r\n";
+		}
+		
+		$output .= '<em>'.BAZ_EXEMPLE_FICHIER_CSV.$val_formulaire["bn_label_nature"].'</em>'."\n";
+		$output .= '<pre style="height:125px; white-space:pre; padding:5px; word-wrap:break-word; border:1px solid #999; overflow:auto; ">'."\n".$csv."\n".'</pre>'."\n";
+	}	
+	
+	$output .= '</form>'."\n";
+	
+	if (isset($_POST['submit_file'])) {
+			$row = 1;
+			if (($handle = fopen($_FILES['fileimport']['tmp_name'], "r")) !== FALSE) {		
+			    while (($data = fgetcsv($handle, 0, ",")) !== FALSE) {
+			        $num = count($data);
+			        $output .=  "<em> $num champs pour la ligne $row: <br /></em>\n";
+			        $row++;
+			        for ($c=0; $c < $num; $c++) {
+			            $output .= utf8_decode(str_replace('â€™','\'',$data[$c])) . "<br />\n";
+			        }
+			        $output .= '<hr />';
+			    }
+			    fclose($handle);
+			}
+	}
+
+	return $output;
+}
+
+/**
+ * 
+ * interface de choix des fiches à exporter
+ */
+function baz_afficher_formulaire_export() {
+	
+	$output = '<h2 class="title_export">Export CSV</h2>'."\n";
+	
+	if (!isset($categorienature)) $categorienature = 'toutes';
+	$id_type_fiche = (isset($_POST['id_type_fiche'])) ? $_POST['id_type_fiche'] : '';
+	
+	//On choisit un type de fiches pour parser le csv en conséquence
+	//requete pour obtenir l'id et le label des types d'annonces
+	$requete = 'SELECT bn_id_nature, bn_label_nature, bn_template FROM '.BAZ_PREFIXE.'nature WHERE';
+	($categorienature!='toutes') ? $requete .= ' bn_type_fiche="'.$categorienature.'"' : $requete .= ' 1';
+	(isset($GLOBALS['_BAZAR_']['langue'])) ? $requete .= ' AND bn_ce_i18n like "'.$GLOBALS['_BAZAR_']['langue'].'%" ' : $requete .= '';
+	$requete .= ' ORDER BY bn_label_nature ASC';
+	$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
+		
+	$output .= '<form method="post" action="'.$GLOBALS['_BAZAR_']['url']->getUrl().'">'."\n";
+	
+	//s'il y a plus d'un choix possible, on propose 
+	if ($resultat->numRows()>=1) {
+		$output .= '<div class="formulaire_ligne">'."\n".'<div class="formulaire_label">'."\n".
+					BAZ_TYPE_FICHE.' :</div>'."\n".'<div class="formulaire_input">';
+		$output .= '<select name="id_type_fiche" onchange="javascript:this.form.submit();">'."\n";
+		
+		//si l'on n'a pas déjà choisit de fiche, on démarre sur l'option CHOISIR, vide
+		if (!isset($_POST['id_type_fiche'])) $output .= '<option value="" selected="selected">'.BAZ_CHOISIR.'</option>'."\n";
+		
+		//on dresse la liste de types de fiches
+		while ($ligne = $resultat->fetchRow(DB_FETCHMODE_ASSOC)) {
+			$output .= '<option value="'.$ligne['bn_id_nature'].'"'.(($id_type_fiche == $ligne['bn_id_nature']) ? ' selected="selected"' : '').'>'.$ligne['bn_label_nature'].'</option>'."\n";
+		}
+		$output .= '</select>'."\n".'</div>'."\n".'</div>'."\n";
+	}		
+	//sinon c'est vide
+	else {
+		$output .= BAZ_PAS_DE_FORMULAIRES_TROUVES."\n";
+	}
+	$output .= '</form>'."\n";
+	
+	if ($id_type_fiche != '') {
+		$val_formulaire = baz_valeurs_type_de_fiche($id_type_fiche);
+	
+		//on parcourt le template du type de fiche pour fabriquer un csv pour l'exemple
+		$tableau = formulaire_valeurs_template_champs($val_formulaire['bn_template']);
+		$csv = ''; $nb=0; $tab_champs = array();
+		foreach ($tableau as $ligne) {
+			if ($ligne[0] != 'labelhtml') {
+				if ($ligne[0] == 'liste' || $ligne[0] == 'checkbox' || $ligne[0] == 'listefiche' || $ligne[0] == 'checkboxfiche') {
+					$tab_champs[] = $ligne[0].$ligne[1].$ligne[6];
+				} else {
+					$tab_champs[] = $ligne[1];
+				}
+				$csv .= utf8_encode('"'.str_replace('"','""',$ligne[2]).((isset($ligne[9]) && $ligne[9]==1) ? ' *' : '').'",');
+				$nb++;
+			}
+		}
+		$csv = substr(trim($csv),0,-1)."\r\n";
+		
+		//on récupère toutes les fiches du type choisi et on les met au format csv
+		$tableau_fiches = baz_requete_recherche_fiches('', 'alphabetique', $id_type_fiche, $val_formulaire['bn_type_fiche']); 
+		$total = count($tableau_fiches);
+		foreach ($tableau_fiches as $fiche) {
+			$tab_valeurs = json_decode($fiche[0], true);
+			$tab_csv = array();
+			foreach ($tab_champs as $index) {
+				if (isset($tab_valeurs[$index])) $tab_csv[] = utf8_encode('"'.str_replace('"','""',$tab_valeurs[$index]).'"'); else $tab_csv[] = '';
+			}
+			
+			$csv .= implode(',',$tab_csv)."\r\n";
+		}
+		
+		$output .= '<em>'.BAZ_VISUALISATION_FICHIER_CSV_A_EXPORTER.$val_formulaire["bn_label_nature"].' - '.BAZ_TOTAL_FICHES.' : '.$total.'</em>'."\n";
+		$output .= '<pre style="height:125px; white-space:pre; padding:5px; word-wrap:break-word; border:1px solid #999; overflow:auto; ">'."\n".utf8_decode($csv)."\n".'</pre>'."\n";
+		
+		//on génére le fichier
+		$chemin_destination = BAZ_CHEMIN_UPLOAD.'bazar-export-'.$id_type_fiche.'.csv';
+		//vérification de la présence de ce fichier, s'il existe déjà, on le supprime
+		if (file_exists($chemin_destination)) {
+			unlink($chemin_destination);			
+		}
+		$fp = fopen($chemin_destination, 'w');
+		fwrite($fp, $csv);
+		fclose($fp);
+		chmod ($chemin_destination, 0755);
+		
+		//on crée le lien vers ce fichier
+		$output .= '<a href="'.$chemin_destination.'" class="link-csv-file" title="'.BAZ_TELECHARGER_FICHIER_EXPORT_CSV.'">'.BAZ_TELECHARGER_FICHIER_EXPORT_CSV.'</a>'."\n";
+		
+	}	
+	
+	
+	return $output;
 }
 
 /** baz_gestion_droits() interface de gestion des droits
@@ -584,14 +722,14 @@ function baz_formulaire($mode, $url = '', $valeurs = '') {
 			$lien_formulaire->addQueryString(BAZ_VARIABLE_ACTION, BAZ_ACTION_NOUVEAU);
 		}
 		if ($mode == BAZ_ACTION_NOUVEAU) {
-			if ((!isset($_POST['accept_condition']))and($GLOBALS['_BAZAR_']['condition']!=NULL)) {
+			if (!isset($_POST['accept_condition']) && $GLOBALS['_BAZAR_']['condition'] != NULL) {
 				$lien_formulaire->addQueryString(BAZ_VARIABLE_ACTION, BAZ_ACTION_NOUVEAU);
 			} else {
 				$lien_formulaire->addQueryString(BAZ_VARIABLE_ACTION, BAZ_ACTION_NOUVEAU_V);
 			}
 		}
 		if ($mode == BAZ_ACTION_MODIFIER) {
-			if (!isset($_POST['accept_condition'])and($GLOBALS['_BAZAR_']['condition']!=NULL)) {
+			if (!isset($_POST['accept_condition']) && $GLOBALS['_BAZAR_']['condition'] != NULL) {
 				$lien_formulaire->addQueryString(BAZ_VARIABLE_ACTION, BAZ_ACTION_MODIFIER);
 			} else {
 				$lien_formulaire->addQueryString(BAZ_VARIABLE_ACTION, BAZ_ACTION_MODIFIER_V);
@@ -629,7 +767,7 @@ function baz_formulaire($mode, $url = '', $valeurs = '') {
 	$formtemplate->addElement('hidden', 'antispam', 0);
 
 	//------------------------------------------------------------------------------------------------
-	//AFFICHAGE DU FORMULAIRE GENERAL DE CHOIX DU TYPE D'ANNONCE
+	//AFFICHAGE DU FORMULAIRE GENERAL DE CHOIX DU TYPE DE FICHE
 	//------------------------------------------------------------------------------------------------
 	if ($mode == BAZ_CHOISIR_TYPE_FICHE) {
 		if (isset($GLOBALS['_BAZAR_']['id_typeannonce']) && $GLOBALS['_BAZAR_']['id_typeannonce'] != 'toutes') {
@@ -705,7 +843,7 @@ function baz_formulaire($mode, $url = '', $valeurs = '') {
 	}
 
 	//------------------------------------------------------------------------------------------------
-	//AFFICHAGE DU FORMULAIRE CORRESPONDANT AU TYPE DE L'ANNONCE CHOISI PAR L'UTILISATEUR
+	//AFFICHAGE DU FORMULAIRE CORRESPONDANT AU TYPE DE FICHE CHOISI PAR L'UTILISATEUR
 	//------------------------------------------------------------------------------------------------
 
 	if ($mode == BAZ_ACTION_NOUVEAU) {
@@ -715,18 +853,18 @@ function baz_formulaire($mode, $url = '', $valeurs = '') {
 
 
 	//------------------------------------------------------------------------------------------------
-	//CAS DE LA MODIFICATION D'UNE ANNONCE (FORMULAIRE DE MODIFICATION)
+	//CAS DE LA MODIFICATION D'UNE FICHE (FORMULAIRE DE MODIFICATION)
 	//------------------------------------------------------------------------------------------------
 	if ($mode == BAZ_ACTION_MODIFIER) {
 		$res .= baz_afficher_formulaire_fiche('modification', $formtemplate, $url, $valeurs);
 	}
 
 	//------------------------------------------------------------------------------------------------
-	//CAS DE L'INSCRIPTION D'UNE ANNONCE
+	//CAS DE L'AJOUT D'UNE FICHE
 	//------------------------------------------------------------------------------------------------
 	if ($mode == BAZ_ACTION_NOUVEAU_V && $_POST['antispam']==1) {
 		if ($formtemplate->validate()) {
-			$formtemplate->process('baz_insertion', false) ;
+			$formtemplate->process('baz_insertion_fiche', false) ;
 			// Redirection vers mes_fiches pour eviter la revalidation du formulaire
 			$GLOBALS['_BAZAR_']['url']->addQueryString ('message', 'ajout_ok') ;
 			$GLOBALS['_BAZAR_']['url']->removeQueryString (BAZ_VARIABLE_VOIR) ;
@@ -736,11 +874,11 @@ function baz_formulaire($mode, $url = '', $valeurs = '') {
 	}
 
 	//------------------------------------------------------------------------------------------------
-	//CAS DE LA MODIFICATION D'UNE ANNONCE (VALIDATION ET MAJ)
+	//CAS DE LA MODIFICATION D'UNE FICHE (VALIDATION ET MAJ)
 	//------------------------------------------------------------------------------------------------
 	if ($mode == BAZ_ACTION_MODIFIER_V && $_POST['antispam']==1) {
-		if ($formtemplate->validate() && baz_a_le_droit( 'saisie_fiche', $_POST['bf_ce_utilisateur'] ) ) {
-			$formtemplate->process('baz_mise_a_jour', false) ;
+		if ($formtemplate->validate() && baz_a_le_droit( 'saisie_fiche', $GLOBALS['wiki']->GetPageOwner($GLOBALS['_BAZAR_']['id_fiche']))) {
+			$formtemplate->process('baz_mise_a_jour_fiche', false) ;
 			// Redirection vers mes_fiches pour eviter la revalidation du formulaire
 			$GLOBALS['_BAZAR_']['url']->addQueryString ('message', 'modif_ok') ;
 			$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_CONSULTER);
@@ -827,17 +965,18 @@ function baz_afficher_formulaire_fiche($mode = 'saisie', $formtemplate, $url = '
 }
 
 
-/** baz_requete_bazar_fiche() - preparer la requete d'insertion ou de MAJ de la table '.BAZ_PREFIXE.'fiche a partir du template
-*
-* @global   mixed L'objet contenant les valeurs issues de la saisie du formulaire
-* @return   void
-*/
+/** baz_requete_bazar_fiche() - prepare la requete d'insertion ou de MAJ de la fiche en supprimant de la valeur POST les valeurs inadéquates
+ * puis en l'encodant en JSON
+ * 
+ * @global   mixed L'objet contenant les valeurs issues de la saisie du formulaire
+ * @return   string Tableau des valeurs à sauver dans la PageWiki, au format JSON
+ * 
+ **/
 function baz_requete_bazar_fiche($valeur) {
 	//on enleve les champs hidden pas nécéssaires à la fiche
 	unset($valeur["valider"]);
 	unset($valeur["MAX_FILE_SIZE"]);
-	
-	$valeur['id_fiche'] = $GLOBALS['_BAZAR_']['id_fiche'];
+	unset($valeur["antispam"]);
 	
 	//pour les checkbox, on met les résultats sur une ligne
 	foreach ($valeur as $cle => $val) { 
@@ -845,48 +984,56 @@ function baz_requete_bazar_fiche($valeur) {
 			$valeur[$cle] = implode(',', array_keys($val));
 		}
 	}
-		
-	$requete = 'bf_statut_fiche="'.BAZ_ETAT_VALIDATION.'", ';
-	$tableau=formulaire_valeurs_template_champs($GLOBALS['_BAZAR_']['template']);
+	$valeur['statut_fiche'] = BAZ_ETAT_VALIDATION;
+	
+	$tableau = formulaire_valeurs_template_champs($GLOBALS['_BAZAR_']['template']);
 	for ($i=0; $i<count($tableau); $i++) {
-		$requete .= $tableau[$i][0]($formtemplate, $tableau[$i], 'requete', $valeur);
+		$tab = $tableau[$i][0]($formtemplate, $tableau[$i], 'requete', $valeur);
+		if (is_array($tab)) $valeur = array_merge($valeur, $tab);
 	}
 	
-	$requete.=' bf_date_maj_fiche=NOW()';
+	$valeur['date_maj_fiche'] = date( 'Y-m-d H:i:s', time() );
+	
+	//pour une insertion d'une nouvelle fiche, on génére l'id de la fiche
+	if (!isset($GLOBALS['_BAZAR_']['id_fiche'])) {
+		// l'identifiant (sous forme de NomWiki) est généré à partir du titre            
+		$GLOBALS['_BAZAR_']['id_fiche'] = genere_nom_wiki($valeur['bf_titre']);
+	} 
+	$valeur['id_fiche'] = $GLOBALS['_BAZAR_']['id_fiche'];
 	
 	//on encode en utf-8 pour réussir à encoder en json
 	$valeur = array_map("utf8_encode", $valeur);
-	//on sauve les valeurs d'une fiche dans une PageWiki, pour garder l'historique
-	$GLOBALS["wiki"]->SavePage($GLOBALS['_BAZAR_']['id_fiche'], json_encode($valeur));
 	
-	return $requete;
+	return json_encode($valeur);
 }
 
-/** baz_insertion() - inserer une nouvelle fiche
+/** baz_insertion_fiche() - inserer une nouvelle fiche
 *
 * @array   Le tableau des valeurs a inserer
-* @integer Valeur de l'identifiant de la fiche
+*
 * @return   void
 */
-function baz_insertion($valeur) {
+function baz_insertion_fiche($valeur) {
 	//on teste au moins l'existence du titre car sans titre ca peut bugguer sérieusement
 	if (isset($valeur['bf_titre'])) {
-        // ===========  Insertion d'une nouvelle fiche ===================
-        // l'identifiant (sous forme de NomWiki) est généré à partir du titre    
-        $GLOBALS['_BAZAR_']['id_fiche'] = genere_nom_wiki($valeur['bf_titre']);
-        $requete = 'INSERT INTO '.BAZ_PREFIXE.'fiche SET bf_id_fiche="'.$GLOBALS['_BAZAR_']['id_fiche'].'", ';
-		if ($GLOBALS['_BAZAR_']['nomwiki']!='' && $GLOBALS['_BAZAR_']['nomwiki']!=NULL) $requete .= 'bf_ce_utilisateur="'.$GLOBALS['_BAZAR_']['nomwiki']['name'].'", ';
-		$requete .= 'bf_categorie_fiche="'.$GLOBALS['_BAZAR_']['categorie_nature'].'", bf_ce_nature='.$GLOBALS['_BAZAR_']['id_typeannonce'].', '.
-		   'bf_date_creation_fiche=NOW(), ';
-		if (!isset($_REQUEST['bf_date_debut_validite_fiche'])) {
-			$requete .= 'bf_date_debut_validite_fiche=now(), bf_date_fin_validite_fiche="0000-00-00", ' ;
+		// ===========  Insertion d'une nouvelle fiche ===================
+		//createur de la fiche
+		if ($GLOBALS['_BAZAR_']['nomwiki']!='' && $GLOBALS['_BAZAR_']['nomwiki']!=NULL) {
+			$valeur['createur'] = $GLOBALS['_BAZAR_']['nomwiki']['name'];
+		} else {
+			$valeur['createur'] = BAZ_ANONYME;
 		}
-		$requete .= baz_requete_bazar_fiche($valeur) ;
-		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
-		if (DB::isError($resultat)) {
-			return ($resultat->getMessage().$resultat->getDebugInfo()) ;
-		}
+		$valeur['categorie_fiche'] = $GLOBALS['_BAZAR_']['categorie_nature'];
+		$valeur['date_creation_fiche'] = date( 'Y-m-d H:i:s', time() );
+		if (!isset($_REQUEST['date_debut_validite_fiche'])) {
+			$valeur['date_debut_validite_fiche'] = date( 'Y-m-d', time() );
+			$valeur['date_fin_validite_fiche'] = "0000-00-00";
+		}		
+		$valeur = baz_requete_bazar_fiche($valeur);
 		
+		//on sauve les valeurs d'une fiche dans une PageWiki, pour garder l'historique
+		$GLOBALS["wiki"]->SavePage($GLOBALS['_BAZAR_']['id_fiche'], $valeur);
+			
 		//on cree un triple pour spécifier que la page wiki créée est une fiche bazar
 		$GLOBALS["wiki"]->InsertTriple($GLOBALS['_BAZAR_']['id_fiche'], 'http://outils-reseaux.org/_vocabulary/type', 'fiche_bazar', '', '');
 	
@@ -956,14 +1103,11 @@ function baz_insertion($valeur) {
 * @global   Le contenu du formulaire de saisie de l'annonce
 * @return   void
 */
-function baz_mise_a_jour($valeur) {
-	//MAJ de '.BAZ_PREFIXE.'fiche
-	$requete = 'UPDATE '.BAZ_PREFIXE.'fiche SET '.baz_requete_bazar_fiche($valeur,$GLOBALS['_BAZAR_']['id_typeannonce']);
-	$requete.= ' WHERE bf_id_fiche="'.$GLOBALS['_BAZAR_']['id_fiche'].'"';
-	$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
-	if (DB::isError($resultat)) {
-		echo ($resultat->getMessage().$resultat->getDebugInfo()) ;
-	}
+function baz_mise_a_jour_fiche($valeur) {
+	$valeur = array_merge(baz_valeurs_fiche($GLOBALS['_BAZAR_']['id_fiche']), $valeur);
+	$valeur = baz_requete_bazar_fiche($valeur, $GLOBALS['_BAZAR_']['id_typeannonce']);
+	//on sauve les valeurs d'une fiche dans une PageWiki, pour garder l'historique
+	$GLOBALS["wiki"]->SavePage($GLOBALS['_BAZAR_']['id_fiche'], $valeur);
 	
 	// Envoie d un mail aux administrateurs
 		if (BAZ_ENVOI_MAIL_ADMIN) {
@@ -1022,7 +1166,8 @@ function baz_suppression($idfiche) {
 	if ($idfiche != '') {
 		$valeur = baz_valeurs_fiche($idfiche);
 		if ( baz_a_le_droit( 'saisie_fiche', $valeur['bf_ce_utilisateur'] ) ) {
-			//suppression des valeurs des champs texte, checkbox et liste
+			
+			/*//suppression des valeurs des champs texte, checkbox et liste
 			$requete = 'DELETE FROM '.BAZ_PREFIXE.'fiche_valeur_texte WHERE bfvt_ce_fiche = "'.$idfiche.'"';
 			$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 			if (DB::isError($resultat)) {
@@ -1043,10 +1188,12 @@ function baz_suppression($idfiche) {
 			$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 			if (DB::isError($resultat)) {
 				echo ('Echec de la requete<br />'.$resultat->getMessage().'<br />'.$resultat->getDebugInfo().'<br />'."\n") ;
-			}
+			}*/
 			
 			//on supprime les pages wiki crées
-			$GLOBALS['wiki']->DeleteOrphanedPage($idfiche);		
+			$GLOBALS['wiki']->DeleteOrphanedPage($idfiche);	
+			$GLOBALS["wiki"]->DeleteTriple($GLOBALS['_BAZAR_']['id_fiche'], 'http://outils-reseaux.org/_vocabulary/type', NULL, '', '');
+	
 	
 			//on nettoie l'url, on retourne à la consultation des fiches
 			$GLOBALS['_BAZAR_']['url']->addQueryString ('message', 'delete_ok') ;
@@ -1074,11 +1221,11 @@ function publier_fiche($valid) {
 	if ( baz_a_le_droit( 'valider_fiche' ) ) {
 		if ($valid==0) {
 			$requete = 'UPDATE '.BAZ_PREFIXE.'fiche SET  bf_statut_fiche=2 WHERE bf_id_fiche="'.$_GET['id_fiche'].'"' ;
-			echo '<div class="BAZ_info">'.BAZ_FICHE_PAS_VALIDEE.'</div>'."\n";
+			echo '<div class="info_box">'.BAZ_FICHE_PAS_VALIDEE.'</div>'."\n";
 		}
 		else {
 			$requete = 'UPDATE '.BAZ_PREFIXE.'fiche SET  bf_statut_fiche=1 WHERE bf_id_fiche="'.$_GET['id_fiche'].'"' ;
-			echo '<div class="BAZ_info">'.BAZ_FICHE_VALIDEE.'</div>'."\n";
+			echo '<div class="info_box">'.BAZ_FICHE_VALIDEE.'</div>'."\n";
 		}
 
 		// ====================Mise a jour de la table '.BAZ_PREFIXE.'fiche====================
@@ -1098,7 +1245,7 @@ function publier_fiche($valid) {
 *   @return  string    le code HTML
 */
 function baz_liste_rss() {
-	$res= '<h2>'.BAZ_S_ABONNER_AUX_FICHES.'</h2>'."\n";
+	$res = '<h2>'.BAZ_S_ABONNER_AUX_FICHES.'</h2>'."\n";
 	//requete pour obtenir l'id et le label des types d'annonces
 	$requete = 'SELECT bn_id_nature, bn_label_nature '.
 	           'FROM '.BAZ_PREFIXE.'nature WHERE 1';
@@ -1108,21 +1255,21 @@ function baz_liste_rss() {
 	}
 
 	// Nettoyage de l url
-	$lien_RSS=$GLOBALS['_BAZAR_']['url'];
-	$lien_RSS->addQueryString('wiki', $GLOBALS['wiki']->minihref('xmlutf8',$_GET['wiki']));
-	$lien_RSS->addQueryString(BAZ_VARIABLE_ACTION, BAZ_VOIR_FLUX_RSS);
+	$lien_RSS = $GLOBALS['_BAZAR_']['url'];
+	$lien_RSS->removeQueryString(BAZ_VARIABLE_VOIR);
+	$lien_RSS->addQueryString('wiki', $GLOBALS['wiki']->minihref('rss',$_GET['wiki']));
+	//$lien_RSS->addQueryString(BAZ_VARIABLE_ACTION, BAZ_VOIR_FLUX_RSS);
 	$liste='';
 	while ($ligne = $resultat->fetchRow(DB_FETCHMODE_ASSOC)) {
-		$lien_RSS->addQueryString('annonce', $ligne['bn_id_nature']);
+		$lien_RSS->addQueryString('id_typeannonce', $ligne['bn_id_nature']);
 		$liste .= '<li><a href="'.str_replace('&', '&amp;', $lien_RSS->getURL()).'"><img src="'.BAZ_CHEMIN.'presentation'.DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR.'BAZ_rss.png" alt="'.BAZ_RSS.'" /></a>&nbsp;';
 		$liste .= $ligne['bn_label_nature'];
 		$liste .= '</li>'."\n";
-		$lien_RSS->removeQueryString('annonce');
+		$lien_RSS->removeQueryString('id_typeannonce');
 	}
 	if ($liste!='') $res .= '<ul class="BAZ_liste">'."\n".'<li><a href="'.str_replace('&', '&amp;', $lien_RSS->getURL()).'"><img src="'.BAZ_CHEMIN.'presentation'.DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR.'BAZ_rss.png" alt="'.BAZ_RSS.'" /></a>&nbsp;<strong>Flux RSS de toutes les fiches</strong></li>'."\n".$liste.'</ul>'."\n";
 	// Nettoyage de l'url
-	$GLOBALS['_BAZAR_']['url']->removeQueryString(BAZ_VARIABLE_ACTION);
-	$GLOBALS['_BAZAR_']['url']->removeQueryString('idtypeannonce');
+	//GLOBALS['_BAZAR_']['url']->removeQueryString(BAZ_VARIABLE_ACTION);
 	return $res;
 }
 
@@ -1221,8 +1368,8 @@ function baz_formulaire_des_formulaires($mode, $valeursformulaire = '') {
 									<input type="submit" value="Valider" name="valider" class="btn bouton_sauver">
 								</div>
 							</div>'."\n".
-							'<div class="spacer"></div>'."\n".
-							'<script type="text/javascript" src="tools/bazar/libs/jquery-ui-1.8.2.custom.min.js"></script>
+							'<div class="spacer"></div>'."\n";
+	$GLOBALS['js'] = ((isset($GLOBALS['js'])) ? $GLOBALS['js'] : '').'<script type="text/javascript" src="tools/bazar/libs/jquery-ui-1.8.6.custom.min.js"></script>
 							<script type="text/javascript">
 							  $(document).ready(function() {
 							    $(".valeur_formulaire").sortable({
@@ -1285,34 +1432,38 @@ function baz_formulaire_des_listes($mode, $valeursliste = '') {
 							'<ul class="valeur_liste formulaire_input">'."\n";
 	if (is_array($valeursliste)) {
 		$i = 0;
-		foreach($valeursliste as $ligneliste) {
+		foreach($valeursliste as $id => $label) {
 			$i++;
 			$html_valeurs_listes .= 
 								'<li class="liste_ligne" id="row'.$i.'">'.
-								'<img src="tools/bazar/presentation/images/arrow.png" alt="D&eacute;placer" width="16" height="16" class="handle" />'.
-								'<input type="text" name="label['.$i.']" value="'.htmlspecialchars($ligneliste).'" class="input_texte" />'.
-								'<input type="hidden" name="ancienlabel['.$i.']" value="'.htmlspecialchars($ligneliste).'" class="input_texte" />'.
+								'<a href="#" title="D&eacute;placer l\'&eacute;l&eacute;me,t" class="handle"></a>'.
+								'<input type="text" name="id['.$i.']" value="'.htmlspecialchars($id).'" class="input_liste_id" />'.
+								'<input type="text" name="label['.$i.']" value="'.htmlspecialchars($label).'" class="input_liste_label" />'.
+								'<input type="hidden" name="ancienid['.$i.']" value="'.htmlspecialchars($id).'" class="input_liste_id" />'.
+								'<input type="hidden" name="ancienlabel['.$i.']" value="'.htmlspecialchars($label).'" class="input_liste_label" />'.
 								'<a href="#" class="BAZ_lien_supprimer suppression_label_liste"></a>'.
 								'</li>'."\n";
 		}
 	} else {
 		$html_valeurs_listes .= '<li class="liste_ligne" id="row1">'.
-								'<img src="tools/bazar/presentation/images/arrow.png" alt="D&eacute;placer" width="16" height="16" class="handle" />'.
-								'<input type="text" name="label[1]" class="input_texte" />'.
+								'<a href="#" title="D&eacute;placer l\'&eacute;l&eacute;me,t" class="handle"></a>'.
+								'<input type="text" name="id[1]" class="input_liste_id" />'.
+								'<input type="text" name="label[1]" class="input_liste_label" />'.
 								'<a href="#" class="BAZ_lien_supprimer suppression_label_liste"></a>'.
 								'</li>'."\n";
 	}
 						
 	$html_valeurs_listes .= '</ul><a href="#" class="ajout_label_liste" title="'.BAZ_AJOUTER_LABEL_LISTE.'">'.BAZ_AJOUTER_LABEL_LISTE.'</a>'."\n".
 							'</div>'."\n".
-							'<div class="spacer"></div>'."\n".
-							'<script type="text/javascript" src="tools/bazar/libs/jquery-ui-1.8.2.custom.min.js"></script>
+							'<div class="clear"></div>'."\n";
+	//on rajoute une variable globale pour mettre le javascript en plus à la fin
+	$GLOBALS['js'] = ((isset($GLOBALS['js'])) ? $GLOBALS['js'] : '').'<script type="text/javascript" src="tools/bazar/libs/jquery-ui-1.8.6.custom.min.js"></script>
 							<script type="text/javascript">
 							  $(document).ready(function() {
 							    $(".valeur_liste").sortable({
 							      handle : \'.handle\',
 							      update : function () {
-									$("#formulaire .valeur_liste input.input_texte[name^=\'label\']").each(function(i) {
+									$("#formulaire .valeur_liste input.input_liste_label[name^=\'label\']").each(function(i) {
 										$(this).attr(\'name\', \'label[\'+(i+1)+\']\').
 										parent(\'.liste_ligne\').attr(\'id\', \'row\'+(i+1)).
 										find("input:hidden").attr(\'name\', \'ancienlabel[\'+(i+1)+\']\');
@@ -1367,7 +1518,7 @@ function baz_gestion_formulaire() {
 		if (DB::isError($resultat)) {
 			return ($resultat->getMessage().$resultat->getDebugInfo()) ;
 		}
-		$res .= '<div class="BAZ_info">'.BAZ_NOUVEAU_FORMULAIRE_ENREGISTRE.'</div>'."\n";
+		$res .= '<div class="info_box">'.BAZ_NOUVEAU_FORMULAIRE_ENREGISTRE.'</div>'."\n";
 
 	//il y a des donnees pour modifier un formulaire
 	} elseif (isset($_GET['action_formulaire']) && $_GET['action_formulaire']=='modif_v' && baz_a_le_droit('saisie_formulaire') ) {
@@ -1382,7 +1533,7 @@ function baz_gestion_formulaire() {
 		if (DB::isError($resultat)) {
 			return ($resultat->getMessage().$resultat->getDebugInfo()) ;
 		}
-		$res .= '<div class="BAZ_info">'.BAZ_FORMULAIRE_MODIFIE.'</div>'."\n";
+		$res .= '<div class="info_box">'.BAZ_FORMULAIRE_MODIFIE.'</div>'."\n";
 
 	// il y a un id de formulaire à supprimer
 	} elseif (isset($_GET['action_formulaire']) && $_GET['action_formulaire']=='delete' && baz_a_le_droit('saisie_formulaire')) {
@@ -1400,12 +1551,12 @@ function baz_gestion_formulaire() {
 			return ($resultat->getMessage().$resultat->getDebugInfo()) ;
 		}
 
-		$res .= '<div class="BAZ_info">'.BAZ_FORMULAIRE_ET_FICHES_SUPPRIMES.'</div>'."\n";
+		$res .= '<div class="info_box">'.BAZ_FORMULAIRE_ET_FICHES_SUPPRIMES.'</div>'."\n";
 	}
 
 	// affichage de la liste des templates à modifier ou supprimer (on l'affiche dans tous les cas, sauf cas de modif de formulaire)
 	if (!isset($_GET['action_formulaire']) || ($_GET['action_formulaire']!='modif' && $_GET['action_formulaire']!='new') ) {
-		$res .= '<div class="BAZ_info">'.BAZ_INTRO_MODIFIER_FORMULAIRE.'</div>'."\n";
+		$res .= '<div class="info_box">'.BAZ_INTRO_MODIFIER_FORMULAIRE.'</div>'."\n";
 
 		//requete pour obtenir l'id et le label des types d'annonces
 		$requete = 'SELECT bn_id_nature, bn_label_nature, bn_type_fiche '.
@@ -1465,11 +1616,9 @@ function baz_gestion_listes() {
 	// il y a un formulaire a modifier
 	if (isset($_GET['action_listes']) && $_GET['action_listes']=='modif') {
 		//recuperation des informations de la liste
-		$page = $GLOBALS["wiki"]->LoadPage($_GET['idliste']);
-		$ligne = json_decode( $page['body'], true);
-		$valeursliste = array_map('utf8_decode', $ligne['label']);
-		$formulaire = baz_formulaire_des_listes('modif_v', $valeursliste);		
-		$formulaire->setDefaults(array("titre_liste" => utf8_decode($ligne['titre_liste'])));
+		$valeursliste = baz_valeurs_liste($_GET['idliste']);
+		$formulaire = baz_formulaire_des_listes('modif_v', $valeursliste["label"]);		
+		$formulaire->setDefaults(array("titre_liste" => $valeursliste['titre_liste']));
 		$res .= $formulaire->toHTML();
 
 	//il y a une nouvelle liste a saisir
@@ -1480,13 +1629,13 @@ function baz_gestion_listes() {
 	//il y a des donnees pour ajouter une nouvelle liste
 	} elseif (isset($_GET['action_listes']) && $_GET['action_listes']=='new_v') {
 		unset($_POST["valider"]);
-		$nomwikiliste = genere_nom_wiki($_POST['titre_liste']);
+		$nomwikiliste = genere_nom_wiki('Liste '.$_POST['titre_liste']);
 		//on supprime les valeurs vides et on encode en utf-8 pour réussir à encoder en json
 		$i = 1;
 		$valeur["label"] = array();
 		foreach ($_POST["label"] as $label) {
-			if ($label!=NULL || $label!='') {
-				$valeur["label"][$i] = $label;
+			if (($label!=NULL || $label!='') && ($_POST["id"][$i]!=NULL || $_POST["id"][$i]!='')) {
+				$valeur["label"][$_POST["id"][$i]] = $label;
 				$i++;
 			}
 		}
@@ -1498,7 +1647,7 @@ function baz_gestion_listes() {
 		//on cree un triple pour spécifier que la page wiki créée est une liste
 		$GLOBALS["wiki"]->InsertTriple($nomwikiliste, 'http://outils-reseaux.org/_vocabulary/type', 'liste', '', '');
 	
-		$res .= '<div class="BAZ_info">'.BAZ_NOUVELLE_LISTE_ENREGISTREE.'</div>'."\n";
+		$res .= '<div class="info_box">'.BAZ_NOUVELLE_LISTE_ENREGISTREE.'</div>'."\n";
 
 	//il y a des donnees pour modifier une liste
 	} elseif (isset($_GET['action_listes']) && $_GET['action_listes']=='modif_v' && baz_a_le_droit('saisie_liste') ) {
@@ -1507,14 +1656,15 @@ function baz_gestion_listes() {
 		$i = 1;
 		$valeur["label"] = array();
 		foreach ($_POST["label"] as $label) {
-			if ($label!=NULL || $label!='') {
-				$valeur["label"][$i] = $label;
+			if (($label!=NULL || $label!='') && ($_POST["id"][$i]!=NULL || $_POST["id"][$i]!='')) {
+				$valeur["label"][$_POST["id"][$i]] = $label;
 				$i++;
 			}
 		}
 		$valeur["label"] = array_map("utf8_encode", $valeur["label"]);
 		$valeur["titre_liste"] = utf8_encode($_POST["titre_liste"]);
 
+		/* ----------------- TODO: gérer les suppressions de valeurs dans les fiches associées pour garantir l'intégrité des données
 		//on vérifie si les valeurs des listes ont changées afin de garder de l'intégrité de la base des fiches
 		foreach ($_POST["ancienlabel"] as $key => $value) {
 			//si la valeur de la liste a été changée, on répercute les changements pour les fiches contenant cette valeur
@@ -1527,11 +1677,12 @@ function baz_gestion_listes() {
 		foreach ($_POST["a_effacer_ancienlabel"] as $key => $value) {
 			//TODO: fonction baz_effacer_metas_liste($_POST['NomWiki'], $value);
 		}
+		--------------------- */
 			
 		//on sauve les valeurs d'une liste dans une PageWiki, pour garder l'historique
 		$GLOBALS["wiki"]->SavePage($_POST['NomWiki'], json_encode($valeur));
 	
-		$res .= '<div class="BAZ_info">'.BAZ_LISTE_MODIFIEE.'</div>'."\n";
+		$res .= '<div class="info_box">'.BAZ_LISTE_MODIFIEE.'</div>'."\n";
 
 	// il y a un id de liste à supprimer
 	} elseif (isset($_GET['action_listes']) && $_GET['action_listes']=='delete' && baz_a_le_droit('saisie_liste')) {
@@ -1540,12 +1691,12 @@ function baz_gestion_listes() {
 			. 'WHERE resource = "' . addslashes($_GET['idliste']) . '" ';
 		$GLOBALS["wiki"]->Query($sql);
 		
-		$res .= '<div class="BAZ_info">'.BAZ_LISTES_SUPPRIMEES.'</div>'."\n";
+		$res .= '<div class="info_box">'.BAZ_LISTES_SUPPRIMEES.'</div>'."\n";
 	}
 
 	// affichage de la liste des templates à modifier ou supprimer (on l'affiche dans tous les cas, sauf cas de modif de formulaire)
 	if (!isset($_GET['action_listes']) || ($_GET['action_listes']!='modif' && $_GET['action_listes']!='new') ) {
-		$res .= '<div class="BAZ_info">'.BAZ_INTRO_MODIFIER_LISTE.'</div>'."\n";
+		$res .= '<div class="info_box">'.BAZ_INTRO_MODIFIER_LISTE.'</div>'."\n";
 
 		//requete pour obtenir l'id et le label des types d'annonces
 		$requete = 'SELECT resource FROM '.$GLOBALS['wiki']->config['table_prefix'].'triples WHERE property="http://outils-reseaux.org/_vocabulary/type" AND value="liste" ORDER BY resource';
@@ -1555,10 +1706,8 @@ function baz_gestion_listes() {
 		}
 		$liste = '';
 		while ($ligne = $resultat->fetchRow(DB_FETCHMODE_ASSOC)) {
-			$page = $GLOBALS["wiki"]->LoadPage( $ligne['resource']);
-			$valliste = json_decode( $page['body'], true);
-			$valeursliste = array_map('utf8_decode', $valliste['label']);
-
+			$valeursliste = baz_valeurs_liste($ligne['resource']);
+			
 			$lien_formulaire = clone($GLOBALS['_BAZAR_']['url']);
 			$liste .= '<li>';
 			$lien_formulaire->addQueryString('action_listes', 'delete');
@@ -1569,7 +1718,7 @@ function baz_gestion_listes() {
 			$lien_formulaire->removeQueryString('action_listes');
 			$lien_formulaire->addQueryString('action_listes', 'modif');
 			$elements_liste = '';
-			foreach ($valeursliste as $val) { 
+			foreach ($valeursliste['label'] as $val) { 
 				$elements_liste .= '<option>'.$val.'</option>';
 			}
 			if ($elements_liste != '') {
@@ -1581,16 +1730,16 @@ function baz_gestion_listes() {
 				$affichage_liste = '';
 			}
 			if (baz_a_le_droit('saisie_liste'))  {
-				$liste .= '<a class="BAZ_lien_modifier" href="'.str_replace('&','&amp;',$lien_formulaire->getURL()).'">'.utf8_decode($valliste['titre_liste']).'</a>'.$affichage_liste."\n";
+				$liste .= '<a class="BAZ_lien_modifier" href="'.str_replace('&','&amp;',$lien_formulaire->getURL()).'">'.$valeursliste['titre_liste'].'</a>'.$affichage_liste."\n";
 			} else {
-				$liste .= utf8_decode($valliste['titre_liste']).$affichage_liste."\n";
+				$liste .= $valeursliste['titre_liste'].$affichage_liste."\n";
 			}
 			$lien_formulaire->removeQueryString('action_listes');
 			$lien_formulaire->removeQueryString('idliste');
 
 			$liste .='</li>'."\n";
 		}
-		if ($liste!='') $res .= '<ul class="BAZ_liste">'.$liste.'</ul>'."\n";
+		if ($liste!='') $res .= '<ul class="BAZ_liste">'."\n".$liste.'</ul>'."\n";
 
 		//ajout du lien pour creer un nouveau formulaire
 		if (baz_a_le_droit('saisie_liste')) {
@@ -1606,60 +1755,62 @@ function baz_gestion_listes() {
 
 /** baz_valeurs_fiche() - Renvoie un tableau avec les valeurs par defaut du formulaire d'inscription
 *
-* @param    integer Identifiant de la fiche
+* @param    string Identifiant de la fiche
 *
 * @return   array   Valeurs enregistrees pour cette fiche
 */
 function baz_valeurs_fiche($idfiche = '') {
 	if ($idfiche != '') {
-		
-		//infos dans bazar fiche
-		$requete = 'SELECT * FROM '.BAZ_PREFIXE.'fiche WHERE bf_id_fiche="'.$idfiche.'"';
-		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
-		if (DB::isError($resultat)) {
-			echo ($resultat->getMessage().'<br />'.$resultat->getDebugInfo()) ;
+		//on vérifie que la page en question est bien une page wiki
+		if ($GLOBALS['wiki']->GetTripleValue($idfiche, 'http://outils-reseaux.org/_vocabulary/type', '', '') == 'fiche_bazar') {
+
+			$valjson = $GLOBALS['wiki']->LoadPage($idfiche);
+			$valeurs_fiche = json_decode($valjson["body"], true);
+			$valeurs_fiche = array_map('utf8_decode', $valeurs_fiche);
+			
+			//cas ou on ne trouve pas les valeurs id_fiche et id_typeannonce
+			if (!isset($valeurs_fiche['id_fiche'])) $valeurs_fiche['id_fiche'] = $idfiche;
+			if (!isset($valeurs_fiche['id_typeannonce'])) $valeurs_fiche['id_typeannonce'] = $valeurs_fiche['id_typeannonce'];
+	
+			return $valeurs_fiche;
 		}
-		$valeurs_fiche = $resultat->fetchRow(DB_FETCHMODE_ASSOC) ;
-		
-		//metadonnees textelong
-		$requete = 'SELECT property, value FROM '.$GLOBALS['wiki']->config["table_prefix"].'triples WHERE resource = "'.$idfiche.'"';
-		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
-		if (DB::isError($resultat)) {
-			echo ($resultat->getMessage().'<br />'.$resultat->getDebugInfo()) ;
+		else {
+			return false;
 		}
-		$valeurs_meta_textelong = array();
-		while ($ligne = $resultat->fetchRow(DB_FETCHMODE_ASSOC)) {
-			$valeurs_meta_textelong[$ligne['property']] = stripslashes($ligne['value']);
-		}
-		$valeurs_fiche = array_merge($valeurs_fiche, $valeurs_meta_textelong);
-		
-		//metadonnees texte
-		$requete = 'SELECT bfvt_id_element_form, bfvt_texte FROM '.BAZ_PREFIXE.'fiche_valeur_texte WHERE bfvt_ce_fiche="'.$idfiche.'"';
-		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
-		if (DB::isError($resultat)) {
-			echo ($resultat->getMessage().'<br />'.$resultat->getDebugInfo()) ;
-		}
-		$valeurs_meta_texte = array();
-		while ($ligne = $resultat->fetchRow(DB_FETCHMODE_ASSOC)) {
-			//pour les checkbox, il peut y avoir plusieures clé identiques, on les regroupe
-			if (array_key_exists($ligne['bfvt_id_element_form'], $valeurs_meta_texte))  {
-				$valeurs_meta_texte[$ligne['bfvt_id_element_form']] = $valeurs_meta_texte[$ligne['bfvt_id_element_form']].','.stripslashes($ligne['bfvt_texte']);
-			} else {
-				$valeurs_meta_texte[$ligne['bfvt_id_element_form']] = stripslashes($ligne['bfvt_texte']);
-			}
-		}
-		$valeurs_fiche = array_merge($valeurs_fiche, $valeurs_meta_texte);
-		
-		//cas ou on ne trouve pas les valeurs id_fiche et id_typeannonce
-		if (!isset($valeurs_fiche['id_fiche'])) $valeurs_fiche['id_fiche'] = $idfiche;
-		if (!isset($valeurs_fiche['id_typeannonce'])) $valeurs_fiche['id_typeannonce'] = $valeurs_fiche['bf_ce_nature'];
-		return $valeurs_fiche;
 	} 
 	else {
 		return false;
-	}
-	
+	}	
 }
+
+
+/** baz_valeurs_liste() - Renvoie un tableau avec les valeurs d'une liste 
+*
+* @param    string NomWiki de la liste
+*
+* @return   array   Valeurs enregistrees pour cette liste
+*/
+function baz_valeurs_liste($idliste = '') {
+	if ($idliste != '') {
+		//on vérifie que la page en question est bien une page wiki
+		if ($GLOBALS['wiki']->GetTripleValue($idliste, 'http://outils-reseaux.org/_vocabulary/type', '', '') == 'liste') {
+
+			$valjson = $GLOBALS['wiki']->LoadPage($idliste);
+			$valeurs_fiche = json_decode($valjson["body"], true);
+			$valeurs_fiche['titre_liste'] = utf8_decode($valeurs_fiche['titre_liste']);
+			$valeurs_fiche['label'] = array_map('utf8_decode', $valeurs_fiche['label']);
+			
+			return $valeurs_fiche;
+		}
+		else {
+			return false;
+		}
+	} 
+	else {
+		return false;
+	}	
+}
+
 
 /** baz_valeurs_type_de_fiche() - Initialise les valeurs globales pour le type de fiche choisi
 *
@@ -1668,16 +1819,20 @@ function baz_valeurs_fiche($idfiche = '') {
 * @return   void
 */
 function baz_valeurs_type_de_fiche($idtypefiche) {
-	$requete = 'SELECT * FROM '.BAZ_PREFIXE.'nature WHERE bn_id_nature = '.$idtypefiche;
-	if (isset($GLOBALS['_BAZAR_']['langue'])) {
-		$requete .= ' and bn_ce_i18n like "'.$GLOBALS['_BAZAR_']['langue'].'%"';
+	if ($idtypefiche != '') {
+		$requete = 'SELECT * FROM '.BAZ_PREFIXE.'nature WHERE bn_id_nature = '.$idtypefiche;
+		if (isset($GLOBALS['_BAZAR_']['langue'])) {
+			$requete .= ' and bn_ce_i18n like "'.$GLOBALS['_BAZAR_']['langue'].'%"';
+		}
+		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
+		if (DB::isError($resultat)) {
+			echo ($resultat->getMessage().$resultat->getDebugInfo()) ;
+		}
+		$ligne = $resultat->fetchRow(DB_FETCHMODE_ASSOC);
+		return $ligne;
+	} else {
+		return false;
 	}
-	$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
-	if (DB::isError($resultat)) {
-		echo ($resultat->getMessage().$resultat->getDebugInfo()) ;
-	}
-	$ligne = $resultat->fetchRow(DB_FETCHMODE_ASSOC);
-	return $ligne;
 }
 
 
@@ -1757,15 +1912,15 @@ function baz_voir_fiche($danslappli, $idfiche) {
 		//on récupere les valeurs de la fiche
 		$valeurs_fiche = baz_valeurs_fiche($idfiche);
 		//on récupere les infos du type de fiche
-		$tab_nature = baz_valeurs_type_de_fiche($valeurs_fiche["bf_ce_nature"]);
+		$tab_nature = baz_valeurs_type_de_fiche($valeurs_fiche["id_typeannonce"]);
 	}
 	$res='';
 	
-	//pour les stats, on ajoute une vue pour la fiche
-	if ($danslappli==1) {
+	// TODO:ajouter stats : pour les stats, on ajoute une vue pour la fiche
+	/*if ($danslappli==1) {
 		$requete = 'UPDATE '.BAZ_PREFIXE.'fiche SET bf_nb_consultations=bf_nb_consultations+1 WHERE bf_id_fiche="'.$idfiche.'"';
 		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
-	}
+	}*/
 	
 	$url= clone($GLOBALS['_BAZAR_']['url']);
 	$url->addQueryString(BAZ_VARIABLE_ACTION, BAZ_VOIR_FICHE);
@@ -1787,21 +1942,16 @@ function baz_voir_fiche($danslappli, $idfiche) {
 	//informations complementaires (id fiche, etat publication,... )
 	if ($danslappli==1) {
 		$res .= '<div class="BAZ_fiche_info BAZ_fiche_info_'.$tab_nature['bn_label_class'].'">'."\n";
-		$res .= '<span class="BAZ_nb_vues BAZ_nb_vues_'.$tab_nature['bn_label_class'].'">'.BAZ_FICHE_NUMERO.$idfiche;
-		//affichage du redacteur de la fiche
-		if ($valeurs_fiche['bf_ce_utilisateur']!='')
-		{
-			$res .= '<span class="auteur_fiche">'.BAZ_ECRITE.$valeurs_fiche['bf_ce_utilisateur'].'</span>'."\n";
-		} 
-		$res .= BAZ_NB_VUS.$valeurs_fiche['bf_nb_consultations'].BAZ_FOIS.'</span>'."\n";
+		//affichage du nom de la PageWiki de la fiche et de son propriétaire
+		$res .= $GLOBALS['wiki']->Format($idfiche.', '.(($GLOBALS['wiki']->GetPageOwner($idfiche)!='') ? BAZ_ECRITE.' '.$GLOBALS['wiki']->GetPageOwner($idfiche) : ''));
+		// TODO:ajouter stats $res .= BAZ_NB_VUS.$valeurs_fiche['bf_nb_consultations'].BAZ_FOIS.'</span>'."\n";
 		
 		//affichage de l'état de validation
-		$res .= '<br />';
-		if ($valeurs_fiche['bf_statut_fiche']==1) {
-			if ($valeurs_fiche['bf_date_debut_validite_fiche'] != '0000-00-00' && $valeurs_fiche['bf_date_fin_validite_fiche'] != '0000-00-00') {
+		if ($valeurs_fiche['statut_fiche']==1) {
+			if ($valeurs_fiche['date_debut_validite_fiche'] != '0000-00-00' && $valeurs_fiche['date_fin_validite_fiche'] != '0000-00-00') {
 			$res .= '<span class="BAZ_rubrique BAZ_rubrique_'.$tab_nature['bn_label_class'].'">'.BAZ_PUBLIEE.':</span> '.BAZ_DU.
-					' '.strftime('%d.%m.%Y &agrave; %H:%M', strtotime($valeurs_fiche['bf_date_debut_validite_fiche'])).' '.
-					BAZ_AU.' '.strftime('%d.%m.%Y &agrave; %H:%M', strtotime($valeurs_fiche['bf_date_fin_validite_fiche'])).'<br />'."\n";
+					' '.strftime('%d.%m.%Y &agrave; %H:%M', strtotime($valeurs_fiche['date_debut_validite_fiche'])).' '.
+					BAZ_AU.' '.strftime('%d.%m.%Y &agrave; %H:%M', strtotime($valeurs_fiche['date_fin_validite_fiche'])).'<br />'."\n";
 			}
 		}
 		else {
@@ -1809,10 +1959,11 @@ function baz_voir_fiche($danslappli, $idfiche) {
 		}
 		
 		//affichage des infos et du lien pour la mise a jour de la fiche
-		$res .= '<span class="BAZ_rubrique BAZ_rubrique_'.$tab_nature['bn_label_class'].' date_creation">'.BAZ_DATE_CREATION.':</span> '.strftime('%d.%m.%Y &agrave; %H:%M',strtotime($valeurs_fiche['bf_date_creation_fiche'])).'.'."\n";
-		$res .= '<span class="BAZ_rubrique BAZ_rubrique_'.$tab_nature['bn_label_class'].' date_mise_a_jour">'.BAZ_DATE_MAJ.':</span> '.strftime('%d.%m.%Y &agrave; %H:%M',strtotime($valeurs_fiche['bf_date_maj_fiche'])).'.'."\n";
-
-		if ( baz_a_le_droit( 'saisie_fiche', $valeurs_fiche['bf_ce_utilisateur'] ) ) {
+		$res .= ', <span class="date_creation">'.BAZ_DATE_CREATION.' '.strftime('%d.%m.%Y &agrave; %H:%M',strtotime($valeurs_fiche['date_creation_fiche'])).'</span>';
+		$res .= ', <span class="date_mise_a_jour">'.BAZ_DATE_MAJ.' '.strftime('%d.%m.%Y &agrave; %H:%M',strtotime($valeurs_fiche['date_maj_fiche'])).'</span>.';
+		
+		//seul le createur ou un admin peut faire des actions sur la fiche
+		if ( baz_a_le_droit( 'saisie_fiche', $GLOBALS['wiki']->GetPageOwner($idfiche) ) ) {
 			$res .= '<div class="BAZ_actions_fiche BAZ_actions_fiche_'.$tab_nature['bn_label_class'].'">'."\n";
 			$res .= '<ul>'."\n";
 			
@@ -1821,11 +1972,11 @@ function baz_voir_fiche($danslappli, $idfiche) {
 				$lien_publie = clone($GLOBALS['_BAZAR_']['url']);
 				$lien_publie->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_SAISIR);				
 				$lien_publie->addQueryString('id_fiche', $idfiche);
-				if ($valeurs_fiche['bf_statut_fiche']==0||$valeurs_fiche['bf_statut_fiche']==2) {
+				if ($valeurs_fiche['statut_fiche']==0||$valeurs_fiche['statut_fiche']==2) {
 					$lien_publie->addQueryString(BAZ_VARIABLE_ACTION, BAZ_ACTION_PUBLIER);
 					$label_publie=BAZ_VALIDER_LA_FICHE;
 					$class_publie='_valider';
-				} elseif ($valeurs_fiche['bf_statut_fiche']==1) {
+				} elseif ($valeurs_fiche['statut_fiche']==1) {
 					$lien_publie->addQueryString(BAZ_VARIABLE_ACTION, BAZ_ACTION_PAS_PUBLIER);
 					$label_publie=BAZ_INVALIDER_LA_FICHE;
 					$class_publie='_invalider';
@@ -1954,7 +2105,14 @@ function genere_nom_wiki($nom, $occurence = 1) {
 			$last = ucfirst(substr($nom, strlen($nom) - 1));
 			$nom = substr($nom, 0, -1).$last;
 		}
-	} else {
+	} 
+	// si on en est a plus de 2 occurences, on supprime le chiffre précédent et on ajoute la nouvelle occurence 
+	elseif ($occurence>2) {
+		$nb = -1*strlen(strval($occurence-1));
+		$nom = substr($nom, 0, $nb).$occurence;	
+	} 
+	// cas ou l'occurence est la deuxieme : on reprend le NomWiki en y ajoutant le chiffre 2
+	else {
 		$nom = $nom.$occurence;
 	}
 
@@ -1981,7 +2139,7 @@ function genere_nom_wiki($nom, $occurence = 1) {
 *
 * @return  string Le code du flux RSS
 */
-function gen_RSS($typeannonce='', $nbitem='', $emetteur='', $valide=1, $requeteSQL='', $requeteSQLFrom = '', $requeteWhereListe = '', $categorie_nature='') {
+function gen_RSS($typeannonce='', $nbitem='', $emetteur='', $valide=1, $requeteSQL='', $requeteSQLFrom = '', $requeteWhereListe = '', $categorie_fiche='') {
 	// generation de la requete MySQL personnalisee
 	$req_where=0;
 	$requete = 'SELECT DISTINCT bf_id_fiche, bf_titre, bf_date_debut_validite_fiche, bf_description,  bn_label_nature, bf_date_creation_fiche '.
@@ -2035,9 +2193,9 @@ function gen_RSS($typeannonce='', $nbitem='', $emetteur='', $valide=1, $requeteS
 		$requete .= '('.$requeteSQL.')';
 		$req_where=1;
 	}
-	if ($categorie_nature!='toutes') {
+	if ($categorie_fiche!='toutes') {
 		if ($req_where==1) {$requete .= ' AND ';}
-		$requete .= 'bn_type_fiche ="'.$categorie_nature.'" AND bf_ce_nature=bn_id_nature ';
+		$requete .= 'bn_type_fiche ="'.$categorie_fiche.'" AND bf_ce_nature=bn_id_nature ';
 		$req_where=1;
 	}
 
@@ -2154,7 +2312,7 @@ function gen_RSS($typeannonce='', $nbitem='', $emetteur='', $valide=1, $requeteS
 }
 
 
-/** baz_rechercher() Formate la liste de toutes les annonces actuelles
+/** baz_rechercher() Formate la liste de toutes les fiches
 *
 *   @return  string    le code HTML a afficher
 */
@@ -2187,12 +2345,11 @@ function baz_rechercher($typeannonce='toutes',$categorienature='toutes') {
 									'<div class="formulaire_select"> '."\n".'{element}'."\n".'</div>'."\n".
 									'</div>', 'select');
 	$squelette->setRequiredNoteTemplate("\n".'<div class="symbole_obligatoire">* {requiredNote}</div>'."\n");
+
 	//Traduction de champs requis
 	$formtemplate->setRequiredNote(BAZ_CHAMPS_REQUIS) ;
 	$formtemplate->setJsWarnings(BAZ_ERREUR_SAISIE,BAZ_VEUILLEZ_CORRIGER);
 
-
-	
 	//cas du formulaire de recherche proposant de chercher parmis tous les types d'annonces
 	//requete pour obtenir l'id et le label des types d'annonces
 	$requete = 'SELECT bn_id_nature, bn_label_nature, bn_template FROM '.BAZ_PREFIXE.'nature WHERE ';
@@ -2341,54 +2498,13 @@ function baz_rechercher($typeannonce='toutes',$categorienature='toutes') {
 
 	//si la recherche n'a pas encore été effectué, on affiche les 10 dernières fiches
     if (!isset($_REQUEST['recherche_effectuee'])) {
-		    $requete = 'SELECT DISTINCT bf_id_fiche, bf_titre, bf_ce_utilisateur, bf_date_debut_validite_fiche, bf_description, '.
-		               'bn_label_nature, bf_date_creation_fiche FROM '.BAZ_PREFIXE.'fiche, '.BAZ_PREFIXE.'nature '.
-		               'WHERE bn_id_nature=bf_ce_nature ';
-		    if ($GLOBALS['_BAZAR_']['categorie_nature'] != 'toutes') $requete .= 'AND bn_type_fiche = "'.$GLOBALS['_BAZAR_']['categorie_nature'].'" ';
-			if ($GLOBALS['_BAZAR_']['id_typeannonce'] != 'toutes') $requete .= 'AND bn_id_nature='.$GLOBALS['_BAZAR_']['id_typeannonce'].' ' ;
-
-			if (isset($_POST['perime'])&& $_POST['perime']==0) {$requete .= 'AND (bf_date_debut_validite_fiche<=NOW() or bf_date_debut_validite_fiche="0000-00-00") AND (bf_date_fin_validite_fiche>=NOW() or bf_date_fin_validite_fiche="0000-00-00") ';
-			} elseif  (isset($_POST['perime'])&& $_POST['perime']==2) {
-				$requete .= '';
-			} else {
-            	$requete .= 'AND (bf_date_debut_validite_fiche<=NOW() or bf_date_debut_validite_fiche="0000-00-00") AND (bf_date_fin_validite_fiche>=NOW() or bf_date_fin_validite_fiche="0000-00-00") ';
-			}
-			$requete .= ' ORDER BY bf_date_creation_fiche DESC, bf_date_fin_validite_fiche DESC, bf_date_maj_fiche DESC LIMIT 10';
-			$resultat = $GLOBALS['_BAZAR_']['db']->query($requete);
-			if (DB::isError($resultat)) {
-				return ($resultat->getMessage().$resultat->getDebugInfo()) ;
-			}
-	        if($resultat->numRows() != 0) {
-			$res .= '<h2>'.BAZ_DERNIERES_FICHES.'</h2>';
-			$res .= '<ul class="BAZ_liste">';
-			while($ligne = $resultat->fetchRow(DB_FETCHMODE_ASSOC)) {
-		    		$GLOBALS['_BAZAR_']['url']->addQueryString('id_fiche', $ligne['bf_id_fiche']);
-		    		$res .= '<li class="BAZ_titre_fiche">'."\n";
-		    		if (baz_a_le_droit('saisir_fiche', $ligne['bf_ce_utilisateur'])) {
-						$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_SAISIR);
-						$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_ACTION, BAZ_ACTION_SUPPRESSION);
-						$res .= '<a class="BAZ_lien_supprimer" href="'.str_replace('&','&amp;',$GLOBALS['_BAZAR_']['url']->getURL()).'"  onclick="javascript:return confirm(\''.BAZ_CONFIRM_SUPPRIMER_FICHE.' ?\');"></a>'."\n";
-		    		}
-		    		if (baz_a_le_droit('saisir_fiche', $ligne['bf_ce_utilisateur'])) {
-						$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_SAISIR);
-						$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_ACTION, BAZ_ACTION_MODIFIER);
-						$res .= '<a class="BAZ_lien_modifier" href="'.str_replace('&','&amp;',$GLOBALS['_BAZAR_']['url']->getURL()).'"></a>'."\n";
-		    		}
-		    		$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_CONSULTER);
-					$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_ACTION, BAZ_VOIR_FICHE);
-		    		$res .= '<a class="BAZ_lien_voir" href="'. str_replace('&','&amp;',$GLOBALS['_BAZAR_']['url']->getURL()) .'" title="Voir la fiche">'. stripslashes($ligne['bf_titre']).'</a></li>'."\n";
-
-					//réinitialisation de l'url
-					$GLOBALS['_BAZAR_']['url']->removeQueryString(BAZ_VARIABLE_VOIR);
-		    		$GLOBALS['_BAZAR_']['url']->removeQueryString(BAZ_VARIABLE_ACTION);
-				}
-				$res .= '</ul>';
-			}
+    	$res .= '<h2>'.BAZ_DERNIERES_FICHES.'</h2>';
+        $tableau_dernieres_fiches = baz_requete_recherche_fiches('', '', $typeannonce, $categorienature, 1, '', 10);
+        $res .= baz_afficher_liste_resultat($tableau_dernieres_fiches, false);
 	}
 	//la recherche a été effectuée, on établie la requete SQL
-	else
-	{
-		$tableau_fiches = baz_requete_recherche_fiches();
+	else {
+		$tableau_fiches = baz_requete_recherche_fiches('', '', $typeannonce, $categorienature, 1, '');
 		$res .= baz_afficher_liste_resultat($tableau_fiches);
 	}
 
@@ -2404,32 +2520,50 @@ function baz_rechercher($typeannonce='toutes',$categorienature='toutes') {
 /**
  * Cette fonction récupère tous les parametres passés pour la recherche, et retourne un tableau de valeurs des fiches
  */
-function baz_requete_recherche_fiches($tableau = '', $tri = '', $id_typeannonce = '', $categorie_nature = '') 
+function baz_requete_recherche_fiches($tableau_criteres = '', $tri = '', $id_typeannonce = '', $categorie_fiche = '', $statut = 1, $personne='', $nb_limite='') 
 {
 	$nb_jointures=0;
-	$requeteSQL='';
-	$requeteFrom = '' ;
-	$requeteWhere = '1 ' ;
+	
 	//si les parametres ne sont pas rentrés, on prend les variables globales
 	if ($id_typeannonce == '') $id_typeannonce = $GLOBALS['_BAZAR_']['id_typeannonce'];
-	if ($categorie_nature == '') $categorie_nature = $GLOBALS['_BAZAR_']['categorie_nature'];
+	if ($categorie_fiche == '') $categorie_fiche = $GLOBALS['_BAZAR_']['categorie_nature'];
 	
-	
-	if ( $categorie_nature != 'toutes') $requeteWhere .= ' AND bn_type_fiche = "'.$categorie_nature.'" ';	
-	
-	if ($id_typeannonce != 'toutes') 
-	{
-		$requeteWhere .= ' AND bn_id_nature='.$id_typeannonce ;
-	}
-	
-	$requeteWhere .= ' AND bn_id_nature=bf_ce_nature ' ;
+	//requete pour récupérer toutes les PageWiki étant des fiches bazar
+    $requete_pages_wiki_bazar_fiches = 'SELECT DISTINCT resource FROM '.BAZ_PREFIXE.'triples WHERE value = "fiche_bazar" AND property = "http://outils-reseaux.org/_vocabulary/type" ORDER BY resource ASC';
+    
+    //requete d'obtention des valeurs d'une fiche
+    $requete = 'SELECT DISTINCT body FROM '.BAZ_PREFIXE.'pages WHERE latest="Y" AND comment_on = \'\'';
+    
+   	//on limite à la catégorie choisie
+    if ($categorie_fiche != '' && $categorie_fiche != 'toutes' ) {
+    	$requete .= ' AND body LIKE \'%"categorie_fiche":"'.utf8_encode($categorie_fiche).'"%\'';
+    }
+    
+    //on limite à la langue choisie
 	if (isset($GLOBALS['_BAZAR_']['langue'])) {
-		$requeteWhere .= ' AND bn_ce_i18n like "'.$GLOBALS['_BAZAR_']['langue'].'%" ';
+		//$requete .= ' AND body LIKE \'%"langue":"'.utf8_encode($GLOBALS['_BAZAR_']['langue']).'"%\'' ;
 	}
+	
+	//on limite au type de fiche
+	if ($id_typeannonce != '' && $id_typeannonce != 'toutes') {
+		$requete .= ' AND body LIKE \'%"id_typeannonce":"'.utf8_encode($id_typeannonce).'"%\'' ;
+	}
+	
+	//statut de validation
+	$requete .= ' AND body LIKE \'%"statut_fiche":"'.$statut.'"%\'' ;
+    
+	//si une personne a été précisée, on limite la recherche sur elle
+	if ($personne != '') {
+		$requete .= ' AND body LIKE \'%"createur":"'.utf8_encode($personne).'"%\'' ;
+	}
+	
+	
+    $requete .= ' AND tag IN ('.$requete_pages_wiki_bazar_fiches.')';
+
 	
 	//on parcourt le tableau post pour agrémenter la requete les valeurs passées dans les champs liste et checkbox du moteur de recherche
-	if ($tableau == '') {
-		$tableau = array();
+	if ($tableau_criteres == '') {
+		$tableau_criteres = array();
 		//si l'on est passé par le mot de recherche, on transforme les spécifications de recherche sur les liste et checkbox 
 		if (isset($_POST['rechercher'])) {
 			reset($_POST);
@@ -2439,20 +2573,16 @@ function baz_requete_recherche_fiches($tableau = '', $tri = '', $id_typeannonce 
 					if (is_array($val)) {
 						$val = implode(',', array_keys($val));
 					}
-					$tableau[$nom] = $val;
+					$tableau_criteres[$nom] = $val;
 				}
 			}
 		}
 	}
 	
 	$requeteWhereListe = '';
-	reset($tableau);
-	while (list($nom, $val) = each($tableau)) {		
+	reset($tableau_criteres);
+	while (list($nom, $val) = each($tableau_criteres)) {		
 		$requeteWhereListe .= ' AND bf_id_fiche IN (SELECT bfvt_ce_fiche FROM '.BAZ_PREFIXE.'fiche_valeur_texte WHERE bfvt_id_element_form="'.$nom.'" AND bfvt_texte IN ('.$val.')) ';
-	}
-		
-	if ($id_typeannonce!='toutes') {
-		$requeteWhere .= ' AND bf_ce_nature="'.$id_typeannonce.'" '.$requeteWhereListe;
 	}
 
 	//preparation de la requete pour trouver les mots cles
@@ -2460,80 +2590,55 @@ function baz_requete_recherche_fiches($tableau = '', $tri = '', $id_typeannonce 
 		//decoupage des mots cles
 		$recherche = split(' ', $_REQUEST['recherche_mots_cles']) ;
 		$nbmots=count($recherche);
-		$requeteSQL='';
+		$requeteSQL = ' AND';
 		for ($i=0; $i<$nbmots; $i++) {
 			if ($i>0) $requeteSQL.=' OR ';
-			$requeteSQL.=' bf_id_fiche IN ( SELECT bfvt_ce_fiche FROM '.BAZ_PREFIXE.'fiche_valeur_texte WHERE bfvt_texte LIKE "%'.$recherche[$i].'%" ) OR bf_id_fiche IN ( SELECT resource FROM '.$GLOBALS['wiki']->config["table_prefix"].'triples WHERE value LIKE "%'.$recherche[$i].'%" ) ';
+			$requeteSQL.=' body LIKE "%'.$recherche[$i].'%"';
 			
 		}
 	}
-	
-	if (!isset($_REQUEST['nature'])) {
-		if (!isset($id_typeannonce)) {
-			$typedefiches = $tableau_typeannonces;
-		}
-		else {
-			$typedefiches = $id_typeannonce;
-		}
-	} 
-	else {
-		$typedefiches = $_REQUEST['nature'] ;
-		if ($typedefiches == 'toutes') $typedefiches = $tableau_typeannonces ;
-	}
-	
-	if (isset($_REQUEST['valides'])) {
-		$valides = $_REQUEST['valides'];
-	}
-	else {
-		$valides = 1;
-	}
-	
-	//generation de la liste de flux a afficher
-	if (!isset($_REQUEST['personnes'])) $_REQUEST['personnes']='tous';
-	
-	// generation de la requete MySQL personnalisee
-	$requete = 'SELECT * '.
-				'FROM '.BAZ_PREFIXE.'fiche, '.BAZ_PREFIXE.'nature '.$requeteFrom.' WHERE '.$requeteWhere;
-	if ($valides!=2) {
-		$requete .= ' AND bf_statut_fiche='.$valides;
+	if (isset($requeteSQL)) {
+		$requete .= $requeteSQL;
 	}
 
-	if ($valides!=0) {
-		if (isset($_POST['perime'])&& $_POST['perime']==0) {
-				$requete .= ' AND NOT (bf_date_debut_validite_fiche<=NOW() or bf_date_debut_validite_fiche="0000-00-00") OR NOT (bf_date_fin_validite_fiche>=NOW() or bf_date_fin_validite_fiche="0000-00-00") ';
-			} elseif  (isset($_POST['perime'])&& $_POST['perime']==2) {	} else {
-            	$requete .= ' AND (bf_date_debut_validite_fiche<=NOW() or bf_date_debut_validite_fiche="0000-00-00") AND (bf_date_fin_validite_fiche>=NOW() or bf_date_fin_validite_fiche="0000-00-00") ';
-			}
-	}
-	
-	if ( isset($_POST['emetteur']) && $_POST['emetteur'] != 'tous' ) {
-		$requete .= ' AND bf_ce_utilisateur='.$_POST['emetteur'];		
-	}
-	
-	if ($requeteSQL!='') {
-		$requete .= ' AND ('.$requeteSQL.')';
+	//TODO: faire les requetes sur les fiches antidatées
+	if (isset($_POST['perime'])&& $_POST['perime']==0) {
+		//$requete .= ' AND NOT (bf_date_debut_validite_fiche<=NOW() or bf_date_debut_validite_fiche="0000-00-00") OR NOT (bf_date_fin_validite_fiche>=NOW() or bf_date_fin_validite_fiche="0000-00-00") ';
+	} elseif  (isset($_POST['perime'])&& $_POST['perime']==2) {
+		
+	} else {
+        //$requete .= ' AND (bf_date_debut_validite_fiche<=NOW() or bf_date_debut_validite_fiche="0000-00-00") AND (bf_date_fin_validite_fiche>=NOW() or bf_date_fin_validite_fiche="0000-00-00") ';
 	}
 	
 	if ($tri == 'alphabetique') {
-		$requete .= ' ORDER BY bf_titre ASC';
+		$requete .= ' ORDER BY tag ASC';
 	}
 	else {
-		$requete .= ' ORDER BY  bf_date_debut_validite_fiche DESC, bf_date_fin_validite_fiche DESC, bf_date_maj_fiche DESC';
+		$requete .= ' ORDER BY time DESC';
 	}
 
-	if ( isset($_POST['nbitem']) ) {
-		$requete .= ' LIMIT 0,'.$_POST['nbitem'];
-	}
+	if ( $nb_limite!='' ) {
+		$requete .= ' LIMIT 0,'.$nb_limite;
+	} 
 	
 	//echo '<textarea style="width:100%;height:100px;">'.$requete.'</textarea>';
 	return $GLOBALS['_BAZAR_']['db']->getAll($requete);
 }
 
-function baz_afficher_liste_resultat($tableau_fiches) {
-	$res = '<div class="BAZ_info">'.BAZ_IL_Y_A;
-	$nb_result=count($tableau_fiches);
-	if ($nb_result<=1) $res .= $nb_result.' '.BAZ_FICHE_CORRESPONDANTE.'</div>'."\n";
-	else $res .= $nb_result.' '.BAZ_FICHES_CORRESPONDANTES.'</div>'."\n";
+/** 
+ * 
+ * Affiche la liste des resultats d'une recherche
+ * @param $tableau_fiches : tableau de fiches provenant du résultat de la recherche
+ * @param $info_nb : booléen pour afficher ou non le nombre  du résultat de la recherche (vrai par défaut)
+ */
+function baz_afficher_liste_resultat($tableau_fiches, $info_nb = true) {
+	$res = '';
+	if ($info_nb) {
+		$res .= '<div class="info_box">'.BAZ_IL_Y_A;
+		$nb_result=count($tableau_fiches);
+		if ($nb_result<=1) $res .= $nb_result.' '.BAZ_FICHE_CORRESPONDANTE.'</div>'."\n";
+		else $res .= $nb_result.' '.BAZ_FICHES_CORRESPONDANTES.'</div>'."\n";
+	}
 
 	$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_ACTION, BAZ_VOIR_FICHE);
 	
@@ -2557,16 +2662,18 @@ function baz_afficher_liste_resultat($tableau_fiches) {
 	$res .= '<div class="bazar_numero">'.$pager->links.'</div>'."\n";
 	$res .= '<ul class="BAZ_liste">'."\n" ;
 	foreach ($data as $valeur) {
-		$res .='<li class="BAZ_'.$valeur[29].'">'."\n";
-		$GLOBALS['_BAZAR_']['url']->addQueryString('id_fiche', $valeur[0]) ;
-		if (baz_a_le_droit('saisir_fiche', $valeur[1])) {
+		$valeurs_fiche = json_decode($valeur[0], true);
+		$valeurs_fiche = array_map('utf8_decode', $valeurs_fiche);
+		$res .='<li class="BAZ_'.$valeurs_fiche['id_typeannonce'].'">'."\n";
+		$GLOBALS['_BAZAR_']['url']->addQueryString('id_fiche',$valeurs_fiche['id_fiche']) ;
+		if (baz_a_le_droit('saisir_fiche', (isset($valeurs_fiche['createur']) ? $valeurs_fiche['createur'] : ''))) {
 				$GLOBALS['_BAZAR_']['url']->removeQueryString(BAZ_VARIABLE_ACTION);
 				$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_SAISIR);
 				$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_ACTION, BAZ_ACTION_SUPPRESSION);
 				$res .= '<a href="'.str_replace('&','&amp;',$GLOBALS['_BAZAR_']['url']->getURL()).'" class="BAZ_lien_supprimer" onclick="javascript:return confirm(\''.BAZ_CONFIRM_SUPPRIMER_FICHE.' ?\');"></a>'."\n";
 				$GLOBALS['_BAZAR_']['url']->removeQueryString(BAZ_VARIABLE_ACTION);
 		}
-		if (baz_a_le_droit('saisir_fiche', $valeur[1])) {
+		if (baz_a_le_droit('saisir_fiche', (isset($valeurs_fiche['createur']) ? $valeurs_fiche['createur'] : ''))) {
 				$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_SAISIR);
 				$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_ACTION, BAZ_ACTION_MODIFIER);
 				$res .= '<a href="'.str_replace('&','&amp;',$GLOBALS['_BAZAR_']['url']->getURL()).'" class="BAZ_lien_modifier"></a>'."\n";
@@ -2574,7 +2681,7 @@ function baz_afficher_liste_resultat($tableau_fiches) {
 		}
 		$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_CONSULTER);
 		$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_ACTION, BAZ_VOIR_FICHE);
-		$res .= '<a href="'. str_replace('&','&amp;',$GLOBALS['_BAZAR_']['url']->getURL()) .'" class="BAZ_lien_voir" title="Voir la fiche">'. stripslashes($valeur[3]).'</a>'."\n".'</li>'."\n";
+		$res .= '<a href="'. str_replace('&','&amp;',$GLOBALS['_BAZAR_']['url']->getURL()) .'" class="BAZ_lien_voir" title="Voir la fiche">'. stripslashes($valeurs_fiche['bf_titre']).'</a>'."\n".'</li>'."\n";
 		$GLOBALS['_BAZAR_']['url']->removeQueryString(BAZ_VARIABLE_ACTION);
 	}
 	$res .= '</ul>'."\n".'<div class="bazar_numero">'.$pager->links.'</div>'."\n";
@@ -2627,107 +2734,152 @@ function encoder_en_utf8($txt) {
 *
 * @return  string Le flux RSS, avec les headers et tout et tout
 */
-function baz_affiche_flux_RSS() {
-if (isset($_GET['annonce'])) {
-	$annonce=$_GET['annonce'];
-}
-else {
-	$annonce='';
-}
-
-if (isset($_GET['categorie_nature'])) {
-	$categorie_nature=$_GET['categorie_nature'];
-}
-else {
-	$categorie_nature='';
-}
-
-if (isset($_GET['nbitem'])) {
-	$nbitem=$_GET['nbitem'];
-}
-else {
-	$nbitem='';
-}
-
-if (isset($_GET['emetteur'])) {
-	$emetteur=$_GET['emetteur'];
-}
-else {
-	$emetteur='';
-}
-
-if (isset($_GET['valide'])) {
-	$valide=$_GET['valide'];
-}
-else {
-	$valide=1;
-}
-
-if (isset($_GET['sql'])) {
-	$requeteSQL=$_GET['sql'];
-}
-else {
-	$requeteSQL='';
-}
-// Gestion de la langue
-if (isset($_GET['langue'])) {
-	$requeteWhere = ' bn_ce_i18n like "'.$_GET['langue'].'%" and ';
-} else {
-	$requeteWhere = '';
-}
-return html_entity_decode(gen_RSS($annonce, $nbitem, $emetteur, $valide, $requeteSQL, '', $requeteWhere, $categorie_nature));
-
-}
-
-function afficher_flux_rss() {
-	if (isset($_GET['annonce'])) {
-		$annonce=$_GET['annonce'];
+function baz_afficher_flux_RSS() {
+	if (isset($_GET['id_typeannonce'])) {
+		$id_typeannonce = $_GET['id_typeannonce'];
 	}
 	else {
-		$annonce='';
+		$id_typeannonce = $GLOBALS['_BAZAR_']['id_typeannonce'];
 	}
 
-	if (isset($_GET['categorie_nature'])) {
-		$categorie_nature=$_GET['categorie_nature'];
+	if (isset($_GET['categorie_fiche'])) {
+		$categorie_fiche = $_GET['categorie_fiche'];
 	}
 	else {
-		$categorie_nature=$GLOBALS['_BAZAR_']['id_typeannonce'];
+		$categorie_fiche = $GLOBALS['_BAZAR_']['categorie_nature'];
 	}
 
 	if (isset($_GET['nbitem'])) {
-		$nbitem=$_GET['nbitem'];
+		$nbitem = $_GET['nbitem'];
 	}
 	else {
-		$nbitem='';
+		$nbitem = BAZ_NB_ENTREES_FLUX_RSS;
 	}
 
-	if (isset($_GET['emetteur'])) {
-		$emetteur=$_GET['emetteur'];
+	if (isset($_GET['utilisateur'])) {
+		$utilisateur = $_GET['utilisateur'];
 	}
 	else {
-		$emetteur='';
+		$utilisateur = '';
 	}
 
-	if (isset($_GET['valide'])) {
-		$valide=$_GET['valide'];
+	if (isset($_GET['statut'])) {
+		$statut = $_GET['statut'];
 	}
 	else {
-		$valide=1;
+		$statut = 1;
 	}
 
-	if (isset($_GET['sql'])) {
-		$requeteSQL=$_GET['sql'];
+	if (isset($_GET['query'])) {
+		$query = $_GET['query'];
 	}
 	else {
-		$requeteSQL='';
+		$query = '';
 	}
-	// Gestion de la langue
-	if (isset($_GET['langue'])) {
-		$requeteWhere = ' bn_ce_i18n like "'.$_GET['langue'].'%" and ';
-	} else {
-		$requeteWhere = '';
+	$tableau_flux_rss = baz_requete_recherche_fiches($query, '', $GLOBALS['_BAZAR_']['id_typeannonce'], $GLOBALS['_BAZAR_']['categorie_nature'], $statut, $utilisateur, 20);
+    
+	require_once 'XML/Util.php' ;
+	// setlocale() pour avoir les formats de date valides (w3c) --julien
+	setlocale(LC_TIME, "C");
+
+	$xml = XML_Util::getXMLDeclaration('1.0', 'UTF-8', 'yes') ;
+	$xml .= "\r\n  ";
+	$xml .= XML_Util::createStartElement ('rss', array('version' => '2.0', 'xmlns:atom' => "http://www.w3.org/2005/Atom")) ;
+	$xml .= "\r\n    ";
+	$xml .= XML_Util::createStartElement ('channel');
+	$xml .= "\r\n      ";
+	$xml .= XML_Util::createTag ('title', null, utf8_encode(html_entity_decode(BAZ_DERNIERE_ACTU)));
+	$xml .= "\r\n      ";
+	$xml .= XML_Util::createTag ('link', null, utf8_encode(html_entity_decode(BAZ_RSS_ADRESSESITE)));
+	$xml .= "\r\n      ";
+	$xml .= XML_Util::createTag ('description', null, utf8_encode(html_entity_decode(BAZ_RSS_DESCRIPTIONSITE)));
+	$xml .= "\r\n      ";
+	$xml .= XML_Util::createTag ('language', null, 'fr-FR');
+	$xml .= "\r\n      ";
+	$xml .= XML_Util::createTag ('copyright', null, 'Copyright (c) '. date('Y') .' '. utf8_encode(html_entity_decode(BAZ_RSS_NOMSITE)));
+	$xml .= "\r\n      ";
+	$xml .= XML_Util::createTag ('lastBuildDate', null, strftime('%a, %d %b %Y %H:%M:%S GMT'));
+	$xml .= "\r\n      ";
+	$xml .= XML_Util::createTag ('docs', null, 'http://www.stervinou.com/projets/rss/');
+	$xml .= "\r\n      ";
+	$xml .= XML_Util::createTag ('category', null, BAZ_RSS_CATEGORIE);
+	$xml .= "\r\n      ";
+	$xml .= XML_Util::createTag ('managingEditor', null, BAZ_RSS_MANAGINGEDITOR);
+	$xml .= "\r\n      ";
+	$xml .= XML_Util::createTag ('webMaster', null, BAZ_RSS_WEBMASTER);
+	$xml .= "\r\n      ";
+	$xml .= XML_Util::createTag ('ttl', null, '60');
+	$xml .= "\r\n      ";
+	$xml .= XML_Util::createStartElement ('image');
+	$xml .= "\r\n        ";
+		$xml .= XML_Util::createTag ('title', null, utf8_encode(html_entity_decode(BAZ_DERNIERE_ACTU)));
+		$xml .= "\r\n        ";
+		$xml .= XML_Util::createTag ('url', null, BAZ_RSS_LOGOSITE);
+		$xml .= "\r\n        ";
+		$xml .= XML_Util::createTag ('link', null, BAZ_RSS_ADRESSESITE);
+		$xml .= "\r\n      ";
+	$xml .= XML_Util::createEndElement ('image');
+	if (count($tableau_flux_rss) > 0) {
+		// Creation des items : titre + lien + description + date de publication
+		foreach ($tableau_flux_rss as $ligne) {
+			$ligne = json_decode($ligne[0], true);
+			$ligne = array_map('utf8_decode', $ligne);
+			$xml .= "\r\n      ";
+			$xml .= XML_Util::createStartElement ('item');
+			$xml .= "\r\n        ";
+			$xml .= XML_Util::createTag('title', null, encoder_en_utf8(html_entity_decode(stripslashes($ligne['bf_titre']))));
+			$xml .= "\r\n        ";
+			$lien=$GLOBALS['_BAZAR_']['url'];
+			$lien->addQueryString(BAZ_VARIABLE_ACTION, BAZ_VOIR_FICHE);
+			$lien->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_CONSULTER);
+			$lien->addQueryString('id_fiche', $ligne['id_fiche']);
+			$xml .= XML_Util::createTag ('link', null, '<![CDATA['.$lien->getURL().']]>' );
+			$xml .= "\r\n        ";
+			$xml .= XML_Util::createTag ('guid', null, '<![CDATA['.$lien->getURL().']]>' );
+			$xml .= "\r\n        ";
+			$tab = explode("wakka.php?wiki=",$lien->getURL());
+			$xml .= XML_Util::createTag ('description', null, '<![CDATA['.encoder_en_utf8(html_entity_decode(baz_voir_fiche(0, $ligne))).']]>' );
+			$xml .= "\r\n        ";
+			if ($ligne['date_debut_validite_fiche'] != '0000-00-00' &&
+			$ligne['date_debut_validite_fiche']>$ligne['date_creation_fiche']) {
+				$date_pub =  $ligne['date_debut_validite_fiche'];
+			} else $date_pub = $ligne['date_creation_fiche'] ;
+			$xml .= XML_Util::createTag ('pubDate', null, strftime('%a, %d %b %Y %H:%M:%S GMT',strtotime($date_pub)));
+			$xml .= "\r\n      ";
+			$xml .= XML_Util::createEndElement ('item');
+		}
 	}
-	echo html_entity_decode(gen_RSS($annonce, $nbitem, $emetteur, $valide, $requeteSQL, '', $requeteWhere, $categorie_nature));
+	else {//pas d'annonces
+		$xml .= "\r\n      ";
+		$xml .= XML_Util::createStartElement ('item');
+		$xml .= "\r\n          ";
+		$xml .= XML_Util::createTag ('title', null, utf8_encode(html_entity_decode(BAZ_PAS_DE_FICHES)));
+		$xml .= "\r\n          ";
+		$xml .= XML_Util::createTag ('link', null, '<![CDATA['.$GLOBALS['_BAZAR_']['url']->getUrl().']]>' );
+		$xml .= "\r\n          ";
+		$xml .= XML_Util::createTag ('guid', null, '<![CDATA['.$GLOBALS['_BAZAR_']['url']->getUrl().']]>' );
+		$xml .= "\r\n          ";
+		$xml .= XML_Util::createTag ('description', null, utf8_encode(html_entity_decode(BAZ_PAS_DE_FICHES)));
+		$xml .= "\r\n          ";
+		$xml .= XML_Util::createTag ('pubDate', null, strftime('%a, %d %b %Y %H:%M:%S GMT',strtotime("01/01/%Y")));
+		$xml .= "\r\n      ";
+		$xml .= XML_Util::createEndElement ('item');
+	}
+	$xml .= "\r\n    ";
+	$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_ACTION, BAZ_VOIR_FLUX_RSS);
+//	$xml .= utf8_encode(html_entity_decode('<atom:link href="'.$GLOBALS['_BAZAR_']['url']->getUrl().'" rel="self" type="application/rss+xml" />'."\r\n  "));
+	$xml .= XML_Util::createEndElement ('channel');
+	$xml .= "\r\n  ";
+	$xml .= XML_Util::createEndElement('rss') ;
+
+	// Nettoyage de l'url
+	$GLOBALS['_BAZAR_']['url']->removeQueryString(BAZ_VARIABLE_ACTION);
+	$GLOBALS['_BAZAR_']['url']->removeQueryString('id_fiche');
+	
+	
+	echo html_entity_decode($xml);
+
 }
+
 
 ?>
