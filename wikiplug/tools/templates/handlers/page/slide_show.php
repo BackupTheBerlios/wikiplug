@@ -143,10 +143,10 @@ else
 			if (!file_exists("slideshow.css"))
 			{
 				$scripts_slide_show =  "<style type=\"text/css\">\n".
-				".slide { font-size: 160%; margin: 5%; background-color: #FFFFFF; padding: 30px; border: 1px inset; line-height: 1.5; }\n".
+				".slide { float:none; font-size: 160%; background-color: #FFFFFF; line-height: 1.5; }\n".
 				".slide UL, LI { font-size: 100%; }\n".
 				".slide LI LI { font-size: 90% }\n".
-				".sl_nav p { text-decoration: none; text-align: right; font-size: 80%; line-height: 0.4; }\n".
+				".sl_nav p { text-decoration: none; text-align: right; font-size: 80%; line-height: 1.4em; }\n".
 				".sl_nav A { text-decoration: none; }\n".
 				".sl_nav a:hover { color: #CF8888 }\n".
 				".sum { font-size: 8px; }\n".

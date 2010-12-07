@@ -15,35 +15,40 @@
   <meta name="keywords" content="{{configuration param="meta_keywords"}}" />
   <meta name="description" content="{{configuration param="meta_description"}}" />
   <link rel="alternate" type="application/rss+xml" title="Flux RSS des derniers changements du wikini" href="{{configuration param="base_url"}}DerniersChangementsRSS/xml" />
-  <link rel="shortcut icon" type="image/x-icon" href="tools/templates/themes/yeswiki/images/favicon.ico">
-  <link rel="apple-touch-icon" href="tools/templates/themes/yeswiki/images/apple-touch-icon.png">
-  <link rel="icon" type="image/png" href="tools/templates/themes/yeswiki/images/favicon.png" />
+  <link rel="shortcut icon" type="image/x-icon" href="tools/templates/themes/outils-reseaux/images/favicon.ico">
+  <link rel="apple-touch-icon" href="tools/templates/themes/outils-reseaux/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="tools/templates/themes/outils-reseaux/images/favicon.png" />
   <link rel="stylesheet" href="tools/templates/presentation/styles/yeswiki-base.css?v=1">
-  {{liensstyle}}
+  <link rel="stylesheet" href="tools/templates/themes/outils-reseaux/styles/outils-reseaux.css?v=1">
   <link rel="stylesheet" media="handheld" href="tools/templates/presentation/styles/handheld/handheld.css?v=1">
   <script src="tools/templates/libs/modernizr-1.6.min.js"></script>
 </head>
 
 <body {{parambody}}>
   <div id="container">
-    {{include page="PageRapideHaut" class="menu-fixe arrondisbas" doubleclic="1" actif="1"}}
-    <header class="row">
-    	{{include page="PageHeader" class="column grid_12" doubleclic="1"}}
-        <div class="clear"></div>
-    </header><!-- end of header -->
-    <nav id="topnav" class="row">
-        {{include page="PageMenuHaut" class="left decal5pxhaut grid_12" doubleclic="1"}}
+	<header class="row">
+		<a id="lienlogo" href="{{configuration param="base_url"}}" title="Retourner sur la page principale"></a>
+		<nav id="menuhaut">
+			{{include page="PageMenuHaut" doubleclic="1"}}
+		</nav><!-- fin menuhaut -->	
+		<div id="identification">
+			{{login template="horizontal.tpl.html"}}	
+		</div><!-- fin identification -->
+		<a id="liencontact" href="{{configuration param="base_url"}}ContactS" title="Contactez nous!">Contact</a>
+		<div id="moteurrecherche">
+			{{moteurrecherche}}
+		</div><!-- fin moteurrecherche -->	
 		<div class="clear"></div>
-    </nav><!-- end of #topnav -->
-     
-    <div id="main" class="row" {{doubleclic}}>
-		{WIKINI_PAGE}
-		{{barreredaction}}
-    </div><!-- end of #main -->
-    
-    <footer class="row">
+	</header><!-- fin header -->
+		    <div id="page" class="jaune row" {{doubleclic}}>
+		   		{WIKINI_PAGE}
+				<div class="clear"></div>
+				{{barreredaction}}
+		 	</div><!-- fin page -->	 					
+   <footer>
 		{{include page="PageFooter" doubleclic="1"}}
 		<div class="clear"></div>
+		<div id="copyright">{{include page="PageCopyright" doubleclic="1"}}</div>
     </footer><!-- end of footer -->
   </div> <!-- end of #container -->
   

@@ -4,29 +4,25 @@ if (!defined("WIKINI_VERSION"))
         die ("acc&egrave;s direct interdit");
 }
 
-
 //parametres wikini
-$dossier = $this->GetParameter('dossier');
-if (empty($dossier))
+$pagetag = trim($this->GetParameter('page'));
+if (empty($pagetag))
 {
-        die ("Param&ecirc;tre \"dossier\" obligatoire");
+	return ('<div class="error_box">Action diaporama : param&ecirc;tre "page" obligatoire.</div>');
 }
-
-echo '
-<div id="gallerie_'.str_replace('/','',$dossier).'"> 
-    <ul class="diaporama"> 
-';
-$folder = opendir($dossier);
-$pic_types = array("jpg", "jpeg", "gif", "png");
-$index = array();
-while ($file = readdir ($folder)) {
-  if(in_array(substr(strtolower($file), strrpos($file,".") + 1),$pic_types))
-	{
-		echo '<li><img src="'.$dossier.DIRECTORY_SEPARATOR.$file.'" alt="'.$file.'" title="'.$file.'"/></li>'."\n";
-	}
+else {
+	
+	//pour l'action attach, on simule la présence sur la page, afin qu'il récupère les fichiers attachés au bon endroit
+	$oldpage = $this->GetPageTag();
+	$this->tag = $pagetag;
+	$this->page = $this->LoadPage($this->tag);
+	
+	//fonction de génération du diaporama (teste les droits et l'existence de la page)
+	include_once('tools/templates/libs/templates.functions.php');
+	echo print_diaporama($pagetag);
+	
+	//on rétablie le bon nom de page
+	$this->tag = $oldpage;
+	$this->page = $this->LoadPage($oldpage);
 }
-closedir($folder);
-
-echo '    </ul> 
-</div> ';
 ?>

@@ -3,7 +3,7 @@ Structure html :
 
 --> id conteneur (class gauche ou droite ou milieu)
 
-----> id header
+----> header
 ------> id menu_commun_haut
 --------> id recherche
 --------> id pagerapidehaut
@@ -13,7 +13,7 @@ Structure html :
 ----> id col_menu
 ----> id col_droite (que pour class milieu)
 ----> id content
-----> id footer
+----> footer
 ------> id copyright
 
 Couleurs utilisées : 
@@ -23,39 +23,6 @@ Couleurs utilisées :
 #D9D6A0 : sable gris (fond conteneur)
 #AEA97B : gris (footer)
 */
-
-
-/* on efface tous les styles associés aux différents navigateurs pour partir de zéro (reset css)*/
-body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td { 
-	margin:0;
-	padding:0;
-}
-table {
-	border-collapse:collapse;
-	border-spacing:0;
-}
-fieldset,img { 
-	border:0;
-}
-address,caption,cite,code,dfn,em,strong,th,var {
-	font-style:normal;
-	font-weight:normal;
-}
-ol,ul {
-	list-style:none;
-}
-caption,th {
-	text-align:left;
-}
-h1,h2,h3,h4,h5,h6 {
-	font-size:100%;
-	font-weight:normal;
-}
-q:before,q:after {
-	content:'';
-}
-abbr,acronym { border:0;
-}
 
 
 /* CSS specifique au template */
@@ -127,13 +94,13 @@ h5,h5 a {
  
  
 
-a {
+a, a:visited {
     color:#F29313;
     text-decoration:none; 
     font-weight:700; 
 } 
  
-a:hover { 
+a:hover, a:active { 
     text-decoration:underline; 
 } 
  
@@ -146,15 +113,7 @@ height:2px;
 border:0; 
 width:100%; 
 margin:5px 0; 
-} 
- 
-img { 
-border:0; 
-} 
- 
-input,textarea { 
-margin:1px; 
-} 
+}
  
 ul { 
 margin:0; 
@@ -169,14 +128,13 @@ padding:0;
  
 #conteneur { 
 text-align:left; 
-width:980px; 
+width:960px; 
 color:#000; 
 position:relative; 
--moz-box-shadow: 3px 3px 4px #666;
--webkit-box-shadow: 3px 3px 4px #666;
-box-shadow: 3px 3px 4px #666;
-background:#D9D6A0 ; 
-margin:15px auto; 
+-moz-box-shadow: 2px 2px 5px #666;
+-webkit-box-shadow: 2px 2px 5px #666;
+box-shadow: 2px 2px 5px #666; 
+margin:10px auto; 
 } 
  
 #pagerapidehaut { 
@@ -187,16 +145,20 @@ padding:0;
 text-align:right;
 width:780px;
 }
+
 #pagerapidehaut a {color:#FFF;}
 
 #titre { 
-  width:160px; 
-  text-align:center;
-} 
+margin:0;
+padding:0 10px;
+text-align:center;
+}
+
 #conteneur.gauche #titre, #conteneur.milieu #titre {
 float:left;
 margin:0 0 0 20px;
 }
+
 #conteneur.droite #titre { 
   float:right; 
   margin:0 20px 0 0;
@@ -266,17 +228,16 @@ border:1px solid #666;
 } 
  
 .bouton_iden { 
-background:#D9D6A0; 
-color:#000; 
+background:transparent; 
+color:#F29313; 
 border:0; 
 font-weight:700; 
 font-size:1em; 
-text-transform:uppercase; 
 margin:0; 
 padding:0; 
 } 
  
-#header {
+header {
 background:#482e15 url(../images/fond_menu_haut.png) repeat top left;
 display:block;
 width:100%;
@@ -287,7 +248,12 @@ background:transparent;
 display:block; 
 width:100%; 
 height:35px; 
-} 
+}
+
+#menu_commun_haut a { 
+display:inline-block;
+margin:5px 10px 0;
+}
  
 #recherche { 
 float:right; 
@@ -322,17 +288,8 @@ font-weight:700;
 font-size:1.1em;
 text-align:left;
 background:transparent;
-width:760px;
 padding:0;
 z-index:97;  
-} 
-#conteneur.gauche #menu_haut, #conteneur.milieu #menu_haut { 
-float:right; 
-margin:0 20px 0 0;
-}
-#conteneur.droite #menu_haut { 
-float:left; 
-margin:0 0 0 20px;
 } 
 
 /* liens premier niveau en blanc */
@@ -435,23 +392,17 @@ width:150px;
 background:transparent; 
 margin:0; 
 padding:0; 
-} 
- 
+}
+
+#page-main {margin:0 0 10px 0;}
+
+.page {margin:10px 0;}
+
 #col_menu { 
 color:#000; 
-float:left; 
-width:160px; 
-background:transparent; 
-margin:0 0 0 20px; 
-padding:0; 
-}
-#conteneur.gauche #col_menu, #conteneur.milieu #col_menu { 
-float:left; 
-margin:0 0 0 20px;
-}
-#conteneur.droite #col_menu { 
-float:right; 
-margin:0 20px 0 0;
+background:#D9D6A0 ;
+padding:0 0 0 10px; 
+margin-left:0;
 }
 
 #col_menu a { 
@@ -481,7 +432,7 @@ padding:6px 6px 6px 21px;
  
 #col_menu ul { 
 background:transparent; 
-margin:10px 0 0 0; 
+margin:0 0 0 -10px; 
 padding:0;
 position:relative;
 } 
@@ -545,26 +496,11 @@ padding:0;
 background : #FFF;
 position:relative;
 text-align:justify;
-width:740px;
-margin:0 20px 0 0;
-padding:10px;
-}
-#conteneur.gauche #content,  #conteneur.milieu #content { 
-float:right; 
-margin:0 20px 0 0;
-}
-#conteneur.droite #content { 
-float:left;
-margin:0 0 0 20px;
-} 
-#conteneur.milieu #content {
-width:509px;
+padding:0;
 }
 #col_droite { 
 float:right; 
-width:150px; 
 background:#FFF; 
-margin:0 29px 0 0; 
 padding:0; 
 } 
  
@@ -581,8 +517,11 @@ color:#000;
 font-weight:700; 
 text-align:left; 
 } 
- 
-#footer { 
+
+.commentsheader {margin:10px 0; width:100%; clear:both;}
+.footer {margin:10px 0; text-align:center; width:100%; clear:both;}
+
+footer { 
 clear:both; 
 color:#FFF; 
 text-align:center; 
@@ -591,7 +530,7 @@ background:#AEA97B;
 margin:0; 
 padding:10px 0 0; 
 } 
-#footer a { 
+footer a { 
 color:#FFF; 
 }
 
@@ -634,7 +573,6 @@ background:transparent;
 .spacer, .hr_clear {clear:both; border:none; background:transparent; margin:0; } 
  
 #banniere { 
-width:760px;
 height: 109px; 
 color: #000; 
 background:transparent url(../images/banniere.jpg) repeat-x  top left; 
@@ -646,226 +584,4 @@ margin:0 20px 0 0;
 #conteneur.droite #banniere { 
 float:left; 
 margin:0 0 0 20px;
-} 
- 
- /* CSS Contributions wikini */
-
-/* Contribution syndication */
- 
-.toggler { 
-    cursor:pointer; 
-} 
- 
-.toggler:hover { 
-    background-color:#e89326; 
-} 
-
-/* CSS Wikini original */
-
-/* Identification ressource */
-
-.wiki_name { float: left; margin: 0px 15px 0px 10px; font-size: 150%; }
-.page_name { font-size: 150%; }
-
-
-/* Erreurs */
-.error { color: #CC3333; font-weight: bold; }
-
-/* Mise en forme */
-
-.indent { margin-left: 40px; }
-.additions { color: #008800; }
-.deletions { color: #880000; }
-.add { font-weight: bold; color: #c00; text-decoration: underline; }
-.del { font-style: italic; color: #c00; text-decoration: line-through; }
-
-
-
-/* Navigation par table des matieres */
-
-.trail_table { line-height: 30px;}
-.trail_button { color: #993333; }
-
-
-/* Commentaires */
-
-.commentsheader {display:none;}
-.comment {display:none; }
-.commentinfo { display:none; }
-.commentform { display:none;}
-.commenteditlink {display:none;}
-
-/* Page absentes */
-
-span.missingpage {display:inline;}
-
-
-/* page (contenu page centrale) */
-
-.page {
-text-align:justify;
-margin:0 0 20px 0; 
 }
-
-/* fin page */
-
-
-/* previsualisation page */
-.page_preview { background-color: #FFFFBF; padding: 10px; border: 1px inset; border-bottom: none; }
-.prev_alert { background-color: red; color: white; font-size: 1.7em; font-weight: bold; margin-bottom: 5px; }
-/* fin previsualisation page */
-
-
-/* Zone Edition */
-.edit {
-width: 100%;
-border:1px solid #666;
-}
- 
-
-/* footer */
-.footer {
-clear:both;
-font-size:0.9em;
-margin:10px auto 0;
-padding:10px 0;
-text-align:center;
-}
-.footer a {
-color:#000;
-}
-.footer form { 
-display:inline;
-}
-/* fin footer */
-
-/* barre actions */
-.barre_actions {
-background:#EFEFEF;
-margin:0 20px 0 0;
-padding:0;
-position:relative;
-text-align:left;
-width:760px;
-}
-
-#conteneur.gauche .barre_actions,  #conteneur.milieu .barre_actions {
-float:right;
-clear:right;
-text-align:center;
-}
-
-.barre_actions a {
-display:inline-block;
-margin:0 8px 0 0;
-text-align:center;
-color:#333;
-}
-.lien_modifier {background:url(../../../presentation/images/edit.png) no-repeat left center; padding:4px 4px 4px 20px;}
-.lien_supprimer {background:url(../../../presentation/images/delete.gif) no-repeat left center; padding:4px 4px 4px 20px;}
-.lien_historique {background:url(../../../presentation/images/historique.png) no-repeat left center; padding:4px 4px 4px 20px;}
-.lien_droits {background:url(../../../presentation/images/droits.png) no-repeat left center; padding:4px 4px 4px 20px;}
-.lien_referrer {background:url(../../../presentation/images/referrer.png) no-repeat left center; padding:4px 4px 4px 20px;}
-.lien_share {background:url(../../../presentation/images/share.png) no-repeat left center; padding:4px 4px 4px 20px;}
-.barre_actions a:hover {background-color:#D9D6A0;text-decoration:none;}
-
-.tooltip_action {
-background-color:#AEA97B;
-color:#000;
-font-size:1em;
-font-weight:bold;
-padding:10px;
--moz-border-radius:5px;-webkit-border-radius:5px;-khtml-border-radius:5px;border-radius:5px;
--moz-box-shadow: 3px 3px 4px #444;
--webkit-box-shadow: 3px 3px 4px #444;
-box-shadow: 3px 3px 4px #444;
-}
-
-#overlay-action {
-background:#FFF;
-color:#000;
-width:680px;		
-padding:10px;
-display:none;
--moz-border-radius:5px;-webkit-border-radius:5px;-khtml-border-radius:5px;border-radius:5px;
--moz-box-shadow: 3px 3px 24px #222;
--webkit-box-shadow: 3px 3px 24px #222;
-box-shadow: 3px 3px 24px #222;
-}
-
-div.contenu-overlay-action {
-	max-height:441px;
-	overflow-y:auto;
-}
-
-.bouton_share {
-margin:0 32px 0 0;
-width:64px;
-height:64px;
-display:inline-block;
-}
-
-.bouton_share:hover {
--moz-box-shadow: 3px 3px 15px #111;
--webkit-box-shadow: 3px 3px 15px #111;
-box-shadow: 3px 3px 15px #111;
-}
-/* default close button positioned on upper right corner */
-#overlay-action .close {
-	background-image:url(../images/close.png);
-	position:absolute; right:-20px; top:-20px;
-	cursor:pointer;
-	height:35px;
-	width:35px;
-}
-
-
-/* fin barre actions */
-
-
-/* Divers mise en forme */
-.code { background: #FFFFFF; border: solid #888888 2px; font-family: 'Courier New', Courier; width: 100%; height: 400px; overflow: scroll; padding: 3px; }
-.revisioninfo { color: #AAAAAA; padding-bottom: 20px; }
-.searchbox { background: #FFFFF8; border: 0px; border-bottom: 1px solid #CCCCAA; padding: 0px; margin: 0px; }
-.debug { font-size: 11px; color: #888888; }
-/* Fin divers mise en forme */
-
-/* On cache divers éléments */
-.commentsheader, #menu_haut ul ul,#col_droite .listeinfo,#col_droite .commentaires,#col_droite .lien_commenter,#col_droite lien_suppr_paget,#col_droite .lien_edit_page { 
-display:none; 
-} 
- 
-
-/* Inclusion de page */
-.include_right { float: right; width: 17%; } /* bloc flotant a  droite */
-.include_left { float: left; width: 17%; } /* bloc flotant  a gauche */
-.include_solid_border { border: solid; padding: 2px; } /* encadre noir */
-.include_gray_background { background-color: #DDDDDD; } /* fond gris */
-.include_small_fonts { font-size: 0.8em; } /* petites polices */
-.include_big_fonts { font-size: 1.2em; } /* grandes polices */
-.include_height10em { height: 10em; overflow: scroll; } /* boite de 10em de hauteur, avec ascenseur */
-.include_height15em { height: 15em; overflow: scroll; }
-.include_height30em { height: 30em; overflow: scroll; }
-.include_height60em { height: 60em; overflow: scroll; }
-.include_editlink { float: right; } /* bloc flotant a droite */
-.include_editlink { display:none; } /* Inhibe l'affichage du bloc "include_editlink" */
-.include:hover .include_editlink { display: block; } /* Au passage de la souris sur le bloc "include", affiche le bloc "include_editlink" */
-/* fin inclusion de page */
-
-
-/* fichiers attachés */
-.attach_left { 
-float:left; 
-margin:0 10px 0 0; 
-} 
-.attach_right { 
-float:right; 
-margin:0 0 0 10px; 
-}  
-.attach_center { 
-display:block; 
-width:100%; 
-text-align:center; 
-margin:0 auto; 
-} 
-/* fin fichiers attachés */

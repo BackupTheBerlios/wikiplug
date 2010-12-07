@@ -20,5 +20,10 @@ if ($act=preg_match_all ("/".'(\\{\\{)'.'(.*?)'.'(\\}\\})'."/is", $template_foot
 	}
 }
 
-echo $template_footer;
+//si quelque chose est passée dans la variable globale pour le javascript, on l'intègre
+echo ((isset($GLOBALS['js'])) ? str_replace('</body>', $GLOBALS['js'].'</body>', $template_footer) : $template_footer);
+
+//on vide la variable globale pour le javascript
+$GLOBALS['js'] = '';
+
 ?>

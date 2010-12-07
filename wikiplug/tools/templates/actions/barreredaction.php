@@ -10,10 +10,10 @@ if ($this->HasAccess("write")) {
 	$wikini_barre_bas =
 	'<div class="footer">'."\n";
 	if ( $this->HasAccess("write") ) {
-		$wikini_barre_bas .= "<a href=\"".$this->href("edit")."\" title=\"Cliquez pour &eacute;diter cette page.\">&Eacute;diter cette page</a> ::\n";
+		$wikini_barre_bas .= "<a class=\"link-edit\" href=\"".$this->href("edit")."\" title=\"Cliquez pour &eacute;diter cette page.\">&Eacute;diter cette page</a> ::\n";
 	}
 	if ( $this->GetPageTime() ) {
-		$wikini_barre_bas .= "<a href=\"".$this->href("revisions")."\" title=\"Cliquez pour voir les derni&egrave;res modifications sur cette page.\">".$this->GetPageTime()."</a> ::\n";
+		$wikini_barre_bas .= "<a rel=\"#overlay-link\" class=\"link-revisions\" href=\"".$this->href("revisions")."\" title=\"Cliquez pour voir les derni&egrave;res modifications sur cette page.\">".$this->GetPageTime()."</a> ::\n";
 	}
 	// if this page exists
 
@@ -41,8 +41,8 @@ if ($this->HasAccess("write")) {
 
                 if ($this->UserIsOwner() || $this->UserIsAdmin()) { 
                         $wikini_barre_bas .=
-                        "<a href=\"".$this->href("acls")."\" title=\"Cliquez pour &eacute;diter les permissions de cette page.\">&Eacute;diter permissions</a> :: \n".
-                        "<a href=\"".$this->href("deletepage")."\">Supprimer</a> :: \n";
+                        "<a rel=\"#overlay-link\" class=\"link-acls\" href=\"".$this->href("acls")."\" title=\"Cliquez pour &eacute;diter les permissions de cette page.\">Permissions</a> :: \n".
+                        "<a rel=\"#overlay-link\" class=\"link-delete\" href=\"".$this->href("deletepage")."\">Supprimer</a> :: \n";
                 }   
 
       }   
@@ -50,11 +50,10 @@ if ($this->HasAccess("write")) {
 	
 	
 	$wikini_barre_bas .=
-	'<a href="'.$this->href("referrers").'" title="Cliquez pour voir les URLs faisant r&eacute;f&eacute;rence &agrave; cette page.">'."\n".
-	'R&eacute;f&eacute;rences</a> :: '."\n".
-	"<a href=\"".$this->href("plugin")."\">Extensions</a>\n".
-	" :: <a class=\"link_mail\" rel=\"#overlay-link\" href=\"".$this->href("mail")."\" title=\"Envoyer le contenu de la page par mail.\">Envoyer mail</a>\n".
-	" :: <a class=\"link_share\" rel=\"#overlay-link\" href=\"".$this->href("share")."\" title=\"Voir les possibilit&eacute;s de partage de cette page.\">Partager</a>\n".
+	'<a rel="#overlay-link" class="link-referrers" href="'.$this->href("referrers").'" title="Cliquez pour voir les URLs faisant r&eacute;f&eacute;rence &agrave; cette page.">'."\n".
+	'R&eacute;f&eacute;rences</a>'."\n".
+	" :: <a class=\"link-diaporama\" href=\"".$this->href("diaporama")."\" title=\"Lancer cette page en mode diaporama.\">Diaporama</a>\n".
+	" :: <a rel=\"#overlay-link\" class=\"link-share\" href=\"".$this->href("share")."\" title=\"Voir les possibilit&eacute;s de partage de cette page.\">Partager</a>\n".
 	'</div>'."\n";
 	
 	echo $wikini_barre_bas;	
