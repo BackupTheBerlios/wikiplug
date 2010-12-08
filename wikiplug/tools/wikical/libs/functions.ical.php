@@ -143,7 +143,7 @@ function printMonthCal($in_timeStamp, $in_data, $params) {
 	//Liste des mois		
 	print("<ul class=\"select\" style='background-color: ".$in_color.";'>\n");
 	for ($i=1; $i<=12; $i++){
-		print("\t<li><a class=\"select_item\" href=\"tools/wikical/actions/cal.php?timestamp=".mktime(0, 0, 0, $i, $jourencours, $anneeencours).$url_params."\">".$lsMonth[$i]."</a></li>\n");
+		print("\t<li><a class=\"list select_item\" href=\"tools/wikical/actions/cal.php?timestamp=".mktime(0, 0, 0, $i, $jourencours, $anneeencours).$url_params."\">".$lsMonth[$i]."</a></li>\n");
 	}
 	print("</ul></li>\n");
 	//Liste des années
@@ -162,23 +162,28 @@ function printMonthCal($in_timeStamp, $in_data, $params) {
 	print("</ul>\n");
 	print("</div>");
 	
-	print("<div class=\"cal_contenu\">");
-	print("<div class='day_name'>Lun</div>\n");
-	print("<div class='day_name'>Mar</div>\n");
-	print("<div class='day_name'>Mer</div>\n");
-	print("<div class='day_name'>Jeu</div>\n");
-	print("<div class='day_name'>Ven</div>\n");
-	print("<div class='day_name'>Sam</div>\n");
-	print("<div class='day_name'>Dim</div>\n");
-
+	print("<table class='cal_content'>\n");
+	print("\t<tr>");
+	print("\t\t<th>Lun</th><th>Mar</th><th>Mer</th><th>Jeu</th><th>Ven</th><th>Sam</th><th>Dim</th>");
+	print("\t</tr>\n");
+	print("\t<tr>");
+	
+	$compteur = 0;
+	
 	foreach($in_data as $day) {
-		//Creation du DIV
+		
+		
+		if ( ($compteur % 7 == 0) && ($compteur != 0) ) {
+			print("\t</tr>\n\t<tr>\n");
+		}
+		
+		//Creation de la cellule
 		if ($day["isToday"])
-			print("<div class='day today'>");
+			print("\t\t<td class='day today'>");
 		else if ($day["isEvent"])
-			print("<div class='day evday'>");
+			print("\t\t<td class='day evday'>");
 		else
-			print("<div class='day'>");
+			print("\t\t<td class='day'>");
 		//Contenu du DIV
 		if(!$day["isBlank"])
 			print(date("d",$day['startDayTS']));
@@ -211,13 +216,19 @@ function printMonthCal($in_timeStamp, $in_data, $params) {
 						."</p>\n");
 			}
 			print ("</div>\n");
-		}
-		print ("</div>\n");
+		}/**/
+		print ("</td>\n");
+		
+		$compteur += 1;
 	}
+	
+	print("\t</tr>\n");
+	print("</table>");
+	
+
 	print("</div>\n");
 	print("</div>\n");
-	print("</div>\n");
-	print("<script type=\"text/javascript\">
+	print("<script type=\"text/javascript\"><!--
 		$(function() {
 			//liens pour se déplacer dans le calendrier
 			$(\".next_month, .prev_month, .today, .select_item\").live('click', function() {
@@ -235,6 +246,6 @@ function printMonthCal($in_timeStamp, $in_data, $params) {
 				return false;
 			});
 		});
-		</script>");
+		--></script>");
 }
 ?>

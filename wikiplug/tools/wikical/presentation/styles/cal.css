@@ -1,11 +1,10 @@
-.day, .day_name {
+.day, .day_name, table.cal_content th {
 	border: solid 1px white;
-	width: 30px;
-	height: 22px;
-	float: left;
-	padding-top: 8px;
 	font-size: 12px;
+	height: 30px;
 	background: url(../images/blanc.png) repeat;
+	vertical-align: middle;
+	text-align: center;
 }
 .day_name {
 	font-weight:bold;
@@ -30,16 +29,13 @@
 	font-size: 110%;
 	font-weight: bold;
 	color: black;
-	background : url(../images/blanc.png) repeat;
-	display: block;		
+	background : url(../images/blanc.png) repeat;		
 }
 
 .calendar {
 	width: 224px;
 	font-size: 11px;
-	text-align: center;
 	background-color: #A3C437;
-	overflow: auto;
 	border: 0px solid #787878;
 	-moz-border-radius: 15px;
 	-webkit-border-radius: 15px;
@@ -50,6 +46,14 @@
 	color: black;	
 }
 
+table.cal_content {
+	width: 100%;
+}
+
+table.cal_content th{
+	text-align: center;
+}
+
 .events {
 	max-width: 224px;
 	display: none;
@@ -58,8 +62,8 @@
 }
 
 .day:hover .events {
-	display: block;
 	position: absolute;
+	display: block;
 	color: white;
 	margin-left: 10px;
 	padding: 0px 10px;
@@ -104,8 +108,8 @@ color: black;
 	margin-bottom: 5px;
 	width: auto;
 	height: 20px;
-	text-align: center;
 	background: url(../images/blanc.png) repeat;
+	position: relative;
 }
 
 .cal_contenu {
@@ -141,6 +145,7 @@ li.list:hover ul.select {
 .select li {
 	padding-left: 5px;
 	padding-right: 5px;
+	list-style: none;
 }
 
 .select li:hover {
@@ -148,13 +153,15 @@ li.list:hover ul.select {
 }
 
 .select_item {
-	list-style: none;
-	
+	list-style: none;	
 }
 
 .select_date {
 	list-style: none;
-	width: auto;
+	width: 140px;
+	display: block;
+	margin: 0 auto;
+	padding: 4px O O O;
 }
 
 .select {
@@ -163,5 +170,7 @@ li.list:hover ul.select {
 	padding-left: 2px;
 }
 
-.list { float: left; padding: 0px 2px;}
+.list { float: left; padding: 0px 2px; list-style: none;}
+
+.list li { float: none; clear: left;}
 
