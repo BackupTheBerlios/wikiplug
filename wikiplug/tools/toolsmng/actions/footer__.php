@@ -1,4 +1,4 @@
-<? 
+<?php 
 
 if (!defined("WIKINI_VERSION"))
 {
