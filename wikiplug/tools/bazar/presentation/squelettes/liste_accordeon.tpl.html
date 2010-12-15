@@ -1,8 +1,10 @@
 <?php if( count($fiches)>0 ) : ?>
+<?=$info_res;?>
+<?=$pager_links;?>
 <div class="accordion">
 <?php foreach($fiches as $fiche): ?>
 <h2 class="titre_accordeon">
-<?=$fiche['titre'];?>
+<?=$fiche['bf_titre'];?>
 <span class="liens_titre_accordeon">
 <?=$fiche['lien_voir'];?>
 <?php if( isset($fiche['lien_edition']) ) : ?><?=$fiche['lien_edition'];?><?php endif; ?>
@@ -10,8 +12,9 @@
 </span>
 </h2>
 <div class="pane">
-<?=$fiche['contenu'];?>
+<?=$fiche['html'];?>
 </div>
 <?php endforeach; ?>
 </div>
+<?=$pager_links;?>
 <?php endif; ?>

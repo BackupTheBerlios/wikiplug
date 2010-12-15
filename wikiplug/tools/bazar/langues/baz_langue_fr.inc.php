@@ -131,6 +131,8 @@ define ('BAZ_LONGITUDE', 'Longitude');
 define ('BAZ_VERIFIER_MON_ADRESSE', 'V&eacute;rifier mon adresse avec la carte');
 define ('BAZ_PAS_DE_FORMULAIRES_TROUVES', 'Pas de formulaires trouvés');
 define ('BAZ_CHAMPS_REQUIS', 'champs requis');
+define ('BAZ_FICHES', 'fiches.');
+define ('BAZ_FICHE', 'fiche.');
 define ('BAZ_FICHES_CORRESPONDANTES', 'fiches correspondantes &agrave; votre recherche') ;
 define ('BAZ_FICHE_CORRESPONDANTE', 'fiche correspondante &agrave; votre recherche') ;
 define ('BAZ_DESCRIPTION', 'Description') ;

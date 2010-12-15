@@ -119,6 +119,10 @@ $(document).ready(function () {
 			$(this).addClass('current');
 		}
 	});
+	//permet de cliquer sur les liens d'édition sans dérouler l'accordeon 
+	$(".accordion .liens_titre_accordeon").bind('click',function(event) {
+		event.stopPropagation();
+	});
 
     // initialise les iframe en overlay
     $("a.ouvrir_overlay[rel]").each(function() {
@@ -178,7 +182,7 @@ $(document).ready(function () {
 	});
 
 	//on enleve la fonction doubleclic dans le cas d'une page contenant bazar
-	$("#formulaire, #map").parents("div[ondblclick]").removeAttr("ondblclick");
+	$("#formulaire, #map").bind('dblclick', function(e) {return false;});
 
 	//affichage tooltip des evenements dans le calendrier
 	$('.date_avec_evenements').each(function () {

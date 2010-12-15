@@ -59,30 +59,56 @@ else
 {
 	$tabquery = '';
 }
+
 $tableau_resultat = baz_requete_recherche_fiches($tabquery, $ordre, $id_typeannonce, $categorie_nature);
 
-$fiches['fiches'] = array(); $i=0; 
-foreach ($tableau_resultat as $fiche) {
-	$tmp = array();
-	$i++;
-	$tmp['titre'] = stripslashes($fiche[3]);
-	$tmp['valeurs_fiche'] = baz_valeurs_fiche($fiche[0]);
-	$tmp['contenu'] = baz_voir_fiche(0, $tmp['valeurs_fiche']);
-
-	$GLOBALS['_BAZAR_']['url']->addQueryString('id_fiche', $fiche[0]);
-	if (baz_a_le_droit('saisir_fiche', $fiche[2])) {
-		$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_SAISIR);
-		$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_ACTION, BAZ_ACTION_SUPPRESSION);
-		$tmp['lien_suppression'] = '<a class="BAZ_lien_supprimer" href="'.str_replace('&','&amp;',$GLOBALS['_BAZAR_']['url']->getURL()).'"  onclick="javascript:return confirm(\''.BAZ_CONFIRM_SUPPRIMER_FICHE.' ?\');"></a>'."\n";
-		$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_SAISIR);
-		$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_ACTION, BAZ_ACTION_MODIFIER);
-		$tmp['lien_edition'] = '<a class="BAZ_lien_modifier" href="'.str_replace('&','&amp;',$GLOBALS['_BAZAR_']['url']->getURL()).'"></a>'."\n";
+//on récupère le nombre d'entrées avant pagination
+$pagination = $this->GetParameter("pagination");
+if (!empty($pagination)) {
+	$fiches['info_res'] = '<div class="info_box">'.BAZ_IL_Y_A;
+	$nb_result = count($tableau_resultat);
+	if ($nb_result<=1) {
+		$fiches['info_res'] .= $nb_result.' '.BAZ_FICHE.'</div>'."\n";
+	} else {
+		$fiches['info_res'] .= $nb_result.' '.BAZ_FICHES.'</div>'."\n";
 	}
-	$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_CONSULTER);
-	$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_ACTION, BAZ_VOIR_FICHE);
-	$tmp['lien_voir_titre'] = '<a class="BAZ_lien_voir" href="'. str_replace('&','&amp;',$GLOBALS['_BAZAR_']['url']->getURL()) .'" title="Voir la fiche">'. stripslashes($fiche[3]).'</a>'."\n";
-	$tmp['lien_voir'] = '<a class="BAZ_lien_voir" href="'. str_replace('&','&amp;',$GLOBALS['_BAZAR_']['url']->getURL()) .'" title="Voir la fiche"></a>'."\n";
-	$fiches['fiches'][] = $tmp;
+
+	// Mise en place du Pager
+	require_once 'Pager/Pager.php';
+	$params = array(
+	    'mode'       => BAZ_MODE_DIVISION,
+	    'perPage'    => $pagination,
+	    'delta'      => BAZ_DELTA,
+	    'httpMethod' => 'GET',
+	    'extraVars' => array_merge($_POST, $_GET),
+	    'altNext' => BAZ_SUIVANT,
+	    'altPrev' => BAZ_PRECEDENT,
+	    'nextImg' => BAZ_SUIVANT,
+	    'prevImg' => BAZ_PRECEDENT,
+	    'itemData'   => $tableau_resultat
+	);
+	$pager = & Pager::factory($params);
+	$tableau_resultat = $pager->getPageData();
+	
+	$fiches['pager_links'] = '<div class="bazar_numero">'.$pager->links.'</div>'."\n";
+} else {
+	$fiches['info_res'] = '';
+	$fiches['pager_links'] = '';
+}
+
+$fiches['fiches'] = array();
+foreach ($tableau_resultat as $fiche) {
+	$valeurs_fiche = json_decode($fiche[0], true);
+	$valeurs_fiche = array_map('utf8_decode', $valeurs_fiche);
+	$valeurs_fiche['html'] = baz_voir_fiche(0, $valeurs_fiche);
+
+	if (baz_a_le_droit('saisir_fiche', $valeurs_fiche['createur'])) {
+		$valeurs_fiche['lien_suppression'] = '<a class="BAZ_lien_supprimer" href="'.$this->href('deletepage', $valeurs_fiche['id_fiche']).'"></a>'."\n";
+		$valeurs_fiche['lien_edition'] = '<a class="BAZ_lien_modifier" href="'.$this->href('edit', $valeurs_fiche['id_fiche']).'"></a>'."\n";
+	}
+	$valeurs_fiche['lien_voir_titre'] = '<a class="BAZ_lien_voir" href="'. $this->href('', $valeurs_fiche['id_fiche']) .'" title="Voir la fiche">'.$valeurs_fiche['bf_titre'].'</a>'."\n";
+	$valeurs_fiche['lien_voir'] = '<a class="BAZ_lien_voir" href="'. $this->href('', $valeurs_fiche['id_fiche']) .'" title="Voir la fiche"></a>'."\n";
+	$fiches['fiches'][] = $valeurs_fiche;
 
 	//réinitialisation de l'url
 	$GLOBALS['_BAZAR_']['url']->removeQueryString(BAZ_VARIABLE_VOIR);

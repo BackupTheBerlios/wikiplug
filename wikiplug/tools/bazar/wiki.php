@@ -21,7 +21,7 @@
 // | along with Foobar; if not, write to the Free Software                                                |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: wiki.php,v 1.13 2010/12/15 10:45:43 mrflos Exp $
+// CVS : $Id: wiki.php,v 1.14 2010/12/15 15:43:07 mrflos Exp $
 /**
 * wiki.php
 *
@@ -32,7 +32,7 @@
 *@author        Florian SCHMITT <florian.schmitt@laposte.net>
 //Autres auteurs :
 *@copyright     outils-reseaux-coop.org 2008
-*@version       $Revision: 1.13 $ $Date: 2010/12/15 10:45:43 $
+*@version       $Revision: 1.14 $ $Date: 2010/12/15 15:43:07 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -267,8 +267,11 @@ if (BAZ_VAR_URL_LANGUE != '' && isset (${BAZ_VAR_URL_LANGUE})) {
     include_once BAZ_CHEMIN.'langues'.DIRECTORY_SEPARATOR.'baz_langue_'.BAZ_LANGUE_PAR_DEFAUT.'.inc.php';
 }
 
+// Choix du look du template par défaut
+define ('BAZ_TEMPLATE_LISTE_DEFAUT', 'liste_accordeon.tpl.html');
+
 // Option concernant la division des resultats en pages
-define ('BAZ_NOMBRE_RES_PAR_PAGE', 30);
+define ('BAZ_NOMBRE_RES_PAR_PAGE', 10);
 define ('BAZ_MODE_DIVISION', 'Jumping'); 	// 'Jumping' ou 'Sliding' voir http://pear.php.net/manual/fr/package.html.pager.compare.php
 define ('BAZ_DELTA', 12);		// Le nombre de page a afficher avant le 'next';
 

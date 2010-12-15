@@ -2650,11 +2650,15 @@ function baz_requete_recherche_fiches($tableau_criteres = '', $tri = '', $id_typ
  */
 function baz_afficher_liste_resultat($tableau_fiches, $info_nb = true) {
 	$res = '';
+	$fiches['info_res'] = '';
 	if ($info_nb) {
-		$res .= '<div class="info_box">'.BAZ_IL_Y_A;
+		$fiches['info_res'] .= '<div class="info_box">'.BAZ_IL_Y_A;
 		$nb_result=count($tableau_fiches);
-		if ($nb_result<=1) $res .= $nb_result.' '.BAZ_FICHE_CORRESPONDANTE.'</div>'."\n";
-		else $res .= $nb_result.' '.BAZ_FICHES_CORRESPONDANTES.'</div>'."\n";
+		if ($nb_result<=1) {
+			$fiches['info_res'] .= $nb_result.' '.BAZ_FICHE_CORRESPONDANTE.'</div>'."\n";
+		} else {
+			$fiches['info_res'] .= $nb_result.' '.BAZ_FICHES_CORRESPONDANTES.'</div>'."\n";
+		}
 	}
 
 	$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_ACTION, BAZ_VOIR_FICHE);
@@ -2662,47 +2666,62 @@ function baz_afficher_liste_resultat($tableau_fiches, $info_nb = true) {
 	// Mise en place du Pager
 	require_once 'Pager/Pager.php';
 	$params = array(
-    'mode'       => BAZ_MODE_DIVISION,
-    'perPage'    => BAZ_NOMBRE_RES_PAR_PAGE,
-    'delta'      => BAZ_DELTA,
-    'httpMethod' => 'GET',
-    'extraVars' => array_merge($_POST, $_GET),
-    'altNext' => BAZ_SUIVANT,
-    'altPrev' => BAZ_PRECEDENT,
-    'nextImg' => BAZ_SUIVANT,
-    'prevImg' => BAZ_PRECEDENT,
-    'itemData'   => $tableau_fiches
+	    'mode'       => BAZ_MODE_DIVISION,
+	    'perPage'    => BAZ_NOMBRE_RES_PAR_PAGE,
+	    'delta'      => BAZ_DELTA,
+	    'httpMethod' => 'GET',
+	    'extraVars' => array_merge($_POST, $_GET),
+	    'altNext' => BAZ_SUIVANT,
+	    'altPrev' => BAZ_PRECEDENT,
+	    'nextImg' => BAZ_SUIVANT,
+	    'prevImg' => BAZ_PRECEDENT,
+	    'itemData'   => $tableau_fiches
 	);
 	$pager = & Pager::factory($params);
 	$data  = $pager->getPageData();
 	$links = $pager->getLinks();	
-	$res .= '<div class="bazar_numero">'.$pager->links.'</div>'."\n";
-	$res .= '<ul class="BAZ_liste">'."\n" ;
-	foreach ($data as $valeur) {
-		$valeurs_fiche = json_decode($valeur[0], true);
+	$fiches['pager_links'] = '<div class="bazar_numero">'.$pager->links.'</div>'."\n";
+	
+	
+	$fiches['fiches'] = array();
+	foreach ($data as $fiche) {
+		$valeurs_fiche = json_decode($fiche[0], true);
 		$valeurs_fiche = array_map('utf8_decode', $valeurs_fiche);
-		$res .='<li class="BAZ_'.$valeurs_fiche['id_typeannonce'].'">'."\n";
+		$valeurs_fiche['html'] = baz_voir_fiche(0, $valeurs_fiche);
+		
 		$GLOBALS['_BAZAR_']['url']->addQueryString('id_fiche',$valeurs_fiche['id_fiche']) ;
+		
 		if (baz_a_le_droit('saisir_fiche', (isset($valeurs_fiche['createur']) ? $valeurs_fiche['createur'] : ''))) {
 				$GLOBALS['_BAZAR_']['url']->removeQueryString(BAZ_VARIABLE_ACTION);
 				$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_SAISIR);
 				$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_ACTION, BAZ_ACTION_SUPPRESSION);
-				$res .= '<a href="'.str_replace('&','&amp;',$GLOBALS['_BAZAR_']['url']->getURL()).'" class="BAZ_lien_supprimer" onclick="javascript:return confirm(\''.BAZ_CONFIRM_SUPPRIMER_FICHE.' ?\');"></a>'."\n";
+				$valeurs_fiche['lien_suppression'] = '<a href="'.str_replace('&','&amp;',$GLOBALS['_BAZAR_']['url']->getURL()).'" class="BAZ_lien_supprimer" onclick="javascript:return confirm(\''.BAZ_CONFIRM_SUPPRIMER_FICHE.' ?\');"></a>'."\n";
 				$GLOBALS['_BAZAR_']['url']->removeQueryString(BAZ_VARIABLE_ACTION);
 		}
 		if (baz_a_le_droit('saisir_fiche', (isset($valeurs_fiche['createur']) ? $valeurs_fiche['createur'] : ''))) {
 				$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_SAISIR);
 				$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_ACTION, BAZ_ACTION_MODIFIER);
-				$res .= '<a href="'.str_replace('&','&amp;',$GLOBALS['_BAZAR_']['url']->getURL()).'" class="BAZ_lien_modifier"></a>'."\n";
+				$valeurs_fiche['lien_edition'] = '<a href="'.str_replace('&','&amp;',$GLOBALS['_BAZAR_']['url']->getURL()).'" class="BAZ_lien_modifier"></a>'."\n";
 				$GLOBALS['_BAZAR_']['url']->removeQueryString(BAZ_VARIABLE_ACTION);
 		}
 		$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_VOIR, BAZ_VOIR_CONSULTER);
 		$GLOBALS['_BAZAR_']['url']->addQueryString(BAZ_VARIABLE_ACTION, BAZ_VOIR_FICHE);
-		$res .= '<a href="'. str_replace('&','&amp;',$GLOBALS['_BAZAR_']['url']->getURL()) .'" class="BAZ_lien_voir" title="Voir la fiche">'. stripslashes($valeurs_fiche['bf_titre']).'</a>'."\n".'</li>'."\n";
+		$valeurs_fiche['lien_voir_titre'] = '<a href="'. str_replace('&','&amp;',$GLOBALS['_BAZAR_']['url']->getURL()) .'" class="BAZ_lien_voir" title="Voir la fiche">'. stripslashes($valeurs_fiche['bf_titre']).'</a>'."\n".'</li>'."\n";
+		$valeurs_fiche['lien_voir'] = '<a href="'. str_replace('&','&amp;',$GLOBALS['_BAZAR_']['url']->getURL()) .'" class="BAZ_lien_voir" title="Voir la fiche"></a>'."\n".'</li>'."\n";
+		$GLOBALS['_BAZAR_']['url']->removeQueryString(BAZ_VARIABLE_ACTION);
+		
+		$fiches['fiches'][] = $valeurs_fiche;
+	
+		//réinitialisation de l'url
+		$GLOBALS['_BAZAR_']['url']->removeQueryString(BAZ_VARIABLE_VOIR);
 		$GLOBALS['_BAZAR_']['url']->removeQueryString(BAZ_VARIABLE_ACTION);
 	}
-	$res .= '</ul>'."\n".'<div class="bazar_numero">'.$pager->links.'</div>'."\n";
-
+	include_once('tools/bazar/libs/squelettephp.class.php');
+	$template = (isset($_GET['template']) ? $_GET['template'] : BAZ_TEMPLATE_LISTE_DEFAUT);
+	$squelcomment = new SquelettePhp('tools/bazar/presentation/squelettes/'.$template);
+	$squelcomment->set($fiches);
+	$res .= $squelcomment->analyser();
+	
 	// Nettoyage de l'url
 	$GLOBALS['_BAZAR_']['url']->removeQueryString(BAZ_VARIABLE_ACTION);
 	$GLOBALS['_BAZAR_']['url']->removeQueryString('id_fiche');

@@ -1,5 +1,8 @@
 <?php if( count($fiches)>0 ) : ?>
+<?=$info_res;?>
+<?=$pager_links;?>
 <?php foreach($fiches as $fiche): ?>
-<?=$fiche['contenu'];?>
+<?=$fiche['html'];?>
 <?php endforeach; ?>
+<?=$pager_links;?>
 <?php endif; ?>

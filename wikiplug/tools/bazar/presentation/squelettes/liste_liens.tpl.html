@@ -1,4 +1,6 @@
 <?php if( count($fiches)>0 ) : ?>
+<?=$info_res;?>
+<?=$pager_links;?>
 <ul class="BAZ_liste">
 <?php foreach($fiches as $fiche): ?>
 <li class="BAZ_titre_fiche">
@@ -8,4 +10,5 @@
 </li>
 <?php endforeach; ?>
 </ul>
+<?=$pager_links;?>
 <?php endif; ?>
