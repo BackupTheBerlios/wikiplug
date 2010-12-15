@@ -1,6 +1,6 @@
 <?php
 /*
-$Id: exportcsv.php,v 1.2 2010/12/01 17:01:38 mrflos Exp $
+$Id: exportcsv.php,v 1.3 2010/12/15 10:45:42 mrflos Exp $
 Copyright (c) 2010, Florian Schmitt <florian@outils-reseaux.org>
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
@@ -31,6 +31,8 @@ if (!defined("WIKINI_VERSION"))
 {
 	die ("acc&egrave;s direct interdit");
 }
+
+$output = baz_afficher_formulaire_export();
 
 echo $this->Header();
 echo "<div class=\"page\">\n$output\n<hr class=\"hr_clear\" />\n</div>\n";

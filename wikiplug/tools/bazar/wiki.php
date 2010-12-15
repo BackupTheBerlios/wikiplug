@@ -21,7 +21,7 @@
 // | along with Foobar; if not, write to the Free Software                                                |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: wiki.php,v 1.12 2010/12/01 17:01:38 mrflos Exp $
+// CVS : $Id: wiki.php,v 1.13 2010/12/15 10:45:43 mrflos Exp $
 /**
 * wiki.php
 *
@@ -32,7 +32,7 @@
 *@author        Florian SCHMITT <florian.schmitt@laposte.net>
 //Autres auteurs :
 *@copyright     outils-reseaux-coop.org 2008
-*@version       $Revision: 1.12 $ $Date: 2010/12/01 17:01:38 $
+*@version       $Revision: 1.13 $ $Date: 2010/12/15 10:45:43 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -96,7 +96,7 @@ if (DB::isError($GLOBALS['_BAZAR_']['db'])) {
 }
 
 //test de l'existance des tables de bazar et installation si absentes.
-$req = 'SHOW TABLES FROM '.$wakkaConfig['mysql_database'].' LIKE "'.BAZ_PREFIXE.'fiche%"';
+$req = 'SHOW TABLES FROM '.$wakkaConfig['mysql_database'].' LIKE "'.BAZ_PREFIXE.'nature"';
 $resultat = $GLOBALS['_BAZAR_']['db']->query ($req);
 if ($resultat->numRows() == 0) {
 	$fichier_sql = 'tools/bazar/install/bazar.sql';
@@ -142,7 +142,9 @@ if ($resultat->numRows() == 0) {
                     //}
                 }
             }
-            echo '<div class="info_box">La base de donn&eacute;es de bazar vient d\'&ecirc;tre ajout&eacute;e,</div>'."\n";
+            echo '<div class="info_box">La base de donn&eacute;es de bazar vient d\'&ecirc;tre ajout&eacute;e!<br />'.
+            		'<a href="'.$wakkaConfig['base_url'].$wakkaConfig['root_page'].'/updatebazar">Cliquer ici pour finir l\'installtion et ajouter des formulaires</a>'
+            		.'</div>'."\n";
         } else {
             die ('<div class="BAZ_error">Fichier sql introuvable.</div>'."\n");
         }

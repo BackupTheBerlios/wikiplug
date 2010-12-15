@@ -439,7 +439,8 @@ function baz_afficher_formulaire_export() {
 	$requete .= ' ORDER BY bn_label_nature ASC';
 	$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
 		
-	$output .= '<form method="post" action="'.$GLOBALS['_BAZAR_']['url']->getUrl().'">'."\n";
+	$output .= '<form method="post" action="'.$GLOBALS['wiki']->Href().
+				(($GLOBALS['wiki']->GetMethod()!='show')? '/'.$GLOBALS['wiki']->GetMethod() : '').'">'."\n";
 	
 	//s'il y a plus d'un choix possible, on propose 
 	if ($resultat->numRows()>=1) {
@@ -458,7 +459,7 @@ function baz_afficher_formulaire_export() {
 	}		
 	//sinon c'est vide
 	else {
-		$output .= BAZ_PAS_DE_FORMULAIRES_TROUVES."\n";
+		$output .= '<div class="error_box">'.BAZ_PAS_DE_FORMULAIRES_TROUVES.'</div>'."\n";
 	}
 	$output .= '</form>'."\n";
 	
@@ -467,7 +468,9 @@ function baz_afficher_formulaire_export() {
 	
 		//on parcourt le template du type de fiche pour fabriquer un csv pour l'exemple
 		$tableau = formulaire_valeurs_template_champs($val_formulaire['bn_template']);
-		$csv = ''; $nb=0; $tab_champs = array();
+		$csv = '"PageWiki",' ; 
+		$nb = 0 ; 
+		$tab_champs = array();
 		foreach ($tableau as $ligne) {
 			if ($ligne[0] != 'labelhtml') {
 				if ($ligne[0] == 'liste' || $ligne[0] == 'checkbox' || $ligne[0] == 'listefiche' || $ligne[0] == 'checkboxfiche') {
@@ -487,11 +490,19 @@ function baz_afficher_formulaire_export() {
 		foreach ($tableau_fiches as $fiche) {
 			$tab_valeurs = json_decode($fiche[0], true);
 			$tab_csv = array();
+			$tab_csv['PageWiki'] = $tab_valeurs['id_fiche'];
 			foreach ($tab_champs as $index) {
-				if (isset($tab_valeurs[$index])) $tab_csv[] = utf8_encode('"'.str_replace('"','""',$tab_valeurs[$index]).'"'); else $tab_csv[] = '';
+				if ( (strstr($index,'liste') || strstr($index,'checkbox') || strstr($index,'listefiche') || strstr($index,'checkboxfiche')) && !strstr($index,'{{') ) {
+					if (preg_match("/([a-zA-Z]*)([0-9]*)(.*)/", $index, $matches)) {
+						$html = $matches[1]($toto, array(0 => $matches[1],1 => $matches[2] ,6 => $matches[3]), 'html', array($index => $tab_valeurs[$index]));			
+						$tabhtml = explode ('</span>', $html);
+						$tab_valeurs[$index] = html_entity_decode(trim(strip_tags($tabhtml[1])));
+					}
+				}
+				if (isset($tab_valeurs[$index])) $tab_csv[] = html_entity_decode('"'.str_replace('"','""',$tab_valeurs[$index]).'"'); else $tab_csv[] = '';
 			}
 			
-			$csv .= implode(',',$tab_csv)."\r\n";
+			$csv .=  utf8_encode(implode(',',$tab_csv)."\r\n");
 		}
 		
 		$output .= '<em>'.BAZ_VISUALISATION_FICHIER_CSV_A_EXPORTER.$val_formulaire["bn_label_nature"].' - '.BAZ_TOTAL_FICHES.' : '.$total.'</em>'."\n";
@@ -516,6 +527,7 @@ function baz_afficher_formulaire_export() {
 	
 	return $output;
 }
+
 
 /** baz_gestion_droits() interface de gestion des droits
 *
@@ -917,7 +929,12 @@ function baz_afficher_formulaire_fiche($mode = 'saisie', $formtemplate, $url = '
 		$formtemplate->addElement('checkbox', 'accept_condition',BAZ_ACCEPTE_CONDITIONS) ;
 		$formtemplate->addElement('hidden', 'id_typeannonce', $GLOBALS['_BAZAR_']['id_typeannonce']);
 		$formtemplate->addRule('accept_condition', BAZ_ACCEPTE_CONDITIONS_REQUIS, 'required', '', 'client') ;
-		$formtemplate->addElement('submit', 'valider', BAZ_VALIDER);
+		
+		$GLOBALS['_BAZAR_']['url']->removeQueryString(BAZ_VARIABLE_ACTION);
+		$GLOBALS['_BAZAR_']['url']->removeQueryString(BAZ_VARIABLE_VOIR);
+		$buttons[] = &HTML_QuickForm::createElement('link', 'annuler', BAZ_ANNULER, str_replace("&amp;", "&", ($url ? str_replace('/edit', '', $url) : $GLOBALS['_BAZAR_']['url']->getURL())), BAZ_ANNULER, array('class' => 'btn bouton_annuler'));
+		$buttons[] = &HTML_QuickForm::createElement('submit', 'valider', BAZ_VALIDER, array('class' => 'btn bouton_sauver'));
+		$formtemplate->addGroup($buttons, 'groupe_boutons', null, '&nbsp;', 0);
 	}
 	//affichage du formulaire si conditions acceptees
 	else {

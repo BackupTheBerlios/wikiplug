@@ -110,10 +110,14 @@ $(document).ready(function () {
     	});
     });
     
-	//accordeon pour bazarliste
-	$(".accordion").each(function() {
-		//$(this).children("div.pane").hide();
-		$(this).tabs(".pane", {tabs: 'h2.titre_accordeon', effect: 'slide', initialIndex: null});
+  //accordeon pour bazarliste
+	$(".accordion h2.titre_accordeon").bind('click',function() {
+		$(this).next("div.pane").slideToggle('fast');
+		if ($(this).hasClass('current')) {
+			$(this).removeClass('current');
+		} else { 
+			$(this).addClass('current');
+		}
 	});
 
     // initialise les iframe en overlay
@@ -274,6 +278,42 @@ $(document).ready(function () {
 	
 //============bidouille pour que les widgets en flash restent en dessous des éléments en survol===========
 	$("object").append('<param value="opaque" name="wmode">');$("embed").attr('wmode','opaque');
+	
+	
+//============validation formulaire=======================================================================
+	$("#formulaire").removeAttr('onSubmit').validator({lang: 'fr', offset: [-10, 10]}).bind("onFail", function(e, errors)  {
+		if (e.originalEvent.type == 'submit') {
+			
+			// loop through Error objects and add the border color
+			$.each(errors, function()  {
+				var input = this.input;
+				input.css({borderColor: 'red'}).focus(function()  {
+					input.css({borderColor: '#999'});
+				});
+			});
+			
+			//on remonte en haut du formulaire
+			$('html, body').animate({scrollTop: $("#formulaire").offset().top - 50}, 800);
+		}
+	});
+	
+	$.tools.validator.localize("fr", {
+		'*'			: 'Veuillez vérifier ces champs',
+		':email'  	: 'Entrez un email valide',
+		':number' 	: 'Entrez un chiffre exclusivement',
+		':url' 		: 'Entrez une adresse URL valide',
+		'[max]'	 	: 'La valeur ne peut pas dépasser $1',
+		'[min]'		: 'La valeur doit être plus grande que $1',
+		'[required]'	: 'Champs obligatoire'
+	});
+
+	
+	$.tools.validator.fn(".bazar-select", function(input, value) {
+		return value != 0 ? true : {     
+			en: "Please make a selection",
+			fr: "Il faut choisir une option dans la liste déroulante."
+		};
+	});
 });
 
 //fonction pour faire des polygones

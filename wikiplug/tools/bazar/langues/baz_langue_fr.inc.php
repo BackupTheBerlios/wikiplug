@@ -146,11 +146,12 @@ define ('LATITUDE', 'Lat');
 define ('LONGITUDE', 'Lon');
 define ('BAZ_ECRITE', '&eacute;crite par');
 define ('BAZ_CHOISIR', 'Choisir..');
-define ('BAZ_CHOISIR_OBLIGATOIRE', 'Il faut choisir un élément dans la liste déroulante.');
+define ('BAZ_CHOISIR_OBLIGATOIRE', 'Il faut choisir un élément dans la liste déroulante');
 define ('BAZ_INDIFFERENT', 'Indiff&eacute;rent');
 define ('BAZ_TELECHARGER_FICHIER_EXPORT_CSV', 'Télécharger le fichier d\'export au format csv');
 define ('BAZ_MOT_DE_PASSE', 'Mot de passe');
 define ('BAZ_VERIFICATION', 'v&eacute;rification');
+define ('BAZ_ACCEPTE_CONDITIONS', 'J\'accepte les conditions de saisie : ');
 
 //================ Calendrier Bazar =======================================
 define ('BAZ_AFFICHE_TITRES_COMPLETS', 'Afficher les titres complets des &eacute;v&eacute;nements');
