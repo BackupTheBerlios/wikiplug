@@ -6,7 +6,7 @@
 *@package Bazar
 //Auteur original :
 *@author        Florian SCHMITT <florian@outils-reseaux.org>
-*@version       $Revision: 1.9 $ $Date: 2010/12/07 15:54:27 $
+*@version       $Revision: 1.10 $ $Date: 2010/12/15 14:23:19 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -35,6 +35,31 @@ $ordre = $this->GetParameter("ordre");
 if (empty($ordre)) {
 	$ordre = 'alphabetique';
 }
+
+$latitude = $this->GetParameter("lat");
+if (empty($latitude)) {
+	$latitude = BAZ_GOOGLE_CENTRE_LAT;
+}
+
+$longitude = $this->GetParameter("lon");
+if (empty($longitude)) {
+	$longitude = BAZ_GOOGLE_CENTRE_LON;
+}
+
+$zoom = $this->GetParameter("zoom");
+if (empty($zoom)) {
+	$zoom = BAZ_GOOGLE_ALTITUDE;
+}
+
+$typecarto = $this->GetParameter("typecarto");
+if (empty($typecarto)) {
+	$typecarto = BAZ_TYPE_CARTO;
+}
+else {
+    $typecarto = strtoupper($typecarto);
+}
+ 
+
 
 //on récupère les paramètres pour une requête spécifique
 $query = $this->GetParameter("query");
@@ -105,11 +130,11 @@ echo '<script type="text/javascript" src="http://maps.google.com/maps/api/js?sen
 	
 	//initialise la carte google
 	function initialize(){
-		var myLatlng = new google.maps.LatLng('.BAZ_GOOGLE_CENTRE_LAT.', '.BAZ_GOOGLE_CENTRE_LON.');
+		var myLatlng = new google.maps.LatLng('.$latitude.', '.$longitude.');
 		var myOptions = {
-		  zoom: '.BAZ_GOOGLE_ALTITUDE.',
+		  zoom: '.$zoom.',
 		  center: myLatlng,
-		  mapTypeId: google.maps.MapTypeId.'.BAZ_TYPE_CARTO.',
+		  mapTypeId: google.maps.MapTypeId.'.$typecarto.',
 		  navigationControl: '.BAZ_AFFICHER_NAVIGATION.',
 		  navigationControlOptions: {style: google.maps.NavigationControlStyle.'.BAZ_STYLE_NAVIGATION.'},
 		  mapTypeControl: '.BAZ_AFFICHER_CHOIX_CARTE.',
