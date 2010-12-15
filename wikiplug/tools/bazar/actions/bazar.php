@@ -21,7 +21,7 @@
 // | along with Foobar; if not, write to the Free Software                                                |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: bazar.php,v 1.12 2010/12/01 17:01:38 mrflos Exp $
+// CVS : $Id: bazar.php,v 1.13 2010/12/15 11:15:45 ddelon Exp $
 /**
 * bazar.php
 *
@@ -31,7 +31,7 @@
 //Auteur original :
 *@author        Florian SCHMITT <florian@outils-reseaux.org>
 *@copyright     Florian SCHMITT 2008
-*@version       $Revision: 1.12 $ $Date: 2010/12/01 17:01:38 $
+*@version       $Revision: 1.13 $ $Date: 2010/12/15 11:15:45 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -50,7 +50,7 @@ if (!empty($action)) {
 	$_GET[BAZ_VARIABLE_ACTION] = $action;
 }
 
-$vue = $this->GetParameter("vue");
+$vue = $this->GetParameter(BAZ_VARIABLE_VOIR);
 if (!empty($vue) && !isset($_GET[BAZ_VARIABLE_VOIR])) {
 	$_GET[BAZ_VARIABLE_VOIR] = $vue;
 }
@@ -59,7 +59,7 @@ elseif (!isset($_GET[BAZ_VARIABLE_VOIR])) {
 	$_GET[BAZ_VARIABLE_VOIR] = BAZ_VOIR_CONSULTER;
 }
 
-//ordre d'affichage des fiches : chronologique ou alphab�tique
+//ordre d'affichage des fiches : chronologique ou alphabetique
 $GLOBALS['_BAZAR_']['tri'] = $this->GetParameter('tri');
 if (empty($GLOBALS['_BAZAR_']['tri'])) {
 	$GLOBALS['_BAZAR_']['tri'] = 'chronologique';
@@ -230,7 +230,10 @@ echo $output ;
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: bazar.php,v $
-* Revision 1.12  2010/12/01 17:01:38  mrflos
+* Revision 1.13  2010/12/15 11:15:45  ddelon
+* nom du parametre voir  depuis la constante
+*
+* Revision 1.12  2010-12-01 17:01:38  mrflos
 * amélioration de l'intégration dans wiki :
 * les listes sont maintenant des PageWiki
 * les fiches sont aussi des PageWiki
