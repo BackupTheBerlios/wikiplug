@@ -1,4 +1,4 @@
-<?php
+	<?php
 if (!defined("WIKINI_VERSION")) {
             die ("acc&egrave;s direct interdit");
 }
@@ -21,7 +21,11 @@ else {
 
 //si le lien correspond à l'url, on rajoute une classe "actif"
 if (!empty($actif) && $actif=="1") {
-    $plugin_output_new=str_ireplacement('<a href="'.$this->config["base_url"].$this->tag.'"','<a class="actif" href="'.$this->config["base_url"].$this->tag.'"', $plugin_output_new);
+        $page_active=$this->tag;
+        if (isset($oldpage) && $oldpage!='') { // si utilisation de l'extension attach
+            $page_active=$oldpage;
+        }
+       $plugin_output_new=str_ireplacement('<a href="'.$this->config["base_url"].$page_active.'"','<a class="actif" href="'.$this->config["base_url"].$page_active.'"', $plugin_output_new);
 }
 
 //rajoute le javascript pour le double clic si le parametre est activé et les droits en écriture existent
@@ -40,3 +44,4 @@ $plugin_output_new =  (!empty($clear) && $clear=="1") ? $plugin_output_new.'<div
 
 
 ?>
+	
