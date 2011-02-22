@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>{{titrepage}}</title>
+{{metarobots}}
+<meta name="keywords" content="{{configuration param="meta_keywords"}}" />
+<meta name="description" content="{{configuration param="meta_description"}}" />
+<link rel="alternate" type="application/rss+xml" title="Flux RSS des derniers changements du wikini" href="{{configuration param="base_url"}}DerniersChangementsRSS/xml" />
+<link rel="stylesheet" href="tools/templates/themes/eco2/styles/reset.css"/>
+<link rel="stylesheet" href="tools/templates/themes/eco2/styles/text.css"/>
+<link rel="stylesheet" href="tools/templates/themes/eco2/styles/960_24_col.css"/>
+<link rel="stylesheet" href="tools/templates/presentation/styles/yeswiki-base.css"/>
+<link rel="stylesheet" href="tools/templates/themes/eco2/styles/superfish.css"/>
+<link rel="stylesheet" href="tools/templates/themes/eco2/styles/superfish-navbar.css"/>
+
+{{liensstyle}}
+</head>
+
+<body {{parambody}}>
+<div id="bghaut">
+    <div id="bgbas">
+        <div class="container_24">
+            <!--header -->
+            <div id="header" class="grid_24">
+                <!--logo -->
+                <div id="logo" class="grid_6 alpha ">
+                    <a href="/">Ecorem</a>
+                </div> <!--fin logo -->
+                <div class="grid_7">&nbsp;</div> 
+                <!--menu rapide -->
+                <div id="pagerapidehaut" class="grid_11 omega">
+                    {{include page="PageMenuHaut" doubleclic="1"}}
+                </div> <!--fin menu rapide -->
+            </div> <!--fin header -->
+            <div class="clear"></div>
+
+            <!--bandeau     -->
+            <div id="bandeau" class="grid_24">
+                <div class="grid_6 alpha">
+                    {{include page="PageBandeau" doubleclic="1"}}
+                </div>
+                <div class="grid_18 omega">&nbsp;</div>
+            </div> <!--fin bandeau     -->
+            <div class="clear"></div>
+
+            <!--nav     -->
+            <div id="nav" class="grid_24">
+                <div class="grid_24 alpha omega">
+                    {{include page="PageMenu" doubleclic="1" actif="1"}}
+                </div>
+                <div id="navbottom" class="grid_24 alpha omega">
+                </div>
+            </div> <!--fin nav     -->
+            <div class="clear"></div>
+
+            <!--content -->
+            <div id ="content" class="grid_24">
+                <div id ="central" {{doubleclic}} class="grid_18 alpha omega">
+                    {WIKINI_PAGE}
+                </div>
+                <div class="grid_1">&nbsp;</div> 
+                <div id ="droite" class="grid_5 omega">
+                    {{include page="PageColonneDroite" doubleclic="1"}}
+                </div>
+            </div> <!--fin content -->
+            <div class="clear"></div>
+
+            <!--footer  -->
+            <div id="footer" class="grid_24">
+                <div class="grid_24 alpha omega"></div>
+                {{include page="PageFooter" doubleclic="1"}}
+            </div> <!--fin footer  -->
+            <div class="clear"> </div>
+
+        </div> <!--fin container24 -->
+        <script type="text/javascript"src="tools/templates/libs/jquery.tools.1.2.5-jquery.1.4.2.min.js"></script>
+        {{liensjavascripts}}
+    </div> <!--fin bgbas  -->
+</div> <!--fin bghaut  -->
+</body>
+</html> 

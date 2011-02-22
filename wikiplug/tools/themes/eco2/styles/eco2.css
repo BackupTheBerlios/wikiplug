@@ -1,0 +1,296 @@
+/**
+* #23204B : Bleu violet
+* #F5A035 : Orange
+* #10A1CD : Bleu clair
+* #8E88A4 : Violet clair
+*
+**/
+
+
+
+body {
+    background:url("../images/Fond-Milieu.jpg") repeat-y center;
+    font:13px/17px helvetica,arial,sans-serif !important;
+}
+
+
+#pagerapidehaut a, #pagerapidehaut a:active, #pagerapidehaut a:visited { color:#23204B; }
+#pagerapidehaut a:hover { color:#23204B; }
+
+
+a, a:active, a:visited { color:#F5A035; }
+a:hover { color:#F5A035; }
+
+#bghaut {
+    background:url("../images/Fond-Haut.jpg") no-repeat center top ;
+}
+
+#bgbas {
+    background:url("../images/Fond-Bas.jpg") no-repeat center bottom;
+}
+
+
+#bandeau {
+    color: #23204B;
+    font-size: 0.9em;
+    font-weight:bold;
+}
+
+#nav {
+    margin:-4px 0 0 4px;
+}
+
+
+#nav a.actif {
+    background:#F5A035;
+    color:#23204B;
+}
+
+
+#nav a.first {
+    -moz-border-radius-topleft: 10px;
+    -moz-border-radius-topright: 10px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px; 
+ 
+}
+
+
+
+
+
+#navbottom {
+    -moz-border-radius-bottomright: 10px;
+    border-bottom-right-radius: 10px; 
+    background:#23204B;
+    height:33px;
+}
+
+#central {
+    min-height:800px;
+}
+
+/* for Internet Explorer */
+/*\*/
+* html #central {
+   height: 800px;
+   }
+/**/
+
+
+#droite {
+    min-height:800px;
+}
+
+/* for Internet Explorer */
+/*\*/
+* html #droite {
+   height: 800px;
+   }
+/**/
+
+
+.container_12 {
+	background: #fff url(../images/12_col.gif) repeat-y;
+	margin-bottom: 20px;
+}
+
+.container_16 {
+	background: #fff url(../images/16_col.gif) repeat-y;
+}
+
+.container_24 {
+/*	background: #fff url(../images/24_col.gif) repeat-y;
+    opacity:0.5;*/
+}
+
+
+#logo a {
+    background: url("../images/Logo-Ecorem.png") no-repeat scroll left top transparent;
+    height: 90px;
+    text-indent: -9999px;
+    width:230px;
+    display:block;
+}
+
+#pagerapidehaut {
+    display:inline;
+    height: 30px;
+    padding-top: 5px;
+    background-color: #fff;
+    -moz-border-radius-bottomright: 10px;
+    -moz-border-radius-bottomleft: 10px;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px; 
+    color:#23204B;
+    font-weight:bold;
+}
+
+
+#pagerapidehaut a {
+	text-decoration:none;
+}
+
+#pagerapidehaut button {
+    background-color: #fff;
+    color:#23204B;
+
+}
+
+#bandeau {
+    height: 67px;
+}
+
+#contenu {
+    background: #fff;
+    margin-bottom: 100px;
+    border: 2px solid #23204B;
+}
+
+#content {
+    margin-top: 25px;
+    margin-bottom: 100px;
+}
+
+#central {
+    border: 2px solid #23204B;
+    background-image:url(../images/80pwhite.png);
+}
+
+.page {
+    padding : 20px 20px 20px 20px;
+}
+
+#droite {
+    background: none;
+}
+
+
+#footer {
+    margin:-78px 0 0 0;
+    text-align: center;
+    color:#fff;
+    font-size:0.8em;
+}
+
+
+
+
+#footer a, #footer a:active, #footer a:visited { color:#fff;  text-decoration:none;}
+#footer a:hover { color:#fff; text-decoration:none;}
+
+
+.search-form {
+    -moz-border-radius: 0px 0px 0px 0px;
+    background:none;
+    border: 1px solid #AAAAAA;
+    display: inline;
+    margin: 0 0 0 0;
+    min-height: 1px;
+    position: relative;
+    width: 120px;
+}
+
+.search_button {
+    background-color: transparent;
+    border: medium none;
+    cursor: pointer;
+    font-size: x-small;
+    margin: 3px 5px 0;
+    padding: 0;
+}
+
+.formlangue {
+    margin: 0 0 0 0;
+}
+
+
+h1 {
+    background: url("../images/Puce-T1.png") no-repeat scroll center left transparent;
+    color: #23204B;
+    font-size: 2em;
+    margin: 12px 0 12px;
+    padding: 0 0 0 20px;
+}
+
+h2 {
+    color: #F5A035;
+    font-size: 1.8em;
+    margin: 10px 0 10px;
+}
+
+h3 {
+    color: #10A1CD;
+    font-size: 1.6em;
+    margin: 8px 0 8px;
+    padding: 0 0 5px 0;
+    border-bottom: 1px solid #10A1CD;
+}
+
+h4 {
+    color: #23204B;
+    font-size: 1.2em;
+    margin: 6px 0 6px;
+}
+
+h5 {
+    color: #8E88A4;
+    font-size: 1em;
+    margin: 4px 0 4px;
+}
+
+.titre_boite_bleue {
+    -moz-border-radius-topleft: 10px;
+    -moz-border-radius-topright: 10px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px; 
+    background: #10A1CD;
+    color: #FFFFFF;
+    display: block;
+    font-size: 1.1em;
+    font-weight: normal;
+    height: 20px;
+    padding: 10px 0 10px 20px;
+}
+
+.boite_bleue {
+    -moz-border-radius-bottomleft: 10px;
+    -moz-border-radius-bottomright: 10px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px; 
+    background-image:url(../images/80pwhite.png);
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border: 1px solid #10A1CD;
+    margin: -10px 0 0 0;
+    padding: 0 0 20px 20px;
+}
+
+.titre_boite_violette {
+    -moz-border-radius-topleft: 10px;
+    -moz-border-radius-topright: 10px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px; 
+    background: #8E88A4;
+    color: #FFFFFF;
+    display: block;
+    font-size: 1.1em;
+    font-weight: normal;
+    height: 20px;
+    padding: 10px 0 10px 20px;
+}
+
+.boite_violette {
+    -moz-border-radius-bottomleft: 10px;
+    -moz-border-radius-bottomright: 10px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px; 
+    background-image:url(../images/80pwhite.png);
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border: 1px solid #8E88A4;
+    margin: -10px 0 0 0;
+    padding: 0 0 20px 20px;
+}
+
+.titre_type_fiche {display:none;}

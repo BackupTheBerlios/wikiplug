@@ -1,0 +1,133 @@
+/*** adding the class sf-navbar in addition to sf-menu creates an all-horizontal nav-bar menu ***/
+.sf-navbar {
+	background:		#23204B; /* Eco2 */
+	/* height:			2.5em; */   /* Eco2 */
+	/* padding-bottom:	2.5em; */   /* Eco2 */
+	position:		relative;
+}
+.sf-navbar li {
+	background:		#23204B; /* Eco2 */
+	position:		static;
+}
+.sf-navbar a {
+	border-top:		none;
+    font-weight:bold;
+}
+.sf-navbar li ul {
+	width:			950px; /*IE6 soils itself without this*/
+}
+.sf-navbar li li {
+	background:		#23204B; /* Eco2 */
+	position:		relative;
+}
+
+.sf-navbar li li:hover {
+    -moz-border-radius-topleft: 0px; /* Eco2 */
+    -moz-border-radius-topright: 0px; /* Eco2 */
+}
+
+
+.sf-navbar li li ul {
+	width:			250px;
+}
+
+.sf-navbar li ul li ul {
+    background: url("../images/Puce-T1.png") no-repeat scroll 0 0 transparent;
+}
+
+.sf-navbar li li li {
+	width:			100%;
+}
+.sf-navbar ul li {
+	width:			auto;
+	float:			left;
+}
+.sf-navbar a, .sf-navbar a:visited {
+	border:			none;
+    color:#fff; /* Eco2 */
+}
+.sf-navbar li.current {
+	background:		#23204B; /* Eco2 */
+}
+
+.sf-navbar li:hover,
+.sf-navbar li.sfHover,
+.sf-navbar li li.current,
+.sf-navbar a:focus.first, .sf-navbar a:hover.first, .sf-navbar a:active.first {
+	background:		#F5A035; /* Eco2 */
+    -moz-border-radius-topleft: 10px; /* Eco2 */
+    -moz-border-radius-topright: 10px; /* Eco2 */
+    border-top-left-radius: 10px;/* Eco2 */
+    border-top-right-radius: 10px;/* Eco2 */
+    color:#fff; /* Eco2 */
+}
+
+.sf-navbar ul li:hover,
+.sf-navbar ul li.sfHover,
+ul.sf-navbar ul li:hover li,
+ul.sf-navbar ul li.sfHover li,
+.sf-navbar ul a:focus, .sf-navbar ul a:hover, .sf-navbar ul a:active {
+	background:		#23204B; /* Eco2 */
+    color:#F5A035; /* Eco2 */
+
+}
+.sf-navbar a.actif:focus, .sf-navbar a.actif:hover, .sf-navbar a.actif:active {
+	background:		#23204B; /* Eco2 */
+    color:#fff; /* Eco2 */
+}
+
+
+.sf-navbar ul a.actif:focus, .sf-navbar ul a.actif:hover, .sf-navbar ul a.actif:active {
+    color:#F5A035; /* Eco2 */
+}
+
+
+
+ul.sf-navbar li li li:hover,
+ul.sf-navbar li li li.sfHover,
+.sf-navbar li li.current li.current,
+.sf-navbar ul li li a:focus, .sf-navbar ul li li a:hover, .sf-navbar ul li li a:active {
+	background:		#23204B; /* Eco2 */
+    -moz-border-radius-topleft: 0px; /* Eco2 */
+    -moz-border-radius-topright: 0px; /* Eco2 */
+    border-top-left-radius: 0px;/* Eco2 */
+    border-top-right-radius: 0px;/* Eco2 */
+}
+ul.sf-navbar .current ul,
+ul.sf-navbar ul li:hover ul,
+ul.sf-navbar ul li.sfHover ul {
+	left:			0;
+	top:			2.5em; /* match top ul list item height */
+}
+ul.sf-navbar .current ul ul {
+	top: 			-999em;
+}
+
+.sf-navbar li li.current > a {
+	font-weight:	bold;
+}
+
+/*** point all arrows down ***/
+/* point right for anchors in subs */
+.sf-navbar ul .sf-sub-indicator { background-position: -10px -100px; }
+.sf-navbar ul a > .sf-sub-indicator { background-position: 0 -100px; }
+/* apply hovers to modern browsers */
+.sf-navbar ul a:focus > .sf-sub-indicator,
+.sf-navbar ul a:hover > .sf-sub-indicator,
+.sf-navbar ul a:active > .sf-sub-indicator,
+.sf-navbar ul li:hover > a > .sf-sub-indicator,
+.sf-navbar ul li.sfHover > a > .sf-sub-indicator {
+	background-position: -10px -100px; /* arrow hovers for modern browsers*/
+}
+
+/*** remove shadow on first submenu ***/
+.sf-navbar > li > ul {
+	background: transparent;
+	padding: 0;
+	-moz-border-radius-bottomleft: 0;
+	-moz-border-radius-topright: 0;
+	-webkit-border-top-right-radius: 0;
+	-webkit-border-bottom-left-radius: 0;
+}
+
+
