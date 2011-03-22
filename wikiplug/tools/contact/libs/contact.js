@@ -1,5 +1,5 @@
 $(document).ready(function(){
-	$("#ajax-contact-form, #ajax-abonne-form, #ajax-desabonne-form, #ajax-mail-form").submit(function() {
+	$("#ajax-contact-form, #ajax-abonne-form, #ajax-desabonne-form, #ajax-mail-form").live("submit", function() {
 		$(this).addClass('form-selected').prev(".note").addClass('note-selected');
 		var str = $(this).serialize();
 		$.ajax({
