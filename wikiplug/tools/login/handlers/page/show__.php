@@ -11,7 +11,8 @@ if ($contenu = $this->LoadPage("PageLogin")) {
 
 //sinon on affiche le formulaire d'identification minimal
 else {
-	$plugin_output_new = str_replace ("<i>Vous n'&ecirc;tes pas autoris&eacute; &agrave; lire cette page</i>", $this->Format('{{login template="minimal.tpl.html"}}'), $plugin_output_new);
+	$plugin_output_new = str_replace ("<i>Vous n'&ecirc;tes pas autoris&eacute; &agrave; lire cette page</i>", 
+										'<div class="error_box">Vous n\'&ecirc;tes pas autoris&eacute; &agrave; lire cette page, veuillez vous identifier.</div>'."\n".$this->Format('{{login template="minimal.tpl.html"}}'), $plugin_output_new);
 }
 
 ?>

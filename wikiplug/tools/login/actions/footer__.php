@@ -7,7 +7,12 @@ if (!defined("WIKINI_VERSION"))
 
 $javascript = '<script type="text/javascript">
 	$(document).ready(function() {
-		$(".link_login").overlay({mask: \'#999\'});
+		$("#container").before($("#signin-div"));
+		$(".link_login").overlay({mask: \'#999\', onBeforeLoad: function() {$("#signin-div form.login-form input.login-input:first").focus();}});
+		$(".login-user-link").bind("click", function() {
+			$(this).next("form.login-inline-form").find("fieldset.login-menu").slideToggle("fast");
+			return false;
+		});
 	});
 </script>'."\n";
 

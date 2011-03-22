@@ -33,33 +33,21 @@ if (empty($signupurl)) {
 	$signupurl = $this->href("", "ParametresUtilisateur", "");
 }
 
-$homepage = $this->GetParameter("homepage");
-// si pas d'url de page d'accueil renseignée, on retourne sur la page courante
-if (empty($homepage)) {
-	$homepage = 'http'.((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'
+$incomingurl = 'http'.((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'
     || $_SERVER['SERVER_PORT'] == 443) ? 's' : '').'://'.
 		(($_SERVER['SERVER_PORT']!='80') ? $_SERVER['HTTP_HOST'].':'.$_SERVER['SERVER_PORT'].$_SERVER['SCRIPT_NAME'] : 
 		$_SERVER['HTTP_HOST'].$_SERVER['SCRIPT_NAME']).
 		(($_SERVER['QUERY_STRING']>' ') ? '?'.$_SERVER['QUERY_STRING'] : '');
-		
-	//si l'url de sortie contient le passage de parametres de déconnexion, on l'efface
-	if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "logout") {
-		$homepage = str_replace('&action=logout', '', $homepage);
-	}
-}
 
-$exitpage = $this->GetParameter("exitpage");
+$userpage = $this->GetParameter("userpage");
+
 // si pas d'url de page de sortie renseignée, on retourne sur la page courante
-if (empty($exitpage)) {
-	$exitpage = 'http'.((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'
-    || $_SERVER['SERVER_PORT'] == 443) ? 's' : '').'://'.
-		(($_SERVER['SERVER_PORT']!='80') ? $_SERVER['HTTP_HOST'].':'.$_SERVER['SERVER_PORT'].$_SERVER['SCRIPT_NAME'] : 
-		$_SERVER['HTTP_HOST'].$_SERVER['SCRIPT_NAME']).
-		(($_SERVER['QUERY_STRING']>' ') ? '?'.$_SERVER['QUERY_STRING'] : '');
+if (empty($userpage)) {
+	$userpage = $incomingurl;
 		
 	//si l'url de sortie contient le passage de parametres de déconnexion, on l'efface
 	if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "logout") {
-		$exitpage = str_replace('&action=logout', '', $exitpage);
+		$userpage = str_replace('&action=logout', '', $userpage);
 	}
 }
 
@@ -80,7 +68,7 @@ if (!isset($_REQUEST["action"])) $_REQUEST["action"] = '';
 if ($_REQUEST["action"] == "logout") {
 	$this->LogoutUser();
 	$this->SetMessage("Vous &ecirc;tes maintenant d&eacute;connect&eacute; !");
-	$this->Redirect($exitpage);
+	$this->Redirect($incomingurl);
 }
 
 // cas de l'identification
@@ -91,17 +79,18 @@ if ($_REQUEST["action"] == "login") {
 		if ($existingUser["password"] == md5($_POST["password"])) {
 			$this->SetUser($existingUser, $_POST["remember"]);
 			// si l'on veut utiliser la page d'accueil correspondant au nom d'utilisateur
-			if ( $homepage=='user' && $this->LoadPage($_POST["name"]) ) {
+			if ( $userpage=='user' && $this->LoadPage($_POST["name"]) ) {
 				$this->Redirect($this->href('', $_POST["name"], ''));
 			}
-			// on va sur la page servant de homepage sinon
+			// on va sur la page d'ou on s'est identifie sinon
 			else {
-				$this->Redirect($homepage);
+				$this->Redirect($_POST['incomingurl']);
 			}			
 		}
 		// on affiche une erreur sinon
 		else {
 			$error = "Mauvais mot de passe&nbsp;!";
+			$this->Redirect($_POST['incomingurl'].'&error='.urlencode($error));
 		}
 	}
 }
@@ -109,8 +98,8 @@ if ($_REQUEST["action"] == "login") {
 // cas d'une personne connectée déjà
 if ($user = $this->GetUser()) {
 	$connected = true;
-	if ( $homepage=='user' ) {
-		$PageMenuUser .= '<a class="lien_espace_perso" href="'.$this->href('', $user["name"], '').'" title="Voir mon espace personnel">Mon espace personnel</a><br />';
+	if ( $userpage=='user' ) {
+		$PageMenuUser .= '<a class="login-user-page-link" href="'.$this->href('', $user["name"], '').'" title="Voir mon espace personnel">Mon espace personnel</a><br />';
 	}
 	if ($this->LoadPage("PageMenuUser")) { 
 		$PageMenuUser .= $this->Format("{{include page=\"PageMenuUser\"}}");
@@ -131,12 +120,14 @@ $squel = new SquelettePhp('tools/login/presentation/templates/'.$template);
 $squel->set(array(
 	"connected" => $connected,
 	"user" => ((isset($user["name"])) ? $user["name"] : ((isset($_POST["name"])) ? $_POST["name"] : '' )), 
-	"homepage" => $homepage, 
+	"incomingurl" => $incomingurl, 
 	"signupurl" => $signupurl, 
+	"userpage" => $userpage,
 	"PageMenuUser" => $PageMenuUser,
 	"error" => $error
 ));
-$output = (!empty($class)) ? '<div class="'.$class.'">'."\n".$squel->analyser()."\n".'</div>' : $squel->analyser() ;
+
+$output = (!empty($class)) ? '<div class="'.$class.'">'."\n".$squel->analyser()."\n".'</div>'."\n" : $squel->analyser() ;
 
 echo $output;
 ?>
