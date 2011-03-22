@@ -5,7 +5,13 @@ if (!defined("WIKINI_VERSION"))
 }
 //javascripts
 $wikini_javascripts = '';
-$repertoire = 'tools/templates/themes/'.$this->config['favorite_theme'].'/javascripts';
+
+if (is_dir('themes/'.$this->config['favorite_theme'].'/javascripts')) {
+	$repertoire = 'themes/'.$this->config['favorite_theme'].'/javascripts';
+} else {
+	$repertoire = 'tools/templates/themes/'.$this->config['favorite_theme'].'/javascripts';
+}
+
 $dir = opendir($repertoire);
 while (false !== ($file = readdir($dir))) {
   if (substr($file, -3, 3)=='.js') $scripts[] = '<script type="text/javascript" src="'.$repertoire.'/'.$file.'"></script>';

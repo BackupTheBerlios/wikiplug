@@ -3,6 +3,42 @@ if (!defined("WIKINI_VERSION")) {
             die ("acc&egrave;s direct interdit");
 }
 
+/**
+ * 
+ * Parcours des dossiers a la recherche de templates
+ * 
+ * @param $directory : chemin relatif vers le dossier contenant les templates
+ * 
+ * return array : tableau des themes trouves, ranges par ordre alphabetique
+ * 
+ */
+function search_template_files($directory) {
+	$tab_themes = array();
+	
+	$dir = opendir($directory);
+	while (false !== ($file = readdir($dir))) {    	
+		if  ($file!='.' && $file!='..' && $file!='CVS' && is_dir($directory.DIRECTORY_SEPARATOR.$file)) {
+			$dir2 = opendir($directory.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'styles');
+		    while (false !== ($file2 = readdir($dir2))) {
+		    	if (substr($file2, -4, 4)=='.css') $tab_themes[$file]["style"][$file2]=$file2;
+		    }
+		    closedir($dir2);
+		    if (is_array($tab_themes[$file]["style"])) ksort($tab_themes[$file]["style"]);
+		    $dir3 = opendir($directory.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'squelettes');
+		    while (false !== ($file3 = readdir($dir3))) {
+		    	if (substr($file3, -9, 9)=='.tpl.html') $tab_themes[$file]["squelette"][$file3]=$file3;	    
+		    }	    	
+		    closedir($dir3);
+		    if (is_array($tab_themes[$file]["squelette"])) ksort($tab_themes[$file]["squelette"]);
+	    }
+	}
+	closedir($dir);
+	
+	if (is_array($tab_themes)) ksort($tab_themes);
+	
+	return $tab_themes;
+}
+
 
 //remplace juste la premiere occurence d'une chaine de caracteres
 function str_replace_once($from, $to, $str) {
@@ -62,8 +98,11 @@ function replace_missingpage_links($output) {
  * crée un diaporama à partir d'une PageWiki
  * 
  * @param $pagetag : nom de la PageWiki
+ * @param $template : fichier template pour le diaporama
+ * @param $class : classe CSS à ajouter au diaporama
+ * 
  */
-function print_diaporama($pagetag) {
+function print_diaporama($pagetag, $template = 'diaporama_slide.tpl.html', $class = '') {
 	// On teste si l'utilisateur peut lire la page
 	if (!$GLOBALS['wiki']->HasAccess("read", $pagetag))
 	{
@@ -87,19 +126,17 @@ function print_diaporama($pagetag) {
 			}
 			else
 			{			
-				// Affiche le corps de la page
-				$output = "";
-	
-				// -- Affichage du contenu -------------------------
-				$titre = "";
-				$i = 0;
+				// préparation des tableaux pour le squelette -------------------------
+				$i = 0 ;
+				$slides = array() ;
+				$titles = array() ;
 				foreach($body as $slide)
 				{
 					//pour les titres de niveau 2, on les transforme en titre 1
 					if (preg_match('/^<h2>.*<\/h2>/', $slide)) 
 					{
 						$i++;
-						$titre[$i] = str_replace('h2', 'h1', $slide);
+						$titles[$i] = str_replace('h2', 'h1', $slide);
 					}
 					//sinon, on affiche
 					else 
@@ -108,49 +145,44 @@ function print_diaporama($pagetag) {
 						if (preg_match('/^<h1>.*<\/h1>/', $slide)) 
 						{
 							$split = preg_split('/(.*<h1>.*<\/h1>)/',$slide, -1, PREG_SPLIT_DELIM_CAPTURE);
-							$titre[$i] = $split[1];
+							$titles[$i] = $split[1];
 							$slide = $split[2];
 						}
-						$output .= "<div class=\"slide\">\n";
-						if ($titre[$i] != "") { $output .= "<div class=\"slide-header\">".$titre[$i]."</div>\n"; }
-						$output .= $slide."</div>\n";
+						$html_slide = '' ;
+						if ($titles[$i] != "") { 
+							$html_slide .= "<div class=\"slide-header\">".$titles[$i]."</div>\n" ;
+							$titles[$i] = strip_tags($titles[$i]) ;
+						}
+						$html_slide .= $slide ;
+						$slides[] = $html_slide ;
 					}
 				}
 			}
 		}
 		
-		//le html pour le diaporama
-		$output = "<div id=\"slide_show_container_".$pagetag."\" class=\"slide_show_container\">
-					<div id=\"slide_show_".$pagetag."\" class=\"slide_show\">
-						<div id=\"slides_".$pagetag."\" class=\"slides\">
-							$output
-						</div>
-					</div>\n";
-		
-		//boutons pour naviguer en bas du slide
-		$output .= '<div class="slide-navigation">
-						<button class="slide-button custom prev">&laquo; Pr&eacute;c&eacute;dent</button>
-						<div id="thumbs_'.$pagetag.'" class="t">
-							<div class="navi">'."\n";
-		foreach ($titre as $key => $title) {
-			if ($key==0) {
-				$output .= '<a class="button-begin" title="'.strip_tags($title).'" href="#slide'.$key.'" id="t'.$key.'">D&eacute;but</a>';
-			} else {
-				$output .= '<a title="'.strip_tags($title).'" href="#slide'.$key.'" id="t'.$key.'"></a>';
-			}
-		}					
-		$output .= '</div>'."\n".'</div>'."\n".
-				   '<button class="slide-button custom next">Suivant &raquo;</button>'."\n";
+		$buttons = '';
+		//si la fonction est appelée par le handler diaporama, on ajoute les liens d'édition et de retour
 		if ($GLOBALS['wiki']->GetMethod() == "diaporama") {
-			$output .= '<div class="buttons-action"><a class="button-edit" href="'.$GLOBALS['wiki']->href('edit',$pagetag).'">&Eacute;diter</a>'."\n";
-			$output .= '<a class="button-quit" href="'.$GLOBALS['wiki']->href('',$pagetag).'">Quitter</a></div>'."\n";
+			$buttons .= '<div class="buttons-action"><a class="button-edit" href="'.$GLOBALS['wiki']->href('edit',$pagetag).'">&Eacute;diter</a>'."\n";
+			$buttons .= '<a class="button-quit" href="'.$GLOBALS['wiki']->href('',$pagetag).'">Quitter</a></div>'."\n";
 		}
-		$output .= '</div>'."\n".'</div>'."\n";
-			
+		
+		//on affiche le template
+		if (!class_exists('SquelettePhp')) include_once('tools/templates/libs/squelettephp.class.php');
+		$squel = new SquelettePhp('tools/templates/presentation/templates/'.$template);
+		$squel->set(array(
+			"pagetag" => $pagetag,
+			"slides" => $slides,
+			"titles" => $titles,
+			"buttons" => $buttons,
+			"class" => $class
+		));
+		$output = $squel->analyser() ;
+		
 		//on prépare le javascript du diaporama, qui sera ajoutée par l'action footer de template, à la fin du html
 		$GLOBALS['js'] = ((isset($GLOBALS['js'])) ? $GLOBALS['js'] : '').'<script> 
-			$("#slide_show_'.$pagetag.'").scrollable({mousewheel:true}).navigator({history: true}).data("scrollable");
-			$("#thumbs_'.$pagetag.' .navi a[title]").tooltip({position:	\'bottom center\', opacity:0.9, tipClass:\'tooltip-slideshow\', offset:[5, 0]});
+			$("#slide_show_'.$pagetag.'").scrollable({mousewheel:false}).navigator({history: true}).data("scrollable");
+			$("#thumbs_'.$pagetag.' .navi a[title]").tooltip({position:	\'top center\', opacity:0.9, tipClass:\'tooltip-slideshow\', offset:[5, 0]});
 			</script>'."\n";
 		return $output;
 	}

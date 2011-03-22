@@ -19,21 +19,24 @@
 	nav.find("li").each(function() {
 		if ($(this).find("ul").length > 0) {
 			if ($(this).parents("ul").length <= 1) {
-				$("<span>").addClass('arrow-level1').html("&#9660;").appendTo($(this).children(":first"));
+				var arrow = $("<span>").addClass('arrow arrow-level1').html("&#9660;");
+				var firstlink = $(this).find('> a:first');
+				if (firstlink.length > 0) { arrow.appendTo(firstlink); }
+				else { arrow.appendTo($(this)); };
 			}
 			else {
-				$("<span>").addClass('arrow-level'+$(this).parents("ul").length).html("	&#9658;").appendTo($(this).children(":first"));
+				$("<span>").addClass('arrow arrow-level'+$(this).parents("ul").length).html("&#9658;").appendTo($(this));
 			}
 			
 			var config = {    
 			 sensitivity: 3,    
 			 interval: 100,    
 			 over: function() { //show submenu
-					$(this).find("ul:first").slideDown('fast');
+					$(this).find("ul:first").slideDown(100);
 				},    
 			 timeout: 100,    
 			 out: function() { //hide submenu
-					$(this).find("ul").slideUp();
+					$(this).find("ul").slideUp(200);
 				}
 			};
 			$(this).hoverIntent( config );
@@ -56,14 +59,5 @@
 			var url = this.getTrigger().attr("href") + ' .page'
 			wrap.load(url);
 		}
-	});
-	//etherpad
-	$(".link_etherpad").live('click', function(){
-		var wiki = $(".page").html();
-		$(".page").html('<iframe id="etherpad" width="100%" height="600" src="http://typewith.me/PourNosReus?fullScreen=1&sidebar=0"> </iframe>');
-		$('#etherpad').load(function() {$(this).find("#innerdocbody").html(wiki);});
-
-		/*.html('<iframe id="etherpad" width="100%" height="600" src="http://typewith.me/PourNosReus?fullScreen=1&sidebar=0"> </iframe>');
-		$("#")*/
 	});
 })(jQuery);

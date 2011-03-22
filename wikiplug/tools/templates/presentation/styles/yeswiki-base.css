@@ -71,70 +71,7 @@ button {  width: auto; overflow: visible; }
 .clearfix { display: inline-block; }
 * html .clearfix { height: 1%; }
 .clearfix { display: block; }
-
-/* ================ */
-/* = The 1Kb Grid = */     /* 12 columns, 60 pixels each, with 20 pixel gutter */
-/* ================ */
-body{min-width:960px}
-.grid_1 { width:60px; }
-.grid_2 { width:140px; }
-.grid_3 { width:220px; }
-.grid_4 { width:300px; }
-.grid_5 { width:380px; }
-.grid_6 { width:460px; }
-.grid_7 { width:540px; }
-.grid_8 { width:620px; }
-.grid_9 { width:700px; }
-.grid_10 { width:780px; }
-.grid_11 { width:860px; }
-.grid_12 { width:940px; }
-
-
-.column {
-	margin: 0 10px;
-	overflow: hidden;
-	float: left;
-	display: inline;
-}
-
-.right {
-	float:right;
-}
-
-.row {
-	width: 960px;
-	margin: 0 auto;
-	/*overflow: hidden;*/
-}
-.row .row, .page .row {
-	margin: 0 -10px;
-	width: auto;
-	display: inline-block;
-}
-
-.clear{
-	clear:both;
-	display:block;
-	overflow:hidden;
-	visibility:hidden;
-	width:0;
-	height:0
-}
-
-.clearfix:after{
-	clear:both;
-	content:' ';
-	display:block;
-	font-size:0;
-	line-height:0;
-	visibility:hidden;
-	width:0;
-	height:0
-}
-
-* html .clearfix,*:first-child+html .clearfix{
-	zoom:1
-}
+* html .clearfix,*:first-child+html .clearfix{ zoom:1; }
 
 /* CSS Wikini original */
 
@@ -180,14 +117,16 @@ span.missingpage {display:inline;}
 /* fin inclusion de page */
 
 /* fenetres d'overlay et bouton de fermeture */
-.yeswiki-overlay {display:none;	background:#FFF; padding:25px;
+.yeswiki-overlay {
+display:none;
+background:#FFF;
+padding:25px;
 -moz-border-radius:5px;
 -webkit-border-radius:5px;
 border-radius:5px;
 -moz-box-shadow:10px 10px 20px rgba(100,100,100,.75);
 -webkit-box-shadow:10px 10px 20px rgba(100,100,100,.75);
 box-shadow:10px 10px 20px rgba(100,100,100,.75);
-font-size:15px;
 }
 .yeswiki-overlay .close {
 background-image:url("../images/overlay_close.png");
@@ -201,7 +140,7 @@ margin:0;
 }
 /* fin fenetres d'overlay */
 
-/* fichiers attachés */
+/* fichiers attaches */
 .attach_left { 
 float:left; 
 margin:0 10px 0 0; 
@@ -216,7 +155,7 @@ width:100%;
 text-align:center; 
 margin:0 auto; 
 } 
-/* fin fichiers attachés */
+/* fin fichiers attaches */
 
 .left {
 float:left;
@@ -241,12 +180,12 @@ background-position:left top;
 background-repeat:repeat-x;
 border:1px solid #AAAAAA;
 margin:3px 10px 3px 0;
-min-height:1px;
-position:relative;
+height:20px;
 width:120px;
 -moz-border-radius:3px;
 -webkit-border-radius:3px;
 border-radius:3px;
+
 }
 .search_input {
 background-color:transparent;
@@ -292,6 +231,19 @@ padding:7px 7px 6px 36px;
 border-radius:4px;
 }
 
+/*
+ * login
+ */
+ 
+ .login-label {display:inline-block; text-align:right; margin:0 0 5px 0; width:140px;}
+ .login-input {width:140px;}
+ .login-label-remember {font-size:.9em}
+ .login-button {width:140px;}
+ .login-subscribe {width:280px;text-align:right;margin: 5px 0 0;}
+ .login-inline-form {display:inline;}
+ .login-menu {display:none; position:absolute; top:33px; right:0; background:#CCC; opacity:0.9;}
+ 
+
 /* 
  * print styles
  */
@@ -324,3 +276,262 @@ border-radius:4px;
   html { -webkit-text-size-adjust:none; -ms-text-size-adjust:none; } 
 
 }
+
+/** diaporama **/
+.slide_show_container {
+margin:0 auto;
+position: relative;
+}
+
+.slide_show {
+position:relative;
+height:545px;
+overflow:hidden;
+margin:10px auto 0 auto;
+padding:0;
+font-size:1.3em;
+}
+
+.grid_12 .slide_show {
+width:940px;
+}
+.grid_9 .slide_show {
+width:700px;
+}
+
+.slides {
+width:99999em;
+position:absolute;
+height:540px;
+}
+
+.slide_show h1 {
+color: #000;
+margin:0;
+padding:5px 0 0;
+font-size:29px;
+}
+
+.slide_show ul {
+margin:0;
+padding:0;
+}
+
+.slide_show li {
+margin:10px 0 10px 20px;
+padding:0;
+list-style-type:disc;
+}
+
+.slide {
+float:left;
+height:498px;
+overflow:auto;
+margin:0 5px 5px 0;
+padding:20px;
+border: 1px solid #808080;
+background:#F2F2F2;
+color:#000;
+}
+.grid_12 .slide {
+width:895px;
+}
+.grid_9 .slide {
+width:655px;
+}
+
+.borderradius .slide { -moz-border-radius:4px; -webkit-border-radius:4px; border-radius:4px; }
+.boxshadow.rgba .slide { -moz-box-shadow:2px 2px 2px rgba(100,100,100,.75); -webkit-box-shadow:2px 2px 2px rgba(100,100,100,.75); box-shadow:2px 2px 2px rgba(100,100,100,.75); }
+
+.slide-header {margin:-20px -20px 10px -20px;padding:20px;}
+.borderradius .slide-header { -moz-border-radius-topright:5px;-webkit-border-top-right-radius:5px;border-top-right-radius:5px;-moz-border-radius-topleft:5px;-webkit-border-top-left-radius:5px;border-top-left-radius:5px;}
+.cssgradients .slide-header { background-image:-moz-linear-gradient(0% 22px 90deg, #CCC, #EFEFEF); background-image:-webkit-gradient(linear, 0% 0%, 0% 70%, from(#EFEFEF), to(#CCC)); }
+.no-cssgradients .slide-header  {filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#EFEFEF, endColorstr=#CCCCCC); 
+-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#EFEFEF, endColorstr=#CCCCCC)"; }
+
+
+.slide-navigation {
+margin:10px auto 0 auto;
+}
+.grid_12 .slide-navigation {
+width:935px;
+}
+.grid_9 .slide-navigation {
+width:695px;
+}
+
+.t {
+display:inline-block;
+margin:0 auto;
+text-align:center;
+}
+.grid_12 .t {
+width:755px;
+}
+.grid_9 .t {
+width:515px;
+}
+
+.slide_show_container a.prev {
+position:absolute;
+top:250px;
+left:-50px;
+background:transparent url(../images/slider_left_control.png) no-repeat top left;
+display:block;
+height:50px;
+width:50px;
+-moz-box-shadow:none;
+-webkit-box-shadow:none;
+box-shadow:none;
+}
+
+.slide_show_container a.next {
+position:absolute;
+top:250px;
+//right:-50px;
+background:transparent url(../images/slider_right_control.png) no-repeat top left;
+display:block;
+height:50px;
+width:50px;
+-moz-box-shadow:none;
+-webkit-box-shadow:none;
+box-shadow:none;
+}
+
+.t {
+padding:0 !important;
+border:0 !important;
+}
+
+.t a {
+padding:0 7px;
+margin:0 2px;
+-moz-border-radius:7px;
+-webkit-border-radius:7px;
+border-radius:7px;
+border: 1px solid #808080;
+background:#FFF;
+text-decoration:none;
+-moz-box-shadow:2px 2px 2px rgba(100, 100, 100, 0.75);
+-webkit-box-shadow:2px 2px 2px rgba(100, 100, 100, 0.75);
+font-size:12px;
+}
+
+.t a:hover, .t a.button-begin:hover, .slide-button:hover {text-decoration:none;background:#CCC;}
+
+a.button-begin {
+color:#000;
+background:#EEE;
+padding:1px 5px;
+font-weight:normal;
+text-align:center;
+font-size:11px;
+font-weight:normal;
+line-height:1.6em;
+}
+.cssgradients a.button-begin { background-image:-moz-linear-gradient(0% 22px 90deg, #CCC, #EFEFEF); background-image:-webkit-gradient(linear, 0% 0%, 0% 70%, from(#EFEFEF), to(#CCC)); }
+
+.t a.active, .t a.button-begin.active {
+cursor:default !important;
+background:#860B0B;;
+color:#FFF;
+}
+
+.buttons-action {
+position:absolute;
+top:10px;right:10px;
+}
+	
+a.button-quit, a.button-edit {
+color:#FFF;
+background:#860B0B;
+border:0;
+-moz-border-radius:5px;
+-webkit-border-radius:5px;
+border-radius:5px;
+padding:0 10px;
+display:inline-block;
+-moz-box-shadow:2px 2px 2px rgba(100, 100, 100, 0.75);
+-webkit-box-shadow:2px 2px 2px rgba(100, 100, 100, 0.75);
+text-align:center;
+font-size:11px;
+font-weight:normal;
+line-height:1.6em;
+}
+
+a.button-quit:hover, a.button-edit:hover {text-decoration:none; background:#971C1C}
+
+.tooltip-slideshow {
+-moz-border-radius:5px;
+-webkit-border-radius:5px;
+border-radius:5px;
+padding:5px;
+color:#000;
+background:#CCC;
+border: 1px solid #808080;
+}
+
+
+
+.info_box {
+background:#FBF9EE url(../images/info.png) no-repeat 3px center;
+border:1px solid #FCEFA1;
+color:#444;
+font-size:0.9em;
+margin:10px 0 5px;
+padding:7px 7px 6px 36px;
+-moz-border-radius:4px;
+-webkit-border-radius:4px;
+border-radius:4px;
+}
+.error, .error_box {
+background:#FEF1EC url(../images/error.png) no-repeat 3px center;
+border:1px solid #CD0A0A;
+color:#CD0A0A;
+font-size:0.9em;
+margin:10px 0 5px;
+padding:7px 7px 6px 36px;
+-moz-border-radius:4px;
+-webkit-border-radius:4px;
+border-radius:4px;
+}
+
+
+/*LISTE DEROULANTES des colonnes menu*/
+.liste-deroulante a, .liste-deroulante a:active, .liste-deroulante a:visited {
+color:#000;
+}
+.liste-deroulante a:hover {
+text-decoration:none;
+color:#000;
+}
+
+.liste-deroulante ul { 
+background:transparent; 
+margin:0; 
+padding:0;
+position:relative;
+} 
+ 
+.liste-deroulante li { 
+list-style-type:none; 
+margin:0 0 5px 0;
+padding:1px; 
+}
+
+/* deuxieme niveau : menu caché à l'ouverture */
+.liste-deroulante ul ul { 
+padding:0; 
+margin:0;
+display:none;
+position:relative;
+}
+ 
+.liste-deroulante ul ul li { 
+display:block; 
+float:none;
+position:relative;
+}
+
+.pageeditlink {display:none; position:absolute; right:0; top:0}
+.pageeditlink:hover {display:block}

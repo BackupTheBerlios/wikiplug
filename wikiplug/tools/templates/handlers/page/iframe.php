@@ -17,11 +17,25 @@ if ($this->HasAccess("read"))
 	}
 	else
 	{
-				
+		// on récupère les entêtes html mais pas ce qu'il y a dans le body
+		$header =  explode('<body',$this->Header());
+		echo $header[0]."<body>\n<div class=\"page-widget\">\n";
+		
+		//affichage de la page formatée
+		echo $this->Format($this->page["body"]);
+		echo "</div><!-- end div.page -->";
+		
 		//javascript pour gerer les liens (ouvrir vers l'extérieur) dans les iframes
 		$scripts_iframe = '<script type="text/javascript">
 		$(document).ready(function () {
-			$("body").css(\'background-color\', \'transparent\').css(\'background-image\', \'none\').css(\'text-align\',\'left\');
+			$("body").css({
+							\'background-color\' : \'transparent\',
+							\'background-image\' : \'none\',
+							\'text-align\' : \'left\',
+							\'width\' : \'auto\',
+							\'min-width\' : \'auto\',
+						});
+			
 			$("a[href^=\'http://\']:not(a[href$=\'/slide_show\'])").click(function() {
 				if (window.location != window.parent.location)
 				{
@@ -39,18 +53,10 @@ if ($this->HasAccess("read"))
 			});			
 		});
 		</script>';		
-			
-		// on récupère les entêtes html mais pas ce qu'il y a dans le body
-		$header =  explode('<body',$this->Header());
-		echo $header[0]."<body>\n<div class=\"page widget\">\n";
+		$GLOBALS['js'] = ((isset($GLOBALS['js'])) ? $GLOBALS['js'] : '').$scripts_iframe ;
 		
-		//affichage de la page formatée
-		echo $this->Format($this->page["body"]);
-		echo "</div><!-- end div.page -->";
-			
 		//on récupère juste les javascripts et la fin des balises body et html
 		$footer =  preg_replace('/^.+<script/Us', '<script', $this->Footer());
-		
 		echo $footer;
 		
 	}
