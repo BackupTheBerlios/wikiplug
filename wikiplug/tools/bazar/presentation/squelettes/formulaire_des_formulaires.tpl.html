@@ -1,0 +1,252 @@
+<form action="<?=$url_formulaire;?>" method="post" name="formulaire" id="formulaire">
+
+	<div class="formulaire_ligne">
+		<label><span class="symbole_obligatoire">*&nbsp;</span>Nom du formulaire</label>
+		<input class="input_texte" name="bn_label_nature" type="text" value="<?=$default['bn_label_nature'];?>" />
+	</div>
+
+	<div class="formulaire_ligne">
+		<label>Cat&eacute;gorie</label>
+		<input class="input_texte" name="bn_type_fiche" type="text" value="<?=$default['bn_type_fiche'];?>" />
+	</div>
+
+	<div class="formulaire_ligne">
+		<label>Description</label>
+		<textarea class="input_textarea" cols="40" rows="2" name="bn_description"><?=$default['bn_description'];?></textarea>
+	</div>
+
+	<fieldset class="valeurs_champs">
+		<legend>Pr&eacute;visualisation du formulaire</legend>
+		<div class="formulaire_ligne">
+			<label for="type_champs_formulaire"><span class="ajout_champs_formulaire">Ajouter un nouveau champ</span></label>
+			<select name="type_champs_formulaire" id="type_champs_formulaire">
+				<option value="">Choisir...</option>
+				<option value="texte">texte</option>
+				<option value="textelong">texte long</option>
+				<option value="liste">liste d&eacute;roulante ou case &agrave; cocher</option>
+				<option value="fichier">lien vers fichier joint</option>
+				<option value="image">image</option>
+				<option value="titre">titre de section</option>
+			</select>
+		</div>
+		<ul class="valeur_formulaire">
+			<?=$interface_ajout_champs;?>
+		</ul>
+	</fieldset>
+
+	<div class="formulaire_ligne">
+		<label><span class="symbole_obligatoire">*&nbsp;</span>Template</label>
+		<textarea class="input_textarea" cols="40" rows="2" name="bn_template"><?=$default['bn_template'];?></textarea>
+	</div>
+
+	<div class="formulaire_ligne">
+		<label for="title_generator"><span class="symbole_obligatoire">*&nbsp;</span>Champ utilis&eacute; comme titre pour la fiche</label>
+		<select id="title_generator" name="title_generator" class="updatable-input-text" required="required">
+			<option value="" selected="selected">Choisir...</option>
+			<option value="personalized">Personnalis&eacute;</option>
+		</select>
+	</div>
+
+	<div id="title_generator_personalized" class="formulaire_ligne" style="display:none;"><!-- choix conditionnel : title choisi pour le champs type_html -->
+		<label for="personalized_title">
+			<span class="symbole_obligatoire">*&nbsp;</span>Format du titre personnalis&eacute;<img class="tooltip_aide" title="Mettre des identifiants des champs entre doubles accolades pour les utiliser.<br />Par exemple :  {{nom}}, {{prenom}} : {{ville}}" src="tools/bazar/presentation/images/aide.png" width="16" height="16" alt="image aide" />
+		</label>
+		<input class="input_texte" id="personalized_title" name="personalized_title" type="text" required="required" value="<?=$default['personalized_title'];?>" />
+	</div>
+
+
+	<div class="accordion">
+
+		<h2 class="titre_accordeon">Droits d'acc&egrave;s</h2>
+		<div class="pane">
+			<h3 class="section_title">Pour le formulaire</h3>
+			<div class="formulaire_ligne">
+				<label for="terms_of_use">Conditions de saisie</label>
+				<textarea class="input_textarea" cols="40" rows="2" id="terms_of_use" name="terms_of_use"><?=$default['terms_of_use'];?></textarea>
+			</div>
+			<label for="form_read_acls">Droits en lecture</label>
+			<select id="form_read_acls" name="form_read_acls">
+				<option value="default" selected="selected">Par d&eacute;faut</option>
+				<option value="logged">Seuls les identifi&eacute;s</option>
+				<?=$options_group;?>
+				<option value="owner">Seul le propri&eacute;taire</option>
+			</select>
+			<label for="form_write_acls">Droits en &eacute;criture</label>
+			<select id="form_write_acls" name="form_write_acls">
+				<option value="default" selected="selected">Par d&eacute;faut</option>
+				<option value="logged">Seuls les identifi&eacute;s</option>
+				<?=$options_group;?>
+				<option value="owner">Seul le propri&eacute;taire</option>
+			</select>
+			<h3 class="section_title">Pour les fiches saisie par le  formulaire</h3>
+			<label for="sheet_read_acls">Droits en lecture</label>
+			<select id="sheet_read_acls" name="sheet_read_acls">
+				<option value="default" selected="selected">Par d&eacute;faut</option>
+				<option value="logged">Seuls les identifi&eacute;s</option>
+				<?=$options_group;?>
+				<option value="owner">Seul le propri&eacute;taire</option>
+			</select>
+			<label for="sheet_write_acls">Droits en &eacute;criture</label>
+			<select id="sheet_write_acls" name="sheet_write_acls">
+				<option value="default" selected="selected">Par d&eacute;faut</option>
+				<option value="logged">Seuls les identifi&eacute;s</option>
+				<?=$options_group;?>
+				<option value="owner">Seul le propri&eacute;taire</option>
+			</select>
+			<label for="sheet_comments_acls">Commentaires</label>
+			<select id="sheet_comments_acls" name="sheet_comments_acls">
+				<option value="off" selected="selected">Ferm&eacute;s</option>
+				<option value="default">Ouverts, droits par d&eacute;faut</option>
+				<option value="logged">Ouverts pour les identifi&eacute;s</option>
+				<?=$options_group;?>
+			</select>
+		</div>
+
+		<h2 class="titre_accordeon">G&eacute;olocalisation</h2>
+		<div class="pane">
+			<div class="formulaire_ligne">
+				<label for="geo_adress">Champ d'adresse</label>
+				<select id="geo_adress" class="updatable-input-text" name="geo_adress">
+					<option value="" selected="selected">Choisir...</option>
+				</select>
+			</div>
+			<div class="formulaire_ligne">
+				<label for="geo_city">Champ de la ville</label>
+				<select id="geo_city" class="updatable-input-text" name="geo_city">
+					<option value="" selected="selected">Choisir...</option>
+				</select>
+			</div>
+			<div class="formulaire_ligne">
+				<label for="geo_country">Champ du pays</label>
+				<select id="geo_country" class="updatable-input-list" name="geo_country">
+					<option value="" selected="selected">Choisir...</option>
+				</select>
+			</div>
+			<div class="formulaire_ligne">
+				<label for="geo_searchfields">Texte suppl&eacute;mentaire de recherche&nbsp;<img class="tooltip_aide" title="Permet de pr&eacute;ciser un crit&egrave;re de recherche sur la carte suppl&eacute;mentaire (comme département, pays ou ville) si cela n&#146;a pas &eacute;t&eacute; possible par les champs ci dessus." src="tools/bazar/presentation/images/aide.png" width="16" height="16" alt="image aide" /></label>
+				<input id="geo_searchfields" name="geo_searchfields" type="text" />
+			</div>
+
+			<div class="formulaire_ligne">
+				<label for="required">Saisie des coordonn&eacute;es obligatoire</label>
+				<input type="checkbox" id="carto_required" name="required" />
+			</div>
+
+			<div class="formulaire_ligne">
+				<label for="view_single_point">Afficher une carte pour la consultation</label>
+				<input type="checkbox" id="view_single_point" name="view_single_point" />
+			</div>
+
+			<h3 class="section_title">Configuration de la carte google</h3>
+			<div class="formulaire_ligne">
+				<label>Latitude du centre<img class="tooltip_aide" title="permet de centrer la carte sur un point de latitude indiqu&eacute;e" src="tools/bazar/presentation/images/aide.png" width="16" height="16" alt="image aide" /></label>
+				<input name="center_lat" type="text" />
+			</div>
+
+			<div class="formulaire_ligne">
+				<label>Longitude du centre<img class="tooltip_aide" title="permet de centrer la carte sur un point de longitude indiqu&eacute;e" src="tools/bazar/presentation/images/aide.png" width="16" height="16" alt="image aide" /></label>
+				<input name="center_lon" type="text" />
+			</div>
+
+			<div class="formulaire_ligne">
+				<label>Echelle de la carte&nbsp;<img class="tooltip_aide" title="niveau de zoom : de 1 (plus &eacute;loign&eacute;) a 15 (plus proche)" src="tools/bazar/presentation/images/aide.png" width="16" height="16" alt="image aide" /></label>
+				<div class="formulaire_input">
+					<input name="zoom" type="range" min="1" max="15" value="1" />
+					<div class="clear"></div>
+				</div>
+			</div>
+
+			<div class="formulaire_ligne">
+				<label>Type d'affichage de la cartographie</label>
+				<select id="type_carto" name="type_carto">
+					<option value="ROADMAP" selected="selected">Carte type IGN</option>
+					<option value="SATELLITE">Photo satellite</option>
+					<option value="HYBRID">Hybride</option>
+					<option value="TERRAIN">Terrain</option>
+				</select>
+			</div>
+
+			<div class="formulaire_ligne">
+				<label for="internet_connection">G&eacute;olocaliser par la connexion Internet</label>
+				<input type="checkbox" id="internet_connection" name="internet_connection" />
+			</div>
+
+		</div>
+
+		<h2 class="titre_accordeon">Calendriers / T&acirc;ches &agrave; faire</h2>
+		<div class="pane">
+			<div class="formulaire_ligne">
+				<label for="cal_begin_date">Champ pour la date de d&eacute;but</label>
+				<select id="cal_begin_date" class="updatable-input-date" name="cal_begin_date">
+					<option value="" selected="selected">Choisir...</option>
+				</select>
+			</div>
+			<div class="formulaire_ligne">
+				<label for="cal_end_date">Champ pour la date de fin</label>
+				<select id="cal_end_date" class="updatable-input-date" name="cal_end_date">
+					<option value="" selected="selected">Choisir...</option>
+				</select>
+			</div>
+			<div class="formulaire_ligne">
+				<label for="become_todo">Les fiches cr&eacute;&eacute;es sont des t&acirc;ches &agrave; faire</label>
+				<input type="checkbox" id="become_todo" name="become_todo" />
+			</div>
+		</div>
+
+		<h2 class="titre_accordeon">Notifications par E-mail</h2>
+		<div class="pane">
+			<div class="formulaire_ligne">
+				<label for="mail_to_owner">L'utilisateur est inform&eacute; de sa saisie r&eacute;ussie</label>
+				<input type="checkbox" id="mail_to_owner" name="mail_to_owner" />
+			</div>
+
+			<div class="formulaire_ligne">
+				<label for="sender_email"><span class="symbole_obligatoire">*&nbsp;</span>E-mail de l'exp&eacute;diteur du mail</label>
+				<input class="input_texte" id="sender_email" name="sender_email" type="text" required="required" value="" />
+			</div>
+
+			<div class="formulaire_ligne">
+				<label for="send_to_group">Envoyer un mail au groupe</label>
+				<select id="send_to_group" name="send_to_group">
+					<option value="" selected="selected">Choisir...</option>
+					<?=$options_group;?>
+				</select>
+			</div>
+
+		</div>
+
+		<h2 class="titre_accordeon">Cr&eacute;ation d'un NomWiki</h2>
+		<div class="pane">
+			<div class="formulaire_ligne">
+				<label for="user_wikiname"><span class="symbole_obligatoire">*&nbsp;</span>Champ pour g&eacute;n&eacute;rer le NomWiki</label>
+				<select id="user_wikiname" name="user_wikiname" class="updatable-input-text" required="required">
+					<option value="" selected="selected">Choisir...</option>
+				</select>
+			</div>
+			<div class="formulaire_ligne">
+				<label for="user_mail"><span class="symbole_obligatoire">*&nbsp;</span>Champ pour l'E-mail</label>
+				<select id="user_mail" name="user_mail" class="updatable-input-text" required="required">
+					<option value="" selected="selected">Choisir...</option>
+				</select>
+			</div>
+		</div>
+	</div>
+
+	<div class="groupebouton">
+		<a class="btn bouton_annuler" name="annuler" href="<?=$url_annuler;?>">Annuler</a>
+		<input class="btn bouton_sauver" name="valider" value="Valider" type="submit" />
+	</div>
+
+	<div class="symbole_obligatoire">* champs requis</div>
+	<input name="idformulaire" type="hidden" value="<?=$idformulaire;?>" />
+
+</form>
+
+ <form id="champs_formulaire">
+	<div id="form_type_champs"></div>
+	<div class="groupebouton">
+		<a href="#" name="annuler" class="btn bouton_annuler bouton_annuler_formulaire">Annuler</a>&nbsp;
+		<input type="submit" name="ajouter" class="btn bouton_sauver bouton_ajouter_formulaire" value="Ajouter" />
+	</div>
+	<div class="clear"></div>
+</form>

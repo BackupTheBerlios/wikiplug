@@ -73,6 +73,7 @@ define ('BAZ_RECHERCHER_2POINTS', 'Rechercher : ');
 define ('BAZ_TOUS_TYPES_FICHES', 'Tous types de fiches');
 define ('BAZ_FICHE_NON_SAUVEE_PAS_DE_TITRE', 'La fiche n\'a pas pu &ecirc;tre sauv&eacute;e car elle ne poss&egrave; pas de titre.');
 define ('BAZ_FLUX_RSS_GENERAL', 'Flux RSS de toutes les fiches');
+define ('BAZ_SAISIR_FICHE_DE_CE_TYPE', 'Saisir une fiche de ce type');
 define ('BAZ_MOT_CLE', 'mots clés (facultatif)');
 define ('BAZ_DATE_CREATION', 'cr&eacute;&eacute;e le' );
 define ('BAZ_DATE_MAJ', 'mise &agrave; jour le' );
@@ -99,9 +100,9 @@ define ('BAZ_MODIFIER', 'Modifier') ;
 define ('BAZ_MODIFIER_LA_FICHE', 'Modifier la fiche') ;
 define ('BAZ_SUPPRIMER', 'Supprimer') ;
 define ('BAZ_SUPPRIMER_IMAGE', 'Supprimer l\'image') ;
-define ('BAZ_CONFIRMATION_SUPPRESSION_IMAGE', 'Etes vous sûrs de vouloir supprimer cette image?');
+define ('BAZ_CONFIRMATION_SUPPRESSION_IMAGE', 'Etes vous sûrs de vouloir supprimer cette image ?');
 define ('BAZ_TITRE_SAISIE_FICHE', 'Saisir une fiche : ');
-define ('BAZ_CHOIX_TYPE_FICHE', 'Choisissez le type de fiche que vous souhaitez d&eacute;poser:') ;
+define ('BAZ_CHOIX_TYPE_FICHE', 'Choisissez le type de fiche &agrave; saisir ci dessous.') ;
 define ('BAZ_CONFIRMATION_SUPPRESSION', 'Etes-vous s&ucirc;r de vouloir supprimer cette fiche ?') ;
 define ('BAZ_VALIDER_LA_FICHE', 'Valider la fiche') ;
 define ('BAZ_PRECEDENT', 'Pr&eacute;c&eacute;dent') ;
@@ -154,6 +155,7 @@ define ('BAZ_TELECHARGER_FICHIER_EXPORT_CSV', 'Télécharger le fichier d\'export 
 define ('BAZ_MOT_DE_PASSE', 'Mot de passe');
 define ('BAZ_VERIFICATION', 'v&eacute;rification');
 define ('BAZ_ACCEPTE_CONDITIONS', 'J\'accepte les conditions de saisie : ');
+define ('BAZ_PAGEWIKI_PAS_FORMULAIRE', 'La PageWiki n\'est pas de type formulaire.');
 
 //================ Calendrier Bazar =======================================
 define ('BAZ_AFFICHE_TITRES_COMPLETS', 'Afficher les titres complets des &eacute;v&eacute;nements');

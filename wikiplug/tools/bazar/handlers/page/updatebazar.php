@@ -1,7 +1,7 @@
 <?php
 /*
 
-Copyright 2009  Florian SCHMITT
+Copyright 2009  Florian SCHMITT <florian@outils-reseaux.org>
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
@@ -18,8 +18,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
 
-//CE HANDLER RECUPERE LES VALEURS DE LISTES des tables liste et liste_valeurs, pour les passer en page wiki
-
+//CE HANDLER RECUPERE LES VALEURS DES FORMULAIRES ET DES LISTES des tables nature, liste et liste_valeurs, pour les passer en page wiki
 
 // Vérification de sécurité
 if (!defined("WIKINI_VERSION"))
@@ -31,9 +30,12 @@ $output = '';
 
 if ($this->UserIsInGroup('admins'))
 {
+	
+	// on verifie l'existance de la table liste pour migrer les donnees en PageWiki
 	$req = 'SHOW TABLES FROM '.$this->config['mysql_database'].' LIKE "'.BAZ_PREFIXE.'liste%"';
 	$tabnature = $this->LoadAll($req);
-	if (is_array($tabnature)) {
+	
+	if (isset($tabnature[0])) {
 		$sql = 'SELECT bl_label_liste, blv_valeur, blv_label  FROM '.BAZ_PREFIXE.'liste, '.BAZ_PREFIXE.'liste_valeurs WHERE blv_ce_liste=bl_id_liste AND blv_label!="Choisir..." ORDER BY blv_ce_liste, blv_valeur';
 		$tab = $this->LoadAll($sql);
 		$anciennomliste ='';$valeur = NULL;
@@ -57,22 +59,45 @@ if ($this->UserIsInGroup('admins'))
 			}
 			$valeur["label"][$ligne['blv_valeur']] = utf8_encode(html_entity_decode($ligne['blv_label']));
 		}
-		if ($output != '') $output = '<div class="info_box">Ces pages suivantes ont étés rajoutées:</div><div style="overflow:auto;width:100%;height:200px;">'.$output.'</div>'."\n";
+		if ($output != '') $output = '<div class="info_box">Ces pages suivantes sur les listes ont &eacute;t&eacute;s rajout&eacute;es :</div><div style="overflow:auto;width:100%;height:200px;">'.$output.'</div>'."\n";
 		
-		//on efface les tables qui servent plus
+		//on efface les tables qui ne servent plus
 		$this->Query('DROP TABLE '.BAZ_PREFIXE.'liste, '.BAZ_PREFIXE.'liste_valeurs');
-	}	
-	$repertoire = 'tools/bazar/install/formulaire/';
-	$dir = opendir($repertoire); $tab_formulaire = array();
-	while (false !== ($file = readdir($dir))) {    	
-	   	if (substr($file, -4, 4)=='.sql') {
-	   		$tab_formulaire[] = str_replace('.sql', '', $file);
-	    }
 	}
-	closedir($dir);
 	
-	foreach($tab_formulaire as $formulaire) {
-		$output .= $formulaire.'<input type="checkbox" name="forms[]" value="'.$formulaire.'"  /><br />';
+	// on verifie l'existance de la table nature pour migrer les donnees en PageWiki
+	$req = 'SHOW TABLES FROM '.$this->config['mysql_database'].' LIKE "'.BAZ_PREFIXE.'nature"';
+	$tabnature = $this->LoadAll($req);
+	if (isset($tabnature[0])) {
+		//requete pour obtenir les infos des formulaires
+		$requete = 'SELECT * '.
+		           'FROM '.BAZ_PREFIXE.'nature WHERE 1 ORDER BY bn_type_fiche';
+		$resultat = $GLOBALS['_BAZAR_']['db']->query($requete) ;
+		if (DB::isError($resultat)) {
+			return ($resultat->getMessage().$resultat->getDebugInfo()) ;
+		}
+		$outputformulaire = '';
+		while ($ligne = $resultat->fetchRow(DB_FETCHMODE_ASSOC)) {
+			$nomwikiformulaire = genere_nom_wiki(html_entity_decode('Formulaire '.$ligne['bn_label_nature']));
+			
+			//ancien identifiant plus necessaire
+			unset($ligne['bn_id_nature']);
+			
+			//on encode en utf8
+			$ligne = array_map('utf8_encode', $ligne);
+			
+			//on sauve les valeurs d'une liste dans une PageWiki, pour garder l'historique
+			$GLOBALS["wiki"]->SavePage($nomwikiformulaire, json_encode($ligne));
+
+			//on cree un triple pour spécifier que la page wiki créée est une liste
+			$GLOBALS["wiki"]->InsertTriple($nomwikiformulaire, 'http://outils-reseaux.org/_vocabulary/type', 'formulaire', '', '');	
+			
+			$outputformulaire .= $nomwikiformulaire.' '.json_encode($ligne).'<hr />';			
+		}
+		if ($outputformulaire != '') $output .= '<div class="info_box">Ces pages suivantes sur les formulaires ont &eacute;t&eacute;s rajout&eacute;es :</div><div style="overflow:auto;width:100%;height:200px;">'.$outputformulaire.'</div>'."\n";
+		
+		//on efface les tables qui ne servent plus
+		$this->Query('DROP TABLE '.BAZ_PREFIXE.'nature');
 	}
 }
 else {

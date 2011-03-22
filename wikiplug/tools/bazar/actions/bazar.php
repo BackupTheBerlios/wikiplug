@@ -21,7 +21,7 @@
 // | along with Foobar; if not, write to the Free Software                                                |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: bazar.php,v 1.13 2010/12/15 11:15:45 ddelon Exp $
+// CVS : $Id: bazar.php,v 1.14 2011/03/22 09:33:24 mrflos Exp $
 /**
 * bazar.php
 *
@@ -31,7 +31,7 @@
 //Auteur original :
 *@author        Florian SCHMITT <florian@outils-reseaux.org>
 *@copyright     Florian SCHMITT 2008
-*@version       $Revision: 1.13 $ $Date: 2010/12/15 11:15:45 $
+*@version       $Revision: 1.14 $ $Date: 2011/03/22 09:33:24 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -67,6 +67,26 @@ if (empty($GLOBALS['_BAZAR_']['tri'])) {
 
 $GLOBALS['_BAZAR_']['affiche_menu'] = $this->GetParameter("voirmenu");
 
+$GLOBALS['_BAZAR_']['id_typeannonce'] = $this->GetParameter("idtypeannonce");
+if (empty($GLOBALS['_BAZAR_']['id_typeannonce'])) {
+	//on indique qu'il n'y a pas de type de formulaire choisit, et on recupere eventuellement la categorie
+	$GLOBALS['_BAZAR_']['id_typeannonce'] = 'toutes';
+	$GLOBALS['_BAZAR_']['categorie_nature'] = $this->GetParameter("categorienature");
+	if (empty($GLOBALS['_BAZAR_']['categorie_nature'])) {
+		$GLOBALS['_BAZAR_']['categorie_nature'] = 'toutes';
+	}
+} else {
+	//si un type de fiche est passe en parametres, on prend toutes les informations
+	$tab_nature = baz_valeurs_formulaire($GLOBALS['_BAZAR_']['id_typeannonce']);
+	$GLOBALS['_BAZAR_']['typeannonce'] = $tab_nature['bn_label_nature'];
+	$GLOBALS['_BAZAR_']['condition'] = $tab_nature['bn_condition'];
+	$GLOBALS['_BAZAR_']['template'] = $tab_nature['bn_template'];
+	$GLOBALS['_BAZAR_']['commentaire'] = $tab_nature['bn_commentaire'];
+	$GLOBALS['_BAZAR_']['appropriation'] = $tab_nature['bn_appropriation'];
+	$GLOBALS['_BAZAR_']['class'] = $tab_nature['bn_label_class'];
+	$GLOBALS['_BAZAR_']['categorie_nature'] = $tab_nature['bn_type_fiche'];
+}
+
 //si un identifiant fiche est renseigné, on récupère toutes les valeurs associées
 if (isset($_REQUEST['id_fiche'])) {
 	$GLOBALS['_BAZAR_']['id_fiche'] = $_REQUEST['id_fiche'];
@@ -75,8 +95,9 @@ if (isset($_REQUEST['id_fiche'])) {
 	$GLOBALS['_BAZAR_']['valeurs_fiche'] = baz_valeurs_fiche($GLOBALS['_BAZAR_']['id_fiche']);
 	if ($GLOBALS['_BAZAR_']['valeurs_fiche']) {
 		$GLOBALS['_BAZAR_']['id_typeannonce'] = $GLOBALS['_BAZAR_']['valeurs_fiche']['id_typeannonce'];
+		$_REQUEST['id_typeannonce'] = $GLOBALS['_BAZAR_']['id_typeannonce'];
 		//on récupère aussi les valeurs générales du type de fiche aussi
-		$tab_nature = baz_valeurs_type_de_fiche($GLOBALS['_BAZAR_']['id_typeannonce']);
+		$tab_nature = baz_valeurs_formulaire($GLOBALS['_BAZAR_']['id_typeannonce']);
 		$GLOBALS['_BAZAR_']['typeannonce'] = $tab_nature['bn_label_nature'];
 		$GLOBALS['_BAZAR_']['condition'] = $tab_nature['bn_condition'];
 		$GLOBALS['_BAZAR_']['template'] = $tab_nature['bn_template'];
@@ -89,6 +110,8 @@ if (isset($_REQUEST['id_fiche'])) {
 		exit('<div class="error_box">la fiche que vous recherchez n\'existe plus (sans doute a t\'elle &eacute;t&eacute; supprim&eacute;e entre temps)...</div>');
 	}
 }
+
+/*
 // sinon on récupère les paramètres passés par l'action
 else {
 	$GLOBALS['_BAZAR_']['id_fiche'] = NULL;
@@ -114,7 +137,7 @@ else {
 	}
 	//si l'on connait le type de fiche, on prend toutes les infos
 	if ($GLOBALS['_BAZAR_']['id_typeannonce']!='toutes') {
-		$tab_nature = baz_valeurs_type_de_fiche($GLOBALS['_BAZAR_']['id_typeannonce']);
+		$tab_nature = baz_valeurs_formulaire($GLOBALS['_BAZAR_']['id_typeannonce']);
 		$GLOBALS['_BAZAR_']['typeannonce'] = $tab_nature['bn_label_nature'];
 		$GLOBALS['_BAZAR_']['condition'] = $tab_nature['bn_condition'];
 		$GLOBALS['_BAZAR_']['template'] = $tab_nature['bn_template'];
@@ -124,7 +147,7 @@ else {
 		$GLOBALS['_BAZAR_']['categorie_nature'] = $tab_nature['bn_type_fiche'];
 	}	
 }
-
+*/
 
 //utilisateur
 $GLOBALS['_BAZAR_']['nomwiki'] = $GLOBALS['wiki']->GetUser();
@@ -221,7 +244,7 @@ if (isset ($_GET[BAZ_VARIABLE_VOIR])) {
 				$output .= baz_afficher_formulaire_export();
 				break;	
 			default :
-				$output .= baz_rechercher($GLOBALS['_BAZAR_']['id_typeannonce']);
+				$output .= baz_rechercher($GLOBALS['_BAZAR_']['id_typeannonce'], $GLOBALS['_BAZAR_']['categorie_nature']);
 		}
 }
 //affichage de la page
@@ -230,7 +253,10 @@ echo $output ;
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: bazar.php,v $
-* Revision 1.13  2010/12/15 11:15:45  ddelon
+* Revision 1.14  2011/03/22 09:33:24  mrflos
+* version de travail
+*
+* Revision 1.13  2010-12-15 11:15:45  ddelon
 * nom du parametre voir  depuis la constante
 *
 * Revision 1.12  2010-12-01 17:01:38  mrflos

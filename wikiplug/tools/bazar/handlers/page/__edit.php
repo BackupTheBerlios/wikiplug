@@ -1,6 +1,6 @@
 <?php
 /*
-$Id: __edit.php,v 1.1 2010/06/02 08:48:51 mrflos Exp $
+$Id: __edit.php,v 1.2 2011/03/22 09:33:24 mrflos Exp $
 Copyright (c) 2010, Florian Schmitt <florian@outils-reseaux.org>
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,7 @@ if (isset($_POST['id_fiche']) && $this->HasAccess('write')) {
 	$type = $this->GetTripleValue($this->GetPageTag(), 'http://outils-reseaux.org/_vocabulary/type', '', '');
 	if ($type == 'fiche_bazar') {
 		$GLOBALS['_BAZAR_']['id_fiche'] = $_POST['id_fiche'];
-		$tab_nature = baz_valeurs_type_de_fiche($_POST['id_typeannonce']);
+		$tab_nature = baz_valeurs_formulaire($_POST['id_typeannonce']);
 		$GLOBALS['_BAZAR_']['id_typeannonce']=$tab_nature['bn_id_nature'];
 		$GLOBALS['_BAZAR_']['typeannonce']=$tab_nature['bn_label_nature'];
 		$GLOBALS['_BAZAR_']['condition']=$tab_nature['bn_condition'];

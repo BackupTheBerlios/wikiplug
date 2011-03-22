@@ -3,9 +3,9 @@
 // +------------------------------------------------------------------------------------------------------+
 // | PHP version 5.1                                                                                      |
 // +------------------------------------------------------------------------------------------------------+
-// | Copyright (C) 1999-2006 Kaleidos-coop.org                                                            |
+// | Copyright (C) 1999-2006 outils-reseaux.org                                                           |
 // +------------------------------------------------------------------------------------------------------+
-// | This file is part of wkbazar.                                                                     |
+// | This file is part of wkbazar.                                                                        |
 // |                                                                                                      |
 // | Foobar is free software; you can redistribute it and/or modify                                       |
 // | it under the terms of the GNU General Public License as published by                                 |
@@ -21,7 +21,7 @@
 // | along with Foobar; if not, write to the Free Software                                                |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: wiki.php,v 1.14 2010/12/15 15:43:07 mrflos Exp $
+// CVS : $Id: wiki.php,v 1.15 2011/03/22 09:33:24 mrflos Exp $
 /**
 * wiki.php
 *
@@ -29,10 +29,10 @@
 *
 *@package wkbazar
 //Auteur original :
-*@author        Florian SCHMITT <florian.schmitt@laposte.net>
+*@author        Florian SCHMITT <florian@outils-reseaux.org>
 //Autres auteurs :
-*@copyright     outils-reseaux-coop.org 2008
-*@version       $Revision: 1.14 $ $Date: 2010/12/15 15:43:07 $
+*@copyright     outils-reseaux.org 2008
+*@version       $Revision: 1.15 $ $Date: 2011/03/22 09:33:24 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -45,10 +45,6 @@ if (!defined("WIKINI_VERSION"))
 // +------------------------------------------------------------------------------------------------------+
 // |                                            ENTETE du PROGRAMME                                       |
 // +------------------------------------------------------------------------------------------------------+
-
-
-error_reporting(E_ALL & ~E_DEPRECATED);
-
 
 //chemin relatif d'acces au bazar
 define ('BAZ_CHEMIN', 'tools'.DIRECTORY_SEPARATOR.'bazar'.DIRECTORY_SEPARATOR);
@@ -95,61 +91,6 @@ if (DB::isError($GLOBALS['_BAZAR_']['db'])) {
 	echo $GLOBALS['_BAZAR_']['db']->getMessage();
 }
 
-//test de l'existance des tables de bazar et installation si absentes.
-$req = 'SHOW TABLES FROM '.$wakkaConfig['mysql_database'].' LIKE "'.BAZ_PREFIXE.'nature"';
-$resultat = $GLOBALS['_BAZAR_']['db']->query ($req);
-if ($resultat->numRows() == 0) {
-	$fichier_sql = 'tools/bazar/install/bazar.sql';
-	if (file_exists($fichier_sql)) {
-            // Des champs textes sont multilignes, d'ou la boucle sur INSERT, marqueur de fin de la requete precedente.
-            if ($lines = file($fichier_sql))  {
-                $i=0;
-                $ligne_courante=$lines[$i];
-                if (($i+1)>=count($lines)) {
-                    $ligne_suivante='FIN';
-                } else {
-                    $ligne_suivante=$lines[$i+1];
-                }
-                while ($i<count($lines)) {
-                    $line_in=$ligne_courante;
-                    while (($i < count($lines)) && ((substr($ligne_suivante, 0, 6) != 'INSERT') && (substr($ligne_suivante, 0, 6) != 'CREATE') ) && ($ligne_suivante != 'FIN')) {
-                        $line_in.=$ligne_suivante;
-                        $i++;
-                        $ligne_courante=$lines[$i];
-                        if (($i+1)>=count($lines))  {
-                            $ligne_suivante='FIN';
-                        } else {
-                        $ligne_suivante=$lines[$i+1];
-                        }
-                    }
-
-                    $requete = str_replace('BAZ_PREFIXE', BAZ_PREFIXE, $line_in);
-
-                    //requete sql
-                    //echo $requete.'<br />';
-                    $result = $GLOBALS['_BAZAR_']['db']->query ($requete);
-
-                    $i++;
-                    $ligne_courante=$lines[$i];
-                    if (($i+1)>=count($lines))  {
-                        $ligne_suivante='FIN';
-                    } else {
-                        $ligne_suivante=$lines[$i+1];
-                    }
-
-                    //if ($i == (int)$this->test) {
-                    //    break;
-                    //}
-                }
-            }
-            echo '<div class="info_box">La base de donn&eacute;es de bazar vient d\'&ecirc;tre ajout&eacute;e!<br />'.
-            		'<a href="'.$wakkaConfig['base_url'].$wakkaConfig['root_page'].'/updatebazar">Cliquer ici pour finir l\'installtion et ajouter des formulaires</a>'
-            		.'</div>'."\n";
-        } else {
-            die ('<div class="BAZ_error">Fichier sql introuvable.</div>'."\n");
-        }
-
-}
 
 
 // +------------------------------------------------------------------------------------------------------+
@@ -180,7 +121,6 @@ define ('BAZ_VOIR_IMPORTER', 'importer');
 define ('BAZ_VOIR_EXPORTER', 'exporter');
 
 
-
 // Second : actions du choix de premier niveau.
 
 define ('BAZ_MOTEUR_RECHERCHE', 'recherche') ;
@@ -197,6 +137,7 @@ define ('BAZ_ACTION_PUBLIER', 'publier') ; // Valider la fiche
 define ('BAZ_ACTION_PAS_PUBLIER', 'pas_publier') ; // Invalider la fiche
 define ('BAZ_LISTE_RSS', 'rss'); // Tous les flux  depend de s'abonner
 define ('BAZ_VOIR_FLUX_RSS', 'affiche_rss'); // Un flux
+define ('BAZ_OBTENIR_TOUTES_LES_LISTES_ET_TYPES_DE_FICHES', 'listes_et_fiches');
 
 
 // Constante pour l'envoi automatique de mail aux admins

@@ -1,0 +1,50 @@
+<h2 class="titre_overlay">Ajouter un champ de type texte</h2>
+
+<div class="formulaire_ligne">
+	<label><span class="symbole_obligatoire">*&nbsp;</span>Label&nbsp;<img class="tooltip_aide" title="Texte apparaissant devant le champ &agrave; remplir par l&#146;utilisateur." src="tools/bazar/presentation/images/aide.png" width="16" height="16" alt="image aide" /></label>
+	<input name="label" type="text" required="required" />
+</div>
+
+<div class="formulaire_ligne">
+	<label>Texte par d&eacute;faut&nbsp;<img class="tooltip_aide" title="Texte apparaissant dans le champ &agrave; remplir par l&#146;utilisateur." src="tools/bazar/presentation/images/aide.png" width="16" height="16" alt="image aide" /></label>
+	<input name="default" type="text" />
+</div>
+
+<div class="formulaire_ligne">
+	<label>Texte de la bulle d'aide&nbsp;<img class="tooltip_aide" title="Ce texte sera affich&eacute; au survol de l&#146;icone avec le point d&#146;interrogation." src="tools/bazar/presentation/images/aide.png" width="16" height="16" alt="image aide" /></label>
+	<input type="text" name="help_tooltip" />
+</div>
+
+<div class="formulaire_ligne">
+	<label for="required">Champs obligatoire&nbsp;<img class="tooltip_aide" title="Cocher pour rendre la saisie de ce champs obligatoire." src="tools/bazar/presentation/images/aide.png" width="16" height="16" alt="image aide" /></label>
+	<input type="checkbox" id="required" name="required" />
+</div>
+
+<div class="formulaire_ligne">
+	<label><span class="symbole_obligatoire">*&nbsp;</span>Identifiant&nbsp;<img class="tooltip_aide" title="Identifiant dans la base de donn&eacute;es (ne sera pas visible &agrave; l&#146;&eacute;cran).<br />Doit &ecirc;tre unique pour l&#146;ensemble des champs des formulaires, et sans caract&egrave;res sp&eacute;ciaux." src="tools/bazar/presentation/images/aide.png" width="16" height="16" alt="image aide" /></label>
+	<input name="id" type="text" required="required" />
+</div>
+
+<div class="formulaire_ligne">
+	<label>Format du champ&nbsp;<img class="tooltip_aide" title="Normal = texte libre<br />Adresse URL = n&#146;accepte que des liens commancant par http://, qui seront cliquables<br />Date = propose un calendrier de saisie d&#146;une date<br />E-mail = n&#146;accepte que des adresse mails valides, qui seront cliquables<br />Mot de passe = cache la saisie du champ<br />Num&eacute;rique = n&#146;accepte que des nombres" src="tools/bazar/presentation/images/aide.png" width="16" height="16" alt="image aide" /></label>
+	<select id="type_champs" name="type_champ">
+		<option value="normal" selected="selected">Normal</option>
+		<option value="url">Adresse URL</option>
+		<option value="date">Date</option>
+		<option value="email">E-mail</option>
+		<option value="password">Mot de passe</option>
+		<option value="numeric">Num&eacute;rique</option>
+	</select>
+</div>
+
+<div class="formulaire_ligne">
+	<label>Nombre de caract&egrave;res minimum&nbsp;<img class="tooltip_aide" title="valeur comprise entre 0 et 255" src="tools/bazar/presentation/images/aide.png" width="16" height="16" alt="image aide" /></label>
+	<input id="nb_char_min" name="nb_char_min" type="range" min="0" max="255" value="0" />
+	<div class="clear"></div>
+</div>
+
+<div class="formulaire_ligne">
+	<label>Nombre de caract&egrave;res maximum&nbsp;<img class="tooltip_aide" title="valeur comprise entre 0 et 255" src="tools/bazar/presentation/images/aide.png" width="16" height="16" alt="image aide" /></label>
+	<input id="nb_char_max" name="nb_char_max" type="range" min="0" max="255" value="255" />
+	<div class="clear"></div>
+</div>

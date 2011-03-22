@@ -1,0 +1,23 @@
+<h2 class="titre_overlay">Ajouter un champ de type image</h2>
+
+<div class="formulaire_ligne">
+	<label for="image_description"><span class="symbole_obligatoire">*&nbsp;</span>Texte descriptif de l'image&nbsp;<img class="tooltip_aide" title="Texte apparaissant au survol de la vignette ou de l&#146;image, et en remplacement de l&#146;image si elle ne se charge pas." src="tools/bazar/presentation/images/aide.png" width="16" height="16" alt="image aide" /></label>
+	<input id="image_description" name="image_description" type="text" value="" required="required" />
+</div>
+
+<div class="formulaire_ligne">
+	<label for="thumbnail_max">Taille maximale de la vignette&nbsp;<img class="tooltip_aide" title="En pixels, prend automatiquement le cot&eacute; le plus long entre la largeur et la hauteur.<br />Laisser vide si pas de vignettes &agrave; g&eacute;n&eacute;rer." src="tools/bazar/presentation/images/aide.png" width="16" height="16" alt="image aide" /></label>
+	<input id="thumbnail_max" name="thumbnail_max" type="range" min="0" max="480" step="10" value="0" />
+	<div class="clear"></div>
+</div>
+
+<div class="formulaire_ligne">
+	<label for="image_max">Taille maximale de l'image&nbsp;<img class="tooltip_aide" title="En pixels, prend automatiquement le cot&eacute; le plus long entre la largeur et la hauteur.<br />Laisser vide si la taille originale de l&#146;image doit etre pr&eacute;serv&eacute;e." src="tools/bazar/presentation/images/aide.png" width="16" height="16" alt="image aide" /></label>
+	<input id="image_max" name="image_max" type="range" min="0" max="1600" step="50" value="0" />
+	<div class="clear"></div>
+</div>
+
+<div class="formulaire_ligne">
+	<label for="required">L'ajout de l'image est obligatoire</label>
+	<input type="checkbox" id="required" name="required" />
+</div>

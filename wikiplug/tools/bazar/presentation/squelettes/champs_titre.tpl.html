@@ -1,0 +1,30 @@
+<h2 class="titre_overlay">Ajouter un titre de section</h2>
+
+<div class="formulaire_ligne">
+	<label for="type_html"><span class="symbole_obligatoire">*&nbsp;</span>Format du champs</label>
+	<select id="type_html" name="type_html" required="required">
+		<option value="title" selected="selected">Titre de section</option>
+		<option value="HTML">HTML</option>
+	</select>
+</div>
+
+
+<div id="type_html_title" class="formulaire_ligne"><!-- choix conditionnel : title choisi pour le champs type_html -->
+	<label for="title_text"><span class="symbole_obligatoire">*&nbsp;</span>Texte du titre</label>
+	<input id="title_text" name="title_text" type="text" required="required" />
+</div>
+
+<div id="type_html_HTML" class="formulaire_ligne" style="display:none;"><!-- choix conditionnel : HTML choisi pour le champs type_html -->
+	<label for="html_text" ><span class="symbole_obligatoire">*&nbsp;</span>Code HTML</label>
+	<textarea id="html_text" name="html_text" class="input_textarea" cols="20" rows="3" required="required"></textarea>
+</div>
+
+<fieldset class="bazar_fieldset">
+	<legend>Apparait pour</legend>
+	<input type="checkbox" id="label_saisie" value="1" name="label_saisie" class="element_checkbox" />
+	<label for="label_saisie">la saisie d'une fiche</label>
+	<input type="checkbox" id="label_fiche" value="1" name="label_fiche" class="element_checkbox" />
+	<label for="label_fiche">la consultation de la fiche</label>
+	<input type="checkbox" id="label_search" value="1" name="label_search" class="element_checkbox" />
+	<label for="label_search">le moteur de recherche</label>
+</fieldset>

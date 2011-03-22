@@ -1,6 +1,6 @@
 <?php
 /*
-$Id: edit__.php,v 1.1 2010/06/02 08:48:51 mrflos Exp $
+$Id: edit__.php,v 1.2 2011/03/22 09:33:24 mrflos Exp $
 Copyright (c) 2010, Florian Schmitt <florian@outils-reseaux.org>
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,7 @@ if ($type == 'fiche_bazar') {
 	$tab_valeurs = json_decode( ($_POST['body'] ? htmlspecialchars_decode($_POST['body']) : $body), true);
 	$tab_valeurs = array_map('utf8_decode', $tab_valeurs);
 	$GLOBALS['_BAZAR_']['id_fiche'] = $tab_valeurs['id_fiche'];
-	$tab_nature = baz_valeurs_type_de_fiche($tab_valeurs['id_typeannonce']);
+	$tab_nature = baz_valeurs_formulaire($tab_valeurs['id_typeannonce']);
 	$GLOBALS['_BAZAR_']['id_typeannonce']=$tab_nature['bn_id_nature'];
 	$GLOBALS['_BAZAR_']['typeannonce']=$tab_nature['bn_label_nature'];
 	$GLOBALS['_BAZAR_']['condition']=$tab_nature['bn_condition'];
