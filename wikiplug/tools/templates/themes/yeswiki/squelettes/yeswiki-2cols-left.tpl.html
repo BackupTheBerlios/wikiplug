@@ -40,11 +40,14 @@
 	</nav><!-- end of #topnav -->
 	 
 	<div id="main" role="main" class="grid_12" {{doubleclic}}>
-		{WIKINI_PAGE}
+		{{include page="PageMenu" class="alpha grid_2 liste-deroulante" doubleclic="1" actif="1"}}
+		<div class="grid_10 omega">
+			{WIKINI_PAGE}
+		</div>
 		{{barreredaction}}
 		<div class="clear"></div>
-	</div><!-- end of #main -->
-
+    </div><!-- end of #main -->
+    
 	<footer class="grid_12">
 		{{include page="PageFooter" doubleclic="1"}}
 		<div class="clear"></div>
