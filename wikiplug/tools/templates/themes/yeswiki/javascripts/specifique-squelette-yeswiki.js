@@ -93,4 +93,9 @@
 	listesderoulables.addClass('hover').find('ul:first').slideDown('fast');
 	listesderoulables.find(".arrow:first").html("&#9660;");
 	
+	//on enleve la fonction doubleclic dans des cas ou cela pourrait etre indesirable
+	$(".accordion, .slide_show").bind('dblclick', function(e) {
+		return false;
+	});
+	
 })(jQuery);

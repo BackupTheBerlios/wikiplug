@@ -300,13 +300,8 @@ overflow:hidden;
 margin:10px auto 0 auto;
 padding:0;
 font-size:1.3em;
-}
-
-.grid_12 .slide_show {
 width:940px;
-}
-.grid_9 .slide_show {
-width:700px;
+clear:both;
 }
 
 .slides {
@@ -342,12 +337,7 @@ padding:20px;
 border: 1px solid #808080;
 background:#F2F2F2;
 color:#000;
-}
-.grid_12 .slide {
 width:895px;
-}
-.grid_9 .slide {
-width:655px;
 }
 
 .borderradius .slide { -moz-border-radius:4px; -webkit-border-radius:4px; border-radius:4px; }

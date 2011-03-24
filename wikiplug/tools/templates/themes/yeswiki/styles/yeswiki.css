@@ -107,7 +107,7 @@ float:left;
 #topnav ul ul ul { display:none; width:200px; position:absolute; left:229px; top:0; background:#CCCCCC;  padding:0; margin:0; z-index:99;}
 #topnav ul ul ul ul {left:199px;}
 
-/* dégradés et ombres en css3  */
+/* degrades et ombres en css3  */
 .borderradius #topnav { -moz-border-radius:4px; -webkit-border-radius:4px; border-radius:4px; }
 .cssgradients #topnav { background-image:-moz-linear-gradient(0% 22px 90deg, #CCCCCC, #EFEFEF); background-image:-webkit-gradient(linear, 0% 0%, 0% 70%, from(#EFEFEF), to(#CCCCCC)); }
 .boxshadow.rgba #topnav { -moz-box-shadow:2px 2px 2px rgba(100,100,100,.75); -webkit-box-shadow:2px 2px 2px rgba(100,100,100,.75); box-shadow:2px 2px 2px rgba(100,100,100,.75); }
