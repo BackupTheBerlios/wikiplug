@@ -14,10 +14,12 @@
  * @author     Greg Beaver <cellog@php.net>
  * @copyright  1997-2009 The Authors
  * @license    http://opensource.org/licenses/bsd-license.php New BSD License
- * @version    CVS: $Id: PEAR.php,v 1.1 2011/03/22 10:06:33 mrflos Exp $
+ * @version    CVS: $Id: PEAR.php,v 1.2 2011/03/24 15:53:29 mrflos Exp $
  * @link       http://pear.php.net/package/PEAR
  * @since      File available since Release 0.1
  */
+
+if (!class_exists('PEAR')) {
 
 /**#@+
  * ERROR constants
@@ -767,47 +769,49 @@ if (PEAR_ZE2) {
 }
 
 // {{{ _PEAR_call_destructors()
-
-function _PEAR_call_destructors()
+if (!function_exists("_PEAR_call_destructors()"))
 {
-    global $_PEAR_destructor_object_list;
-    if (is_array($_PEAR_destructor_object_list) &&
-        sizeof($_PEAR_destructor_object_list))
-    {
-        reset($_PEAR_destructor_object_list);
-        if (PEAR_ZE2) {
-            $destructLifoExists = PEAR5::getStaticProperty('PEAR', 'destructlifo');
-        } else {
-            $destructLifoExists = PEAR::getStaticProperty('PEAR', 'destructlifo');
-        }
+	function _PEAR_call_destructors()
+	{
+		global $_PEAR_destructor_object_list;
+		if (is_array($_PEAR_destructor_object_list) &&
+		    sizeof($_PEAR_destructor_object_list))
+		{
+		    reset($_PEAR_destructor_object_list);
+		    if (PEAR_ZE2) {
+		        $destructLifoExists = PEAR5::getStaticProperty('PEAR', 'destructlifo');
+		    } else {
+		        $destructLifoExists = PEAR::getStaticProperty('PEAR', 'destructlifo');
+		    }
 
-        if ($destructLifoExists) {
-            $_PEAR_destructor_object_list = array_reverse($_PEAR_destructor_object_list);
-        }
+		    if ($destructLifoExists) {
+		        $_PEAR_destructor_object_list = array_reverse($_PEAR_destructor_object_list);
+		    }
 
-        while (list($k, $objref) = each($_PEAR_destructor_object_list)) {
-            $classname = get_class($objref);
-            while ($classname) {
-                $destructor = "_$classname";
-                if (method_exists($objref, $destructor)) {
-                    $objref->$destructor();
-                    break;
-                } else {
-                    $classname = get_parent_class($classname);
-                }
-            }
-        }
-        // Empty the object list to ensure that destructors are
-        // not called more than once.
-        $_PEAR_destructor_object_list = array();
-    }
+		    while (list($k, $objref) = each($_PEAR_destructor_object_list)) {
+		        $classname = get_class($objref);
+		        while ($classname) {
+		            $destructor = "_$classname";
+		            if (method_exists($objref, $destructor)) {
+		                $objref->$destructor();
+		                break;
+		            } else {
+		                $classname = get_parent_class($classname);
+		            }
+		        }
+		    }
+		    // Empty the object list to ensure that destructors are
+		    // not called more than once.
+		    $_PEAR_destructor_object_list = array();
+		}
 
-    // Now call the shutdown functions
-    if (isset($GLOBALS['_PEAR_shutdown_funcs']) AND is_array($GLOBALS['_PEAR_shutdown_funcs']) AND !empty($GLOBALS['_PEAR_shutdown_funcs'])) {
-        foreach ($GLOBALS['_PEAR_shutdown_funcs'] as $value) {
-            call_user_func_array($value[0], $value[1]);
-        }
-    }
+		// Now call the shutdown functions
+		if (isset($GLOBALS['_PEAR_shutdown_funcs']) AND is_array($GLOBALS['_PEAR_shutdown_funcs']) AND !empty($GLOBALS['_PEAR_shutdown_funcs'])) {
+		    foreach ($GLOBALS['_PEAR_shutdown_funcs'] as $value) {
+		        call_user_func_array($value[0], $value[1]);
+		    }
+		}
+	}
 }
 
 // }}}
@@ -1126,6 +1130,8 @@ class PEAR_Error
     }
 
     // }}}
+}
+
 }
 
 /*
