@@ -21,7 +21,7 @@ define ('CSS_PAR_DEFAUT', (isset($wakkaConfig['favorite_style'])) ? $wakkaConfig
 define ('SQUELETTE_PAR_DEFAUT', (isset($wakkaConfig['favorite_squelette'])) ? $wakkaConfig['favorite_squelette'] : 'yeswiki.tpl.html');
 
 //pour que seul le propriétaire et l'admin puissent changer de theme
-define ('SEUL_ADMIN_ET_PROPRIO_CHANGENT_THEME', false);
+define ('SEUL_ADMIN_ET_PROPRIO_CHANGENT_THEME', true);
 
 // Desactivation de l'extension template si l'extension navigation est presente et active. 
 if (isset($plugins_list['navigation'])) {
