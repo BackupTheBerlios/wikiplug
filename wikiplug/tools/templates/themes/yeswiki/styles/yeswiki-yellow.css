@@ -35,9 +35,8 @@ a, a:active, a:visited {text-decoration:none; color:#ffb400;}
 a:hover {text-decoration:underline; color:#ffb400;}
 a.actif {text-shadow:0 0.5px 0 #FFF;}
 
-header {margin:0;
-height:170px;
-background:transparent url(../images/animacoop.png) no-repeat right center;
+header {
+	margin:0;
 }
 
 header h1 { font-family: helvetica, arial; font-size:2em; line-height:1.3em; text-align:center;}
