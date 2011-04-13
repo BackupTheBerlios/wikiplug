@@ -15,7 +15,7 @@ if (!defined("WIKINI_VERSION"))
 
 	function exitPopup() {
 	if (showPopup) {
-			return('Cette page demande de confirmer sa fermeture des donn$acute;es saisies pourraient ne pas être enregistr$eacute;es.');		
+			return('Cette page demande de confirmer sa fermeture des donn&acute;es saisies pourraient ne pas &ecirc;tre enregistr&eacute;es.');		
 		}
 	}
 </script>
