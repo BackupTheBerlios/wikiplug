@@ -30,7 +30,6 @@
 	// Required libs
 	
 	include $QR_BASEDIR."qrconst.php";
-	include $QR_BASEDIR."qrconfig.php";
 	include $QR_BASEDIR."qrtools.php";
 	include $QR_BASEDIR."qrspec.php";
 	include $QR_BASEDIR."qrimage.php";
