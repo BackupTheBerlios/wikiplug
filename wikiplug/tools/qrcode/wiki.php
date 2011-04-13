@@ -7,6 +7,7 @@ if (!defined("WIKINI_VERSION"))
         die ("acc&egrave;s direct interdit");
 }
 
+    define('QR_CORRECTION', 'L');   
     define('QR_CACHEABLE', true);                                                               // use cache - more disk reads but less CPU power, masks and format templates are stored there
     define('QR_CACHE_DIR', 'cache'.DIRECTORY_SEPARATOR);  // used when QR_CACHEABLE === true
     define('QR_LOG_DIR', 'cache'.DIRECTORY_SEPARATOR);                                // default error logs dir   
