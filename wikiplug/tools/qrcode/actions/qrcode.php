@@ -29,6 +29,10 @@ error_reporting(E_ALL);
 
 // Lecture des parametres de l'action
 $text = $this->GetParameter('text');
+$correction = $this->GetParameter('correction');
+if(empty($correction)){
+	$correction = 'L';
+}
 // si pas de texte, on affiche une erreur
 if (empty($text)) {
 	echo ("<div class=\"error_box\">ERREUR action qrcode : pas de texte saisi (parametre text=\"\" manquant).</div>");
@@ -37,8 +41,9 @@ else {
 	include_once 'tools/qrcode/libs/qrlib.php';
 	
 //	QRcode::png($text, 'cache/qrcode.png');
-	QRcode::png($text, 'cache/qrcode.png');
-	echo '<img src="cache/qrcode.png" alt="'.$text.'" />'."\n";
+	$cache_image = 'cache/qrcode-'.$this->getPageTag().'-'.md5($text).'.png';
+	QRcode::png($text, $cache_image, $correction, 4, 2);
+	echo '<img src="'.$cache_image.'" alt="'.$text.'" />'."\n";
 }
 
 ?>
