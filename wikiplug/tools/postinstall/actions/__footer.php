@@ -4,24 +4,23 @@ if (!defined("WIKINI_VERSION"))
         die ("acc&egrave;s direct interdit");
 }
 
-if (!$this->LoadPage('TotO')) {
+if (!$this->LoadPage('DerniersChangementsRSS')) {
 
-	echo '<div class="info_box">'."\n".'<h2>Postinstallation de pages</h2>'."\n";
+	echo '<div class="info_box">'."\n".'<strong>Post-installation de pages</strong>'."\n";
 	
 	//insertion des pages de YesWiki
 	$d = dir("tools/postinstall/setup/yeswiki/");
 	
+	// On prend le premier admin venu pour le mettre comme propriétaire des pages
+	$result = explode("\n",$this->GetGroupACL('admins'));
+	$admin_name = $result[0];
+
+	$pages_ajoutees = ''; $pages_deja_existantes = '';
 	while ($doc = $d->read()){
 		if (is_dir($doc) || substr($doc, -4) != '.txt')
 			continue;
 		$pagecontent = implode ('', file("tools/postinstall/setup/yeswiki/$doc"));
-		$pagename = substr($doc,0,strpos($doc,'.txt'));
-		
-		// On prend le premier admin venu pour le mettre comme propriétaire des pages
-		$result = explode("\n",$this->GetGroupACL('admins'));
-		$admin_name = $result[0];
-		
-		$pages_ajoutees = ''; $pages_deja_existantes = '';
+		$pagename = trim(substr($doc,0,strpos($doc,'.txt')));
 		
 		// On ajoute toutes les pages du dossier, sauf celles deja existantes
 		if  (!$this->LoadPage($pagename)) {		
@@ -41,33 +40,34 @@ if (!$this->LoadPage('TotO')) {
 			$this->StartLinkTracking();
 			$this->TrackLinkTo($pagename);
 			$dummy = $this->Header();
-			$dummy = $this->Format($pagecontent);
+			$dummy .= $this->Format($pagecontent);
 			$dummy .= $this->Footer();
 			$this->StopLinkTracking();
 			$this->WriteLinkTable();
 			$this->ClearLinkTable();
-			
-			$pages_ajoutees = $pages_ajoutees.(($pages_ajoutees == '') ? $pagename : ', '.$pagename);
+			if ($pages_ajoutees == '') {
+				$pages_ajoutees .= $pagename;
+			} else {
+				$pages_ajoutees .= ', '.$pagename;
+			}
 		}
 		
 		else {
-			$pages_deja_existantes = $pages_deja_existantes.(($pages_deja_existantes == '') ? $pagename : ', '.$pagename);
+			if ($pages_deja_existantes == '') {
+				$pages_deja_existantes = $pagename;
+			} else {
+				$pages_deja_existantes = $pages_deja_existantes.', '.$pagename;
+			}
 		}	
 
 	}
 	
 	if ($pages_ajoutees != '') {
-			echo $this->Format('===Pages ajoutées===
-						//Les pages suivantes ont été créées : //
-						'.$pages_ajoutees.'
-						
-						');
+			echo $this->Format("\n".'Les pages suivantes ont été créées : '."\n".$pages_ajoutees."\n");
 	}
 						
 	if ($pages_deja_existantes != '') {
-			echo $this->Format('===Pages déja présentes===
-						//les pages suivantes n\'ont pas été créées car elles existent déjà : //
-						'.$pages_deja_existantes);
+			echo $this->Format("\n".'Les pages suivantes n\'ont pas été créées car elles existent déjà : '."\n".$pages_deja_existantes);
 	}
 	
 	echo '</div>'."\n";
