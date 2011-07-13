@@ -6,7 +6,7 @@
 *@package Bazar
 //Auteur original :
 *@author        Florian SCHMITT <florian@outils-reseaux.org>
-*@version       $Revision: 1.1 $ $Date: 2011/03/22 09:33:24 $
+*@version       $Revision: 1.2 $ $Date: 2011/07/13 10:33:23 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -33,7 +33,25 @@ else {
 	$GLOBALS['_BAZAR_']['id_typeannonce'] = 'toutes';
 }
 
-$tableau_resultat = baz_requete_recherche_fiches('', '', $GLOBALS['_BAZAR_']['id_typeannonce'], $GLOBALS['_BAZAR_']['categorie_nature']);
+//on récupère les paramètres pour une requête spécifique
+$query = $this->GetParameter("query");
+if (!empty($query)) {
+	$tabquery = array();
+	$tableau = array();
+	$tab = explode('|', $query);
+	foreach ($tab as $req)
+	{
+		$tabdecoup = explode('=', $req, 2);
+		$tableau[$tabdecoup[0]] = trim($tabdecoup[1]);
+	}
+	$tabquery = array_merge($tabquery, $tableau);
+}
+else
+{
+	$tabquery = '';
+}
+
+$tableau_resultat = baz_requete_recherche_fiches($tabquery, '', $GLOBALS['_BAZAR_']['id_typeannonce'], $GLOBALS['_BAZAR_']['categorie_nature']);
 $js = '';
 foreach ($tableau_resultat as $fiche)
 {

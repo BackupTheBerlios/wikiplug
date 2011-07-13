@@ -2,17 +2,12 @@
 
 	<div class="formulaire_ligne">
 		<label><span class="symbole_obligatoire">*&nbsp;</span>Nom du formulaire</label>
-		<input class="input_texte" name="bn_label_nature" type="text" value="<?=$default['bn_label_nature'];?>" />
-	</div>
-
-	<div class="formulaire_ligne">
-		<label>Cat&eacute;gorie</label>
-		<input class="input_texte" name="bn_type_fiche" type="text" value="<?=$default['bn_type_fiche'];?>" />
+		<input class="input_texte" name="bn_label_nature" type="text" value="<?=(isset($default['bn_label_nature']) ? $default['bn_label_nature'] : '');?>" required="required" />
 	</div>
 
 	<div class="formulaire_ligne">
 		<label>Description</label>
-		<textarea class="input_textarea" cols="40" rows="2" name="bn_description"><?=$default['bn_description'];?></textarea>
+		<textarea class="input_textarea" cols="40" rows="2" name="bn_description"><?=(isset($default['bn_description']) ? $default['bn_description'] : '');?></textarea>
 	</div>
 
 	<fieldset class="valeurs_champs">
@@ -35,11 +30,6 @@
 	</fieldset>
 
 	<div class="formulaire_ligne">
-		<label><span class="symbole_obligatoire">*&nbsp;</span>Template</label>
-		<textarea class="input_textarea" cols="40" rows="2" name="bn_template"><?=$default['bn_template'];?></textarea>
-	</div>
-
-	<div class="formulaire_ligne">
 		<label for="title_generator"><span class="symbole_obligatoire">*&nbsp;</span>Champ utilis&eacute; comme titre pour la fiche</label>
 		<select id="title_generator" name="title_generator" class="updatable-input-text" required="required">
 			<option value="" selected="selected">Choisir...</option>
@@ -51,7 +41,7 @@
 		<label for="personalized_title">
 			<span class="symbole_obligatoire">*&nbsp;</span>Format du titre personnalis&eacute;<img class="tooltip_aide" title="Mettre des identifiants des champs entre doubles accolades pour les utiliser.<br />Par exemple :  {{nom}}, {{prenom}} : {{ville}}" src="tools/bazar/presentation/images/aide.png" width="16" height="16" alt="image aide" />
 		</label>
-		<input class="input_texte" id="personalized_title" name="personalized_title" type="text" required="required" value="<?=$default['personalized_title'];?>" />
+		<input class="input_texte" id="personalized_title" name="personalized_title" type="text" required="required" value="<?=(isset($default['personalized_title']) ? $default['personalized_title'] : '');?>" />
 	</div>
 
 
@@ -62,7 +52,7 @@
 			<h3 class="section_title">Pour le formulaire</h3>
 			<div class="formulaire_ligne">
 				<label for="terms_of_use">Conditions de saisie</label>
-				<textarea class="input_textarea" cols="40" rows="2" id="terms_of_use" name="terms_of_use"><?=$default['terms_of_use'];?></textarea>
+				<textarea class="input_textarea" cols="40" rows="2" id="terms_of_use" name="terms_of_use"><?=(isset($default['terms_of_use']) ? $default['terms_of_use'] : '');?></textarea>
 			</div>
 			<label for="form_read_acls">Droits en lecture</label>
 			<select id="form_read_acls" name="form_read_acls">
@@ -78,7 +68,7 @@
 				<?=$options_group;?>
 				<option value="owner">Seul le propri&eacute;taire</option>
 			</select>
-			<h3 class="section_title">Pour les fiches saisie par le  formulaire</h3>
+			<h3 class="section_title">Pour les fiches saisies par le  formulaire</h3>
 			<label for="sheet_read_acls">Droits en lecture</label>
 			<select id="sheet_read_acls" name="sheet_read_acls">
 				<option value="default" selected="selected">Par d&eacute;faut</option>
@@ -123,7 +113,7 @@
 				</select>
 			</div>
 			<div class="formulaire_ligne">
-				<label for="geo_searchfields">Texte suppl&eacute;mentaire de recherche&nbsp;<img class="tooltip_aide" title="Permet de pr&eacute;ciser un crit&egrave;re de recherche sur la carte suppl&eacute;mentaire (comme département, pays ou ville) si cela n&#146;a pas &eacute;t&eacute; possible par les champs ci dessus." src="tools/bazar/presentation/images/aide.png" width="16" height="16" alt="image aide" /></label>
+				<label for="geo_searchfields">Texte suppl&eacute;mentaire de recherche&nbsp;<img class="tooltip_aide" title="Permet de pr&eacute;ciser un crit&egrave;re de recherche sur la carte suppl&eacute;mentaire (comme dï¿½partement, pays ou ville) si cela n&#146;a pas &eacute;t&eacute; possible par les champs ci dessus." src="tools/bazar/presentation/images/aide.png" width="16" height="16" alt="image aide" /></label>
 				<input id="geo_searchfields" name="geo_searchfields" type="text" />
 			</div>
 
@@ -196,16 +186,6 @@
 		<h2 class="titre_accordeon">Notifications par E-mail</h2>
 		<div class="pane">
 			<div class="formulaire_ligne">
-				<label for="mail_to_owner">L'utilisateur est inform&eacute; de sa saisie r&eacute;ussie</label>
-				<input type="checkbox" id="mail_to_owner" name="mail_to_owner" />
-			</div>
-
-			<div class="formulaire_ligne">
-				<label for="sender_email"><span class="symbole_obligatoire">*&nbsp;</span>E-mail de l'exp&eacute;diteur du mail</label>
-				<input class="input_texte" id="sender_email" name="sender_email" type="text" required="required" value="" />
-			</div>
-
-			<div class="formulaire_ligne">
 				<label for="send_to_group">Envoyer un mail au groupe</label>
 				<select id="send_to_group" name="send_to_group">
 					<option value="" selected="selected">Choisir...</option>
@@ -218,15 +198,15 @@
 		<h2 class="titre_accordeon">Cr&eacute;ation d'un NomWiki</h2>
 		<div class="pane">
 			<div class="formulaire_ligne">
-				<label for="user_wikiname"><span class="symbole_obligatoire">*&nbsp;</span>Champ pour g&eacute;n&eacute;rer le NomWiki</label>
-				<select id="user_wikiname" name="user_wikiname" class="updatable-input-text" required="required">
-					<option value="" selected="selected">Choisir...</option>
+				<label for="user_wikiname">Champ pour g&eacute;n&eacute;rer le NomWiki</label>
+				<select id="user_wikiname" name="user_wikiname" class="updatable-input-text">
+					<option value="1" selected="selected">Choisir...</option>
 				</select>
 			</div>
 			<div class="formulaire_ligne">
-				<label for="user_mail"><span class="symbole_obligatoire">*&nbsp;</span>Champ pour l'E-mail</label>
-				<select id="user_mail" name="user_mail" class="updatable-input-text" required="required">
-					<option value="" selected="selected">Choisir...</option>
+				<label for="user_mail">Champ pour l'E-mail</label>
+				<select id="user_mail" name="user_mail" class="updatable-input-text-email">
+					<option value="1" selected="selected">Choisir...</option>
 				</select>
 			</div>
 		</div>

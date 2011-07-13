@@ -3,7 +3,7 @@
 // +------------------------------------------------------------------------------------------------------+
 // | PHP version 4.1                                                                                      |
 // +------------------------------------------------------------------------------------------------------+
-// | Copyright (C) 2004 Tela Botanica (accueil@tela-botanica.org)                                         |
+// | Copyright (C) 2004 Outils-Reseaux (accueil@outils-reseaux.org)                                       |
 // +------------------------------------------------------------------------------------------------------+
 // | This library is free software; you can redistribute it and/or                                        |
 // | modify it under the terms of the GNU Lesser General Public                                           |
@@ -19,7 +19,7 @@
 // | License along with this library; if not, write to the Free Software                                  |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: formulaire.fonct.inc.php,v 1.26 2011/03/22 09:33:23 mrflos Exp $
+// CVS : $Id: formulaire.fonct.inc.php,v 1.27 2011/07/13 10:33:23 mrflos Exp $
 /**
 * Formulaire
 *
@@ -31,11 +31,11 @@
 //Autres auteurs :
 *@author        Aleandre GRANIER <alexandre@tela-botanica.org>
 *@copyright     Tela-Botanica 2000-2004
-*@version       $Revision: 1.26 $ $Date: 2011/03/22 09:33:23 $
+*@version       $Revision: 1.27 $ $Date: 2011/07/13 10:33:23 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
-//comptatibilitÃ© avec PHP4...
+//comptatibilite avec PHP4...
 if (version_compare(phpversion(), '5.0') < 0) {
     eval('
     function clone($object) {
@@ -146,11 +146,11 @@ function formulaire_valeurs_template_champs($template) {
 
 //-------------------FONCTIONS DE MISE EN PAGE DES FORMULAIRES
 
-/** liste() - Ajoute un Ã©lÃ©ment de type liste dÃ©roulante au formulaire
+/** liste() - Ajoute un element de type liste deroulante au formulaire
 *
 * @param    mixed   L'objet QuickForm du formulaire
-* @param    mixed   Le tableau des valeurs des diffÃ©rentes option pour l'Ã©lÃ©ment liste
-* @param    string  Type d'action pour le formulaire : saisie, modification, vue,... saisie par dÃ©faut
+* @param    mixed   Le tableau des valeurs des differentes option pour l'element liste
+* @param    string  Type d'action pour le formulaire : saisie, modification, vue,... saisie par defaut
 * @return   void
 */
 function liste(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
@@ -209,7 +209,7 @@ function liste(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		
 		$select_html .= "</select>\n</div>\n</div>\n";
 		
-		$formtemplate->addElement('html', $select_html) ;
+		$formtemplate .= $select_html;
 
 		
 	}
@@ -219,44 +219,50 @@ function liste(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 	}
 	elseif ($mode == 'formulaire_recherche')
 	{
-		//on affiche la liste sous forme de liste dÃ©roulante
+		//on affiche la liste sous forme de liste deroulante
 		if ($tableau_template[9]==1)
 		{
 			$valliste = baz_valeurs_liste($tableau_template[1]);
+			echo '<br />'.$tableau_template[1].'<br />';
 			$select[0] = BAZ_INDIFFERENT;
 			if (is_array($valliste['label'])) {
 				$select = $select + $valliste['label'];
 			}
-
-			$option = array('id' => $tableau_template[0].$tableau_template[1].$tableau_template[6]);
-			require_once 'HTML/QuickForm/select.php';
-			$select= new HTML_QuickForm_select($tableau_template[0].$tableau_template[1].$tableau_template[6], $tableau_template[2], $select, $option);
-			if ($tableau_template[4] != '') $select->setSize($tableau_template[4]);
-			$select->setMultiple(0);
-			$select->setValue(0);
-			$formtemplate->addElement($select) ;
+			var_dump($select);
+			$select = '<div class="formulaire_ligne">'."\n".
+					'	<div class="formulaire_label">'.$tableau_template[2].'</div>'."\n".
+					'	<div class="formulaire_input">'."\n".
+					'		<select name="'.$tableau_template[0].$tableau_template[1].$tableau_template[6].'" id="'.$tableau_template[0].$tableau_template[1].$tableau_template[6].'">'."\n".
+					'		</select>'."\n".
+					'	</div>'."\n".
+					'</div>'."\n";	
+			return $select ;			
 		}
+		
 		//on affiche la liste sous forme de checkbox
-		if ($tableau_template[9]==2)
+		elseif ($tableau_template[9]==2)
 		{
+			// valeurs de la liste
 			$valliste = baz_valeurs_liste($tableau_template[1]);
-			require_once 'HTML/QuickForm/checkbox.php' ;
-			$i=0;
-			$optioncheckbox = array('class' => 'element_checkbox');
-
-			foreach ($valliste['label'] as $id => $label) {
-				if ($i==0) $tab_chkbox = $tableau_template[2] ; else $tab_chkbox='&nbsp;';
-				$checkbox[$i]= & HTML_QuickForm::createElement('checkbox', $id, $tab_chkbox, $label, $optioncheckbox) ;
-				$i++;
-			}
-
-			$squelette_checkbox =& $formtemplate->defaultRenderer();
-			$squelette_checkbox->setElementTemplate( '<fieldset class="bazar_fieldset">'."\n".'<legend>{label}'.
-													'<!-- BEGIN required --><span class="symbole_obligatoire">&nbsp;*</span><!-- END required -->'."\n".
-													'</legend>'."\n".'{element}'."\n".'</fieldset> '."\n"."\n", $tableau_template[0].$tableau_template[1].$tableau_template[6]);
-			$squelette_checkbox->setGroupElementTemplate( "\n".'<div class="bazar_checkbox">'."\n".'{element}'."\n".'</div>'."\n", $tableau_template[0].$tableau_template[1].$tableau_template[6]);
 			
-			$formtemplate->addGroup($checkbox, $tableau_template[0].$tableau_template[1].$tableau_template[6], $tableau_template[2], "\n");
+			$squelette_checkbox = '';
+			if ($valliste) {
+				$choixcheckbox = $valliste['label'];
+				//var_dump($valliste);			
+				$squelette_checkbox .= '<fieldset class="bazar_fieldset">'."\n".'<legend>'. $tableau_template[2] .'</legend>'."\n";
+				
+				// generation de la liste des checkbox
+				foreach ($choixcheckbox as $id => $label) {
+					$squelette_checkbox .=  '<div class="bazar_checkbox">'."\n".
+												'<input type="checkbox" id="checkbox_'.$tableau_template[1].$id.'" value="1" name="checkbox'.$tableau_template[1].'['.$id.']" class="element_checkbox">'."\n".
+												'<label for="checkbox_'.$tableau_template[1].$id.'">'.$label.'</label>'."\n".
+											'</div>';
+				}
+				
+				$squelette_checkbox .= '</fieldset> '."\n";
+			}
+	
+			return $squelette_checkbox;			
 		}
 	}
 	elseif ($mode == 'requete_recherche')
@@ -298,50 +304,41 @@ function checkbox(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 {
 	if ($mode == 'saisie')
 	{
+		// on ajout la bulle d'aide si elle existe
 		$bulledaide = '';
 		if (isset($tableau_template[10]) && $tableau_template[10]!='') $bulledaide = ' <img class="tooltip_aide" title="'.htmlentities($tableau_template[10]).'" src="tools/bazar/presentation/images/aide.png" width="16" height="16" alt="image aide" />';
+		
+		// valeurs de la liste
 		$valliste = baz_valeurs_liste($tableau_template[1]);
 		$choixcheckbox = $valliste['label'];
 		
-		require_once 'HTML/QuickForm/checkbox.php' ;
-		$i=0;
-		$optioncheckbox = array('class' => 'element_checkbox');
-		
-		//valeurs par dÃ©fauts
+		// valeurs par defauts
 		if (isset($valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]])) {
 			$tab = split( ',', $valeurs_fiche[$tableau_template[0].$tableau_template[1].$tableau_template[6]] );
 		} else {
-			$tab = split( ', ', $tableau_template[5] );
+			$tab = split( ',', $tableau_template[5] );
 		}
-
-		foreach ($choixcheckbox as $id => $label) {
-			if ($i==0) {
-				$tab_chkbox = $tableau_template[2] ; 
-			} else {
-				$tab_chkbox='&nbsp;';
-			}
 			
-			//teste si la valeur de la liste doit Ãªtre cochÃ©e par dÃ©faut
+		$squelette_checkbox = '<fieldset class="bazar_fieldset">'."\n".'<legend>'. $tableau_template[2].$bulledaide;
+		if (isset($tableau_template[8]) && $tableau_template[8]==1) {
+			$squelette_checkbox .= '<span class="symbole_obligatoire">&nbsp;*</span>';
+		}
+		$squelette_checkbox .= '</legend>'."\n";
+		
+		// generation de la liste des checkbox
+		foreach ($choixcheckbox as $id => $label) {
+			// teste si la valeur de la liste doit etre cochee par defaut
 			if (in_array($id,$tab)) {
 				$defaultValues[$tableau_template[0].$tableau_template[1].$tableau_template[6].'['.$id.']'] = true;				
 			} else {
 				$defaultValues[$tableau_template[0].$tableau_template[1].$tableau_template[6].'['.$id.']'] = false;
 			}
-			
-			$checkbox[$i] = $formtemplate->createElement($tableau_template[0], $id, $tab_chkbox, $label, $optioncheckbox);
-			$i++;
-		}	
-		$squelette_checkbox =& $formtemplate->defaultRenderer();
-		$squelette_checkbox->setElementTemplate( '<fieldset class="bazar_fieldset">'."\n".'<legend>{label}'.
-												'<!-- BEGIN required --><span class="symbole_obligatoire">&nbsp;*</span><!-- END required -->'."\n".
-												'</legend>'."\n".'{element}'."\n".'</fieldset> '."\n"."\n", $tableau_template[0].$tableau_template[1].$tableau_template[6]);
-		$squelette_checkbox->setGroupElementTemplate( "\n".'<div class="bazar_checkbox">'."\n".'{element}'."\n".'</div>'."\n", $tableau_template[0].$tableau_template[1].$tableau_template[6]);
-		$formtemplate->addGroup($checkbox, $tableau_template[0].$tableau_template[1].$tableau_template[6], $tableau_template[2].$bulledaide, "\n");
-		if (isset($tableau_template[8]) && $tableau_template[8]==1) {
-			$formtemplate->addGroupRule($tableau_template[0].$tableau_template[1].$tableau_template[6], $tableau_template[2].' obligatoire', 'required', null, 1, 'client');
+			$squelette_checkbox .= '<div class="bazar_checkbox">'."\n"."\n".'</div>';
 		}
+		
+		$squelette_checkbox .= '</fieldset> '."\n";
 
-		$formtemplate->setDefaults($defaultValues);
+		return $squelette_checkbox;
 	}
 	elseif ( $mode == 'requete' )
 	{
@@ -350,24 +347,27 @@ function checkbox(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 	{
 		if ($tableau_template[9]==1)
 		{
+			// valeurs de la liste
 			$valliste = baz_valeurs_liste($tableau_template[1]);
-			require_once 'HTML/QuickForm/checkbox.php' ;
-			$i=0;
-			$optioncheckbox = array('class' => 'element_checkbox');
-
-			foreach ($valliste['label'] as $id => $label) {
-				if ($i==0) $tab_chkbox = $tableau_template[2] ; else $tab_chkbox='&nbsp;';
-				$checkbox[$i]= & HTML_QuickForm::createElement('checkbox', $id, $tab_chkbox, $label, $optioncheckbox) ;
-				$i++;
-			}
-
-			$squelette_checkbox =& $formtemplate->defaultRenderer();
-			$squelette_checkbox->setElementTemplate( '<fieldset class="bazar_fieldset">'."\n".'<legend>{label}'.
-													'<!-- BEGIN required --><span class="symbole_obligatoire">&nbsp;*</span><!-- END required -->'."\n".
-													'</legend>'."\n".'{element}'."\n".'</fieldset> '."\n"."\n", $tableau_template[0].$tableau_template[1].$tableau_template[6]);
-			$squelette_checkbox->setGroupElementTemplate( "\n".'<div class="bazar_checkbox">'."\n".'{element}'."\n".'</div>'."\n", $tableau_template[0].$tableau_template[1].$tableau_template[6]);
 			
-			$formtemplate->addGroup($checkbox, $tableau_template[0].$tableau_template[1].$tableau_template[6], $tableau_template[2], "\n");
+			$squelette_checkbox = '';
+			if ($valliste) {
+				$choixcheckbox = $valliste['label'];
+				//var_dump($valliste);			
+				$squelette_checkbox .= '<fieldset class="bazar_fieldset">'."\n".'<legend>'. $tableau_template[2] .'</legend>'."\n";
+				
+				// generation de la liste des checkbox
+				foreach ($choixcheckbox as $id => $label) {
+					$squelette_checkbox .=  '<div class="bazar_checkbox">'."\n".
+												'<input type="checkbox" id="checkbox_'.$tableau_template[1].$id.'" value="1" name="checkbox'.$tableau_template[1].'['.$id.']" class="element_checkbox">'."\n".
+												'<label for="checkbox_'.$tableau_template[1].$id.'">'.$label.'</label>'."\n".
+											'</div>';
+				}
+				
+				$squelette_checkbox .= '</fieldset> '."\n";
+			}
+	
+			return $squelette_checkbox;
 		}
 	}
 	elseif ($mode == 'html')
@@ -615,9 +615,9 @@ function texte(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		//par defaut il s'agit d'input html de type "text" (on precise si cela n'a pas ete entre)
 		if ($type_input == '') $type_input = 'text';
 		
-		$input_html  = '<div class="formulaire_ligne">'."\n".'<div class="formulaire_label">';
+		$input_html  = '<div class="formulaire_ligne">'."\n".'<label>';
 		$input_html .= ($obligatoire == 1) ? '<span class="symbole_obligatoire">*&nbsp;</span>' : '';
-		$input_html .= $label.$bulledaide.' : </div>'."\n";
+		$input_html .= $label.$bulledaide.'</label>'."\n";
 		$input_html .= '<div class="formulaire_input">'."\n";
 		$input_html .= '<input type="'.$type_input.'"';
 		$input_html .= ($defauts != '') ? ' value="'.$defauts.'"' : '';
@@ -629,7 +629,7 @@ function texte(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 		$input_html .= ($obligatoire == 1) ? ' required="required"' : '';
 		$input_html .= '>'."\n".'</div>'."\n".'</div>'."\n";
 		
-		$formtemplate->addElement('html', $input_html) ;
+		return $input_html;
 	}
 	elseif ( $mode == 'requete' )
 	{
@@ -761,7 +761,7 @@ function utilisateur_wikini(&$formtemplate, $tableau_template, $mode, $valeurs_f
 }
 
 
-/** champs_cache() - Ajoute un Ã©lÃ©ment cachÃ© au formulaire
+/** champs_cache() - Ajoute un element cache au formulaire
 *
 * @param    mixed   L'objet QuickForm du formulaire
 * @param    mixed   Le tableau des valeurs des diffÃ©rentes option pour l'Ã©lÃ©ment cachÃ©
@@ -794,39 +794,58 @@ function champs_cache(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 }
 
 
-/** champs_mail() - Ajoute un Ã©lÃ©ment texte formatÃ© comme un mail au formulaire
+/** champs_mail() - Ajoute un element texte formate comme un mail au formulaire
 *
 * @param    mixed   L'objet QuickForm du formulaire
-* @param    mixed   Le tableau des valeurs des diffÃ©rentes option pour l'Ã©lÃ©ment texte
-* @param    string  Type d'action pour le formulaire : saisie, modification, vue,... saisie par dÃ©faut
+* @param    mixed   Le tableau des valeurs des differentes option pour l'element texte
+* @param    string  Type d'action pour le formulaire : saisie, modification, vue,... saisie par defaut
 * @return   void
 */
 function champs_mail(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 {
+	list($type, $identifiant, $label, $nb_min_car, $nb_max_car, $valeur_par_defaut, $regexp, $type_input , $obligatoire, , $bulle_d_aide) = $tableau_template;
 	if ( $mode == 'saisie' )
 	{
-		$option=array('size'=>$tableau_template[3],'maxlength'=>$tableau_template[4], 'id' => $tableau_template[1], 'class' => 'input_texte');
-		$formtemplate->addElement('text', $tableau_template[1], $tableau_template[2], $option) ;
-		//gestion des valeurs par dÃ©faut : d'abord on regarde s'il y a une valeur Ã  modifier,
-		//puis s'il y a une variable passÃ©e en GET,
-		//enfin on prend la valeur par dÃ©faut du formulaire sinon
-		if (isset($valeurs_fiche[$tableau_template[1]])) {
-			$defauts = array( $tableau_template[1] => $valeurs_fiche[$tableau_template[1]] );
-		}
-		elseif (isset($_GET[$tableau_template[1]])) {
-			$defauts = array( $tableau_template[1] => stripslashes($_GET[$tableau_template[1]]) );
+		// on prepare le html de la bulle d'aide, si elle existe
+		if ($bulle_d_aide != '') {
+			$bulledaide = '<img class="tooltip_aide" title="'.htmlentities($bulle_d_aide).'" src="tools/bazar/presentation/images/aide.png" width="16" height="16" alt="image aide" />';
 		} else {
-			$defauts = array( $tableau_template[1] => stripslashes($tableau_template[5]) );
+			$bulledaide = '';
 		}
-		$formtemplate->setDefaults($defauts);
 		
-		//$formtemplate->applyFilter($tableau_template[1], 'addslashes') ;
-		
-		$formtemplate->addRule($tableau_template[1], 'Format de l\'adresse mail incorrect', 'emailorblank', '', 'client') ;
-		//gestion du champs obligatoire
-		if (($tableau_template[9]==0) && isset($tableau_template[8]) && ($tableau_template[8]==1)) {
-			$formtemplate->addRule($tableau_template[1],  $tableau_template[2].' obligatoire', 'required', '', 'client') ;
+		//gestion des valeurs par defaut : d'abord on regarde s'il y a une valeur a modifier,
+		//puis s'il y a une variable passee en GET,
+		//enfin on prend la valeur par defaut du formulaire sinon
+		if (isset($valeurs_fiche[$identifiant])) {
+			$defauts = $valeurs_fiche[$identifiant];
 		}
+		elseif (isset($_GET[$identifiant])) {
+			$defauts = stripslashes($identifiant);
+		} else {
+			$defauts = stripslashes($valeur_par_defaut);
+		}
+
+		//si la valeur de nb_max_car est vide, on la mets au maximum
+		if ($nb_max_car == '') $nb_max_car = 255;
+		
+		//par defaut il s'agit d'input html de type "text" (on precise si cela n'a pas ete entre)
+		if ($type_input == '') $type_input = 'email';
+		
+		$input_html  = '<div class="formulaire_ligne">'."\n".'<label>';
+		$input_html .= ($obligatoire == 1) ? '<span class="symbole_obligatoire">*&nbsp;</span>' : '';
+		$input_html .= $label.$bulledaide.'</label>'."\n";
+		$input_html .= '<div class="formulaire_input">'."\n";
+		$input_html .= '<input type="'.$type_input.'"';
+		$input_html .= ($defauts != '') ? ' value="'.$defauts.'"' : '';
+		$input_html .= ' name="'.$identifiant.'" class="input_texte" id="'.$identifiant.'"';
+		$input_html .= ' maxlength="'.$nb_max_car.'" size="'.$nb_max_car.'"';
+		$input_html .= ($type_input == 'number' && $nb_min_car != '') ? ' min="'.$nb_min_car.'"' : '';
+		$input_html .= ($type_input == 'number') ? ' max="'.$nb_max_car.'"' : '';	
+		$input_html .= ($regexp != '') ? ' pattern="'.$regexp.'"' : '';
+		$input_html .= ($obligatoire == 1) ? ' required="required"' : '';
+		$input_html .= '>'."\n".'</div>'."\n".'</div>'."\n";
+		
+		return $input_html;
 	}
 	elseif ( $mode == 'requete' )
 	{
@@ -882,11 +901,11 @@ function mot_de_passe(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 }
 
 
-/** textelong() - Ajoute un Ã©lÃ©ment de type texte long (textarea) au formulaire
+/** textelong() - Ajoute un element de type texte long (textarea) au formulaire
 *
 * @param    mixed   L'objet QuickForm du formulaire
-* @param    mixed   Le tableau des valeurs des diffÃ©rentes option pour l'Ã©lÃ©ment texte long
-* @param    string  Type d'action pour le formulaire : saisie, modification, vue,... saisie par dÃ©faut
+* @param    mixed   Le tableau des valeurs des differentes option pour l'element texte long
+* @param    string  Type d'action pour le formulaire : saisie, modification, vue,... saisie par defaut
 * @return   void
 */
 function textelong(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
@@ -894,35 +913,33 @@ function textelong(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 	list($type, $identifiant, $label, $nb_colonnes, $nb_lignes, $valeur_par_defaut, $longueurmax, $formatage , $obligatoire, $apparait_recherche, $bulle_d_aide) = $tableau_template;
 	if ( $mode == 'saisie' )
 	{
-		$options = array('id' => $identifiant, 'class' => 'input_textarea');
+		
+		if ($obligatoire == 1) $label .= '<span class="symbole_obligatoire">*&nbsp;</span>';
 		if ($longueurmax != '') $options['maxlength'] = $longueurmax;
 		$longueurmax = ($longueurmax ? '<span class="charsRemaining"> ('.$longueurmax.' caract&egrave;res restants)</span>' : '' );
 		$bulledaide = '';
 		if ($bulle_d_aide!='') $bulledaide = ' <img class="tooltip_aide" title="'.htmlentities($bulle_d_aide).'" src="tools/bazar/presentation/images/aide.png" width="16" height="16" alt="image aide" />';
-		$formtexte= new HTML_QuickForm_textarea($identifiant, $label.$longueurmax.$bulledaide, $options);
-		$formtexte->setCols($nb_colonnes);
-		$formtexte->setRows($nb_lignes);
-		$formtemplate->addElement($formtexte) ;
 		
 		//gestion des valeurs par defaut : d'abord on regarde s'il y a une valeur a modifier,
 		//puis s'il y a une variable passee en GET,
 		//enfin on prend la valeur par defaut du formulaire sinon
 		if (isset($valeurs_fiche[$identifiant])) {
-			$defauts = array( $identifiant => $valeurs_fiche[$identifiant] );
+			$defauts = $valeurs_fiche[$identifiant];
 		}
 		elseif (isset($_GET[$identifiant])) {
-			$defauts = array( $identifiant => stripslashes($_GET[$identifiant]) );
+			$defauts = stripslashes($_GET[$identifiant]);
 		} else {
-			$defauts = array( $identifiant => stripslashes($tableau_template[5]) );
+			$defauts = stripslashes($tableau_template[5]);
 		}
-		$formtemplate->setDefaults($defauts);
 		
-		//$formtemplate->applyFilter($identifiant, 'addslashes') ;
 		
-		//gestion du champs obligatoire
-		if (($apparait_recherche==0) && isset($obligatoire) && ($obligatoire==1)) {
-			$formtemplate->addRule($identifiant,  $label.' obligatoire', 'required', '', 'client') ;
-		}
+		$formtexte = '<div class="formulaire_ligne">'. "\n".'<label>'.$label.$longueurmax.$bulledaide.'</label>'.
+					'	<div class="formulaire_input">'."\n".
+					'		<textarea rows="'.$nb_lignes.'" cols="'.$nb_colonnes.'" name="'.$identifiant.'" class="input_textarea" id="'.$identifiant.'" '.(($obligatoire == 1) ? 'required="required"': '').'>'."\n".$defauts.'</textarea>'."\n".
+					'	</div>'."\n".
+					'</div>'."\n";
+		
+		return $formtexte;
 	}
 	elseif ( $mode == 'requete' )
 	{
@@ -952,56 +969,62 @@ function textelong(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 }
 
 
-
-/** url() - Ajoute un Ã©lÃ©ment de type url internet au formulaire
+/** lien_internet() - Ajoute un element de type texte contenant une URL au formulaire
 *
 * @param    mixed   L'objet QuickForm du formulaire
-* @param    mixed   Le tableau des valeurs des diffÃ©rentes option pour l'Ã©lÃ©ment url internet
-* @param    string  Type d'action pour le formulaire : saisie, modification, vue,... saisie par dÃ©faut
-* @return   void
-*/
-
-
-/** lien_internet() - Ajoute un Ã©lÃ©ment de type texte contenant une URL au formulaire
-*
-* @param    mixed   L'objet QuickForm du formulaire
-* @param    mixed   Le tableau des valeurs des diffÃ©rentes option pour l'Ã©lÃ©ment texte url
-* @param    string  Type d'action pour le formulaire : saisie, modification, vue,... saisie par dÃ©faut
+* @param    mixed   Le tableau des valeurs des differentes option pour l'element texte url
+* @param    string  Type d'action pour le formulaire : saisie, modification, vue,... saisie par defaut
 * @return   void
 */
 function lien_internet(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 {
-	if ($mode == 'saisie')
+list($type, $identifiant, $label, $nb_min_car, $nb_max_car, $valeur_par_defaut, $regexp, $type_input , $obligatoire, , $bulle_d_aide) = $tableau_template;
+	if ( $mode == 'saisie' )
 	{
-		//recherche des URLs deja entrees dans la base
-		$html_url= '';
-		$option=array('size'=>$tableau_template[3],'maxlength'=>$tableau_template[4], 'id' => $tableau_template[1], 'class' => 'input_texte');
-		$bulledaide = '';
-		if (isset($tableau_template[10]) && $tableau_template[10]!='') {
-			$bulledaide = ' <img class="tooltip_aide" title="'.htmlentities($tableau_template[10]).'" src="tools/bazar/presentation/images/aide.png" width="16" height="16" alt="image aide" />';
-		}
-		$formtemplate->addElement('text', $tableau_template[1], $tableau_template[2].$bulledaide, $option)	;
-		//gestion des valeurs par dÃ©faut : d'abord on regarde s'il y a une valeur Ã  modifier,
-		//puis s'il y a une variable passÃ©e en GET,
-		//enfin on prend la valeur par dÃ©faut du formulaire sinon
-		if (isset($valeurs_fiche[$tableau_template[1]])) {
-			$defauts = array( $tableau_template[1] => $valeurs_fiche[$tableau_template[1]] );
-		}
-		elseif (isset($_GET[$tableau_template[1]])) {
-			$defauts = array( $tableau_template[1] => stripslashes($_GET[$tableau_template[1]]) );
+		// on prepare le html de la bulle d'aide, si elle existe
+		if ($bulle_d_aide != '') {
+			$bulledaide = '<img class="tooltip_aide" title="'.htmlentities($bulle_d_aide).'" src="tools/bazar/presentation/images/aide.png" width="16" height="16" alt="image aide" />';
 		} else {
-			$defauts = array( $tableau_template[1] => stripslashes($tableau_template[5]) );
+			$bulledaide = '';
 		}
-		$formtemplate->setDefaults($defauts);
 		
-		//gestion du champs obligatoire
-		if (($tableau_template[9]==0) && isset($tableau_template[8]) && ($tableau_template[8]==1)) {
-			$formtemplate->addRule($tableau_template[1], URL_LIEN_REQUIS, 'required', '', 'client') ;
+		//gestion des valeurs par defaut : d'abord on regarde s'il y a une valeur a modifier,
+		//puis s'il y a une variable passee en GET,
+		//enfin on prend la valeur par defaut du formulaire sinon
+		if (isset($valeurs_fiche[$identifiant])) {
+			$defauts = $valeurs_fiche[$identifiant];
 		}
+		elseif (isset($_GET[$identifiant])) {
+			$defauts = stripslashes($identifiant);
+		} else {
+			$defauts = stripslashes($valeur_par_defaut);
+		}
+
+		//si la valeur de nb_max_car est vide, on la mets au maximum
+		if ($nb_max_car == '') $nb_max_car = 255;
+		
+		//par defaut il s'agit d'input html de type "text" (on precise si cela n'a pas ete entre)
+		if ($type_input == '') $type_input = 'url';
+		
+		$input_html  = '<div class="formulaire_ligne">'."\n".'<label>';
+		$input_html .= ($obligatoire == 1) ? '<span class="symbole_obligatoire">*&nbsp;</span>' : '';
+		$input_html .= $label.$bulledaide.'</label>'."\n";
+		$input_html .= '<div class="formulaire_input">'."\n";
+		$input_html .= '<input type="'.$type_input.'"';
+		$input_html .= ($defauts != '') ? ' value="'.$defauts.'"' : '';
+		$input_html .= ' name="'.$identifiant.'" class="input_texte" id="'.$identifiant.'"';
+		$input_html .= ' maxlength="'.$nb_max_car.'" size="'.$nb_max_car.'"';
+		$input_html .= ($type_input == 'number' && $nb_min_car != '') ? ' min="'.$nb_min_car.'"' : '';
+		$input_html .= ($type_input == 'number') ? ' max="'.$nb_max_car.'"' : '';	
+		$input_html .= ($regexp != '') ? ' pattern="'.$regexp.'"' : '';
+		$input_html .= ($obligatoire == 1) ? ' required="required"' : '';
+		$input_html .= '>'."\n".'</div>'."\n".'</div>'."\n";
+		
+		return $input_html;
 	}
 	elseif ( $mode == 'requete' )
 	{
-		//on supprime la valeur, si elle est restÃ©e par dÃ©faut
+		//on supprime la valeur, si elle est restee par defaut
 		if ($valeurs_fiche[$tableau_template[1]]!='http://') return array($tableau_template[1] => $valeurs_fiche[$tableau_template[1]]);
 		else return;
 	}
@@ -1221,8 +1244,8 @@ function image(&$formtemplate, $tableau_template, $mode, $valeurs_fiche) {
 /** labelhtml() - Ajoute du texte HTML au formulaire
 *
 * @param    mixed   L'objet QuickForm du formulaire
-* @param    mixed   Le tableau des valeurs des diffÃ©rentes option pour le texte HTML
-* @param    string  Type d'action pour le formulaire : saisie, modification, vue,... saisie par dÃ©faut
+* @param    mixed   Le tableau des valeurs des differentes option pour le texte HTML
+* @param    string  Type d'action pour le formulaire : saisie, modification, vue,... saisie par defaut
 * @return   void
 */
 function labelhtml(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
@@ -1231,16 +1254,11 @@ function labelhtml(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 
 	if ( $mode == 'saisie' )
 	{
-		require_once BAZ_CHEMIN.'libs'.DIRECTORY_SEPARATOR.'HTML/QuickForm/html.php';
-		$formtemplate->addElement(new HTML_QuickForm_html("\n".$texte_saisie."\n")) ;
-	}
-	elseif ( $mode == 'requete' )
-	{
-		return;
+		return $texte_saisie."\n";
 	}
 	elseif ($mode == 'formulaire_recherche')
 	{
-		$formtemplate->addElement('html', $texte_recherche);
+		return $texte_recherche."\n";
 	}
 	elseif ($mode == 'html')
 	{
@@ -1248,11 +1266,11 @@ function labelhtml(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 	}
 }
 
-/** titre() - Action qui camouffle le titre et le gÃ©nÃ©re Ã  partir d'autres champs au formulaire
+/** titre() - Action qui camouffle le titre et le genre a partir d'autres champs au formulaire
 *
 * @param    mixed   L'objet QuickForm du formulaire
-* @param    mixed   Le tableau des valeurs des diffÃ©rentes option pour le texte HTML
-* @param    string  Type d'action pour le formulaire : saisie, modification, vue,... saisie par dÃ©faut
+* @param    mixed   Le tableau des valeurs des differentes option pour le texte HTML
+* @param    string  Type d'action pour le formulaire : saisie, modification, vue,... saisie par defaut
 * @return   void
 */
 function titre(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
@@ -1301,11 +1319,11 @@ function titre(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 	}
 }
 
-/** carte_google() - Ajoute un Ã©lÃ©ment de carte google au formulaire
+/** carte_google() - Ajoute un element de carte google au formulaire
 *
 * @param    mixed   L'objet QuickForm du formulaire
-* @param    mixed   Le tableau des valeurs des diffÃ©rentes option pour la carte google
-* @param    string  Type d'action pour le formulaire : saisie, modification, vue,... saisie par dÃ©faut
+* @param    mixed   Le tableau des valeurs des differentes option pour la carte google
+* @param    string  Type d'action pour le formulaire : saisie, modification, vue,... saisie par defaut
 * @return   void
 */
 function carte_google(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
@@ -1318,7 +1336,6 @@ function carte_google(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 			$tab=explode('|', $valeurs_fiche['carte_google']);
 			if (count($tab)>1) {
 				$defauts = array( $lat => $tab[0], $lon => $tab[1] );
-				$formtemplate->setDefaults($defauts);
 			}
 		}
 
@@ -1446,7 +1463,7 @@ function carte_google(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 				map.setCenter(marker.getPosition());
 			});
 		}
-		else {alert("Localisation par votre accÃ¨s Internet impossible..");}
+		else {alert("Localisation par votre acces Internet impossible..");}
 	};
 
 	function showAddress() {
@@ -1517,10 +1534,10 @@ function carte_google(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 					map.setCenter(marker.getPosition());
 				});
 			  } else {
-				alert("Pas de rÃ©sultats pour cette adresse: " + address);
+				alert("Pas de r�sultats pour cette adresse: " + address);
 			  }
 			} else {
-			  alert("Pas de rÃ©sultats pour la raison suivante: " + status + ", rechargez la page.");
+			  alert("Pas de r�sultats pour la raison suivante: " + status + ", rechargez la page.");
 			}
 		  });
 		}
@@ -1541,19 +1558,20 @@ function carte_google(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 				'.$scriptgoogle.'
 				//]]>
 				</script>';
-		$formtemplate->addElement('html', $html_bouton);
-		$formtemplate->addElement('html', '<div class="coordonnees_google">');
-		$formtemplate->addElement('text', $lat, LATITUDE, array('id' => 'latitude','size' => 6, 'readonly' => 'readonly'));
-		$formtemplate->addElement('text', $lon, LONGITUDE, array('id' => 'longitude', 'size' => 6, 'readonly' => 'readonly'));
-		$formtemplate->addElement('html', '</div>');
-		$formtemplate->addElement('html', $script.'<div id="map" style="width: '.BAZ_GOOGLE_IMAGE_LARGEUR.'; height: '.BAZ_GOOGLE_IMAGE_HAUTEUR.';"></div>');
-
-
-		if (isset($obligatoire) && $obligatoire==1)
-		{
-			$formtemplate->addRule ($lat, LATITUDE . ' obligatoire', 'required', '', 'client');
-			$formtemplate->addRule ($lon, LONGITUDE . ' obligatoire', 'required', '', 'client');
-		}
+		$formtemplate = $html_bouton;
+		$formtemplate .= '<div class="coordonnees_google">'."\n".
+						'	<label>'.((isset($obligatoire) && $obligatoire==1) ? '<span class="symbole_obligatoire">*&nbsp;</span>' : '').LATITUDE.'</label>'."\n".
+						'	<input type="text" name="bf_latitude" readonly="readonly" size="6" id="latitude" '.
+								((isset($obligatoire) && $obligatoire==1) ? 'required="required"' : '').
+								((isset($defaults[$lat])) ? 'value="'.$defaults[$lat].'"' : '').'>'."\n".
+						'	<label>'.((isset($obligatoire) && $obligatoire==1) ? '<span class="symbole_obligatoire">*&nbsp;</span>' : '').LONGITUDE.'</label>'."\n".
+						'	<input type="text" name="bf_longitude" readonly="readonly" size="6" id="longitude" '.
+								((isset($obligatoire) && $obligatoire==1) ? 'required="required"' : '').
+								((isset($defaults[$lon])) ? 'value="'.$defaults[$lon].'"' : '').'>'."\n".
+						'</div>'."\n";
+		$formtemplate .= $script.'<div id="map" style="width: '.BAZ_GOOGLE_IMAGE_LARGEUR.'; height: '.BAZ_GOOGLE_IMAGE_HAUTEUR.';"></div>';
+	
+		return $formtemplate;
     }
 	elseif ( $mode == 'requete' )
 	{
@@ -1570,11 +1588,11 @@ function carte_google(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 
 }
 
-/** listefiche() - Ajoute un Ã©lÃ©ment de type liste dÃ©roulante correspondant Ã  un autre type de fiche au formulaire
+/** listefiche() - Ajoute un element de type liste deroulante correspondant a un autre type de fiche au formulaire
 *
 * @param    mixed   L'objet QuickForm du formulaire
-* @param    mixed   Le tableau des valeurs des diffÃ©rentes option pour l'Ã©lÃ©ment liste
-* @param    string  Type d'action pour le formulaire : saisie, modification, vue,... saisie par dÃ©faut
+* @param    mixed   Le tableau des valeurs des differentes option pour l'element liste
+* @param    string  Type d'action pour le formulaire : saisie, modification, vue,... saisie par defaut
 * @return   void
 */
 function listefiche(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
@@ -1952,7 +1970,10 @@ function bookmarklet(&$formtemplate, $tableau_template, $mode, $valeurs_fiche) {
 /* +--Fin du code ----------------------------------------------------------------------------------------+
 *
 * $Log: formulaire.fonct.inc.php,v $
-* Revision 1.26  2011/03/22 09:33:23  mrflos
+* Revision 1.27  2011/07/13 10:33:23  mrflos
+* version alpha du bazar next gen
+*
+* Revision 1.26  2011-03-22 09:33:23  mrflos
 * version de travail
 *
 * Revision 1.25  2010-12-15 10:45:43  mrflos

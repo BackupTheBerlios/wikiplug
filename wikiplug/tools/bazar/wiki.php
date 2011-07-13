@@ -21,7 +21,7 @@
 // | along with Foobar; if not, write to the Free Software                                                |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: wiki.php,v 1.15 2011/03/22 09:33:24 mrflos Exp $
+// CVS : $Id: wiki.php,v 1.16 2011/07/13 10:33:23 mrflos Exp $
 /**
 * wiki.php
 *
@@ -32,7 +32,7 @@
 *@author        Florian SCHMITT <florian@outils-reseaux.org>
 //Autres auteurs :
 *@copyright     outils-reseaux.org 2008
-*@version       $Revision: 1.15 $ $Date: 2011/03/22 09:33:24 $
+*@version       $Revision: 1.16 $ $Date: 2011/07/13 10:33:23 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -41,6 +41,7 @@ if (!defined("WIKINI_VERSION"))
         die ("acc&egrave;s direct interdit");
 }
 
+error_reporting(E_ALL);
 
 // +------------------------------------------------------------------------------------------------------+
 // |                                            ENTETE du PROGRAMME                                       |
@@ -50,47 +51,12 @@ if (!defined("WIKINI_VERSION"))
 define ('BAZ_CHEMIN', 'tools'.DIRECTORY_SEPARATOR.'bazar'.DIRECTORY_SEPARATOR);
 define ('BAZ_CHEMIN_UPLOAD', 'files'.DIRECTORY_SEPARATOR);
 
-//bouh! c'est pas propre! c'est a cause de PEAR et de ses includes
-set_include_path(BAZ_CHEMIN.'libs'.DIRECTORY_SEPARATOR.PATH_SEPARATOR.get_include_path());
-
-//librairies PEAR
-require_once BAZ_CHEMIN.'libs'.DIRECTORY_SEPARATOR.'DB.php' ;
-require_once BAZ_CHEMIN.'libs'.DIRECTORY_SEPARATOR.'Net'.DIRECTORY_SEPARATOR.'URL.php' ;
-
 //principales fonctions de bazar
 require_once BAZ_CHEMIN.'libs'.DIRECTORY_SEPARATOR.'bazar.fonct.php';
+require_once BAZ_CHEMIN.'libs'.DIRECTORY_SEPARATOR.'formulaire/formulaire.fonct.inc.php';
 
 //prefixe des tables bazar
 define('BAZ_PREFIXE', $wakkaConfig['table_prefix']);
-
-// +------------------------------------------------------------------------------------------------------+
-// |                                            CORPS du PROGRAMME                                        |
-// +------------------------------------------------------------------------------------------------------+
-
-
-$wikireq = $_REQUEST['wiki'];
-
-// remove leading slash
-$wikireq = preg_replace("/^\//", "", $wikireq);
-
-// split into page/method, checking wiki name & method name (XSS proof)
-if (preg_match('`^' . '(' . "[A-Za-z0-9]+" . ')/(' . "[A-Za-z0-9_-]" . '*)' . '$`', $wikireq, $matches)) {
-	list(, $GLOBALS['_BAZAR_']['pagewiki'], $method) = $matches;
-}
-elseif (preg_match('`^' . "[A-Za-z0-9]+" . '$`', $wikireq)) {
-	$GLOBALS['_BAZAR_']['pagewiki'] = $wikireq;
-}
-
-// Variable d'url
-$GLOBALS['_BAZAR_']['url'] = new Net_URL($wakkaConfig['base_url'].$GLOBALS['_BAZAR_']['pagewiki']);
-
-// Connection a la base de donnee
-$dsn='mysql://'.$wakkaConfig['mysql_user'].':'.$wakkaConfig['mysql_password'].'@'.$wakkaConfig['mysql_host'].'/'.$wakkaConfig['mysql_database'];
-$GLOBALS['_BAZAR_']['db'] =& DB::connect($dsn) ;
-if (DB::isError($GLOBALS['_BAZAR_']['db'])) {
-	echo $GLOBALS['_BAZAR_']['db']->getMessage();
-}
-
 
 
 // +------------------------------------------------------------------------------------------------------+
@@ -132,6 +98,11 @@ define ('BAZ_ACTION_NOUVEAU', 'saisir_fiche') ;
 define ('BAZ_ACTION_NOUVEAU_V', 'sauver_fiche') ;  // Creation apres validation
 define ('BAZ_ACTION_MODIFIER', 'modif_fiche') ;
 define ('BAZ_ACTION_MODIFIER_V', 'modif_sauver_fiche') ; // Modification apres validation
+define ('BAZ_ACTION_NOUVELLE_LISTE', 'saisir_liste') ;
+define ('BAZ_ACTION_NOUVELLE_LISTE_V', 'sauver_liste') ;  // Creation apres validation
+define ('BAZ_ACTION_MODIFIER_LISTE', 'modif_liste') ;
+define ('BAZ_ACTION_MODIFIER_LISTE_V', 'modif_sauver_liste') ; // Modification apres validation
+define ('BAZ_ACTION_SUPPRIMER_LISTE', 'supprimer_liste') ;
 define ('BAZ_ACTION_SUPPRESSION', 'supprimer') ;
 define ('BAZ_ACTION_PUBLIER', 'publier') ; // Valider la fiche
 define ('BAZ_ACTION_PAS_PUBLIER', 'pas_publier') ; // Invalider la fiche

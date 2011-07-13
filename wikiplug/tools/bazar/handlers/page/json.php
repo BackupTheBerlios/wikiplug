@@ -36,6 +36,11 @@ if (isset($_REQUEST['demand'])) {
 				echo json_encode($tab);
 			}			
 		    break;
+		//sur mesure pour moustic
+		case "fiches":
+			$tab = baz_requete_recherche_fiches('', 'alphabetique', 21, 'inscription');
+			echo json_encode($tab);
+		    break;
 	}
 }
 ?>

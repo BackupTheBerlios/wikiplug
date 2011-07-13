@@ -164,23 +164,31 @@ $(document).ready(function () {
 	});
 
 	//on enleve la fonction doubleclic dans le cas d'une page contenant bazar
-	$("#formulaire, #map, #calendar, .accordion").bind('dblclick', function(e) {
+	$("#formulaire, #map, #calendar, .accordion, .slide_show").bind('dblclick', function(e) {
 		return false;
 	});
 
-	//permet de gerer des affichages conditionnels quand on choisit une valeur dans une liste deroulante, en fonction de balises div
-	$("#formulaire select, #champs_formulaire select").live('change', function() {
+	//permet de gerer des affichages conditionnels, en fonction de balises div
+	$("select[id^='liste']").each( function() {
 		var id = $(this).attr('id');
+		id = id.replace("liste", ""); 
 		$("div[id^='"+id+"']").hide();
 		$("div[id='"+id+'_'+$(this).val()+"']").show();
 	});
+	$("select[id^='liste']").change( function() {
+		var id = $(this).attr('id');
+		id = id.replace("liste", ""); 
+		$("div[id^='"+id+"']").hide();
+		$("div[id='"+id+'_'+$(this).val()+"']").show();
+	});
+	
 
 	//============bidouille pour que les widgets en flash restent en dessous des elements en survol===========
 	$("object").append('<param value="opaque" name="wmode">');
 	$("embed").attr('wmode','opaque');
 
 	//============validation formulaire=======================================================================
-	$("#formulaire").removeAttr('onSubmit').validator({
+	/*$("#formulaire").removeAttr('onSubmit').validator({
 		lang: 'fr',
 		offset: [-20, -20],
 		position: 'top right',
@@ -199,7 +207,7 @@ $(document).ready(function () {
 			//on remonte en haut du formulaire
 			$('html, body').animate({scrollTop: $(this).offset().top - 50}, 800);
 		}
-	});
+	});*/
 
 	$.tools.validator.localize("fr", {
 		'*' : 'Veuillez v&eacute;rifier ces champs',
@@ -619,6 +627,11 @@ $(document).ready(function(){
 	//pour la gestion des listes, on peut rajouter dynamiquement des champs
 	$('.ajout_label_liste').live('click', function() {addFormField();return false;});
 	$('.suppression_label_liste').live('click', function() {removeFormField('#'+$(this).parent('.liste_ligne').attr('id'));return false;});
+	
+	//pour le changement de vue
+	$('.select-view').change(function() { 
+		$('#formulaire').append($(this)).submit();
+    });
 });
 
 
