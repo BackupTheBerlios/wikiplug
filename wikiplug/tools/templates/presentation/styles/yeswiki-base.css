@@ -45,6 +45,7 @@ nav ul, nav li { margin: 0; list-style:none; list-style-image: none; }
 small { font-size: 85%; }
 b, strong, th { font-weight: bold; }
 td { vertical-align: top; }
+i {font-style:italic;}
 
 sub, sup { font-size: 75%; line-height: 0; position: relative; }
 sup { top: -0.5em; }
@@ -291,13 +292,15 @@ border-radius:4px;
  * login
  */
  
- .login-label {display:inline-block; text-align:right; margin:0 0 5px 0; width:140px;}
- .login-input {width:140px;}
- .login-label-remember {font-size:.9em}
- .login-button {width:140px;}
- .login-subscribe {width:280px;text-align:right;margin: 5px 0 0;}
- .login-inline-form {display:inline;}
- .login-menu {display:none; position:absolute; top:33px; right:0; background:#CCC; opacity:0.9;}
+.login-label {display:inline-block; font-size:12px; margin:0 0 5px; text-align:right; width:110px;}
+.login-input, .login-button {width:90px; font-size:12px; padding:0;}
+.login-label-remember {font-size:.9em}
+.login-subscribe {text-align:right; margin:5px 0 0;}
+ul.login-prefs-links {margin:0; padding:0;}
+ul.login-prefs-links li {margin:2px 0; padding:0; list-style:none; background-image:none;}
+
+/*.login-inline-form {display:inline;}
+.login-menu {display:none; position:absolute; top:33px; right:0; background:#CCC; opacity:0.9;}*/
  
 
 /** diaporama **/
