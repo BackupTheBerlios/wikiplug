@@ -9,9 +9,9 @@
 		<li><a class="login-update-link"href="<?= $signupurl; ?>" title="Modifier mon inscription">Modifier mon inscription</a></li>
 		<li><a class="login-signout-link" href="<?= $incomingurl; ?>&amp;action=logout">D&eacute;connexion</a></li>
 	</ul>
-<?= $PageMenuUser; ?>
+	<?= $PageMenuUser; ?>
 <?php else : ?>
-<form class="login-form" action="<?= $signupurl; ?>" method="post">
+<form class="login-form" action="<?= $incomingurl; ?>" method="post">
 	<?php if ($error) : ?>
 		<div class="error_box"><?= $error; ?></div>
 	<?php endif; ?>
