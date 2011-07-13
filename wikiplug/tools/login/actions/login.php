@@ -68,7 +68,7 @@ if (!isset($_REQUEST["action"])) $_REQUEST["action"] = '';
 if ($_REQUEST["action"] == "logout") {
 	$this->LogoutUser();
 	$this->SetMessage("Vous &ecirc;tes maintenant d&eacute;connect&eacute; !");
-	$this->Redirect($incomingurl);
+	$this->Redirect(str_replace('&action=logout', '', $incomingurl));
 }
 
 // cas de l'identification

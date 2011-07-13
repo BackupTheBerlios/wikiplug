@@ -3,11 +3,11 @@
 	<img src="tools/login/presentation/images/user-icon10-black.gif" height="10" width="8" style="margin:2px 5px 0 0" alt="user" />
 	<span class="connected"><?= $user; ?></span>
 </a>
-<form class="login-inline-form" method="post" id="signout" action="<?= $signupurl; ?>">
+<form class="login-inline-form" method="post" id="signout" action="<?= $incomingurl; ?>">
 	<fieldset class="login-menu" style="display:none;">
-		<input type="hidden" name="incomingurl" value="<?= $userpage; ?>" />
+		<input type="hidden" name="incomingurl" value="<?= $incomingurl; ?>" />
 		<span class="login-prefs-link"><a href="<?= $signupurl; ?>" title="Modifier mon inscription">Modifier mon inscription</a></span>
-		<input class="login-signout-button" type="button" value="D&eacute;connexion" onclick="document.location='<?= $signupurl; ?>&amp;action=logout'" />
+		<input class="login-signout-button" type="button" value="D&eacute;connexion" onclick="document.location='<?= $incomingurl; ?>&action=logout'" />
 	</fieldset>
 </form>
 <?= $PageMenuUser; ?>
@@ -18,7 +18,7 @@
 <a rel="#signin-div" class="link_login"><img src="tools/login/presentation/images/user-icon10-black.gif" height="10" width="8" style="margin:2px 5px 0 0" alt="user" /><span>Se connecter</span></a>
 <span class="login-link"><a href="<?= $signupurl; ?>" title="S'inscrire">S'inscrire</a></span>
 <div id="signin-div" class="yeswiki-overlay" style="display:none;">
-    <form class="login-form" action="<?= $signupurl; ?>" method="post">
+    <form class="login-form" action="<?= $incomingurl; ?>" method="post">
 		<?php if ($error) : ?>
 			<div class="error_box"><?= $error; ?></div>
 		<?php endif; ?>

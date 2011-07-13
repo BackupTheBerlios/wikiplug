@@ -1,13 +1,14 @@
 <?php if ($connected) : ?>
-<a href="wakka.php?wiki=<?= $user; ?>" class="login-user-link">
-	<img src="tools/login/presentation/images/user-icon10-black.gif" height="10" width="8" class="login-user-icon" alt="user" />
-	<span class="connected"><?= $user; ?></span>
-</a>
-<form class="login-inline-form" method="post" id="signout" action="<?= $signupurl; ?>">
-	<input type="hidden" name="incomingurl" value="<?= $incomingurl; ?>" />
-	<span class="login-prefs-link"><a href="<?= $signupurl; ?>" title="Modifier mon inscription">Modifier mon inscription</a></span>
-	<input class="login-signout-button" type="button" value="D&eacute;connexion" onclick="document.location='<?= $signupurl;; ?>&amp;action=logout'" />
-</form>
+	<ul class="login-prefs-links">
+		<li>
+			<a href="wakka.php?wiki=<?= $user; ?>" class="login-user-link">
+				<img src="tools/login/presentation/images/user-icon10-black.gif" height="10" width="8" class="login-user-icon" alt="user" />
+				<span class="connected"><?= $user; ?></span>
+			</a>
+		</li>
+		<li><a class="login-update-link"href="<?= $signupurl; ?>" title="Modifier mon inscription">Modifier mon inscription</a></li>
+		<li><a class="login-signout-link" href="<?= $incomingurl; ?>&amp;action=logout">D&eacute;connexion</a></li>
+	</ul>
 <?= $PageMenuUser; ?>
 <?php else : ?>
 <form class="login-form" action="<?= $signupurl; ?>" method="post">
