@@ -126,6 +126,7 @@ class attach {
 	*  safe_mode = off: 	LaPageWiki/mon_fichier_datepage_update.ext_ avec "LaPageWiki" un sous-repertoire du répertoire upload
 	*/
 	function GetFullFilename($newName = false){
+		$full_file_name = '';
 		$pagedate = $this->convertDate($this->wiki->page['time']);
 		//decompose le nom du fichier en nom+extension
 		if (preg_match('`^(.*)\.(.*)$`', str_replace(' ','_',$this->file), $match)){
@@ -165,7 +166,7 @@ class attach {
 					}
 				}
 			}
-			if (is_array($theFile)){
+			if (isset($theFile) && is_array($theFile)){
 				$full_file_name = $path.'/'.$theFile['realname'];
 			}
 		}
@@ -511,7 +512,7 @@ class attach {
         header('Content-Type: application/download; name="' . $dlFilename . '"'); //This should work for IE & Opera
         header('Content-Disposition: attachment; filename="'.$dlFilename.'"');
         header("Content-Description: File Transfer");
-        header("Content-length: $size".'bytes');
+        header("Content-length: $size");
 		readfile($fullFilename);
 	}
 /******************************************************************************
