@@ -1829,7 +1829,9 @@ function baz_a_le_droit( $demande, $id = '' ) {
 			if ($demande == BAZ_ACTION_SUPPRESSION || $demande == BAZ_ACTION_MODIFIER) {
 				return true;
 			}
+			else { 
 				return false;
+			}
 		}
 		else {
 			return false;
