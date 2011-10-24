@@ -1,22 +1,26 @@
 <?php if ($connected) : ?>
-<a href="wakka.php?wiki=<?= $user; ?>" class="login-user-link">
-	<img src="tools/login/presentation/images/user-icon10-black.gif" height="10" width="8" style="margin:2px 5px 0 0" alt="user" />
+<a rel="#user-form" class="login-user-link">
+	<img class="user-icon" src="tools/login/presentation/images/user-icon10-black.gif" height="10" width="8" alt="user icon" />
 	<span class="connected"><?= $user; ?></span>
 </a>
-<form class="login-inline-form" method="post" id="signout" action="<?= $incomingurl; ?>">
-	<fieldset class="login-menu" style="display:none;">
-		<input type="hidden" name="incomingurl" value="<?= $incomingurl; ?>" />
-		<span class="login-prefs-link"><a href="<?= $signupurl; ?>" title="Modifier mon inscription">Modifier mon inscription</a></span>
-		<input class="login-signout-button" type="button" value="D&eacute;connexion" onclick="document.location='<?= $incomingurl; ?>&action=logout'" />
-	</fieldset>
+<form id="user-form" class="yeswiki-overlay" style="display:none;" method="post" action="<?= $incomingurl; ?>">
+	<?= $PageMenuUser; ?>
+	<input type="hidden" name="incomingurl" value="<?= $incomingurl; ?>" />
+	<span class="login-prefs-link">
+		<a href="<?= $signupurl; ?>" title="Modifier mon inscription">Modifier mon inscription</a>
+	</span><br />
+	<input class="login-signout-button" type="button" value="D&eacute;connexion" onclick="document.location='<?= $incomingurl; ?>&action=logout'" />
 </form>
-<?= $PageMenuUser; ?>
+
 <?php else : ?>
 <?php if ($error) : ?>
 	<div class="error_box"><?= $error; ?></div>
 <?php endif; ?>
-<a rel="#signin-div" class="link_login"><img src="tools/login/presentation/images/user-icon10-black.gif" height="10" width="8" style="margin:2px 5px 0 0" alt="user" /><span>Se connecter</span></a>
-<span class="login-link"><a href="<?= $signupurl; ?>" title="S'inscrire">S'inscrire</a></span>
+<a rel="#signin-div" class="login-link"><img class="user-icon" src="tools/login/presentation/images/user-icon10-black.gif" height="10" width="8" alt="user icon" />
+<span>Se connecter</span></a>
+<span class="login-link">
+	<a href="<?= $signupurl; ?>" title="S'inscrire">S'inscrire</a>
+</span>
 <div id="signin-div" class="yeswiki-overlay" style="display:none;">
     <form class="login-form" action="<?= $incomingurl; ?>" method="post">
 		<?php if ($error) : ?>

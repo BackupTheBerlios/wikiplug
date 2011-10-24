@@ -37,7 +37,7 @@ $incomingurl = 'http'.((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'
     || $_SERVER['SERVER_PORT'] == 443) ? 's' : '').'://'.
 		(($_SERVER['SERVER_PORT']!='80') ? $_SERVER['HTTP_HOST'].':'.$_SERVER['SERVER_PORT'].$_SERVER['SCRIPT_NAME'] : 
 		$_SERVER['HTTP_HOST'].$_SERVER['SCRIPT_NAME']).
-		(($_SERVER['QUERY_STRING']>' ') ? '?'.$_SERVER['QUERY_STRING'] : '');
+		(($_SERVER['QUERY_STRING']>' ') ? '?'.str_replace('&', '&amp;',$_SERVER['QUERY_STRING']) : '');
 
 $userpage = $this->GetParameter("userpage");
 
@@ -68,7 +68,7 @@ if (!isset($_REQUEST["action"])) $_REQUEST["action"] = '';
 if ($_REQUEST["action"] == "logout") {
 	$this->LogoutUser();
 	$this->SetMessage("Vous &ecirc;tes maintenant d&eacute;connect&eacute; !");
-	$this->Redirect(str_replace('&action=logout', '', $incomingurl));
+	$this->Redirect(str_replace('&amp;action=logout', '', $incomingurl));
 	exit;
 }
 
@@ -88,20 +88,24 @@ if ($_REQUEST["action"] == "login") {
 				$this->Redirect($_POST['incomingurl']);
 			}			
 		}
-		// on affiche une erreur sinon
+		// on affiche une erreur sur le mot de passe sinon
 		else {
-			$error = "Mauvais mot de passe&nbsp;!";
-			$this->Redirect($_POST['incomingurl'].'&error='.urlencode($error));
+			$this->SetMessage("Identification impossible : mauvais mot de passe.");
+			$this->Redirect($_POST['incomingurl']);
 		}
 	}
+	// on affiche une erreur sur le NomWiki sinon
+	else {
+		$this->SetMessage("Identification impossible : NomWiki non reconnu.");
+		$this->Redirect($_POST['incomingurl']);
+	}
 }
+
 
 // cas d'une personne connectée déjà
 if ($user = $this->GetUser()) {
 	$connected = true;
-	if ( $userpage=='user' ) {
-		$PageMenuUser .= '<a class="login-user-page-link" href="'.$this->href('', $user["name"], '').'" title="Voir mon espace personnel">Mon espace personnel</a><br />';
-	}
+	$PageMenuUser .= '<h3 class="login-title">Connect&eacute; en temps que '.$this->Format($user["name"]).'</h3>';	
 	if ($this->LoadPage("PageMenuUser")) { 
 		$PageMenuUser .= $this->Format("{{include page=\"PageMenuUser\"}}");
 	}
