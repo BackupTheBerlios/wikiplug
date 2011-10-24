@@ -1825,7 +1825,15 @@ function baz_a_le_droit( $demande, $id = '' ) {
 	}
 	//cas d'une personne non identifiee
 	else {
-		return false;
+		if (BAZ_MODIFICATION_AUTORISEE) {
+			if ($demande == BAZ_ACTION_SUPPRESSION || $demande == BAZ_ACTION_MODIFIER) {
+				return true;
+			}
+				return false;
+		}
+		else {
+			return false;
+		}
 	}
 
 

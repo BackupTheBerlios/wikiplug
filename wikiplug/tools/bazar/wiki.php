@@ -21,7 +21,7 @@
 // | along with Foobar; if not, write to the Free Software                                                |
 // | Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                            |
 // +------------------------------------------------------------------------------------------------------+
-// CVS : $Id: wiki.php,v 1.16 2011/07/13 10:33:23 mrflos Exp $
+// CVS : $Id: wiki.php,v 1.17 2011/10/24 13:47:07 ddelon Exp $
 /**
 * wiki.php
 *
@@ -32,7 +32,7 @@
 *@author        Florian SCHMITT <florian@outils-reseaux.org>
 //Autres auteurs :
 *@copyright     outils-reseaux.org 2008
-*@version       $Revision: 1.16 $ $Date: 2011/07/13 10:33:23 $
+*@version       $Revision: 1.17 $ $Date: 2011/10/24 13:47:07 $
 // +------------------------------------------------------------------------------------------------------+
 */
 
@@ -141,6 +141,14 @@ define('BAZ_RSS_CATEGORIE', (isset($wakkaConfig['baz_rss_categorie'])) ? $wakkaC
 //Mettre 0 pour 'en attente de validation d'un administrateur'
 //Mettre 1 pour 'directement validee en ligne'
 define ('BAZ_ETAT_VALIDATION', 1);
+
+
+//Pour permettre a tout le monde de modifier des fiches  (pour un intranet ....)
+// 0 : Seul administrateur et createur peut modifier  (defaut)
+// 1 : Tout le monde peut modifier
+define ('BAZ_MODIFICATION_AUTORISEE', 0);
+
+
 
 //Valeur maximale en octets pour la taille d'un fichier joint a telecharger
 define ('BAZ_TAILLE_MAX_FICHIER', 10000*1024);
