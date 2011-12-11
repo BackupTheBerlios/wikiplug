@@ -14,17 +14,17 @@
     * 
  */
 
-body { 
+body {
 font: 15px/20px arial,helvetica,freeSans,sans-serif;
 background:#F4F3EF;
 }
 
 * html body{
- overflow:hidden;
+overflow:hidden;
 } 
 * html div.menu-fixe{
- height:100%;
- overflow:auto;
+height:100%;
+overflow:auto;
 }
 
 #container {
