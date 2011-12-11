@@ -9,7 +9,7 @@ if (!function_exists("wakkaProgressBar")) {
     function wakkaProgressBar($things)
     {  
        $val = preg_replace("#%|\[|\]#","",$things);
-       return "<img src=\"tools/progressBar/php/progressBar.php?percent=".$val[0]."\" /> ";
+       return "<img src=\"tools/progressBar/libs/progressBar.php?percent=".$val[0]."\" /> ";
     }
 
 }
