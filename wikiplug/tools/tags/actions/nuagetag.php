@@ -4,6 +4,9 @@ if (!defined("WIKINI_VERSION"))
 {
             die ("acc&egrave;s direct interdit");
 }
+
+$GLOBALS['js'] = ((isset($GLOBALS['js'])) ? $GLOBALS['js'] : '').'<script defer src="tools/tags/libs/tag.js" type="text/javascript" charset="utf-8"></script>';
+
 $selectiontags = '';
 $tags = $this->GetParameter('tags');
 if (!empty($tags))
@@ -60,7 +63,7 @@ if (is_array($tab_tous_les_tags))
 			//on affiche les informations pour ce tag
 			if ($nb_pages>1) $texte_page= $nb_pages.' pages';
 			else $texte_page='Une page';
-			$texte_liste  = '<li class="liste_tooltip">'."\n".'<a class="tooltip size'.ceil($nb_pages/$mult).'" href="'.$this->href('listepages',$this->GetPageTag(),'tags='.$tag_precedent).'" id="j'.$i.'">'.$tag_precedent.'</a>'."\n";
+			$texte_liste  = '<li class="liste_tooltip">'."\n".'<a class="tooltip_link size'.ceil($nb_pages/$mult).'" href="'.$this->href('listpages',$this->GetPageTag(),'tags='.$tag_precedent).'" id="j'.$i.'">'.$tag_precedent.'</a>'."\n";
 			$texte_liste .= '<div class="hovertip" id="tooltipj'.$i.'">'."\n".'<span class="texte_pages_assoc">'.$texte_page.' avec le mot cl&eacute; "'.$tag_precedent.'" :</span>'."\n".'<ul>'."\n";
 			$texte_liste .= $liste_page."\n";
 			$texte_liste .= '</ul>'."\n".'</div>'."\n";

@@ -1,11 +1,7 @@
 <?php
 /*
-$Id: ajaxaddcomment.php,v 1.3 2010/03/04 14:17:59 mrflos Exp $
-Copyright (c) 2002, Hendrik Mans <hendrik@mans.de>
-Copyright 2002, 2003 David DELON
-Copyright 2003  Eric FELDSTEIN
-Copyright 2004  Jean Christophe ANDRÉ
-Copyright 2005  Didier LOISEAU
+$Id: ajaxaddcomment.php,v 1.4 2011/12/19 09:51:10 mrflos Exp $
+Copyright (c) 2009, Florian Schmitt <florian@outils-reseaux.org>
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions
@@ -66,7 +62,7 @@ if (isset($_GET['jsonp_callback']))
 			
 			$comment = $this->LoadPage($wakkaname);
 			
-			$valcomment['commentaires'][0]['tag'] = $comment["tag"];
+		/*	$valcomment['commentaires'][0]['tag'] = $comment["tag"];
 			$valcomment['commentaires'][0]['body'] = $this->Format($comment["body"]);
 			$valcomment['commentaires'][0]['infos'] = "de ".$this->Format($comment["user"]).", ".date("\l\e d.m.Y &\a\g\\r\av\e; H:i:s", strtotime($comment["time"]));
 			$valcomment['commentaires'][0]['actions'] = '<a href="'.$this->href('', $comment['tag']).'" class="repondre_commentaire">R&eacute;pondre</a> ';
@@ -83,7 +79,8 @@ if (isset($_GET['jsonp_callback']))
 			$squelcomment->set($valcomment);
 			$commentaire = $squelcomment->analyser();
 			
-			$response = json_encode(array("html"=>utf8_encode($commentaire)));
+			$response = json_encode(array("html"=>utf8_encode($commentaire)));*/
+			$response = json_encode(array("html"=>'<div class="info_box">Votre commentaire a &eacute;t&eacute; enregistr&eacute;, veuillez rafraichir la page pour le voir.</div>'));
 			echo $_GET['jsonp_callback']."(".$response.")";
 		}
 	}
