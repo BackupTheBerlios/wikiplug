@@ -1,5 +1,15 @@
 /***********************************Nuage de mot clés************************************/
 
+li.liste_tooltip {
+display:block;
+float:left;
+list-style-type:none;
+background-image:none;
+color:#000;
+margin:0;
+padding:0;
+}
+
 .nuage a {
 color:#000;
 text-decoration:none;
@@ -11,16 +21,49 @@ background:transparent;
 background:transparent;
 }
 
-li.liste_tooltip {
-display:block;
-float:left;
-list-style-type:none;
-background-image:none;
-color:#000;
-margin:0;
-padding:0;
+a.size6 {
+font-size:38px;
+color:#e13728;
+padding:0 4px;
 }
 
+a.size5 {
+font-size:34px;
+color:#c4876a;
+padding:5px;
+}
+
+a.size4 {
+font-size:29px;
+color:#804d40;
+padding:10px;
+}
+
+a.size3 {
+font-size:24px;
+color:#e13728;
+padding:5px;
+}
+
+a.size2 {
+font-size:19px;
+color:#b9251a;
+padding:7px;
+}
+
+a.size1 {
+font-size:14px;
+color:#b46a47;
+padding:5px;
+}
+
+a.size5:hover,a.size6:hover {
+color:#b46a47;
+}
+
+a.size1:hover,a.size2:hover,a.size3:hover,a.size4:hover {
+color:#e13728;
+}
 
 .hovertip {
 display:none;
@@ -83,49 +126,6 @@ color:#b9251a;
     font-size: 0.9em;
 }
 
-a.size6 {
-font-size:38px;
-color:#e13728;
-padding:0 4px;
-}
-
-a.size5 {
-font-size:34px;
-color:#c4876a;
-padding:5px;
-}
-
-a.size4 {
-font-size:29px;
-color:#804d40;
-padding:10px;
-}
-
-a.size3 {
-font-size:24px;
-color:#e13728;
-padding:5px;
-}
-
-a.size2 {
-font-size:19px;
-color:#b9251a;
-padding:7px;
-}
-
-a.size1 {
-font-size:14px;
-color:#b46a47;
-padding:5px;
-}
-
-a.size5:hover,a.size6:hover {
-color:#b46a47;
-}
-
-a.size1:hover,a.size2:hover,a.size3:hover,a.size4:hover {
-color:#e13728;
-}
 /***********************************FIN Nuage de mot clés************************************/
 
 
@@ -514,7 +514,8 @@ ul.tagit li.tagit-choice {
     font-weight: normal;
 }
 
-ul.tagit li.tagit-tag {
+ul.tagit li.tagit-tag, span.tagit-tag {
+	text-decoration:none;
     -moz-border-radius: 6px;
     border-radius: 6px;
     -webkit-border-radius: 6px;
@@ -525,7 +526,7 @@ ul.tagit li.tagit-tag {
     font-weight: normal;
     padding: .2em .3em .2em .3em;
 }
-ul.tagit li.tagit-tag a {
+ul.tagit li.tagit-tag a, span.tagit-tag a{
 	color: #555;
 }
 
@@ -545,7 +546,7 @@ ul.tagit li.tagit-choice .tagit-close .text-icon {
     line-height: 16px;
     color: #777;
 }
-ul.tagit li.tagit-choice:hover, ul.tagit li.tagit-tag:hover, ul.tagit li.tagit-choice.remove {
+ul.tagit li.tagit-choice:hover, ul.tagit li.tagit-tag:hover, span.tagit-tag:hover, ul.tagit li.tagit-choice.remove {
     background-color: #bbcef1;
     border-color: #6d95e0;
 }
@@ -560,6 +561,28 @@ ul.tagit input[type="text"] {
 }
  
 /************************************FIN Edition des mot clés************************************/
+
+/************************************Admin tags************************************/
+ul.taglist {list-style:none; margin:0; padding:0;}
+li.taglistitem {margin:25px 0;}
+span.tagpresence {font-weight:bold;}
+a.wikipagelink {display:inline-block;}
+ul.liste_pages_tag {list-style:none; margin:0; padding:0;}
+ul.liste_pages_tag li {margin:5px 0; padding:0 0 0 15px;}
+a.supprimer_tag {
+color:#222;
+border:0;
+background:url(../images/trash.gif) no-repeat center left;
+text-decoration:underline;
+margin:0;
+padding:0 0 0 12px;
+}
+.taglist tr {padding:15px 0;}
+.taglist td {padding:5px;}
+.taglist td.taglistitem {text-align:right;}
+.taglist td.delete_all_tags {font-weight:bold; font-size:.9em;}
+.taglist td.delete_tag {font-size:.9em;}
+.taglist td.spacer {padding:0;}
 
 
 /************************************Commentaires************************************/

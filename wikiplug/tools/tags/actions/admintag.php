@@ -24,7 +24,7 @@ if ($this->UserIsAdmin())
 
 	if (is_array($tab_tous_les_tags))
 	{
-		echo '<ul class="taglist">'."\n";
+		echo '<table class="taglist">'."\n";
 		$nb_pages = 0;
 		$liste_page = '';
 		$tag_precedent = '';
@@ -35,34 +35,42 @@ if ($this->UserIsAdmin())
 			{
 				$nb_pages++;
 				if ($tag_precedent=='') $tag_precedent = $tab_les_tags['value'];
-				$liste_page .= '<li>
-				<a href="'.$this->href('',$tab_les_tags['resource']).'" class="voir_page">'.$tab_les_tags['resource'].'</a>&nbsp;
-				<a href="'.$this->href().'&amp;supprimer_tag='.urlencode($tag_precedent).'&amp;pagetag='.$tab_les_tags['resource'].'" class="supprimer_page">supprimer le mot cl&eacute; "'.$tag_precedent.'" de '.$tab_les_tags['resource'].'</a>
-				</li>'."\n";
+				if ($nb_pages == 1) $liste_page .= '<tr><td>nbpage</td>';
+				else $liste_page .= '<tr><td></td>';
+				$liste_page .= '<td class="pagewithtag">
+					<a class="wikipagelink" href="'.$this->href('',$tab_les_tags['resource']).'">'.$tab_les_tags['resource'].'</a>
+				</td>
+				<td class="delete_tag">
+					<a class="supprimer_tag" href="'.$this->href().'&amp;supprimer_tag='.urlencode($tag_precedent).'&amp;pagetag='.$tab_les_tags['resource'].'">supprimer</a>&nbsp;<span class="tagit-tag">'.$tag_precedent.'</span> de cette page.
+				</td>
+				</tr>'."\n";
 
 			}
 			else
 			{
 				//on affiche les informations pour ce tag
-				if ($nb_pages>1) $texte_page='ces '.$nb_pages.' pages';
-				else $texte_page='la page';
-				$texte_liste  = '<li class="taglistitem">'."\n".'<span class="textboxlist-bit-box">'.$tag_precedent.'</span>'."\n";
-				$texte_liste .= 'présent dans '.$texte_page.' :'."\n";
-				$texte_liste .= '<ul class="liste_pages_tag">'."\n".$liste_page.'</ul>'."\n";
-				$texte_liste .= '<a class="supprimer_page" href="'.$this->href().'&amp;supprimer_tag='.urlencode($tag_precedent).'">Supprimer tous les mots cl&eacute;s "'.$tag_precedent.'"</a>'."\n";
-				$texte_liste .= '</li>'."\n";
-				echo $texte_liste;
+				$texte_liste  = '<tr>'."\n".'<td class="taglistitem">'."\n".'<span class="tagit-tag">'.$tag_precedent.'</span>'."\n";
+				$texte_liste .= '<span class="tagpresence">pr&eacute;sent dans :</span>'."\n".'</td>'."\n";
+				$liste_page = str_replace('<tr><td>nbpage</td>',$texte_liste, $liste_page);
+				if ($nb_pages>1) {
+					$liste_page .= '<tr><td></td><td></td><td class="delete_all_tags"><a class="supprimer_tag" href="'.$this->href().'&amp;supprimer_tag='.urlencode($tag_precedent).'">supprimer</a>&nbsp;<span class="tagit-tag">'.$tag_precedent.'</span> de toutes les pages.</td></tr>'."\n";
+				}
+				echo $liste_page.'<tr><td class="spacer" colspan="3">&nbsp;</td></tr>';
 
 				//on réinitialise les variables
 				$nb_pages = 1;
-				$liste_page = '<li>
-				<a href="'.$this->href('',$tab_les_tags['resource']).'" class="voir_page">'.$tab_les_tags['resource'].'</a>&nbsp;
-				<a href="'.$this->href().'&amp;supprimer_tag='.urlencode($tab_les_tags['value']).'&amp;pagetag='.$tab_les_tags['resource'].'" class="supprimer_page">supprimer le mot cl&eacute; "'.$tab_les_tags['value'].'" de '.$tab_les_tags['resource'].'</a>
-				</li>'."\n";
+				$liste_page = '<tr><td>nbpage</td>
+				<td class="pagewithtag">
+					<a class="wikipagelink" href="'.$this->href('',$tab_les_tags['resource']).'">'.$tab_les_tags['resource'].'</a>
+				</td>
+				<td class="delete_tag">
+					<a href="'.$this->href().'&amp;supprimer_tag='.urlencode($tab_les_tags['value']).'&amp;pagetag='.$tab_les_tags['resource'].'" class="supprimer_tag">supprimer</a>&nbsp;<span class="tagit-tag">'.$tab_les_tags['value'].'</span> de cette page.
+				</td>
+				</tr>'."\n";
 			}
 			$tag_precedent = $tab_les_tags['value'];
 		}
-		echo '</ul>'."\n";
+		echo '</table>'."\n";
 	}
 }
 else
